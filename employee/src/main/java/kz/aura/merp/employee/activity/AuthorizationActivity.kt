@@ -55,18 +55,7 @@ class AuthorizationActivity : AppCompatActivity() {
 
         // For test
         button2.setOnClickListener {
-            saveDataByKey(this, 1028L, "staffId")
-            goToActivity(DealerActivity())
-        }
-
-        button3.setOnClickListener {
-            saveDataByKey(this, 806L, "staffId")
-            goToActivity(MasterActivity())
-        }
-
-        button4.setOnClickListener {
-            saveDataByKey(this, 18555L, "staffId")
-            goToActivity(FinanceAgentActivity())
+            goToActivity(ChiefActivity())
         }
 
     }
@@ -118,8 +107,6 @@ class AuthorizationActivity : AppCompatActivity() {
             1000 -> {
 
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    println("Permission has been denied by user")
-                } else {
                     Toast.makeText(this, "Вы не разрешили доступ к камеру", Toast.LENGTH_LONG)
                         .show()
                     requestCameraPermission()

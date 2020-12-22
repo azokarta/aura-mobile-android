@@ -24,7 +24,7 @@ class ChiefActivity : AppCompatActivity() {
     private fun signInToAccount(position: StaffPosition) {
         val staffId = staffId.text.toString()
         if (staffId.isNotEmpty()) {
-            saveDataByKey(this, staffId, "staffId")
+            saveDataByKey(this, staffId.toLong(), "staffId")
 
             when (position) {
                 StaffPosition.DEALER -> goToActivity(DealerActivity())
