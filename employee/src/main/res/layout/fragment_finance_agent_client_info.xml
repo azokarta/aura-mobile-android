@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+    <variable
+        name="client"
+        type="kz.aura.merp.employee.data.model.Client" />
+  </data>
+
+  <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      tools:context="kz.aura.merp.employee.fragment.FinanceClientInfoFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+      <TextView
+          android:id="@+id/textView12"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginLeft="16dp"
+          android:layout_marginTop="16dp"
+          android:text="Id:"
+          android:textColor="@color/colorBlack"
+          android:textSize="18sp"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/info_taxi_expences_label"
+          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="16dp"
+          android:layout_marginRight="16dp"
+          android:hint="Расход на такси"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="@+id/textView13"
+          app:layout_constraintTop_toBottomOf="@+id/textView13">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/info_taxi_taxi_expences"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{Double.toString(client.taxiExpenseAmount)}"
+            android:textColor="#000000" />
+
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <TextView
+          android:id="@+id/info_id"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginLeft="16dp"
+          android:text="@{Long.toString(client.maCollectMoneyId)}"
+          android:textColor="@color/colorBlack"
+          app:layout_constraintBottom_toBottomOf="@+id/textView12"
+          app:layout_constraintStart_toEndOf="@+id/textView12"
+          app:layout_constraintTop_toTopOf="@+id/textView12" />
+
+      <com.google.android.material.button.MaterialButton
+          android:id="@+id/map_btn"
+          style="?attr/materialButtonOutlinedStyle"
+          android:layout_width="150dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:text="Карта"
+          app:icon="@drawable/ic_baseline_map_24"
+          app:iconGravity="textStart"
+          app:iconPadding="10dp"
+          app:layout_constraintStart_toStartOf="@+id/info_phone_numbers"
+          app:layout_constraintTop_toBottomOf="@+id/info_phone_numbers" />
+
+      <TextView
+          android:id="@+id/textView13"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:text="ФИО:"
+          android:textColor="@color/colorBlack"
+          android:textSize="18sp"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="@+id/textView12"
+          app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+      <TextView
+          android:id="@+id/info_fio"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginLeft="16dp"
+          android:text="@{client.firstname + ` ` + client.middlename + ` ` + client.lastname}"
+          android:textColor="@color/colorBlack"
+          app:layout_constraintBottom_toBottomOf="@+id/textView13"
+          app:layout_constraintStart_toEndOf="@+id/textView13"
+          app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+      <TextView
+          android:id="@+id/textView11"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:text="Телефоны:"
+          android:textColor="@color/colorBlack"
+          android:textSize="18sp"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="@+id/info_taxi_expences_label"
+          app:layout_constraintTop_toBottomOf="@+id/info_taxi_expences_label" />
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/info_phone_numbers"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="16dp"
+          android:layout_marginRight="16dp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="@+id/textView11"
+          app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+      <Button
+          android:id="@+id/info_save_btn"
+          android:layout_width="250dp"
+          android:layout_height="55dp"
+          android:layout_marginTop="16dp"
+          android:text="Сохранить"
+          android:textColor="@color/colorPrimary"
+          app:backgroundTint="@color/colorLightGray"
+          app:cornerRadius="5dp"
+          app:icon="@drawable/ic_baseline_save_24"
+          app:iconGravity="textStart"
+          app:iconTint="@color/colorPrimary"
+          app:layout_constraintStart_toStartOf="@+id/info_phone_numbers"
+          app:layout_constraintTop_toBottomOf="@+id/map_btn" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</layout>

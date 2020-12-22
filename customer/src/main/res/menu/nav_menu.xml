@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_outline_home_24"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_outline_person_24"
+            android:title="Профиль" />
+        <item
+            android:id="@+id/nav_products"
+            android:icon="@drawable/ic_outline_shopping_cart_24"
+            android:title="Товары" />
+        <item
+            android:id="@+id/nav_services"
+            android:icon="@drawable/ic_outline_headset_mic_24"
+            android:title="Услуги" />
+        <item
+            android:id="@+id/nav_payments"
+            android:icon="@drawable/ic_outline_receipt_24"
+            android:title="Платежи" />
+<!--        <item-->
+<!--            android:id="@+id/nav_defrayal"-->
+<!--            android:icon="@drawable/ic_outline_account_balance_wallet_24"-->
+<!--            android:title="Оплата" />-->
+        <item
+            android:id="@+id/nav_message"
+            android:icon="@drawable/ic_outline_email_24"
+            android:title="Сообщения"
+            app:actionViewClass="android.widget.TextView" />
+        <item
+            android:id="@+id/nav_bonuses"
+            android:icon="@drawable/ic_outline_attach_money_24"
+            android:title="Бонусы" />
+        <item
+            android:id="@+id/nav_comments"
+            android:icon="@drawable/ic_outline_forum_24"
+            android:title="Отзывы" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_outline_settings_24"
+            android:title="Настройки" />
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_baseline_exit_to_app_24"
+            android:title="Выйти" />
+    </group>
+</menu>

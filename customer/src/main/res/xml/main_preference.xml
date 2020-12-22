@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:key="switch_preference"
+        android:title="@string/notification"/>
+    <ListPreference
+        android:key="list_language_preference"
+        android:title="@string/language"
+        android:entries="@array/language_entries"
+        android:dialogTitle="@string/language"
+        android:entryValues="@array/entry_values"/>
+</PreferenceScreen>

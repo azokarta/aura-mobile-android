@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1031086038818",
+    "firebase_url": "https://aura-customer-ddf9d.firebaseio.com",
+    "project_id": "aura-customer-ddf9d",
+    "storage_bucket": "aura-customer-ddf9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031086038818:android:e69607b0a2818a25608f7b",
+        "android_client_info": {
+          "package_name": "kz.aura.merp.customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031086038818-6pev0ja3dntvqcuqhe8btre1rj5f9h8e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kz.aura.merp.customer",
+            "certificate_hash": "093ff5f0ff452eeb308ca38934a52b4d7afe29b4"
+          }
+        },
+        {
+          "client_id": "1031086038818-fs913argfbmpkd309sbpvi3jadlgsuc2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw7CwqlO4S-BrSvO5TuRktAH_D2Lh1zhs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031086038818-fs913argfbmpkd309sbpvi3jadlgsuc2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,4 @@
+include ':customer'
+include ':employee'
+rootProject.name = "aura-mobile-android"
+org.gradle.initialization.DefaultSettings

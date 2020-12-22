@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AuraEmployee</string>
+    <string name="language">Language</string>
+    <string name="ru">Russian</string>
+    <string name="en">English</string>
+    <string name="sign_out">Sign out</string>
+    <string name="settings">Settings</string>
+    <string name="welcome">Welcome!</string>
+    <string name="fullName">Full name</string>
+    <string name="address">Address</string>
+    <string name="phoneNumber">Phone number</string>
+    <string name="phones">Phones</string>
+    <string name="dealer">Dealer</string>
+    <string name="taxiExpense">Taxi expense</string>
+    <string name="map">Map</string>
+    <string name="save">Save</string>
+    <string name="demo">Demo</string>
+    <string name="demoData">Demo data</string>
+    <string name="businessProcesses">Business processes</string>
+    <string name="cause">Cause</string>
+    <string name="demoResult">Demo result</string>
+    <string name="contractType">Contract type</string>
+    <string name="priceList">Price list</string>
+    <string name="noData">No data</string>
+    <string name="master">Master</string>
+    <string name="serviceAddress">Service address</string>
+    <string name="service">Service</string>
+    <string name="result">Result</string>
+    <string name="listOfApplications">List of applications</string>
+    <string name="finAgent">Financial agent</string>
+    <string name="client">Client</string>
+</resources>

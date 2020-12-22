@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Аура</string>
+    <string name="ru">Руский</string>
+    <string name="en">Английский</string>
+    <string name="bonuses">Бонусы</string>
+    <string name="settings">Настройки</string>
+    <string name="language">Язык</string>
+    <string name="notification">Уведомление</string>
+    <string name="passportId">Номер паспорта</string>
+    <string name="date_of_issue">Дата выдачи</string>
+    <string name="issued">Выдан</string>
+    <string name="addresses">Адресы</string>
+    <string name="phones">Телефоны</string>
+    <string name="mobile">Мобильный</string>
+    <string name="home_number">Домашний</string>
+    <string name="home">Главная</string>
+</resources>

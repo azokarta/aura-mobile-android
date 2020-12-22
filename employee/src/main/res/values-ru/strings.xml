@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AuraEmployee</string>
+    <string name="language">Язык</string>
+    <string name="ru">Русский</string>
+    <string name="en">Англиский</string>
+    <string name="sign_out">Выйти</string>
+    <string name="settings">Настройки</string>
+    <string name="welcome">Добро пожаловать!</string>
+    <string name="fullName">ФИО</string>
+    <string name="address">Адрес</string>
+    <string name="phoneNumber">Телефон номер</string>
+    <string name="phones">Телефоны</string>
+    <string name="dealer">Дилер</string>
+    <string name="taxiExpense">Расход на такси</string>
+    <string name="map">Карта</string>
+    <string name="save">Сохранить</string>
+    <string name="demo">Демо</string>
+    <string name="demoData">Демо данные</string>
+    <string name="businessProcesses">Бизнес процессы</string>
+    <string name="cause">Причина</string>
+    <string name="demoResult">Результат демо</string>
+    <string name="contractType">Тип договора</string>
+    <string name="priceList">Прайс лист</string>
+    <string name="noData">Нет данных</string>
+    <string name="master">Мастер</string>
+    <string name="serviceAddress">Адрес сервиса</string>
+    <string name="service">Сервис</string>
+    <string name="result">Результат</string>
+    <string name="listOfApplications">Список заявок</string>
+    <string name="finAgent">Финансовый агент</string>
+    <string name="client">Клиент</string>
+</resources>
