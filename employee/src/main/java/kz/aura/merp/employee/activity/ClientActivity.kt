@@ -18,15 +18,15 @@ class ClientActivity : AppCompatActivity() {
         setContentView(R.layout.activity_client)
         setSupportActionBar(toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Финансовый агент"
+        supportActionBar?.title = getString(R.string.client)
 
         val plan = intent.getSerializableExtra("client") as Client
 
         val titles = ArrayList<String>()
         val fragments = ArrayList<Fragment>()
 
-        titles.add("Инфо")
-        titles.add("Бизнес процессы")
+        titles.add(getString(R.string.info))
+        titles.add(getString(R.string.businessProcesses))
 
         fragments.add(FinanceClientInfoFragment.newInstance(plan))
         fragments.add(FinanceBusinessProcessFragment.newInstance(plan))

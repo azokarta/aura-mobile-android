@@ -87,7 +87,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:hint="Причина"
+            android:hint="@string/cause"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -97,6 +97,7 @@
                 android:id="@+id/fin_business_processes_cause"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:maxLength="100"
                 android:text="@{client.description}"
                 android:textColor="@color/colorBlack" />
 
@@ -107,7 +108,7 @@
             android:layout_width="250dp"
             android:layout_height="55dp"
             android:layout_marginTop="16dp"
-            android:text="Сохранить"
+            android:text="@string/save"
             android:textColor="@color/colorPrimary"
             app:backgroundTint="@color/colorLightGray"
             app:cornerRadius="5dp"
@@ -123,7 +124,7 @@
             android:layout_width="0dp"
             android:layout_height="55dp"
             android:layout_marginTop="8dp"
-            android:text="Результат демо"
+            android:text="@string/result"
             app:layout_constraintEnd_toEndOf="@+id/fin_business_processes_cause_text_field"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/fin_business_processes_cause_text_field"
@@ -134,7 +135,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Результат"
+            android:text="@string/result"
             android:textColor="@color/colorBlack"
             app:layout_constraintStart_toStartOf="@+id/fin_business_processes_cause_text_field"
             app:layout_constraintTop_toBottomOf="@+id/fin_business_processes_cause_text_field" />

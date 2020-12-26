@@ -4,7 +4,8 @@
     <string name="language">Language</string>
     <string name="ru">Russian</string>
     <string name="en">English</string>
-    <string name="sign_out">Sign out</string>
+    <string name="signIn">Sign-in</string>
+    <string name="signOut">Sign out</string>
     <string name="settings">Settings</string>
     <string name="welcome">Welcome!</string>
     <string name="fullName">Full name</string>
@@ -29,5 +30,9 @@
     <string name="result">Result</string>
     <string name="listOfApplications">List of applications</string>
     <string name="finAgent">Financial agent</string>
+    <string name="info">Info</string>
     <string name="client">Client</string>
+    <string name="search">Search</string>
+    <string name="close">Close</string>
+    <string name="restart">Restart</string>
 </resources>

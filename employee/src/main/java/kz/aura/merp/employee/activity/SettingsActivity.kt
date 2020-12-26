@@ -1,16 +1,19 @@
 package kz.aura.merp.employee.activity
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.util.Helpers.openActivityByPositionId
 import kz.aura.merp.employee.util.LanguageHelper
 import kz.aura.merp.employee.util.LanguageHelper.getLanguage
 import kotlinx.android.synthetic.main.settings_activity.*
+import kz.aura.merp.employee.util.Helpers.clearPreviousAndOpenActivity
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -25,6 +28,10 @@ class SettingsActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.settings, SettingsFragment())
             .commit()
+
+        sign_out.setOnClickListener {
+            signOut()
+        }
     }
 
     class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -53,6 +60,17 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun signOut() {
+        PreferenceManager.getDefaultSharedPreferences(application)
+            .edit()
+            .remove("token")
+            .remove("staff")
+            .remove("staffId")
+            .remove("phoneNumber")
+            .apply()
+        clearPreviousAndOpenActivity(this, AuthorizationActivity())
     }
 
     override fun onSupportNavigateUp(): Boolean {

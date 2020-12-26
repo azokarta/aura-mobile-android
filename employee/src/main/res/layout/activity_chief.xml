@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         style="?attr/materialButtonOutlinedStyle"
-        android:text="Дилер"
+        android:text="@string/dealer"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
         app:layout_constraintStart_toStartOf="@+id/textInputLayout"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
@@ -47,7 +47,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Мастер"
+        android:text="@string/master"
         app:layout_constraintEnd_toEndOf="@+id/dealer"
         app:layout_constraintStart_toStartOf="@+id/dealer"
         app:layout_constraintTop_toBottomOf="@+id/dealer" />
@@ -58,7 +58,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Фин. Агент"
+        android:text="@string/finAgent"
         app:layout_constraintEnd_toEndOf="@+id/master"
         app:layout_constraintStart_toStartOf="@+id/master"
         app:layout_constraintTop_toBottomOf="@+id/master" />

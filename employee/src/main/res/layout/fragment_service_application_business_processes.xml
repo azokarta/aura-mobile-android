@@ -109,6 +109,7 @@
                 android:id="@+id/service_business_processes_cause"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:maxLength="100"
                 android:text="@{serviceApplication.description}"
                 android:textColor="@color/colorBlack" />
 

@@ -13,10 +13,11 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.data.model.*
 import kz.aura.merp.employee.data.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
-import kz.aura.merp.employee.databinding.FragmentFinanceAgentBusinessProcessStepsBinding
+import kz.aura.merp.employee.databinding.FragmentFinanceBusinessProcessesBinding
 import kz.aura.merp.employee.util.Helpers
 import im.delight.android.location.SimpleLocation
-import kotlinx.android.synthetic.main.fragment_finance_agent_business_process_steps.*
+import kotlinx.android.synthetic.main.fragment_finance_business_processes.*
+import kz.aura.merp.employee.activity.ClientActivity
 
 private const val bpId = 4
 private const val ARG_PARAM1 = "plan"
@@ -27,7 +28,7 @@ class FinanceBusinessProcessFragment : Fragment() {
     private val results = arrayListOf<FinanceResult>()
     private var trackStepOrdersBusinessProcesses = arrayListOf<TrackStepOrdersBusinessProcess>()
     private lateinit var location: SimpleLocation
-    private var binding: FragmentFinanceAgentBusinessProcessStepsBinding? = null
+    private var binding: FragmentFinanceBusinessProcessesBinding? = null
     private var collectorId: Long? = null
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
     private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
@@ -44,7 +45,7 @@ class FinanceBusinessProcessFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Data binding
-        binding = FragmentFinanceAgentBusinessProcessStepsBinding.inflate(inflater, container, false)
+        binding = FragmentFinanceBusinessProcessesBinding.inflate(inflater, container, false)
         binding!!.lifecycleOwner = this
         binding!!.client = client
 
@@ -83,19 +84,12 @@ class FinanceBusinessProcessFragment : Fragment() {
             client = data
             binding!!.client = data
             binding!!.executePendingBindings() // Update view
+            (activity as ClientActivity).onBackPressed()
         })
         mFinanceViewModel.trackEmpProcessCollectMoney.observe(viewLifecycleOwner, Observer { data ->
             step = data.size
             initStepView(trackStepOrdersBusinessProcesses.map { it.trackStepNameRu } as ArrayList)
             showButtonsByStep()
-        })
-
-        // Errors
-        mFinanceViewModel.error.observe(viewLifecycleOwner, Observer { error ->
-            Helpers.exceptionHandler(error, this.requireContext())
-        })
-        mReferenceViewModel.error.observe(viewLifecycleOwner, Observer { error ->
-            Helpers.exceptionHandler(error, this.requireContext())
         })
     }
 

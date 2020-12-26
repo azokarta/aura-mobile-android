@@ -8,6 +8,7 @@ import kz.aura.merp.employee.util.Helpers.getToken
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Headers
 import java.util.concurrent.TimeUnit
 
 object ServiceBuilder {
@@ -21,13 +22,17 @@ object ServiceBuilder {
             .followRedirects(true)
             .followSslRedirects(true)
             .addInterceptor { chain ->
-                    val newRequest = chain.request().newBuilder()
-                        .addHeader("Authorization", "Bearer ${getToken(context)}")
+                    val token = getToken(context)
+                    val bearer = "Bearer $token"
+
+                    var newRequest = chain.request().newBuilder()
                         .addHeader("Content-Type", "application/x-www-form-urlencoded")
                         .addHeader("Cache-Control", "public, max-age=60")
-                        .addHeader("Content-Language", getLanguage(context))
-                        .build()
-                    chain.proceed(newRequest)
+                        .addHeader("Accept-Language", getLanguage(context))
+                    if (token!!.isNotEmpty()) {
+                        newRequest = newRequest.addHeader("Authorization", bearer)
+                    }
+                    chain.proceed(newRequest.build())
             }
             .build()
 

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.data.model.PhoneNumber
-import kz.aura.merp.employee.databinding.DemoDataPhoneNumberRowBinding
+import kz.aura.merp.employee.databinding.PhoneNumberRowBinding
 import kz.aura.merp.employee.diffUtil.PhoneNumberDiffUtil
 
 class PhoneNumberAdapter : RecyclerView.Adapter<DemoDataPhoneNumberViewHolder>() {
@@ -14,7 +14,7 @@ class PhoneNumberAdapter : RecyclerView.Adapter<DemoDataPhoneNumberViewHolder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DemoDataPhoneNumberViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = DemoDataPhoneNumberRowBinding.inflate(inflater, parent, false)
+        val binding = PhoneNumberRowBinding.inflate(inflater, parent, false)
 
         return DemoDataPhoneNumberViewHolder(binding)
     }
@@ -35,7 +35,7 @@ class PhoneNumberAdapter : RecyclerView.Adapter<DemoDataPhoneNumberViewHolder>()
 
 }
 
-class DemoDataPhoneNumberViewHolder(val binding: DemoDataPhoneNumberRowBinding) : RecyclerView.ViewHolder(binding.root) {
+class DemoDataPhoneNumberViewHolder(val binding: PhoneNumberRowBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(phoneNumber: PhoneNumber) {
         binding.phone = phoneNumber
         binding.executePendingBindings()

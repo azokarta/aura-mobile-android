@@ -33,6 +33,14 @@ class AuthorizationActivity : AppCompatActivity() {
         // Request Permission
         requestCameraPermission()
 
+        // Testing
+//        PreferenceManager.getDefaultSharedPreferences(this)
+//            .edit()
+//            .putString("language", "ru")
+//            .putString("staff", "{mobile:+77476167191,salaryDtoList:[{begDate:2018-03-01,branchId:28,bukrs:1000,countryId:1,departmentId:1,endDate:2099-01-01,positionDto:{nameEn:Manager,nameRu:Менеджер,nameTr:Şef,positionId:3,spras:ru},positionId:3,salaryId:9720,staffId:1028}],staffDto:{middlename:OSPANULY,mobile:87015517055,sacked:0,staffId:1028},staffId:1028,userId:1177,username:ashat.o}")
+//            .putString("token", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiV0VSUF9DTElFTlRfUkVTT1VSQ0UiXSwidXNlcl9pZCI6MTE3NywidXNlcl9uYW1lIjoiYXNoYXQubyIsInNjb3BlIjpbInRydXN0IiwicmVhZCIsIndyaXRlIl0sImV4cCI6MTYwODc0NTA4MSwiYXV0aG9yaXRpZXMiOlsi0JTQtdC80L7QodC10LrRgNC10YLQsNGA0YwiXSwianRpIjoiY2NkZjQzODQtMDQ4Yy00OGQ3LThlNDktZTYyMmQyNGI1MGU4IiwiZW1haWwiOiJhc2hhdEBnbWFpbC5jb20iLCJjbGllbnRfaWQiOiJXRVJQIn0.KU0S-i4H9Mdv0Lomus_3pjRZOyGg8XzTf0OWs6kij1ozTwr48pEsYKu4VK-vr3s-K7gGqGNS-ZhXKLvTuePpIVFSXa3CRNK41H-R6MRWxgx4rfTmZAFXvgi4VvmqmvLwM3Ne5SljIyQunW-fn2fHaThpSjaYM-ZQUYako7ay1i78SDR1EGEIzSV9uWySLF8aBeNzlPoChsDud5No571fFLFegBDuUWKZ41sXKrp8v07PxtqtsOKbAfz_km6dlDVhkO2n2-BHL6VVJePdee1LgzAJZCuvkIz9ZoWbo7WGnz_oIoqnaXdvD3rVOWrZQUn1CQXkfDk5qF50Dv2uRQxhuA")
+//            .apply()
+
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 

@@ -39,7 +39,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:ems="10"
-            android:hint="Телефон номер"
+            android:hint="@string/phoneNumber"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ccp"
             app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +51,7 @@
             android:layout_height="55dp"
             android:layout_marginTop="24dp"
             android:onClick="signIn"
-            android:text="Войти"
+            android:text="@string/signIn"
             app:layout_constraintEnd_toEndOf="@+id/phone_number_edit_text"
             app:layout_constraintStart_toStartOf="@+id/ccp"
             app:layout_constraintTop_toBottomOf="@+id/phone_number_edit_text" />

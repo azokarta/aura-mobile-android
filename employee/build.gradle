@@ -74,10 +74,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
     implementation 'com.r0adkll:slidableactivity:2.0.6'
     implementation 'com.github.baoyachi:StepView:1.9'
-    implementation 'com.yandex.android:mapkit:3.5.0'
+    implementation 'com.yandex.android:maps.mobile:4.0.0-full'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.github.delight-im:Android-SimpleLocation:v1.1.0'
-    implementation 'com.yandex.android:search:3.5.0'
 
     // Navigation Component
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'

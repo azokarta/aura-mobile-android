@@ -13,6 +13,7 @@ import kz.aura.merp.employee.databinding.FragmentServiceApplicationDataBinding
 import kz.aura.merp.employee.util.Helpers.exceptionHandler
 import kotlinx.android.synthetic.main.fragment_service_application_data.*
 import kotlinx.android.synthetic.main.fragment_service_application_data.view.*
+import kz.aura.merp.employee.activity.ServiceApplicationActivity
 
 private const val ARG_PARAM1 = "serviceApplication"
 
@@ -43,11 +44,10 @@ class ServiceApplicationDataFragment : Fragment() {
             serviceApplication = data
             binding!!.serviceApplication = data
             binding!!.executePendingBindings()
-        })
-        mMasterViewModel.error.observe(viewLifecycleOwner, Observer { error ->
-            exceptionHandler(error, this.requireContext())
+            (activity as ServiceApplicationActivity).onBackPressed()
         })
 
+        // Initialize Listeners
         binding!!.root.service_application_data_save_btn.setOnClickListener {
             serviceApplication!!.taxiExpenseAmount = demo_data_taxi_expences.text.toString().toDouble()
             mMasterViewModel.updateServiceApplication(serviceApplication!!)

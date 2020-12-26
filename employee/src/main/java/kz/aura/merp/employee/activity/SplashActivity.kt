@@ -18,14 +18,6 @@ class SplashActivity : AppCompatActivity() {
         updateLanguage(this)
         setContentView(R.layout.activity_splash)
 
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = pref.edit()
-        val json = Gson().toJson(Staff(1028, "Sultan", 1028, "32323","awdawda",
-            arrayListOf(), null
-            ))
-        editor.putString("data", json)
-        editor.apply()
-
         logo.alpha = 0f
         logo.animate().setDuration(1500).alpha(1f).withEndAction {
             if (getToken(this) != "") {

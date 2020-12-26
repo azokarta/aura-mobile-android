@@ -4,7 +4,8 @@
     <string name="language">Язык</string>
     <string name="ru">Русский</string>
     <string name="en">Англиский</string>
-    <string name="sign_out">Выйти</string>
+    <string name="signIn">Войти</string>
+    <string name="signOut">Выйти</string>
     <string name="settings">Настройки</string>
     <string name="welcome">Добро пожаловать!</string>
     <string name="fullName">ФИО</string>
@@ -29,5 +30,9 @@
     <string name="result">Результат</string>
     <string name="listOfApplications">Список заявок</string>
     <string name="finAgent">Финансовый агент</string>
+    <string name="info">Инфо</string>
     <string name="client">Клиент</string>
+    <string name="search">Поиск</string>
+    <string name="close">Закрыть</string>
+    <string name="restart">Перезагрузить</string>
 </resources>

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -19,12 +20,20 @@ import kz.aura.merp.employee.databinding.ActivityMasterBinding
 import kz.aura.merp.employee.util.Helpers
 import kz.aura.merp.employee.util.LanguageHelper
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_fin_agent.*
 import kotlinx.android.synthetic.main.activity_master.*
+import kotlinx.android.synthetic.main.activity_master.network_disconnected
+import kotlinx.android.synthetic.main.activity_master.progress_bar
+import kotlinx.android.synthetic.main.activity_master.recyclerView
+import kotlinx.android.synthetic.main.activity_master.toolbar
+import kotlinx.android.synthetic.main.network_disconnected.*
+import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 
 class MasterActivity : AppCompatActivity() {
 
     private val mMasterViewModel: MasterViewModel by viewModels()
     private val mSharedViewModel: SharedViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private val serviceApplicationAdapter: MasterAdapter by lazy { MasterAdapter() }
     private var masterId: Long? = null
     private lateinit var binding: ActivityMasterBinding
@@ -47,14 +56,32 @@ class MasterActivity : AppCompatActivity() {
         masterId = Helpers.getStaffId(this)
 
         // Setup RecyclerView
-        service_applications_recyclerView.layoutManager = LinearLayoutManager(applicationContext)
-        service_applications_recyclerView.adapter = serviceApplicationAdapter
+        recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+        recyclerView.adapter = serviceApplicationAdapter
 
         // Observe MutableLiveData
         mMasterViewModel.applications.observe(this, Observer { data ->
             mSharedViewModel.checkData(data)
             serviceApplicationAdapter.setData(data)
         })
+
+        // Observe errors
+        mMasterViewModel.error.observe(this, Observer { error ->
+            checkError(error)
+        })
+        mReferenceViewModel.error.observe(this, Observer { error ->
+            checkError(error)
+        })
+
+        // If network is disconnected and user clicks restart, get data again
+        restart.setOnClickListener {
+            if (Helpers.verifyAvailableNetwork(this)) {
+                mMasterViewModel.fetchServiceApplications(masterId!!) // fetch serviceApplications
+                progress_bar.visibility = View.VISIBLE
+                recyclerView.visibility = View.VISIBLE
+                network_disconnected.visibility = View.GONE
+            }
+        }
 
         // Fetch serviceApplications
         mMasterViewModel.fetchServiceApplications(masterId!!)
@@ -84,6 +111,16 @@ class MasterActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun checkError(error: Any) {
+        progress_bar.visibility = View.INVISIBLE // hide progress bar
+        if (!Helpers.verifyAvailableNetwork(this)) {
+            network_disconnected.visibility = View.VISIBLE
+            recyclerView.visibility = View.INVISIBLE
+        } else {
+            Helpers.exceptionHandler(error, this) // Show error
+        }
     }
 
     private fun getData(): ServiceApplication? {

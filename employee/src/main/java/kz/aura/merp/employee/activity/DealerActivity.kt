@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -24,12 +25,16 @@ import kz.aura.merp.employee.util.Helpers.getStaffId
 import kz.aura.merp.employee.util.LanguageHelper
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_dealer.*
+import kotlinx.android.synthetic.main.network_disconnected.*
+import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
+import kz.aura.merp.employee.util.Helpers.verifyAvailableNetwork
 
 
 class DealerActivity : AppCompatActivity() {
 
     private val mDemoViewModel: DemoViewModel by viewModels()
     private val mSharedViewModel: SharedViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private val adapter: DemoAdapter by lazy { DemoAdapter() }
     private lateinit var binding: ActivityDealerBinding
     private var dealerId: Long? = null
@@ -65,10 +70,23 @@ class DealerActivity : AppCompatActivity() {
         // Setup RecyclerView
         setupRecyclerview()
 
-        // Observe MutableLiveData
+        // Observe errors
         mDemoViewModel.error.observe(this, Observer { error ->
-            exceptionHandler(error, this)
+            checkError(error)
         })
+        mReferenceViewModel.error.observe(this, Observer { error ->
+            checkError(error)
+        })
+
+        // If network is disconnected and user clicks restart, get data again
+        restart.setOnClickListener {
+            if (verifyAvailableNetwork(this)) {
+                mDemoViewModel.fetchAll(dealerId!!) // fetch demo list
+                progress_bar.visibility = View.VISIBLE
+                recyclerView.visibility = View.VISIBLE
+                network_disconnected.visibility = View.GONE
+            }
+        }
 
         // Fetch demoList
         mDemoViewModel.fetchAll(dealerId!!)
@@ -82,6 +100,16 @@ class DealerActivity : AppCompatActivity() {
             val list = mDemoViewModel.changeData(data)
             adapter.setData(list)
             removeData()
+        }
+    }
+
+    private fun checkError(error: Any) {
+        progress_bar.visibility = View.INVISIBLE // hide progress bar
+        if (!verifyAvailableNetwork(this)) {
+            network_disconnected.visibility = View.VISIBLE
+            recyclerView.visibility = View.INVISIBLE
+        } else {
+            exceptionHandler(error, this) // Show error
         }
     }
 

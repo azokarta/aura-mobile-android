@@ -44,6 +44,8 @@ object Helpers {
     }
 
     fun <T> saveData(data: T, context: Context) {
+        // When we change item and save, we should save to the android storage
+        // Then we show the changed item in list
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = pref.edit()
         val json = Gson().toJson(data)
@@ -52,6 +54,7 @@ object Helpers {
     }
 
     fun definePosition(positionId: Int): StaffPosition {
+        // we define position of employee and return constant
         return when (positionId) {
             4, 3, 10, 105 -> StaffPosition.DEALER
             9 -> StaffPosition.FIN_AGENT
@@ -63,8 +66,10 @@ object Helpers {
     fun getStaffId(context: Context): Long {
         val staff = getStaff(context)
         return if(staff != null) {
+            // Employees use staff
             staff.staffId
         } else {
+            // Chiefs use staff id
             val pref = PreferenceManager.getDefaultSharedPreferences(context)
             pref.getLong("staffId", 0L)
         }
@@ -97,6 +102,7 @@ object Helpers {
     }
 
     fun clearPreviousAndOpenActivity(context: Context, activity: Activity) {
+        // Clear previous activities and open new activity
         val intent = Intent(context, activity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
@@ -161,21 +167,24 @@ object Helpers {
                     dialogView.error_title.text = "Интернет-соединение не подключен"
                     dialogView.sub_error.visibility = View.GONE
                 } else {
-                    dialogView.error_title.text = "Произошла ошибка повторите попытку позже"
+                    dialogView.error_title.text = exception.message
                     dialogView.sub_error.visibility = View.GONE
                 }
             }
             is ResponseBody -> {
+                // Server error
                 val res = Gson().fromJson(exception.charStream(), Error::class.java)
                 dialogView.error_title.text = res.error
                 dialogView.sub_error.text = res.message
             }
             is String -> {
+                // Custom error
                 dialogView.error_title.text = exception
                 dialogView.sub_error.visibility = View.GONE
             }
         }
 
+        // Hide alert dialog
         dialogView.error_close.setOnClickListener {
             builder.dismiss()
         }

@@ -109,10 +109,23 @@
                 android:id="@+id/demo_business_processes_cause"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:maxLength="100"
                 android:text="@{demo.note}"
                 android:textColor="@color/colorBlack" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/demo_result_btn"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/demoResult"
+            app:layout_constraintEnd_toEndOf="@+id/demo_business_processes_cause_text_field"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/demo_business_processes_cause_text_field"
+            app:layout_constraintTop_toBottomOf="@+id/demo_result_label" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/demo_business_processes_save_btn"
@@ -127,19 +140,7 @@
             app:iconGravity="textStart"
             app:iconTint="@color/colorPrimary"
             app:layout_constraintStart_toStartOf="@+id/demo_result_btn"
-            app:layout_constraintTop_toBottomOf="@+id/demo_price_list" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/demo_result_btn"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/demoResult"
-            app:layout_constraintEnd_toEndOf="@+id/demo_business_processes_cause_text_field"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/demo_business_processes_cause_text_field"
-            app:layout_constraintTop_toBottomOf="@+id/demo_result_label" />
+            app:layout_constraintTop_toBottomOf="@+id/demo_result_btn" />
 
         <TextView
             android:id="@+id/demo_result_label"
@@ -150,28 +151,6 @@
             android:textColor="@color/colorBlack"
             app:layout_constraintStart_toStartOf="@+id/demo_business_processes_cause_text_field"
             app:layout_constraintTop_toBottomOf="@+id/demo_business_processes_cause_text_field" />
-
-        <Button
-            android:id="@+id/demo_contract_type"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Тип договора"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/demo_result_btn"
-            app:layout_constraintStart_toStartOf="@+id/demo_result_btn"
-            app:layout_constraintTop_toBottomOf="@+id/demo_result_btn" />
-
-        <Button
-            android:id="@+id/demo_price_list"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="price-list"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/demo_contract_type"
-            app:layout_constraintStart_toStartOf="@+id/demo_contract_type"
-            app:layout_constraintTop_toBottomOf="@+id/demo_contract_type" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

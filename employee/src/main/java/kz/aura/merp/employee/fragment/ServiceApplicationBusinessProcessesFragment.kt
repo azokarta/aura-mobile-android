@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_service_application_business_proc
 import kotlinx.android.synthetic.main.fragment_service_application_business_processes.completed_btn_3
 import kotlinx.android.synthetic.main.fragment_service_application_business_processes.completed_btn_4
 import kotlinx.android.synthetic.main.fragment_service_application_business_processes.step_view
+import kz.aura.merp.employee.activity.ServiceApplicationActivity
 
 private const val ARG_PARAM1 = "serviceApplication"
 private const val bpId = 3
@@ -90,19 +91,12 @@ class ServiceApplicationBusinessFragment : Fragment() {
             serviceApplication = data
             binding!!.serviceApplication = data
             binding!!.executePendingBindings() // Update view
+            (activity as ServiceApplicationActivity).onBackPressed()
         })
         mMasterViewModel.trackEmpProcessServiceApplication.observe(viewLifecycleOwner, Observer { data ->
             step = data.size
             initStepView(trackStepOrdersBusinessProcesses.map { it.trackStepNameRu } as ArrayList)
             showButtonsByStep()
-        })
-
-        // Errors
-        mMasterViewModel.error.observe(viewLifecycleOwner, Observer { error ->
-            Helpers.exceptionHandler(error, this.requireContext())
-        })
-        mReferenceViewModel.error.observe(viewLifecycleOwner, Observer { error ->
-            Helpers.exceptionHandler(error, this.requireContext())
         })
     }
 

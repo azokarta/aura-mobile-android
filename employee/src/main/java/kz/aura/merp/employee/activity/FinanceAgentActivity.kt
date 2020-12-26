@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -19,13 +20,23 @@ import kz.aura.merp.employee.databinding.ActivityFinAgentBinding
 import kz.aura.merp.employee.util.Helpers
 import kz.aura.merp.employee.util.LanguageHelper
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_dealer.*
 import kotlinx.android.synthetic.main.activity_fin_agent.*
+import kotlinx.android.synthetic.main.activity_fin_agent.network_disconnected
+import kotlinx.android.synthetic.main.activity_fin_agent.progress_bar
+import kotlinx.android.synthetic.main.activity_fin_agent.recyclerView
+import kotlinx.android.synthetic.main.activity_fin_agent.toolbar
+import kotlinx.android.synthetic.main.network_disconnected.*
+import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
+import kz.aura.merp.employee.util.Helpers.exceptionHandler
+import kz.aura.merp.employee.util.Helpers.verifyAvailableNetwork
 
 class FinanceAgentActivity : AppCompatActivity() {
 
     private val mFinanceViewModel: FinanceViewModel by viewModels()
-    private val finAdapter: FinanceAdapter by lazy { FinanceAdapter() }
     private val mSharedViewModel: SharedViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
+    private val finAdapter: FinanceAdapter by lazy { FinanceAdapter() }
     private var collectorId: Long? = null
     private lateinit var binding: ActivityFinAgentBinding
 
@@ -41,20 +52,38 @@ class FinanceAgentActivity : AppCompatActivity() {
         setContentView(view)
 
         setSupportActionBar(toolbar as Toolbar)
-        supportActionBar?.title = "Финансовый агент"
+        supportActionBar?.title = getString(R.string.finAgent)
 
         // Get collector id
         collectorId = Helpers.getStaffId(this)
 
         // Setup RecyclerView
-        fin_agent_recycler_view.layoutManager = LinearLayoutManager(applicationContext)
-        fin_agent_recycler_view.adapter = finAdapter
+        recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+        recyclerView.adapter = finAdapter
 
         // Observe MutableLiveData
         mFinanceViewModel.clients.observe(this, Observer { data ->
             mSharedViewModel.checkData(data)
             finAdapter.setData(data)
         })
+
+        // Observe errors
+        mFinanceViewModel.error.observe(this, Observer { error ->
+            checkError(error)
+        })
+        mReferenceViewModel.error.observe(this, Observer { error ->
+            checkError(error)
+        })
+
+        // If network is disconnected and user clicks restart, get data again
+        restart.setOnClickListener {
+            if (verifyAvailableNetwork(this)) {
+                mFinanceViewModel.fetchClients(collectorId!!) // fetch clients
+                progress_bar.visibility = View.VISIBLE
+                recyclerView.visibility = View.VISIBLE
+                network_disconnected.visibility = View.GONE
+            }
+        }
 
         // Fetch clients
         mFinanceViewModel.fetchClients(collectorId!!)
@@ -87,6 +116,16 @@ class FinanceAgentActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun checkError(error: Any) {
+        progress_bar.visibility = View.INVISIBLE // hide progress bar
+        if (!verifyAvailableNetwork(this)) {
+            network_disconnected.visibility = View.VISIBLE
+            recyclerView.visibility = View.INVISIBLE
+        } else {
+            exceptionHandler(error, this) // Show error
+        }
     }
 
     private fun getData(): Client? {

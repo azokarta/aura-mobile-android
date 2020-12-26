@@ -2,6 +2,7 @@ package kz.aura.merp.employee.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
@@ -9,8 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.google.gson.Gson
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.adapter.PriceListAdaper
 import kz.aura.merp.employee.data.model.*
 import kz.aura.merp.employee.data.viewmodel.DemoViewModel
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
@@ -18,6 +19,8 @@ import kz.aura.merp.employee.databinding.FragmentDemoBusinessProcessesBinding
 import kz.aura.merp.employee.util.Helpers
 import im.delight.android.location.SimpleLocation
 import kotlinx.android.synthetic.main.fragment_demo_business_processes.*
+import kz.aura.merp.employee.activity.DemoActivity
+import okhttp3.ResponseBody
 import kotlin.collections.ArrayList
 
 
@@ -31,8 +34,6 @@ class DemoBusinessProcessesFragment : Fragment() {
     private val demoResults = arrayListOf<DemoResult>()
     private var trackStepOrdersBusinessProcesses = arrayListOf<TrackStepOrdersBusinessProcess>()
     private lateinit var location: SimpleLocation
-    private var selectedPriceItem: PriceList = PriceList()
-    private var selectedContractType: ContractType = ContractType()
     private var binding: FragmentDemoBusinessProcessesBinding? = null
     private var dealerId: Long? = null
     private val mDemoViewModel: DemoViewModel by activityViewModels()
@@ -87,31 +88,16 @@ class DemoBusinessProcessesFragment : Fragment() {
                 initBtnListeners()
                 initStepView(trackStepOrdersBusinessProcesses.map { it.trackStepNameRu } as ArrayList)
             })
-        mReferenceViewModel.contractTypes.observe(viewLifecycleOwner, Observer {
-            onSuccessContractTypes(
-                it
-            )
-        })
-        mReferenceViewModel.priceList.observe(
-            viewLifecycleOwner,
-            Observer { onSuccessPriceList(it) })
         mDemoViewModel.updatedDemo.observe(viewLifecycleOwner, Observer { data ->
             demo = data
             binding!!.demo = data
             binding!!.executePendingBindings() // Update view
+            (activity as DemoActivity).onBackPressed()
         })
         mDemoViewModel.trackEmpProcessDemo.observe(viewLifecycleOwner, Observer { data ->
             step = data.size
             initStepView(trackStepOrdersBusinessProcesses.map { it.trackStepNameRu } as ArrayList)
             showButtonsByStep()
-        })
-
-        // Errors
-        mDemoViewModel.error.observe(viewLifecycleOwner, Observer { error ->
-            Helpers.exceptionHandler(error, this.requireContext())
-        })
-        mReferenceViewModel.error.observe(viewLifecycleOwner, Observer { error ->
-            Helpers.exceptionHandler(error, this.requireContext())
         })
     }
 
@@ -181,11 +167,6 @@ class DemoBusinessProcessesFragment : Fragment() {
             demo!!.resultId = i
 
             demo_result_btn.text = demoResults[i].nameRu
-            if (i == 4) {
-                mReferenceViewModel.fetchContractTypes(dealerId!!)
-            } else {
-                demo_contract_type.visibility = View.GONE
-            }
         }
 
         builder.setPositiveButton("Отмена") { dialog, _ ->
@@ -223,55 +204,10 @@ class DemoBusinessProcessesFragment : Fragment() {
 
         demo_business_processes_save_btn.setOnClickListener {
             demo!!.note = demo_business_processes_cause.text.toString()
-            mDemoViewModel.updateDemo(DemoModify(demo!!, selectedContractType, selectedPriceItem))
+            mDemoViewModel.updateDemo(demo!!)
         }
     }
 
-    private fun onSuccessContractTypes(contractTypes: ArrayList<ContractType>) {
-        demo_contract_type.visibility = View.VISIBLE
-        demo_contract_type.setOnClickListener {
-            val demoResultsByLang = contractTypes.map { it.name } as ArrayList
-            val builder = AlertDialog.Builder(this.requireContext())
-
-            builder.setTitle("Тип контракта")
-
-            builder.setItems(demoResultsByLang.toArray(arrayOfNulls<String>(0))) { _, i ->
-                mReferenceViewModel.fetchPriceList(
-                    contractTypes[i].bukrs!!,
-                    contractTypes[i].matnr!!,
-                    dealerId!!
-                )
-                selectedContractType = contractTypes[i]
-            }
-
-            builder.setPositiveButton("Отмена") { dialog, _ ->
-                dialog.dismiss()
-            }
-
-            val dialog = builder.create()
-            dialog.show()
-        }
-    }
-
-    private fun onSuccessPriceList(priceList: ArrayList<PriceList>) {
-        demo_price_list.visibility = View.VISIBLE
-        demo_price_list.setOnClickListener {
-            val builder = AlertDialog.Builder(this.requireContext())
-
-            builder.setTitle("Тип контракта")
-
-            builder.setAdapter(PriceListAdaper(priceList, this.requireContext())) { _, i ->
-                selectedPriceItem = priceList[i]
-            }
-
-            builder.setPositiveButton("Отмена") { dialog, _ ->
-                dialog.dismiss()
-            }
-
-            val dialog = builder.create()
-            dialog.show()
-        }
-    }
 
     private fun showButtonsByStep() {
         when (step) {

@@ -16,7 +16,7 @@ interface DemoApi {
     ): Response<ResponseHelper<ArrayList<TrackEmpProcess>>>
 
     @PUT("/crm-doc-demo/modify")
-    suspend fun updateDemo(@Body demo: DemoModify): Response<ResponseHelper<Demo>>
+    suspend fun updateDemo(@Body demo: Demo): Response<ResponseHelper<Demo>>
 
     @POST("/ma-track-emp-process/demo")
     suspend fun updateStepBusinessProcess(@Body trackEmpProcess: TrackEmpProcess): Response<ResponseHelper<Any>>

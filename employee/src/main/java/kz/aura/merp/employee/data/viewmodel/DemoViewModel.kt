@@ -36,7 +36,7 @@ class DemoViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun updateDemo(demo: DemoModify) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateDemo(demo: Demo) = viewModelScope.launch(Dispatchers.IO) {
         try {
             val response = apiService.updateDemo(demo)
 
