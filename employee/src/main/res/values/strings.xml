@@ -34,6 +34,7 @@
     <string name="search">Поиск</string>
     <string name="close">Закрыть</string>
     <string name="restart">Перезагрузить</string>
+    <string name="sendSms">Отправить смс</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>

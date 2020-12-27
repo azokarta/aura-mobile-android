@@ -140,7 +140,7 @@
             app:iconGravity="textStart"
             app:iconTint="@color/colorPrimary"
             app:layout_constraintStart_toStartOf="@+id/demo_result_btn"
-            app:layout_constraintTop_toBottomOf="@+id/demo_result_btn" />
+            app:layout_constraintTop_toBottomOf="@+id/send_sms" />
 
         <TextView
             android:id="@+id/demo_result_label"
@@ -151,6 +151,18 @@
             android:textColor="@color/colorBlack"
             app:layout_constraintStart_toStartOf="@+id/demo_business_processes_cause_text_field"
             app:layout_constraintTop_toBottomOf="@+id/demo_business_processes_cause_text_field" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/send_sms"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"
+            android:text="@string/sendSms"
+            app:layout_constraintEnd_toEndOf="@+id/demo_result_btn"
+            app:layout_constraintStart_toStartOf="@+id/demo_result_btn"
+            app:layout_constraintTop_toBottomOf="@+id/demo_result_btn" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
