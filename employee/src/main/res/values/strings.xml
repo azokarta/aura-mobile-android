@@ -35,6 +35,11 @@
     <string name="close">Закрыть</string>
     <string name="restart">Перезагрузить</string>
     <string name="sendSms">Отправить смс</string>
+    <string name="smsSent">Смс отправлено</string>
+    <string name="userConfirmed">Пользователь подтвердил</string>
+    <string name="receiveCustomerConfirmation">Получить подтверждению клиента</string>
+    <string name="successfullySaved">Успешно сохранен</string>
+    <string name="notSaved">Не сохранен</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>

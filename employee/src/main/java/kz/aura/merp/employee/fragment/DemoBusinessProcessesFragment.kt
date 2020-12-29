@@ -2,7 +2,6 @@ package kz.aura.merp.employee.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
@@ -10,22 +9,22 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.google.gson.Gson
+import com.google.android.material.snackbar.Snackbar
+import im.delight.android.location.SimpleLocation
+import kotlinx.android.synthetic.main.fragment_demo_business_processes.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.data.model.*
 import kz.aura.merp.employee.data.viewmodel.DemoViewModel
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.FragmentDemoBusinessProcessesBinding
 import kz.aura.merp.employee.util.Helpers
-import im.delight.android.location.SimpleLocation
-import kotlinx.android.synthetic.main.fragment_demo_business_processes.*
-import kz.aura.merp.employee.activity.DemoActivity
-import okhttp3.ResponseBody
-import kotlin.collections.ArrayList
+import kz.aura.merp.employee.util.Helpers.saveData
+import kz.aura.merp.employee.util.ProgressDialog
 
 
 private const val bpId = 1
 private const val ARG_PARAM1 = "demo"
+private const val soldId = 4
 
 class DemoBusinessProcessesFragment : Fragment() {
 
@@ -34,10 +33,12 @@ class DemoBusinessProcessesFragment : Fragment() {
     private val demoResults = arrayListOf<DemoResult>()
     private var trackStepOrdersBusinessProcesses = arrayListOf<TrackStepOrdersBusinessProcess>()
     private lateinit var location: SimpleLocation
-    private var binding: FragmentDemoBusinessProcessesBinding? = null
+    private var _binding: FragmentDemoBusinessProcessesBinding? = null
+    private val binding get() = _binding!!
     private var dealerId: Long? = null
     private val mDemoViewModel: DemoViewModel by activityViewModels()
     private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
+    private lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +52,9 @@ class DemoBusinessProcessesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Data binding
-        binding = FragmentDemoBusinessProcessesBinding.inflate(inflater, container, false)
-        binding!!.lifecycleOwner = this
-        binding!!.demo = demo
+        _binding = FragmentDemoBusinessProcessesBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.demo = demo
 
         // Observe MutableLiveData
         setObserve()
@@ -62,6 +63,7 @@ class DemoBusinessProcessesFragment : Fragment() {
         mReferenceViewModel.fetchTrackStepOrdersBusinessProcesses(bpId)
         mDemoViewModel.fetchTrackEmpProcessDemo(demo!!.demoId)
 
+        // construct a new instance of SimpleLocation
         location = SimpleLocation(this.requireContext());
 
         // if we can't access the location yet
@@ -73,12 +75,20 @@ class DemoBusinessProcessesFragment : Fragment() {
         // Set dealer id
         dealerId = Helpers.getStaffId(this.requireContext())
 
-        return binding!!.root
+        // PhoneNumber Formatter
+        binding.ccp.registerCarrierNumberEditText(binding.phoneNumberEditText)
+
+        // Initialize Loading Dialog
+        progressDialog = ProgressDialog(this.requireContext())
+
+        checkDemoStatusIsSold()
+
+        return binding.root
     }
 
     private fun setObserve() {
         mReferenceViewModel.demoResults.observe(viewLifecycleOwner, Observer { data ->
-            demo_result_btn.text = data[demo!!.resultId!!].nameRu
+            binding.demoResultBtn.text = data[demo!!.resultId!!].nameRu
             demoResults.addAll(data)
         })
         mReferenceViewModel.trackStepOrdersBusinessProcesses.observe(
@@ -90,26 +100,75 @@ class DemoBusinessProcessesFragment : Fragment() {
             })
         mDemoViewModel.updatedDemo.observe(viewLifecycleOwner, Observer { data ->
             demo = data
-            binding!!.demo = data
-            binding!!.executePendingBindings() // Update view
-            (activity as DemoActivity).onBackPressed()
+            binding.demo = data
+            binding.executePendingBindings() // Update view
+            checkDemoStatusIsSold()
+            binding.demoResultBtn.text = demoResults[data!!.resultId!!].nameRu
+            progressDialog.hideLoading()
         })
         mDemoViewModel.trackEmpProcessDemo.observe(viewLifecycleOwner, Observer { data ->
             step = data.size
             initStepView(trackStepOrdersBusinessProcesses.map { it.trackStepNameRu } as ArrayList)
             showButtonsByStep()
         })
+        mDemoViewModel.smsSent.observe(viewLifecycleOwner, Observer { data ->
+            demo!!.ocrDemoStatus = "SENT_SMS"
+            mDemoViewModel.updatedDemo.postValue(demo!!)
+            checkDemoStatusIsSold()
+            saveData(demo!!, this.requireContext())
+            progressDialog.hideLoading()
+        })
+        mDemoViewModel.error.observe(viewLifecycleOwner, Observer { data ->
+            progressDialog.hideLoading()
+        })
+    }
+
+    private fun checkDemoStatusIsSold() {
+        if (demo!!.resultId == soldId) {
+            when (demo!!.ocrDemoStatus) {
+                "CONFIRMED" -> {
+                    binding.demoStatus.visibility = View.VISIBLE
+                    binding.demoStatus.text = getString(R.string.userConfirmed)
+                    binding.receiveCustomerConfirmation.visibility = View.GONE
+                    hideSmsForm()
+                }
+                "SENT_SMS" -> {
+                    binding.demoStatus.visibility = View.VISIBLE
+                    binding.demoStatus.text = getString(R.string.smsSent)
+                    hideSmsForm()
+                    binding.receiveCustomerConfirmation.visibility = View.VISIBLE
+                }
+                else -> {
+                    binding.demoStatus.text = null
+                    binding.phoneNumberEditText.visibility = View.VISIBLE
+                    binding.ccp.visibility = View.VISIBLE
+                    binding.sendSms.visibility = View.VISIBLE
+                    binding.receiveCustomerConfirmation.visibility = View.VISIBLE
+                }
+            }
+
+        } else {
+            hideSmsForm()
+            binding.receiveCustomerConfirmation.visibility = View.GONE
+            binding.demoStatus.visibility = View.GONE
+        }
+    }
+
+    private fun hideSmsForm() {
+        binding.phoneNumberEditText.visibility = View.GONE
+        binding.ccp.visibility = View.GONE
+        binding.sendSms.visibility = View.GONE
     }
 
     private fun stepIncrement(steps: ArrayList<TrackStepOrdersBusinessProcess>) {
         if (steps.size-1 >= step) {
             step += 1
-            step_view.setStepsViewIndicatorComplectingPosition(step)
+            binding.stepView.setStepsViewIndicatorComplectingPosition(step)
         }
     }
 
     private fun initStepView(steps: ArrayList<String>) {
-        step_view.setStepsViewIndicatorComplectingPosition(step)
+        binding.stepView.setStepsViewIndicatorComplectingPosition(step)
             .reverseDraw(false)//default is true
             .setStepViewTexts(steps)
             .setLinePaddingProportion(0.85f)
@@ -166,7 +225,8 @@ class DemoBusinessProcessesFragment : Fragment() {
         builder.setItems(demoResultsByLang.toArray(arrayOfNulls<String>(0))) { _, i ->
             demo!!.resultId = i
 
-            demo_result_btn.text = demoResults[i].nameRu
+            binding.demoResultBtn.text = demoResults[i].nameRu
+            checkDemoStatusIsSold()
         }
 
         builder.setPositiveButton("Отмена") { dialog, _ ->
@@ -178,43 +238,60 @@ class DemoBusinessProcessesFragment : Fragment() {
     }
 
     private fun initBtnListeners() {
-        completed_btn_1.setOnClickListener {
+        binding.completedBtn1.setOnClickListener {
             completeBusinessProcess()
-            completed_btn_1.visibility = View.INVISIBLE
-            completed_btn_2.visibility = View.VISIBLE
+            binding.completedBtn1.visibility = View.INVISIBLE
+            binding.completedBtn2.visibility = View.VISIBLE
         }
-        completed_btn_2.setOnClickListener {
+        binding.completedBtn2.setOnClickListener {
             completeBusinessProcess()
-            completed_btn_2.visibility = View.INVISIBLE
-            completed_btn_3.visibility = View.VISIBLE
+            binding.completedBtn2.visibility = View.INVISIBLE
+            binding.completedBtn3.visibility = View.VISIBLE
         }
-        completed_btn_3.setOnClickListener {
+        binding.completedBtn3.setOnClickListener {
             completeBusinessProcess()
-            completed_btn_3.visibility = View.INVISIBLE
-            completed_btn_4.visibility = View.VISIBLE
+            binding.completedBtn3.visibility = View.INVISIBLE
+            binding.completedBtn4.visibility = View.VISIBLE
         }
-        completed_btn_4.setOnClickListener {
+        binding.completedBtn4.setOnClickListener {
             completeBusinessProcess()
-            completed_btn_4.visibility = View.INVISIBLE
+            binding.completedBtn4.visibility = View.INVISIBLE
         }
 
-        demo_result_btn.setOnClickListener {
+        binding.demoResultBtn.setOnClickListener {
             showDemoResultsAlertDialog()
         }
 
-        demo_business_processes_save_btn.setOnClickListener {
+        binding.demoBusinessProcessesSaveBtn.setOnClickListener {
             demo!!.note = demo_business_processes_cause.text.toString()
             mDemoViewModel.updateDemo(demo!!)
+        }
+
+        binding.sendSms.setOnClickListener {
+            if (ccp.isValidFullNumber) {
+                mDemoViewModel.sendSms(
+                    demo!!.demoId, ccp.selectedCountryCode, ccp.fullNumberWithPlus.replace(
+                        ccp.selectedCountryCodeWithPlus,
+                        ""
+                    )
+                )
+                progressDialog.showLoading()
+            }
+        }
+
+        binding.receiveCustomerConfirmation.setOnClickListener {
+            mDemoViewModel.updateStatus(demo!!.demoId)
+            progressDialog.showLoading()
         }
     }
 
 
     private fun showButtonsByStep() {
         when (step) {
-            0 -> completed_btn_1.visibility = View.VISIBLE
-            1 -> completed_btn_2.visibility = View.VISIBLE
-            2 -> completed_btn_3.visibility = View.VISIBLE
-            3 -> completed_btn_4.visibility = View.VISIBLE
+            0 -> binding.completedBtn1.visibility = View.VISIBLE
+            1 -> binding.completedBtn2.visibility = View.VISIBLE
+            2 -> binding.completedBtn3.visibility = View.VISIBLE
+            3 -> binding.completedBtn4.visibility = View.VISIBLE
         }
     }
 
@@ -235,13 +312,26 @@ class DemoBusinessProcessesFragment : Fragment() {
         super.onPause()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun completeBusinessProcess() {
         val longitude = location.longitude.toString()
         val latitude = location.latitude.toString()
-        val completed = TrackEmpProcess(null, longitude, latitude, step+1, null, demo!!.demoId)
+        val completed = TrackEmpProcess(null, longitude, latitude, step + 1, null, demo!!.demoId)
         mDemoViewModel.updateStepBusinessProcess(completed)
         stepIncrement(trackStepOrdersBusinessProcesses)
-        mReferenceViewModel.createStaffLocation(StaffLocation(dealerId!!, maTbpId = bpId, longitude = longitude, latitude = latitude, maTrackStepId = step+1))
+        mReferenceViewModel.createStaffLocation(
+            StaffLocation(
+                dealerId!!,
+                maTbpId = bpId,
+                longitude = longitude,
+                latitude = latitude,
+                maTrackStepId = step + 1
+            )
+        )
     }
 
     companion object {

@@ -21,6 +21,7 @@ class DemoViewModel(application: Application): AndroidViewModel(application) {
     val updatedDemo = MutableLiveData<Demo>()
     val trackEmpProcessDemo = MutableLiveData<ArrayList<TrackEmpProcess>>()
     val error = MutableLiveData<Any>()
+    val smsSent = MutableLiveData<Boolean>()
 
     fun fetchAll(staffId: Long) = viewModelScope.launch(Dispatchers.IO) {
         try {
@@ -28,6 +29,20 @@ class DemoViewModel(application: Application): AndroidViewModel(application) {
 
             if (response.isSuccessful) {
                 demoList.postValue(response.body()!!.data)
+            } else {
+                error.postValue(response.errorBody())
+            }
+        } catch (e: Exception) {
+            error.postValue(e)
+        }
+    }
+
+    fun fetchDemoById(demoId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val response = apiService.fetchDemoById(demoId)
+
+            if (response.isSuccessful) {
+                updatedDemo.postValue(response.body()!!.data)
             } else {
                 error.postValue(response.errorBody())
             }
@@ -82,5 +97,34 @@ class DemoViewModel(application: Application): AndroidViewModel(application) {
         val idx = demoList.value!!.indexOf(foundData)
         demoList.value!![idx] = demo
         return demoList.value!!
+    }
+
+    fun sendSms(demoId: Long, phoneCode: String, phoneNumber: String) = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val response = apiService.sendSms(demoId, phoneCode, phoneNumber)
+
+            if (response.isSuccessful && response.body()!!.success) {
+                smsSent.postValue(true)
+            } else {
+                error.postValue(response.errorBody())
+            }
+        } catch (e: Exception) {
+            error.postValue(e)
+        }
+    }
+
+    fun updateStatus(demoId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val response = apiService.updateStatus(demoId)
+
+            if (response.isSuccessful) {
+                updatedDemo.postValue(response.body()!!.data)
+                println("updated")
+            } else {
+                error.postValue(response.errorBody())
+            }
+        } catch (e: Exception) {
+            error.postValue(e)
+        }
     }
 }

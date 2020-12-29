@@ -2,6 +2,7 @@ package kz.aura.merp.employee.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,6 +10,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,8 +20,6 @@ import kz.aura.merp.employee.data.SharedViewModel
 import kz.aura.merp.employee.data.model.Demo
 import kz.aura.merp.employee.data.viewmodel.DemoViewModel
 import kz.aura.merp.employee.databinding.ActivityDealerBinding
-import kz.aura.merp.employee.util.GpsPermission
-import kz.aura.merp.employee.util.GpsPermission.requestPermission
 import kz.aura.merp.employee.util.Helpers.exceptionHandler
 import kz.aura.merp.employee.util.Helpers.getStaffId
 import kz.aura.merp.employee.util.LanguageHelper
@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.activity_dealer.*
 import kotlinx.android.synthetic.main.network_disconnected.*
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.util.Helpers.verifyAvailableNetwork
-
+import kz.aura.merp.employee.util.Permissions
 
 class DealerActivity : AppCompatActivity() {
 
@@ -53,13 +53,10 @@ class DealerActivity : AppCompatActivity() {
         setSupportActionBar(toolbar as Toolbar)
         supportActionBar?.title = getString(R.string.dealer)
 
+        Permissions(this, this).requestGpsPermission()
+
         // Get dealer id
         dealerId = getStaffId(this)
-
-        // Check if gps is on
-        if (!GpsPermission.checkPermission(this)) {
-            requestPermission(this)
-        }
 
         // Observe MutableLiveData
         mDemoViewModel.demoList.observe(this, Observer { data ->
@@ -96,7 +93,7 @@ class DealerActivity : AppCompatActivity() {
         super.onResume()
         // Get changed Object from Storage
         val data = getData()
-        if (data != null) {
+        if (data != null && !mDemoViewModel.demoList.value.isNullOrEmpty()) {
             val list = mDemoViewModel.changeData(data)
             adapter.setData(list)
             removeData()

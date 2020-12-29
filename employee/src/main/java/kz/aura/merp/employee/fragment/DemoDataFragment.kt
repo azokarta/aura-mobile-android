@@ -9,13 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PhoneNumberAdapter
 import kz.aura.merp.employee.data.model.Demo
 import kz.aura.merp.employee.data.viewmodel.DemoViewModel
 import kz.aura.merp.employee.databinding.FragmentDemoDataBinding
-import kotlinx.android.synthetic.main.fragment_demo_data.*
-import kotlinx.android.synthetic.main.fragment_demo_data.view.*
-import kz.aura.merp.employee.activity.DemoActivity
 import kz.aura.merp.employee.activity.MapActivity
 
 private const val ARG_PARAM1 = "demo"
@@ -23,7 +22,8 @@ private const val ARG_PARAM1 = "demo"
 class DemoDataFragment : Fragment() {
     private var demo: Demo? = null
     private val demoDataPhoneNumberAdapter: PhoneNumberAdapter by lazy { PhoneNumberAdapter() }
-    private var binding: FragmentDemoDataBinding? = null
+    private var _binding: FragmentDemoDataBinding? = null
+    private val binding get() = _binding!!
     private val mDemoViewModel: DemoViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,28 +38,27 @@ class DemoDataFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Data binding
-        binding = FragmentDemoDataBinding.inflate(inflater, container, false)
-        binding!!.lifecycleOwner = this
-        binding!!.demo = demo
+        _binding = FragmentDemoDataBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.demo = demo
 
         // Setup ReccyclerView
-        setupRecyclerView(binding!!.root)
+        setupRecyclerView()
 
         // Observe MutableLiveData
         mDemoViewModel.updatedDemo.observe(viewLifecycleOwner, Observer { data ->
             demo = data
-            binding!!.demo = data
-            binding!!.executePendingBindings()
+            binding.demo = data
+            binding.executePendingBindings()
             demoDataPhoneNumberAdapter.setData(demo!!.crmPhoneDtoList)
-            (activity as DemoActivity).onBackPressed()
         })
 
         // Initialize Listeners
-        binding!!.root.demo_data_save_btn.setOnClickListener {
-            demo!!.price = demo_data_taxi_expences.text.toString().toDouble()
+        binding.demoDataSaveBtn.setOnClickListener {
+            demo!!.price = binding.demoDataTaxiExpences.text.toString().toDouble()
             mDemoViewModel.updateDemo(demo!!)
         }
-        binding!!.root.map_btn.setOnClickListener {
+        binding.mapBtn.setOnClickListener {
             val intent = Intent(this.context, MapActivity::class.java)
             startActivity(intent)
         }
@@ -67,13 +66,13 @@ class DemoDataFragment : Fragment() {
         // Set phone list
         demoDataPhoneNumberAdapter.setData(demo!!.crmPhoneDtoList)
 
-        return binding!!.root
+        return binding.root
     }
 
-    private fun setupRecyclerView(view: View) {
-        view.demo_data_phone_numbers_recycler_view.layoutManager = LinearLayoutManager(this.requireContext())
-        view.demo_data_phone_numbers_recycler_view.adapter = demoDataPhoneNumberAdapter
-        view.demo_data_phone_numbers_recycler_view.isNestedScrollingEnabled = false
+    private fun setupRecyclerView() {
+        binding.demoDataPhoneNumbersRecyclerView.layoutManager = LinearLayoutManager(this.requireContext())
+        binding.demoDataPhoneNumbersRecyclerView.adapter = demoDataPhoneNumberAdapter
+        binding.demoDataPhoneNumbersRecyclerView.isNestedScrollingEnabled = false
     }
 
     companion object {
@@ -84,5 +83,10 @@ class DemoDataFragment : Fragment() {
                     putSerializable(ARG_PARAM1, demo)
                 }
             }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

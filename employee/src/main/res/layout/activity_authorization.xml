@@ -25,14 +25,14 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             app:ccp_defaultNameCode="KZ"
-            app:layout_constraintBottom_toBottomOf="@+id/phone_number_edit_text"
+            app:layout_constraintBottom_toBottomOf="@+id/phoneNumberEditText"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/phone_number_edit_text">
+            app:layout_constraintTop_toTopOf="@+id/phoneNumberEditText">
 
         </com.hbb20.CountryCodePicker>
 
         <EditText
-            android:id="@+id/phone_number_edit_text"
+            android:id="@+id/phoneNumberEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="150dp"
@@ -52,9 +52,9 @@
             android:layout_marginTop="24dp"
             android:onClick="signIn"
             android:text="@string/signIn"
-            app:layout_constraintEnd_toEndOf="@+id/phone_number_edit_text"
+            app:layout_constraintEnd_toEndOf="@+id/phoneNumberEditText"
             app:layout_constraintStart_toStartOf="@+id/ccp"
-            app:layout_constraintTop_toBottomOf="@+id/phone_number_edit_text" />
+            app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button2"

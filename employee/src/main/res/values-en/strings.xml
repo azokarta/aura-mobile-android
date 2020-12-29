@@ -36,4 +36,9 @@
     <string name="close">Close</string>
     <string name="restart">Restart</string>
     <string name="sendSms">Send sms</string>
+    <string name="smsSent">Sms sent</string>
+    <string name="userConfirmed">User confirmed</string>
+    <string name="receiveCustomerConfirmation">Receive customer confirmation</string>
+    <string name="successfullySaved">Successfully saved</string>
+    <string name="notSaved">Not saved</string>
 </resources>

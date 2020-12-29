@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.network_disconnected.*
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.util.Helpers.exceptionHandler
 import kz.aura.merp.employee.util.Helpers.verifyAvailableNetwork
+import kz.aura.merp.employee.util.Permissions
 
 class FinanceAgentActivity : AppCompatActivity() {
 
@@ -66,6 +67,8 @@ class FinanceAgentActivity : AppCompatActivity() {
             mSharedViewModel.checkData(data)
             finAdapter.setData(data)
         })
+
+        Permissions(this, this).requestGpsPermission()
 
         // Observe errors
         mFinanceViewModel.error.observe(this, Observer { error ->

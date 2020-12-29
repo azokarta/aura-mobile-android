@@ -39,8 +39,9 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="16dp"
           android:layout_marginEnd="16dp"
+          app:startIconDrawable="@drawable/ic_baseline_local_taxi_24"
           android:layout_marginRight="16dp"
-          android:hint="@{@string/taxiExpense+`:`}"
+          android:hint="@string/taxiExpense"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="@+id/textView13"
           app:layout_constraintTop_toBottomOf="@+id/textView13">
@@ -49,6 +50,7 @@
             android:id="@+id/info_taxi_taxi_expences"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textAutoComplete"
             android:maxLength="100"
             android:text="@{Double.toString(client.taxiExpenseAmount)}"
             android:textColor="#000000" />
@@ -68,7 +70,7 @@
           app:layout_constraintTop_toTopOf="@+id/textView12" />
 
       <com.google.android.material.button.MaterialButton
-          android:id="@+id/map_btn"
+          android:id="@+id/mapBtn"
           style="?attr/materialButtonOutlinedStyle"
           android:layout_width="150dp"
           android:layout_height="wrap_content"
@@ -128,7 +130,7 @@
           app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
       <Button
-          android:id="@+id/info_save_btn"
+          android:id="@+id/infoSaveBtn"
           android:layout_width="250dp"
           android:layout_height="55dp"
           android:layout_marginTop="16dp"
@@ -140,7 +142,7 @@
           app:iconGravity="textStart"
           app:iconTint="@color/colorPrimary"
           app:layout_constraintStart_toStartOf="@+id/info_phone_numbers"
-          app:layout_constraintTop_toBottomOf="@+id/map_btn" />
+          app:layout_constraintTop_toBottomOf="@+id/mapBtn" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

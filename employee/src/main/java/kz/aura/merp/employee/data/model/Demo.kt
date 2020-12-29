@@ -15,7 +15,8 @@ data class Demo(
     val contractNumber: Long,
     val dealerId: Long,
     val recoId: Long,
-    val dateTimeFormatted: String
+    val dateTimeFormatted: String,
+    var ocrDemoStatus: String?
 ): Serializable {
 
     override fun equals(other: Any?): Boolean {

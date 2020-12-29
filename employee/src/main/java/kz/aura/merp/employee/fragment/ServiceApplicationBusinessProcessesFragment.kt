@@ -9,21 +9,16 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.data.model.*
 import kz.aura.merp.employee.data.viewmodel.MasterViewModel
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.FragmentServiceApplicationBusinessProcessesBinding
-import kz.aura.merp.employee.util.Helpers
 import kz.aura.merp.employee.util.Helpers.getStaffId
 import im.delight.android.location.SimpleLocation
 import kotlinx.android.synthetic.main.fragment_service_application_business_processes.*
-import kotlinx.android.synthetic.main.fragment_service_application_business_processes.completed_btn_1
-import kotlinx.android.synthetic.main.fragment_service_application_business_processes.completed_btn_2
-import kotlinx.android.synthetic.main.fragment_service_application_business_processes.completed_btn_3
-import kotlinx.android.synthetic.main.fragment_service_application_business_processes.completed_btn_4
-import kotlinx.android.synthetic.main.fragment_service_application_business_processes.step_view
-import kz.aura.merp.employee.activity.ServiceApplicationActivity
+import kotlinx.android.synthetic.main.fragment_service_application_business_processes.stepView
 
 private const val ARG_PARAM1 = "serviceApplication"
 private const val bpId = 3
@@ -35,7 +30,8 @@ class ServiceApplicationBusinessFragment : Fragment() {
     private val results = arrayListOf<ServiceApplicationStatus>()
     private var trackStepOrdersBusinessProcesses = arrayListOf<TrackStepOrdersBusinessProcess>()
     private lateinit var location: SimpleLocation
-    private var binding: FragmentServiceApplicationBusinessProcessesBinding? = null
+    private var _binding: FragmentServiceApplicationBusinessProcessesBinding? = null
+    private val binding get() = _binding!!
     private var masterId: Long? = null
     private val mMasterViewModel: MasterViewModel by activityViewModels()
     private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
@@ -52,9 +48,9 @@ class ServiceApplicationBusinessFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Data binding
-        binding = FragmentServiceApplicationBusinessProcessesBinding.inflate(inflater, container, false)
-        binding!!.lifecycleOwner = this
-        binding!!.serviceApplication = serviceApplication
+        _binding = FragmentServiceApplicationBusinessProcessesBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.serviceApplication = serviceApplication
 
         // Observe MutableLiveData
         setObserve()
@@ -74,12 +70,12 @@ class ServiceApplicationBusinessFragment : Fragment() {
         // Set master id
         masterId = getStaffId(this.requireContext())
 
-        return binding!!.root
+        return binding.root
     }
 
     private fun setObserve() {
         mReferenceViewModel.serviceApplicationStatus.observe(viewLifecycleOwner, Observer { data ->
-            service_result_btn.text = data[serviceApplication!!.appStatus].nameRu
+            binding.resultBtn.text = data[serviceApplication!!.appStatus].nameRu
             results.addAll(data)
         })
         mReferenceViewModel.trackStepOrdersBusinessProcesses.observe(viewLifecycleOwner, Observer { data ->
@@ -89,15 +85,20 @@ class ServiceApplicationBusinessFragment : Fragment() {
         })
         mMasterViewModel.updatedServiceApplication.observe(viewLifecycleOwner, Observer { data ->
             serviceApplication = data
-            binding!!.serviceApplication = data
-            binding!!.executePendingBindings() // Update view
-            (activity as ServiceApplicationActivity).onBackPressed()
+            binding.serviceApplication = data
+            binding.executePendingBindings() // Update view
+            Snackbar.make(binding.businessProcessesSaveBtn, getString(R.string.successfullySaved), Snackbar.LENGTH_LONG).show()
         })
         mMasterViewModel.trackEmpProcessServiceApplication.observe(viewLifecycleOwner, Observer { data ->
             step = data.size
             initStepView(trackStepOrdersBusinessProcesses.map { it.trackStepNameRu } as ArrayList)
             showButtonsByStep()
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun showResultsAlertDialog() {
@@ -108,7 +109,7 @@ class ServiceApplicationBusinessFragment : Fragment() {
 
         builder.setItems(demoResultsByLang.toArray(arrayOfNulls<String>(0))) { _, i ->
             serviceApplication!!.appStatus = i
-            service_result_btn.text = results[i].nameRu
+            binding.resultBtn.text = results[i].nameRu
         }
 
         builder.setPositiveButton("Отмена") { dialog, _ ->
@@ -121,10 +122,10 @@ class ServiceApplicationBusinessFragment : Fragment() {
 
     private fun showButtonsByStep() {
         when (step) {
-            0 -> completed_btn_1.visibility = View.VISIBLE
-            1 -> completed_btn_2.visibility = View.VISIBLE
-            2 -> completed_btn_3.visibility = View.VISIBLE
-            3 -> completed_btn_4.visibility = View.VISIBLE
+            0 -> binding.completedBtn1.visibility = View.VISIBLE
+            1 -> binding.completedBtn2.visibility = View.VISIBLE
+            2 -> binding.completedBtn3.visibility = View.VISIBLE
+            3 -> binding.completedBtn4.visibility = View.VISIBLE
         }
     }
 
@@ -155,38 +156,38 @@ class ServiceApplicationBusinessFragment : Fragment() {
     }
 
     private fun initBtnListeners() {
-        completed_btn_1.setOnClickListener {
+        binding.completedBtn1.setOnClickListener {
             completeBusinessProcess()
-            completed_btn_1.visibility = View.INVISIBLE
-            completed_btn_2.visibility = View.VISIBLE
+            binding.completedBtn1.visibility = View.INVISIBLE
+            binding.completedBtn2.visibility = View.VISIBLE
         }
-        completed_btn_2.setOnClickListener {
+        binding.completedBtn2.setOnClickListener {
             completeBusinessProcess()
-            completed_btn_2.visibility = View.INVISIBLE
-            completed_btn_3.visibility = View.VISIBLE
+            binding.completedBtn2.visibility = View.INVISIBLE
+            binding.completedBtn3.visibility = View.VISIBLE
         }
-        completed_btn_3.setOnClickListener {
+        binding.completedBtn3.setOnClickListener {
             completeBusinessProcess()
-            completed_btn_3.visibility = View.INVISIBLE
-            completed_btn_4.visibility = View.VISIBLE
+            binding.completedBtn3.visibility = View.INVISIBLE
+            binding.completedBtn4.visibility = View.VISIBLE
         }
-        completed_btn_4.setOnClickListener {
+        binding.completedBtn4.setOnClickListener {
             completeBusinessProcess()
-            completed_btn_4.visibility = View.INVISIBLE
+            binding.completedBtn4.visibility = View.INVISIBLE
         }
 
-        service_result_btn.setOnClickListener {
+        binding.resultBtn.setOnClickListener {
             showResultsAlertDialog()
         }
 
-        service_business_processes_save_btn.setOnClickListener {
+        binding.businessProcessesSaveBtn.setOnClickListener {
             serviceApplication!!.description = service_business_processes_cause.text.toString()
             mMasterViewModel.updateServiceApplication(serviceApplication!!)
         }
     }
 
     private fun initStepView(steps: ArrayList<String>) {
-        step_view.setStepsViewIndicatorComplectingPosition(step)
+        binding.stepView.setStepsViewIndicatorComplectingPosition(step)
             .reverseDraw(false)//default is true
             .setStepViewTexts(steps)
             .setLinePaddingProportion(0.85f)
@@ -237,7 +238,7 @@ class ServiceApplicationBusinessFragment : Fragment() {
     private fun stepIncrement(steps: ArrayList<TrackStepOrdersBusinessProcess>) {
         if (steps.size-1 >= step) {
             step += 1
-            step_view.setStepsViewIndicatorComplectingPosition(step)
+            binding.stepView.setStepsViewIndicatorComplectingPosition(step)
         }
     }
 

@@ -4,166 +4,220 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="demo"
             type="kz.aura.merp.employee.data.model.Demo" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         tools:context="kz.aura.merp.employee.fragment.DemoBusinessProcessesFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
 
-            <com.baoyachi.stepview.VerticalStepView
-                android:id="@+id/step_view"
+                <com.baoyachi.stepview.VerticalStepView
+                    android:id="@+id/stepView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="118dp"
+                    android:layout_height="205dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@+id/stepView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/stepView"
+                    app:layout_constraintVertical_bias="0.0">
+
+                    <Button
+                        android:id="@+id/completedBtn1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:text="Завершен"
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:id="@+id/completedBtn2"
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:layout_weight="1"
+                        android:text="Завершен"
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+
+                    <Button
+                        android:id="@+id/completedBtn3"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="Завершен"
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+
+                    <Button
+                        android:id="@+id/completedBtn4"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="Завершен"
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/demo_business_processes_cause_text_field"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/cause"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
 
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="118dp"
-                android:layout_height="205dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="@+id/step_view"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/step_view"
-                app:layout_constraintVertical_bias="0.0">
-
-                <Button
-                    android:id="@+id/completed_btn_1"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/demo_business_processes_cause"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:text="Завершен"
-                    android:textAllCaps="false"
-                    android:visibility="invisible" />
+                    android:layout_height="wrap_content"
+                    android:maxLength="100"
+                    android:text="@{demo.note}"
+                    android:textColor="@color/colorBlack" />
 
-                <Button
-                    android:id="@+id/completed_btn_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="4dp"
-                    android:layout_weight="1"
-                    android:text="Завершен"
-                    android:textAllCaps="false"
-                    android:visibility="invisible" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/demoResultBtn"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/demoResult"
+                app:layout_constraintEnd_toEndOf="@+id/demo_business_processes_cause_text_field"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/demo_business_processes_cause_text_field"
+                app:layout_constraintTop_toBottomOf="@+id/demo_result_label" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/demoBusinessProcessesSaveBtn"
+                android:layout_width="250dp"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/save"
+                android:textColor="@color/colorPrimary"
+                app:backgroundTint="@color/colorLightGray"
+                app:cornerRadius="5dp"
+                app:icon="@drawable/ic_baseline_save_24"
+                app:iconGravity="textStart"
+                app:iconTint="@color/colorPrimary"
+                app:layout_constraintStart_toStartOf="@+id/demoResultBtn"
+                app:layout_constraintTop_toBottomOf="@+id/sendSms" />
+
+            <TextView
+                android:id="@+id/demo_result_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/demoResult"
+                android:textColor="@color/colorBlack"
+                app:layout_constraintStart_toStartOf="@+id/demo_business_processes_cause_text_field"
+                app:layout_constraintTop_toBottomOf="@+id/demo_business_processes_cause_text_field" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/sendSms"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/sendSms"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/demoResultBtn"
+                app:layout_constraintStart_toStartOf="@+id/demoResultBtn"
+                app:layout_constraintTop_toBottomOf="@+id/ccp" />
+
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/ccp"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:ccp_defaultNameCode="KZ"
+                app:layout_constraintBottom_toBottomOf="@+id/phoneNumberEditText"
+                app:layout_constraintStart_toStartOf="@+id/demoResultBtn"
+                app:layout_constraintTop_toTopOf="@+id/phoneNumberEditText">
+
+            </com.hbb20.CountryCodePicker>
 
 
-                <Button
-                    android:id="@+id/completed_btn_3"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="Завершен"
-                    android:textAllCaps="false"
-                    android:visibility="invisible" />
+            <TextView
+                android:id="@+id/demoStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                android:text=""
+                app:layout_constraintStart_toStartOf="@+id/demoBusinessProcessesSaveBtn"
+                app:layout_constraintTop_toBottomOf="@+id/demoBusinessProcessesSaveBtn" />
 
+            <AutoCompleteTextView
+                android:id="@+id/phoneNumberEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="@string/phoneNumber"
+                android:visibility="gone"
+                android:inputType="textAutoComplete"
+                app:layout_constraintEnd_toEndOf="@+id/demoResultBtn"
+                app:layout_constraintStart_toEndOf="@+id/ccp"
+                app:layout_constraintTop_toBottomOf="@+id/demoResultBtn" />
 
-                <Button
-                    android:id="@+id/completed_btn_4"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="Завершен"
-                    android:textAllCaps="false"
-                    android:visibility="invisible" />
-
-
-            </LinearLayout>
-
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/receiveCustomerConfirmation"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="16dp"
+                android:text="@string/receiveCustomerConfirmation"
+                app:layout_constraintEnd_toEndOf="@+id/demoResultBtn"
+                app:layout_constraintStart_toStartOf="@+id/demoStatus"
+                app:layout_constraintTop_toBottomOf="@+id/demoStatus" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/demo_business_processes_cause_text_field"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:hint="@string/cause"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/demo_business_processes_cause"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:maxLength="100"
-                android:text="@{demo.note}"
-                android:textColor="@color/colorBlack" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/demo_result_btn"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/demoResult"
-            app:layout_constraintEnd_toEndOf="@+id/demo_business_processes_cause_text_field"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/demo_business_processes_cause_text_field"
-            app:layout_constraintTop_toBottomOf="@+id/demo_result_label" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/demo_business_processes_save_btn"
-            android:layout_width="250dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/save"
-            android:textColor="@color/colorPrimary"
-            app:backgroundTint="@color/colorLightGray"
-            app:cornerRadius="5dp"
-            app:icon="@drawable/ic_baseline_save_24"
-            app:iconGravity="textStart"
-            app:iconTint="@color/colorPrimary"
-            app:layout_constraintStart_toStartOf="@+id/demo_result_btn"
-            app:layout_constraintTop_toBottomOf="@+id/send_sms" />
-
-        <TextView
-            android:id="@+id/demo_result_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/demoResult"
-            android:textColor="@color/colorBlack"
-            app:layout_constraintStart_toStartOf="@+id/demo_business_processes_cause_text_field"
-            app:layout_constraintTop_toBottomOf="@+id/demo_business_processes_cause_text_field" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/send_sms"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginTop="16dp"
-            android:text="@string/sendSms"
-            app:layout_constraintEnd_toEndOf="@+id/demo_result_btn"
-            app:layout_constraintStart_toStartOf="@+id/demo_result_btn"
-            app:layout_constraintTop_toBottomOf="@+id/demo_result_btn" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

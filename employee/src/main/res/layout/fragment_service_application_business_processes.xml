@@ -25,7 +25,7 @@
 
 
             <com.baoyachi.stepview.VerticalStepView
-                android:id="@+id/step_view"
+                android:id="@+id/stepView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@+id/linearLayout"
@@ -40,13 +40,13 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="@+id/step_view"
+                app:layout_constraintBottom_toBottomOf="@+id/stepView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/step_view"
+                app:layout_constraintTop_toTopOf="@+id/stepView"
                 app:layout_constraintVertical_bias="0.0">
 
                 <Button
-                    android:id="@+id/completed_btn_1"
+                    android:id="@+id/completedBtn1"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_weight="1"
@@ -55,7 +55,7 @@
                     android:visibility="invisible" />
 
                 <Button
-                    android:id="@+id/completed_btn_2"
+                    android:id="@+id/completedBtn2"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:layout_weight="1"
@@ -65,7 +65,7 @@
 
 
                 <Button
-                    android:id="@+id/completed_btn_3"
+                    android:id="@+id/completedBtn3"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -75,7 +75,7 @@
 
 
                 <Button
-                    android:id="@+id/completed_btn_4"
+                    android:id="@+id/completedBtn4"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -108,7 +108,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/service_business_processes_cause"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:maxLength="100"
                 android:text="@{serviceApplication.description}"
                 android:textColor="@color/colorBlack" />
@@ -116,7 +116,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/service_business_processes_save_btn"
+            android:id="@+id/businessProcessesSaveBtn"
             android:layout_width="250dp"
             android:layout_height="55dp"
             android:layout_marginTop="16dp"
@@ -127,11 +127,11 @@
             app:icon="@drawable/ic_baseline_save_24"
             app:iconGravity="textStart"
             app:iconTint="@color/colorPrimary"
-            app:layout_constraintStart_toStartOf="@+id/service_result_btn"
-            app:layout_constraintTop_toBottomOf="@+id/service_result_btn" />
+            app:layout_constraintStart_toStartOf="@+id/resultBtn"
+            app:layout_constraintTop_toBottomOf="@+id/resultBtn" />
 
         <Button
-            android:id="@+id/service_result_btn"
+            android:id="@+id/resultBtn"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

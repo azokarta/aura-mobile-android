@@ -40,6 +40,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                app:startIconDrawable="@drawable/ic_baseline_local_taxi_24"
                 android:layout_marginTop="16dp"
                 android:hint="@string/taxiExpense"
                 app:layout_constraintEnd_toEndOf="@+id/demo_data_phone_numbers_recycler_view"
@@ -51,6 +52,7 @@
                     android:id="@+id/demo_data_taxi_expences"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="textAutoComplete"
                     android:maxLength="100"
                     android:text="@{Double.toString(demo.price)}"
                     android:textColor="#000000" />
@@ -70,7 +72,7 @@
                 app:iconGravity="textStart"
                 app:iconTint="@color/colorPrimary"
                 app:layout_constraintStart_toStartOf="@+id/demo_data_taxi_expences_label"
-                app:layout_constraintTop_toBottomOf="@+id/map_btn" />
+                app:layout_constraintTop_toBottomOf="@+id/mapBtn" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -143,7 +145,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/map_btn"
+                android:id="@+id/mapBtn"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"

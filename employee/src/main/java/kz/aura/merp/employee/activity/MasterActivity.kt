@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.activity_master.recyclerView
 import kotlinx.android.synthetic.main.activity_master.toolbar
 import kotlinx.android.synthetic.main.network_disconnected.*
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
+import kz.aura.merp.employee.util.Permissions
 
 class MasterActivity : AppCompatActivity() {
 
@@ -51,6 +52,8 @@ class MasterActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar as Toolbar)
         supportActionBar?.title = getString(R.string.master)
+
+        Permissions(this, this).requestGpsPermission()
 
         // Get master id
         masterId = Helpers.getStaffId(this)

@@ -20,4 +20,17 @@ interface DemoApi {
 
     @POST("/ma-track-emp-process/demo")
     suspend fun updateStepBusinessProcess(@Body trackEmpProcess: TrackEmpProcess): Response<ResponseHelper<Any>>
+
+    @POST("/ocr_demo/send_sms")
+    suspend fun sendSms(
+        @Query("demoId") demoId: Long,
+        @Query("phoneCode") phoneCode: String,
+        @Query("phoneNumber") phoneNumber: String
+    ): Response<ResponseHelper<String>>
+
+    @GET("/crm-doc-demo/{demoId}")
+    suspend fun fetchDemoById(@Path("demoId") demoId: Long): Response<ResponseHelper<Demo>>
+
+    @POST("/ocr_demo/update_status")
+    suspend fun updateStatus(@Query("demoId") demoId: Long): Response<ResponseHelper<Demo>>
 }
