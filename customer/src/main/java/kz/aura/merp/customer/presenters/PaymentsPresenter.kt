@@ -1,11 +1,11 @@
 package kz.aura.merp.customer.presenters
 
 import android.content.Context
-import kz.aura.merp.customer.models.PaymentSchedule
-import kz.aura.merp.customer.models.ResponseHelper
-import kz.aura.merp.customer.services.PaymentsApi
-import kz.aura.merp.customer.services.ServiceBuilder
-import kz.aura.merp.customer.utils.Helpers.exceptionHandler
+import kz.aura.merp.customer.data.model.PaymentSchedule
+import kz.aura.merp.customer.data.model.ResponseHelper
+import kz.aura.merp.customer.service.PaymentsApi
+import kz.aura.merp.customer.service.ServiceBuilder
+import kz.aura.merp.customer.util.Helpers.exceptionHandler
 import kz.aura.merp.customer.views.IPaymentsView
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,7 +17,7 @@ interface IPaymentsPresenter {
 }
 
 class PaymentsPresenter(val iPaymentsView: IPaymentsView, val context: Context): IPaymentsPresenter {
-    private val apiService = ServiceBuilder.buildService(PaymentsApi::class.java)
+    private val apiService = ServiceBuilder.buildService(PaymentsApi::class.java, context)
 
     override fun getAll(customerId: Long) {
         val callPayments = apiService.getAllPayments(customerId)

@@ -1,10 +1,10 @@
 package kz.aura.merp.customer.presenters
 
 import android.content.Context
-import kz.aura.merp.customer.models.ResponseHelper
-import kz.aura.merp.customer.services.HomeApi
-import kz.aura.merp.customer.services.ServiceBuilder
-import kz.aura.merp.customer.utils.Helpers
+import kz.aura.merp.customer.data.model.ResponseHelper
+import kz.aura.merp.customer.service.HomeApi
+import kz.aura.merp.customer.service.ServiceBuilder
+import kz.aura.merp.customer.util.Helpers
 import kz.aura.merp.customer.views.IHomeView
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,7 +15,7 @@ interface IHomePresenter {
 }
 
 class HomePresenter (val iHomeView: IHomeView, val context: Context) : IHomePresenter {
-    val apiService = ServiceBuilder.buildService(HomeApi::class.java)
+    val apiService = ServiceBuilder.buildService(HomeApi::class.java, context)
 
     override fun getUnreadMessagesCount(customerId: Long) {
         val callUnreadMessagesCount = apiService.getUnreadMessagesCount(customerId)

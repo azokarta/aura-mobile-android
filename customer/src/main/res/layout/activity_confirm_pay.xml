@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
-    tools:context="kz.aura.merp.customer.activities.ConfirmPayActivity">
+    tools:context="kz.aura.merp.customer.activity.ConfirmPayActivity">
 
     <include
         android:id="@+id/confirm_pay_toolbar"

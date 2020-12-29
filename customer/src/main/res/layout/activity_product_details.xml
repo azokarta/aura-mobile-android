@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="kz.aura.merp.customer.activities.ProductDetailsActivity">
+    tools:context="kz.aura.merp.customer.activity.ProductDetailsActivity">
 
     <ProgressBar
         android:id="@+id/product_details_progress_bar"

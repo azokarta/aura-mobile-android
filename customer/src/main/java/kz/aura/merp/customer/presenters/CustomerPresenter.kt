@@ -1,11 +1,11 @@
 package kz.aura.merp.customer.presenters
 
 import android.content.Context
-import kz.aura.merp.customer.models.Customer
-import kz.aura.merp.customer.models.ResponseHelper
-import kz.aura.merp.customer.services.CustomerApi
-import kz.aura.merp.customer.services.ServiceBuilder
-import kz.aura.merp.customer.utils.Helpers.exceptionHandler
+import kz.aura.merp.customer.data.model.Customer
+import kz.aura.merp.customer.data.model.ResponseHelper
+import kz.aura.merp.customer.service.CustomerApi
+import kz.aura.merp.customer.service.ServiceBuilder
+import kz.aura.merp.customer.util.Helpers.exceptionHandler
 import kz.aura.merp.customer.views.ICustomerView
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,7 +18,7 @@ interface ICustomerPresenter {
 class CustomerPresenter(val iCustomerView: ICustomerView, val context: Context): ICustomerPresenter {
 
     override fun getData(customerId: Long) {
-        val apiService = ServiceBuilder.buildService(CustomerApi::class.java)
+        val apiService = ServiceBuilder.buildService(CustomerApi::class.java, context)
         val callCustomer = apiService.getCustomerData(customerId)
 
         callCustomer.enqueue(object : Callback<ResponseHelper<Customer>> {
@@ -29,6 +29,7 @@ class CustomerPresenter(val iCustomerView: ICustomerView, val context: Context):
 
             override fun onResponse(call: Call<ResponseHelper<Customer>>, response: Response<ResponseHelper<Customer>>) {
                 if (response.isSuccessful && response.body()!!.success) {
+                    println(response.body())
                     iCustomerView.onSuccess(response.body()!!.data)
                 } else {
                     exceptionHandler(response.errorBody()!!, context)

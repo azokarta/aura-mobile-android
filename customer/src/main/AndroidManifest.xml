@@ -5,7 +5,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,7 +19,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
 
-        <service android:name="kz.aura.merp.customer.utils.FirebaseService"
+        <service android:name="kz.aura.merp.customer.util.FirebaseService"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -24,64 +28,72 @@
         </service>
 
         <activity
-            android:name="kz.aura.merp.customer.activities.PaymentScheduleActivity"
-            android:parentActivityName="kz.aura.merp.customer.activities.ProductDetailsActivity"
+            android:name="kz.aura.merp.customer.activity.OcrWebActivity"
+            android:parentActivityName="kz.aura.merp.customer.activity.AuthorizationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kz.aura.merp.customer.activity.AuthorizationActivity" />
+        </activity>
+
+        <activity
+            android:name="kz.aura.merp.customer.activity.PaymentScheduleActivity"
+            android:parentActivityName="kz.aura.merp.customer.activity.ProductDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SlidrActivityTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.customer.activities.ProductDetailsActivity" />
+                android:value="kz.aura.merp.customer.activity.ProductDetailsActivity" />
         </activity>
         <activity
-            android:name="kz.aura.merp.customer.activities.ServiceActivity"
-            android:parentActivityName="kz.aura.merp.customer.activities.MainActivity"
+            android:name="kz.aura.merp.customer.activity.ServiceActivity"
+            android:parentActivityName="kz.aura.merp.customer.activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SlidrActivityTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.customer.activities.MainActivity" />
+                android:value="kz.aura.merp.customer.activity.MainActivity" />
         </activity>
         <activity
-            android:name="kz.aura.merp.customer.activities.AuthorizationActivity"
+            android:name="kz.aura.merp.customer.activity.AuthorizationActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name="kz.aura.merp.customer.activities.ConfirmPayActivity"
-                  android:parentActivityName="kz.aura.merp.customer.activities.MainActivity"
+        <activity android:name="kz.aura.merp.customer.activity.ConfirmPayActivity"
+                  android:parentActivityName="kz.aura.merp.customer.activity.MainActivity"
                   android:screenOrientation="portrait"
                   android:theme="@style/AppTheme.SlidrActivityTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.customer.activities.MainActivity" />
+                android:value="kz.aura.merp.customer.activity.MainActivity" />
         </activity>
 
         <activity
-            android:name="kz.aura.merp.customer.activities.CalendarItemDetailsActivity"
-            android:parentActivityName="kz.aura.merp.customer.activities.CalendarViewActivity"
+            android:name="kz.aura.merp.customer.activity.CalendarItemDetailsActivity"
+            android:parentActivityName="kz.aura.merp.customer.activity.CalendarViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SlidrActivityTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.customer.activities.CalendarViewActivity" />
+                android:value="kz.aura.merp.customer.activity.CalendarViewActivity" />
         </activity>
         <activity
-            android:name="kz.aura.merp.customer.activities.CalendarViewActivity"
-            android:parentActivityName="kz.aura.merp.customer.activities.MainActivity"
+            android:name="kz.aura.merp.customer.activity.CalendarViewActivity"
+            android:parentActivityName="kz.aura.merp.customer.activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SlidrActivityTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.customer.activities.MainActivity" />
+                android:value="kz.aura.merp.customer.activity.MainActivity" />
         </activity>
         <activity
-            android:name="kz.aura.merp.customer.activities.ProductDetailsActivity"
-            android:parentActivityName="kz.aura.merp.customer.activities.MainActivity"
+            android:name="kz.aura.merp.customer.activity.ProductDetailsActivity"
+            android:parentActivityName="kz.aura.merp.customer.activity.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.customer.activities.MainActivity" />
+                android:value="kz.aura.merp.customer.activity.MainActivity" />
         </activity>
         <activity
-            android:name="kz.aura.merp.customer.activities.SplashActivity"
+            android:name="kz.aura.merp.customer.activity.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -90,7 +102,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="kz.aura.merp.customer.activities.MainActivity"
+            android:name="kz.aura.merp.customer.activity.MainActivity"
             android:configChanges="locale" />
     </application>
 

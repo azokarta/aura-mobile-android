@@ -1,7 +1,7 @@
 package kz.aura.merp.customer.adapterItems
 
 import com.example.aura.R
-import kz.aura.merp.customer.models.Slider
+import kz.aura.merp.customer.data.model.Slider
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item

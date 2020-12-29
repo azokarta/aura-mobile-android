@@ -1,11 +1,11 @@
 package kz.aura.merp.customer.presenters
 
 import android.content.Context
-import kz.aura.merp.customer.models.CalendarView
-import kz.aura.merp.customer.models.ResponseHelper
-import kz.aura.merp.customer.services.CalendarViewApi
-import kz.aura.merp.customer.services.ServiceBuilder
-import kz.aura.merp.customer.utils.Helpers
+import kz.aura.merp.customer.data.model.CalendarView
+import kz.aura.merp.customer.data.model.ResponseHelper
+import kz.aura.merp.customer.service.CalendarViewApi
+import kz.aura.merp.customer.service.ServiceBuilder
+import kz.aura.merp.customer.util.Helpers
 import kz.aura.merp.customer.views.ICalendarViView
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,7 +18,7 @@ interface ICalendarViewPresenter {
 class CalendarViewPresenter(val iCalendarViView: ICalendarViView, val context: Context): ICalendarViewPresenter {
 
     override fun getArrears(customerId: Long) {
-        val apiService = ServiceBuilder.buildService(CalendarViewApi::class.java)
+        val apiService = ServiceBuilder.buildService(CalendarViewApi::class.java, context)
         val callArrears = apiService.getArrears(customerId)
 
         callArrears.enqueue(object : Callback<ResponseHelper<ArrayList<CalendarView>>> {

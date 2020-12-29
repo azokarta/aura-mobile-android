@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="kz.aura.merp.customer.fragments.RecommendationFragment">
+    tools:context="kz.aura.merp.customer.fragment.RecommendationFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragment_recommendation_fio_input"

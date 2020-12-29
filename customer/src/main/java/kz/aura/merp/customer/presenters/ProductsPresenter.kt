@@ -1,11 +1,11 @@
 package kz.aura.merp.customer.presenters
 
 import android.content.Context
-import kz.aura.merp.customer.models.Product
-import kz.aura.merp.customer.models.ResponseHelper
-import kz.aura.merp.customer.services.ProductsApi
-import kz.aura.merp.customer.services.ServiceBuilder
-import kz.aura.merp.customer.utils.Helpers.exceptionHandler
+import kz.aura.merp.customer.data.model.Product
+import kz.aura.merp.customer.data.model.ResponseHelper
+import kz.aura.merp.customer.service.ProductsApi
+import kz.aura.merp.customer.service.ServiceBuilder
+import kz.aura.merp.customer.util.Helpers.exceptionHandler
 import kz.aura.merp.customer.views.IProductsView
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,7 +17,7 @@ interface IProductsPresenter {
 }
 
 class ProductsPresenter(val iProductsView: IProductsView, val context: Context): IProductsPresenter {
-    private val apiService = ServiceBuilder.buildService(ProductsApi::class.java)
+    private val apiService = ServiceBuilder.buildService(ProductsApi::class.java, context)
 
     override fun getAll(customerId: Long) {
         val callAllContracts = apiService.getAllContracts(customerId)

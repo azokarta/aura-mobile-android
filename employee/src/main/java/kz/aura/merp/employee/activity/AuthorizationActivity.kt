@@ -64,6 +64,8 @@ class AuthorizationActivity : AppCompatActivity() {
 
     }
 
+
+
     private fun goToActivity(activity: Activity) {
         val intent = Intent(this, activity::class.java)
         startActivity(intent)

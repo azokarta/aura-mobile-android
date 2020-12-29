@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBg"
-    tools:context="kz.aura.merp.customer.fragments.ServicesFragment" >
+    tools:context="kz.aura.merp.customer.fragment.ServicesFragment" >
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/services_recycler_view"

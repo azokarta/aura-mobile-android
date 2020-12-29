@@ -1,6 +1,6 @@
 package kz.aura.merp.customer.views
 
-import kz.aura.merp.customer.models.PaymentSchedule
+import kz.aura.merp.customer.data.model.PaymentSchedule
 
 interface IPaymentsView : BaseView {
     fun onSuccessPayments(paymentSchedules: ArrayList<PaymentSchedule>) {}

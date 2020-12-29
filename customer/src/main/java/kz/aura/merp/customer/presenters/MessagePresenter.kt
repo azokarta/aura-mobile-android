@@ -1,11 +1,11 @@
 package kz.aura.merp.customer.presenters
 
 import android.content.Context
-import kz.aura.merp.customer.models.Message
-import kz.aura.merp.customer.models.ResponseHelper
-import kz.aura.merp.customer.services.MessageApi
-import kz.aura.merp.customer.services.ServiceBuilder
-import kz.aura.merp.customer.utils.Helpers.exceptionHandler
+import kz.aura.merp.customer.data.model.Message
+import kz.aura.merp.customer.data.model.ResponseHelper
+import kz.aura.merp.customer.service.MessageApi
+import kz.aura.merp.customer.service.ServiceBuilder
+import kz.aura.merp.customer.util.Helpers.exceptionHandler
 import kz.aura.merp.customer.views.IMessageView
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,7 +18,7 @@ interface IMessagePresenter {
 class MessagePresenter(val iMessageView: IMessageView, val context: Context): IMessagePresenter {
 
     override fun getAll(customerId: Long) {
-        val apiService = ServiceBuilder.buildService(MessageApi::class.java)
+        val apiService = ServiceBuilder.buildService(MessageApi::class.java, context)
         val callMessages = apiService.getAllMessages(customerId)
 
         callMessages.enqueue(object : Callback<ResponseHelper<ArrayList<Message>>> {

@@ -7,7 +7,7 @@
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     android:background="@color/colorPrimary"
-    tools:context="kz.aura.merp.customer.activities.CalendarViewActivity">
+    tools:context="kz.aura.merp.customer.activity.CalendarViewActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

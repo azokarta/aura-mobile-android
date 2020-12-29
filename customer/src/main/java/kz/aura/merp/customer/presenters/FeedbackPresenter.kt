@@ -1,11 +1,11 @@
 package kz.aura.merp.customer.presenters
 
 import android.content.Context
-import kz.aura.merp.customer.models.Feedback
-import kz.aura.merp.customer.models.ResponseHelper
-import kz.aura.merp.customer.services.FeedbackApi
-import kz.aura.merp.customer.services.ServiceBuilder
-import kz.aura.merp.customer.utils.Helpers.exceptionHandler
+import kz.aura.merp.customer.data.model.Feedback
+import kz.aura.merp.customer.data.model.ResponseHelper
+import kz.aura.merp.customer.service.FeedbackApi
+import kz.aura.merp.customer.service.ServiceBuilder
+import kz.aura.merp.customer.util.Helpers.exceptionHandler
 import kz.aura.merp.customer.views.IFeedbackView
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,7 +19,7 @@ interface IFeedbackPresenter {
 class FeedbackPresenter(val iFeedbackView: IFeedbackView, val context: Context): IFeedbackPresenter {
 
     override fun getFeedback(customerId: Long) {
-        val apiService = ServiceBuilder.buildService(FeedbackApi::class.java)
+        val apiService = ServiceBuilder.buildService(FeedbackApi::class.java, context)
         val callFeedback = apiService.getFeedback(customerId)
 
         callFeedback.enqueue(object : Callback<ResponseHelper<ArrayList<Feedback>>> {
