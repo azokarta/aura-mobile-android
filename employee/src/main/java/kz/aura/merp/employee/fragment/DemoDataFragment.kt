@@ -16,6 +16,7 @@ import kz.aura.merp.employee.data.model.Demo
 import kz.aura.merp.employee.data.viewmodel.DemoViewModel
 import kz.aura.merp.employee.databinding.FragmentDemoDataBinding
 import kz.aura.merp.employee.activity.MapActivity
+import kz.aura.merp.employee.adapter.StepsAdapter
 
 private const val ARG_PARAM1 = "demo"
 

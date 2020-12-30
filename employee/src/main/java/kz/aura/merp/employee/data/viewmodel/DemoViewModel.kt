@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kz.aura.merp.employee.data.model.Demo
-import kz.aura.merp.employee.data.model.DemoModify
 import kz.aura.merp.employee.data.model.TrackEmpProcess
 import kz.aura.merp.employee.service.DemoApi
 import kz.aura.merp.employee.service.ServiceBuilder

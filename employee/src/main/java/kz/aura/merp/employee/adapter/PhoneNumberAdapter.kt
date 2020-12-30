@@ -8,7 +8,7 @@ import kz.aura.merp.employee.data.model.PhoneNumber
 import kz.aura.merp.employee.databinding.PhoneNumberRowBinding
 import kz.aura.merp.employee.diffUtil.PhoneNumberDiffUtil
 
-class PhoneNumberAdapter : RecyclerView.Adapter<DemoDataPhoneNumberViewHolder>() {
+class PhoneNumberAdapter : RecyclerView.Adapter<PhoneNumberAdapter.DemoDataPhoneNumberViewHolder>() {
 
     var dataList = emptyList<PhoneNumber>()
 
@@ -33,11 +33,11 @@ class PhoneNumberAdapter : RecyclerView.Adapter<DemoDataPhoneNumberViewHolder>()
         phoneDiffResult.dispatchUpdatesTo(this)
     }
 
-}
-
-class DemoDataPhoneNumberViewHolder(val binding: PhoneNumberRowBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(phoneNumber: PhoneNumber) {
-        binding.phone = phoneNumber
-        binding.executePendingBindings()
+    class DemoDataPhoneNumberViewHolder(val binding: PhoneNumberRowBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(phoneNumber: PhoneNumber) {
+            binding.phone = phoneNumber
+            binding.executePendingBindings()
+        }
     }
+
 }

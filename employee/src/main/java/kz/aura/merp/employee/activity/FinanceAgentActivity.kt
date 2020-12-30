@@ -68,7 +68,7 @@ class FinanceAgentActivity : AppCompatActivity() {
             finAdapter.setData(data)
         })
 
-        Permissions(this, this).requestGpsPermission()
+        Permissions(this, this).enableLocation()
 
         // Observe errors
         mFinanceViewModel.error.observe(this, Observer { error ->

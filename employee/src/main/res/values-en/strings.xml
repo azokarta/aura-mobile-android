@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AuraEmployee</string>
     <string name="language">Language</string>
     <string name="ru">Russian</string>
     <string name="en">English</string>
@@ -41,4 +40,5 @@
     <string name="receiveCustomerConfirmation">Receive customer confirmation</string>
     <string name="successfullySaved">Successfully saved</string>
     <string name="notSaved">Not saved</string>
+    <string name="completed">Completed</string>
 </resources>

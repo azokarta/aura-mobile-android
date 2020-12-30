@@ -18,8 +18,6 @@ class ReferenceViewModel(application: Application) : AndroidViewModel(applicatio
     val demoResults = MutableLiveData<ArrayList<DemoResult>>()
     val trackStepOrdersBusinessProcesses = MutableLiveData<ArrayList<TrackStepOrdersBusinessProcess>>()
     val serviceApplicationStatus = MutableLiveData<ArrayList<ServiceApplicationStatus>>()
-    val contractTypes = MutableLiveData<ArrayList<ContractType>>()
-    val priceList = MutableLiveData<ArrayList<PriceList>>()
     val maCollectResults = MutableLiveData<ArrayList<FinanceResult>>()
     val error = MutableLiveData<Any>()
 
@@ -70,34 +68,6 @@ class ReferenceViewModel(application: Application) : AndroidViewModel(applicatio
 
             if (response.isSuccessful) {
                 serviceApplicationStatus.postValue(response.body()!!.data)
-            } else {
-                error.postValue(response.errorBody())
-            }
-        } catch (e: Exception) {
-            error.postValue(e)
-        }
-    }
-
-    fun fetchContractTypes(staffId: Long) = viewModelScope.launch(Dispatchers.IO) {
-        try {
-            val response = apiService.getContractTypes(staffId)
-
-            if (response.isSuccessful) {
-                contractTypes.postValue(response.body()!!.data)
-            } else {
-                error.postValue(response.errorBody())
-            }
-        } catch (e: Exception) {
-            error.postValue(e)
-        }
-    }
-
-    fun fetchPriceList(bukrs: String, matnr: Int, staffId: Long) = viewModelScope.launch(Dispatchers.IO) {
-        try {
-            val response = apiService.getPriceList(bukrs, matnr, staffId)
-
-            if (response.isSuccessful) {
-                priceList.postValue(response.body()!!.data)
             } else {
                 error.postValue(response.errorBody())
             }

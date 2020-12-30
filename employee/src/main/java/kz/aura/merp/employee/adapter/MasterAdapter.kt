@@ -10,7 +10,7 @@ import kz.aura.merp.employee.data.model.ServiceApplication
 import kz.aura.merp.employee.databinding.ServiceApplicationCardBinding
 import kz.aura.merp.employee.diffUtil.ServiceApplicationDiffUtil
 
-class MasterAdapter : RecyclerView.Adapter<MasterViewHolder>() {
+class MasterAdapter : RecyclerView.Adapter<MasterAdapter.MasterViewHolder>() {
 
     private var dataList = mutableListOf<ServiceApplication>()
 
@@ -36,17 +36,16 @@ class MasterAdapter : RecyclerView.Adapter<MasterViewHolder>() {
 
     override fun getItemCount(): Int = dataList.size
 
-}
+    class MasterViewHolder(private val binding: ServiceApplicationCardBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(serviceApplication: ServiceApplication) {
+            binding.serviceApplication = serviceApplication
+            binding.executePendingBindings()
 
-class MasterViewHolder(private val binding: ServiceApplicationCardBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(serviceApplication: ServiceApplication) {
-        binding.serviceApplication = serviceApplication
-        binding.executePendingBindings()
-
-        binding.root.setOnClickListener {
-            val intent = Intent(binding.root.context, ServiceApplicationActivity::class.java)
-            intent.putExtra("serviceApplication", serviceApplication)
-            binding.root.context.startActivity(intent)
+            binding.root.setOnClickListener {
+                val intent = Intent(binding.root.context, ServiceApplicationActivity::class.java)
+                intent.putExtra("serviceApplication", serviceApplication)
+                binding.root.context.startActivity(intent)
+            }
         }
     }
 }

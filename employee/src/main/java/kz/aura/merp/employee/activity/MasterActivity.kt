@@ -53,7 +53,7 @@ class MasterActivity : AppCompatActivity() {
         setSupportActionBar(toolbar as Toolbar)
         supportActionBar?.title = getString(R.string.master)
 
-        Permissions(this, this).requestGpsPermission()
+        Permissions(this, this).enableLocation()
 
         // Get master id
         masterId = Helpers.getStaffId(this)

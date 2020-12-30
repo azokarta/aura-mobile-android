@@ -10,7 +10,7 @@ import kz.aura.merp.employee.data.model.Demo
 import kz.aura.merp.employee.databinding.DemoCardBinding
 import kz.aura.merp.employee.diffUtil.DemoDiffUtil
 
-class DemoAdapter : RecyclerView.Adapter<DemoViewHolder>() {
+class DemoAdapter : RecyclerView.Adapter<DemoAdapter.DemoViewHolder>() {
 
     private var dataList = mutableListOf<Demo>()
 
@@ -36,17 +36,16 @@ class DemoAdapter : RecyclerView.Adapter<DemoViewHolder>() {
 
     override fun getItemCount(): Int = dataList.size
 
-}
+    class DemoViewHolder(private val binding: DemoCardBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(demo: Demo) {
+            binding.demo = demo
+            binding.executePendingBindings()
 
-class DemoViewHolder(private val binding: DemoCardBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(demo: Demo) {
-        binding.demo = demo
-        binding.executePendingBindings()
-
-        binding.root.setOnClickListener {
-            val intent = Intent(binding.root.context, DemoActivity::class.java)
-            intent.putExtra("demo", demo)
-            binding.root.context.startActivity(intent)
+            binding.root.setOnClickListener {
+                val intent = Intent(binding.root.context, DemoActivity::class.java)
+                intent.putExtra("demo", demo)
+                binding.root.context.startActivity(intent)
+            }
         }
     }
 }

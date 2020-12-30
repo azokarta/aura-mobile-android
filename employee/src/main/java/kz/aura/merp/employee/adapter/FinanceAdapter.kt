@@ -10,7 +10,7 @@ import kz.aura.merp.employee.data.model.Client
 import kz.aura.merp.employee.databinding.FinAgentCardBinding
 import kz.aura.merp.employee.diffUtil.ClientDiffUtil
 
-class FinanceAdapter : RecyclerView.Adapter<FinanceViewHolder>() {
+class FinanceAdapter : RecyclerView.Adapter<FinanceAdapter.FinanceViewHolder>() {
 
     private var dataList = mutableListOf<Client>()
 
@@ -36,17 +36,17 @@ class FinanceAdapter : RecyclerView.Adapter<FinanceViewHolder>() {
 
     override fun getItemCount(): Int = dataList.size
 
-}
+    class FinanceViewHolder(private val binding: FinAgentCardBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(client: Client) {
+            binding.client = client
+            binding.executePendingBindings()
 
-class FinanceViewHolder(private val binding: FinAgentCardBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(client: Client) {
-        binding.client = client
-        binding.executePendingBindings()
-
-        binding.root.setOnClickListener {
-            val intent = Intent(binding.root.context, ClientActivity::class.java)
-            intent.putExtra("client", client)
-            binding.root.context.startActivity(intent)
+            binding.root.setOnClickListener {
+                val intent = Intent(binding.root.context, ClientActivity::class.java)
+                intent.putExtra("client", client)
+                binding.root.context.startActivity(intent)
+            }
         }
     }
+
 }

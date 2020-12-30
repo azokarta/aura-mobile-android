@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 object ServiceBuilder {
 
-    private const val baseUrl = Constants.WERP_TEST
+    private const val baseUrl = Constants.WE_MOB_DEV
 
     fun<T> buildService(service: Class<T>, context: Context): T {
         val okHttpClient = OkHttpClient.Builder()

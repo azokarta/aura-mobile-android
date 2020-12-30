@@ -2,6 +2,7 @@ package kz.aura.merp.employee.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
@@ -14,6 +15,9 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.DemoAdapter
 import kz.aura.merp.employee.data.SharedViewModel
@@ -53,7 +57,7 @@ class DealerActivity : AppCompatActivity() {
         setSupportActionBar(toolbar as Toolbar)
         supportActionBar?.title = getString(R.string.dealer)
 
-        Permissions(this, this).requestGpsPermission()
+        Permissions(this, this).enableLocation()
 
         // Get dealer id
         dealerId = getStaffId(this)

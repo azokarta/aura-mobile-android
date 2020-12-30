@@ -14,70 +14,6 @@
         android:layout_height="match_parent"
         tools:context="kz.aura.merp.employee.fragment.FinanceBusinessProcessFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.baoyachi.stepview.VerticalStepView
-                android:id="@+id/stepView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/linearLayout"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="118dp"
-                android:layout_height="150dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="@+id/stepView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/stepView"
-                app:layout_constraintVertical_bias="0.0">
-
-                <Button
-                    android:id="@+id/completedBtn1"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:text="Завершен"
-                    android:textAllCaps="false"
-                    android:visibility="invisible" />
-
-                <Button
-                    android:id="@+id/completedBtn2"
-                    android:layout_width="match_parent"
-                    android:layout_height="4dp"
-                    android:layout_weight="1"
-                    android:text="Завершен"
-                    android:textAllCaps="false"
-                    android:visibility="invisible" />
-
-
-                <Button
-                    android:id="@+id/completedBtn3"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="Завершен"
-                    android:textAllCaps="false"
-                    android:visibility="invisible" />
-
-
-            </LinearLayout>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/fin_business_processes_cause_text_field"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -85,13 +21,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:hint="@string/cause"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+            app:layout_constraintTop_toBottomOf="@+id/stepsRecyclerView">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/fin_business_processes_cause"
@@ -139,6 +76,19 @@
             android:textColor="@color/colorBlack"
             app:layout_constraintStart_toStartOf="@+id/fin_business_processes_cause_text_field"
             app:layout_constraintTop_toBottomOf="@+id/fin_business_processes_cause_text_field" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/stepsRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

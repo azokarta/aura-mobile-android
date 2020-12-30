@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AuraEmployee</string>
+    <string name="app_name" translatable="false">Аура сотрудники</string>
     <string name="language">Язык</string>
     <string name="ru">Русский</string>
     <string name="en">Англиский</string>
@@ -40,6 +40,7 @@
     <string name="receiveCustomerConfirmation">Получить подтверждению клиента</string>
     <string name="successfullySaved">Успешно сохранен</string>
     <string name="notSaved">Не сохранен</string>
+    <string name="completed">Завершен</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>
@@ -50,4 +51,6 @@
         <item>ru</item>
         <item>en</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
