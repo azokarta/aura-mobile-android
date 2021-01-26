@@ -1,10 +1,10 @@
-package kz.aura.merp.employee.service
+package kz.aura.merp.employee.data.service
 
 import kz.aura.merp.employee.data.model.*
 import retrofit2.Response
 import retrofit2.http.*
 
-interface DemoApi {
+interface DealerApi {
     @GET("/crm-doc-demo/dealer/{dealerId}")
     suspend fun getAll(
         @Path("dealerId") dealerId: Long

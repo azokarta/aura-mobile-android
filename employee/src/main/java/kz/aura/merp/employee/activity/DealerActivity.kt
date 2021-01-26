@@ -2,8 +2,6 @@ package kz.aura.merp.employee.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.content.IntentSender
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,18 +9,14 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.DemoAdapter
 import kz.aura.merp.employee.data.SharedViewModel
 import kz.aura.merp.employee.data.model.Demo
-import kz.aura.merp.employee.data.viewmodel.DemoViewModel
+import kz.aura.merp.employee.data.viewmodel.DealerViewModel
 import kz.aura.merp.employee.databinding.ActivityDealerBinding
 import kz.aura.merp.employee.util.Helpers.exceptionHandler
 import kz.aura.merp.employee.util.Helpers.getStaffId
@@ -36,7 +30,7 @@ import kz.aura.merp.employee.util.Permissions
 
 class DealerActivity : AppCompatActivity() {
 
-    private val mDemoViewModel: DemoViewModel by viewModels()
+    private val mDealerViewModel: DealerViewModel by viewModels()
     private val mSharedViewModel: SharedViewModel by viewModels()
     private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private val adapter: DemoAdapter by lazy { DemoAdapter() }
@@ -63,7 +57,7 @@ class DealerActivity : AppCompatActivity() {
         dealerId = getStaffId(this)
 
         // Observe MutableLiveData
-        mDemoViewModel.demoList.observe(this, Observer { data ->
+        mDealerViewModel.demoList.observe(this, Observer { data ->
             mSharedViewModel.checkData(data)
             adapter.setData(data)
         })
@@ -72,7 +66,7 @@ class DealerActivity : AppCompatActivity() {
         setupRecyclerview()
 
         // Observe errors
-        mDemoViewModel.error.observe(this, Observer { error ->
+        mDealerViewModel.error.observe(this, Observer { error ->
             checkError(error)
         })
         mReferenceViewModel.error.observe(this, Observer { error ->
@@ -82,7 +76,7 @@ class DealerActivity : AppCompatActivity() {
         // If network is disconnected and user clicks restart, get data again
         restart.setOnClickListener {
             if (verifyAvailableNetwork(this)) {
-                mDemoViewModel.fetchAll(dealerId!!) // fetch demo list
+                mDealerViewModel.fetchAll(dealerId!!) // fetch demo list
                 progress_bar.visibility = View.VISIBLE
                 recyclerView.visibility = View.VISIBLE
                 network_disconnected.visibility = View.GONE
@@ -90,16 +84,16 @@ class DealerActivity : AppCompatActivity() {
         }
 
         // Fetch demoList
-        mDemoViewModel.fetchAll(dealerId!!)
+        mDealerViewModel.fetchAll(dealerId!!)
     }
 
     override fun onResume() {
         super.onResume()
         // Get changed Object from Storage
         val data = getData()
-        if (data != null && !mDemoViewModel.demoList.value.isNullOrEmpty()) {
-            val list = mDemoViewModel.changeData(data)
-            adapter.setData(list)
+        if (data != null) {
+            val list = mDealerViewModel.changeData(data)
+            list?.let { adapter.setData(it) }
             removeData()
         }
     }

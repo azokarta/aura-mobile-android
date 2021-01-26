@@ -1,28 +1,24 @@
 package kz.aura.merp.employee.activity
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.google.android.material.snackbar.Snackbar
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.fragment.*
 import kz.aura.merp.employee.data.model.Demo
 import kz.aura.merp.employee.util.TabLayoutFragmentAdapter
 import kotlinx.android.synthetic.main.activity_demo.*
-import kz.aura.merp.employee.data.viewmodel.DemoViewModel
+import kz.aura.merp.employee.data.viewmodel.DealerViewModel
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.util.Helpers
 
 
 class DemoActivity : AppCompatActivity() {
     private lateinit var demo: Demo
-    private val mDemoViewModel: DemoViewModel by viewModels()
+    private val mDealerViewModel: DealerViewModel by viewModels()
     private val mReferenceViewModel: ReferenceViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +44,7 @@ class DemoActivity : AppCompatActivity() {
         demo_tab_layout.setupWithViewPager(demo_view_pager)
 
         // Errors
-        mDemoViewModel.error.observe(this, Observer { error ->
+        mDealerViewModel.error.observe(this, Observer { error ->
             Helpers.exceptionHandler(error, this)
         })
         mReferenceViewModel.error.observe(this, Observer { error ->

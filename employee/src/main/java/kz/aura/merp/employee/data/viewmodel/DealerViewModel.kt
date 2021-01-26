@@ -6,15 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kz.aura.merp.employee.data.model.Demo
 import kz.aura.merp.employee.data.model.TrackEmpProcess
-import kz.aura.merp.employee.service.DemoApi
-import kz.aura.merp.employee.service.ServiceBuilder
+import kz.aura.merp.employee.data.service.DealerApi
+import kz.aura.merp.employee.data.service.ServiceBuilder
 import kz.aura.merp.employee.util.Helpers.saveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class DemoViewModel(application: Application): AndroidViewModel(application) {
-    private val apiService = ServiceBuilder.buildService(DemoApi::class.java, application)
+class DealerViewModel(application: Application): AndroidViewModel(application) {
+    private val apiService = ServiceBuilder.buildService(DealerApi::class.java, application)
 
     val demoList = MutableLiveData<ArrayList<Demo>>()
     val updatedDemo = MutableLiveData<Demo>()
@@ -91,11 +91,14 @@ class DemoViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun changeData(demo: Demo): ArrayList<Demo> {
-        val foundData = demoList.value!!.find { it.demoId == demo.demoId }
-        val idx = demoList.value!!.indexOf(foundData)
-        demoList.value!![idx] = demo
-        return demoList.value!!
+    fun changeData(demo: Demo): ArrayList<Demo>? {
+        if (demoList.value?.isNotEmpty() == true) {
+            val foundData = demoList.value!!.find { it.demoId == demo.demoId }
+            val idx = demoList.value!!.indexOf(foundData)
+            demoList.value!![idx] = demo
+            return demoList.value!!
+        }
+        return null
     }
 
     fun sendSms(demoId: Long, phoneCode: String, phoneNumber: String) = viewModelScope.launch(Dispatchers.IO) {

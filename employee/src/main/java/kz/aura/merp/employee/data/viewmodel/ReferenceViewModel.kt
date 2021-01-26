@@ -5,8 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kz.aura.merp.employee.data.model.*
-import kz.aura.merp.employee.service.ReferenceApi
-import kz.aura.merp.employee.service.ServiceBuilder
+import kz.aura.merp.employee.data.service.ReferenceApi
+import kz.aura.merp.employee.data.service.ServiceBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception

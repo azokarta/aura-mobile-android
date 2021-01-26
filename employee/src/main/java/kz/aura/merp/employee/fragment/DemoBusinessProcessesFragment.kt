@@ -5,18 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import im.delight.android.location.SimpleLocation
 import kotlinx.android.synthetic.main.fragment_demo_business_processes.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.StepsAdapter
 import kz.aura.merp.employee.data.model.*
-import kz.aura.merp.employee.data.viewmodel.DemoViewModel
+import kz.aura.merp.employee.data.viewmodel.DealerViewModel
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.FragmentDemoBusinessProcessesBinding
 import kz.aura.merp.employee.util.Helpers
@@ -39,7 +37,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
     private var _binding: FragmentDemoBusinessProcessesBinding? = null
     private val binding get() = _binding!!
     private var dealerId: Long? = null
-    private val mDemoViewModel: DemoViewModel by activityViewModels()
+    private val mDealerViewModel: DealerViewModel by activityViewModels()
     private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
     private lateinit var progressDialog: ProgressDialog
 
@@ -64,7 +62,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
 
         mReferenceViewModel.fetchDemoResults()
         mReferenceViewModel.fetchTrackStepOrdersBusinessProcesses(bpId)
-        mDemoViewModel.fetchTrackEmpProcessDemo(demo!!.demoId)
+        mDealerViewModel.fetchTrackEmpProcessDemo(demo!!.demoId)
 
         // construct a new instance of SimpleLocation
         location = SimpleLocation(this.requireContext());
@@ -96,7 +94,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
                 trackStepOrdersBusinessProcesses.addAll(data.map { it.trackStepNameRu } as ArrayList)
                 stepsAdapter.setData(trackStepOrdersBusinessProcesses)
             })
-        mDemoViewModel.updatedDemo.observe(viewLifecycleOwner, Observer { data ->
+        mDealerViewModel.updatedDemo.observe(viewLifecycleOwner, Observer { data ->
             demo = data
             binding.demo = data
             binding.executePendingBindings() // Update view
@@ -104,20 +102,20 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
             binding.demoResultBtn.text = demoResults[data!!.resultId!!].nameRu
             progressDialog.hideLoading()
         })
-        mDemoViewModel.trackEmpProcessDemo.observe(viewLifecycleOwner, Observer { data ->
+        mDealerViewModel.trackEmpProcessDemo.observe(viewLifecycleOwner, Observer { data ->
             step = data.size
             initBtnListeners()
             initStepView()
             stepsAdapter.setStep(step)
         })
-        mDemoViewModel.smsSent.observe(viewLifecycleOwner, Observer { data ->
+        mDealerViewModel.smsSent.observe(viewLifecycleOwner, Observer { data ->
             demo!!.ocrDemoStatus = "SENT_SMS"
-            mDemoViewModel.updatedDemo.postValue(demo!!)
+            mDealerViewModel.updatedDemo.postValue(demo!!)
             checkDemoStatusIsSold()
             saveData(demo!!, this.requireContext())
             progressDialog.hideLoading()
         })
-        mDemoViewModel.error.observe(viewLifecycleOwner, Observer { data ->
+        mDealerViewModel.error.observe(viewLifecycleOwner, Observer { data ->
             progressDialog.hideLoading()
         })
     }
@@ -194,12 +192,12 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
 
         binding.demoBusinessProcessesSaveBtn.setOnClickListener {
             demo!!.note = demo_business_processes_cause.text.toString()
-            mDemoViewModel.updateDemo(demo!!)
+            mDealerViewModel.updateDemo(demo!!)
         }
 
         binding.sendSms.setOnClickListener {
             if (ccp.isValidFullNumber) {
-                mDemoViewModel.sendSms(
+                mDealerViewModel.sendSms(
                     demo!!.demoId, ccp.selectedCountryCode, ccp.fullNumberWithPlus.replace(
                         ccp.selectedCountryCodeWithPlus,
                         ""
@@ -210,7 +208,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
         }
 
         binding.receiveCustomerConfirmation.setOnClickListener {
-            mDemoViewModel.updateStatus(demo!!.demoId)
+            mDealerViewModel.updateStatus(demo!!.demoId)
             progressDialog.showLoading()
         }
     }
@@ -242,7 +240,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
         val longitude = location.longitude.toString()
         val latitude = location.latitude.toString()
         val completed = TrackEmpProcess(null, longitude, latitude, step, null, demo!!.demoId)
-        mDemoViewModel.updateStepBusinessProcess(completed)
+        mDealerViewModel.updateStepBusinessProcess(completed)
         mReferenceViewModel.createStaffLocation(
             StaffLocation(
                 dealerId!!,

@@ -1,13 +1,12 @@
 package kz.aura.merp.employee.data.viewmodel
 
 import android.app.Application
-import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
-import kz.aura.merp.employee.service.AuthApi
-import kz.aura.merp.employee.service.ServiceBuilder
+import kz.aura.merp.employee.data.service.AuthApi
+import kz.aura.merp.employee.data.service.ServiceBuilder
 import kz.aura.merp.employee.util.Helpers.saveTokenAndStaff
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

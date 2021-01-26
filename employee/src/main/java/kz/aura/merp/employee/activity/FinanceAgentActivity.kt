@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.adapter.FinanceAdapter
+import kz.aura.merp.employee.adapter.ClientAdapter
 import kz.aura.merp.employee.data.SharedViewModel
 import kz.aura.merp.employee.data.model.Client
 import kz.aura.merp.employee.data.viewmodel.FinanceViewModel
@@ -20,8 +20,6 @@ import kz.aura.merp.employee.databinding.ActivityFinAgentBinding
 import kz.aura.merp.employee.util.Helpers
 import kz.aura.merp.employee.util.LanguageHelper
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_dealer.*
-import kotlinx.android.synthetic.main.activity_fin_agent.*
 import kotlinx.android.synthetic.main.activity_fin_agent.network_disconnected
 import kotlinx.android.synthetic.main.activity_fin_agent.progress_bar
 import kotlinx.android.synthetic.main.activity_fin_agent.recyclerView
@@ -37,7 +35,7 @@ class FinanceAgentActivity : AppCompatActivity() {
     private val mFinanceViewModel: FinanceViewModel by viewModels()
     private val mSharedViewModel: SharedViewModel by viewModels()
     private val mReferenceViewModel: ReferenceViewModel by viewModels()
-    private val finAdapter: FinanceAdapter by lazy { FinanceAdapter() }
+    private val finAdapter: ClientAdapter by lazy { ClientAdapter() }
     private var collectorId: Long? = null
     private lateinit var binding: ActivityFinAgentBinding
 
@@ -98,7 +96,7 @@ class FinanceAgentActivity : AppCompatActivity() {
         val data = getData()
         if (data != null) {
             val list = mFinanceViewModel.changeData(data)
-            finAdapter.setData(list)
+            list?.let { finAdapter.setData(it) }
             removeData()
         }
     }

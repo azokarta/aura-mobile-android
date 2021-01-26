@@ -10,7 +10,7 @@ import kz.aura.merp.employee.data.model.Client
 import kz.aura.merp.employee.databinding.FinAgentCardBinding
 import kz.aura.merp.employee.diffUtil.ClientDiffUtil
 
-class FinanceAdapter : RecyclerView.Adapter<FinanceAdapter.FinanceViewHolder>() {
+class ClientAdapter : RecyclerView.Adapter<ClientAdapter.FinanceViewHolder>() {
 
     private var dataList = mutableListOf<Client>()
 

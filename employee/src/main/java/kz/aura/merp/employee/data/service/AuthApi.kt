@@ -1,4 +1,4 @@
-package kz.aura.merp.employee.service
+package kz.aura.merp.employee.data.service
 
 import kz.aura.merp.employee.data.model.Auth
 import kz.aura.merp.employee.data.model.ResponseHelper

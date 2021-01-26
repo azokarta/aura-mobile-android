@@ -10,7 +10,7 @@ import kz.aura.merp.employee.data.model.ServiceApplication
 import kz.aura.merp.employee.databinding.ServiceApplicationCardBinding
 import kz.aura.merp.employee.diffUtil.ServiceApplicationDiffUtil
 
-class MasterAdapter : RecyclerView.Adapter<MasterAdapter.MasterViewHolder>() {
+class ServiceApplicationAdapter : RecyclerView.Adapter<ServiceApplicationAdapter.MasterViewHolder>() {
 
     private var dataList = mutableListOf<ServiceApplication>()
 

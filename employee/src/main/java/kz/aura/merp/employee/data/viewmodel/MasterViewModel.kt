@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import kz.aura.merp.employee.data.model.ServiceApplication
 import kz.aura.merp.employee.data.model.TrackEmpProcess
 import kz.aura.merp.employee.data.model.TrackEmpProcessServiceApplication
-import kz.aura.merp.employee.service.MasterApi
-import kz.aura.merp.employee.service.ServiceBuilder
+import kz.aura.merp.employee.data.service.MasterApi
+import kz.aura.merp.employee.data.service.ServiceBuilder
 import kz.aura.merp.employee.util.Helpers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -76,11 +76,14 @@ class MasterViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun changeData(application: ServiceApplication): ArrayList<ServiceApplication> {
-        val foundData = applications.value!!.find { it.id == application.id }
-        val idx = applications.value!!.indexOf(foundData)
-        applications.value!![idx] = application
-        return applications.value!!
+    fun changeData(application: ServiceApplication): ArrayList<ServiceApplication>? {
+        if (applications.value?.isNotEmpty() == true) {
+            val foundData = applications.value!!.find { it.id == application.id }
+            val idx = applications.value!!.indexOf(foundData)
+            applications.value!![idx] = application
+            return applications.value!!
+        }
+        return null
     }
 
 }

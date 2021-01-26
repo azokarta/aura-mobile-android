@@ -1,4 +1,4 @@
-package kz.aura.merp.employee.service
+package kz.aura.merp.employee.data.service
 
 import android.content.Context
 import kz.aura.merp.employee.util.Constants
@@ -8,12 +8,11 @@ import kz.aura.merp.employee.util.Helpers.getToken
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Headers
 import java.util.concurrent.TimeUnit
 
 object ServiceBuilder {
 
-    private const val baseUrl = Constants.WE_MOB_DEV
+    private const val baseUrl = Constants.WE_MOB_TEST
 
     fun<T> buildService(service: Class<T>, context: Context): T {
         val okHttpClient = OkHttpClient.Builder()

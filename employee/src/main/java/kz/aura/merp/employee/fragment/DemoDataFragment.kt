@@ -9,14 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
-import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PhoneNumberAdapter
 import kz.aura.merp.employee.data.model.Demo
-import kz.aura.merp.employee.data.viewmodel.DemoViewModel
+import kz.aura.merp.employee.data.viewmodel.DealerViewModel
 import kz.aura.merp.employee.databinding.FragmentDemoDataBinding
 import kz.aura.merp.employee.activity.MapActivity
-import kz.aura.merp.employee.adapter.StepsAdapter
 
 private const val ARG_PARAM1 = "demo"
 
@@ -25,7 +22,7 @@ class DemoDataFragment : Fragment() {
     private val demoDataPhoneNumberAdapter: PhoneNumberAdapter by lazy { PhoneNumberAdapter() }
     private var _binding: FragmentDemoDataBinding? = null
     private val binding get() = _binding!!
-    private val mDemoViewModel: DemoViewModel by activityViewModels()
+    private val mDealerViewModel: DealerViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +44,7 @@ class DemoDataFragment : Fragment() {
         setupRecyclerView()
 
         // Observe MutableLiveData
-        mDemoViewModel.updatedDemo.observe(viewLifecycleOwner, Observer { data ->
+        mDealerViewModel.updatedDemo.observe(viewLifecycleOwner, Observer { data ->
             demo = data
             binding.demo = data
             binding.executePendingBindings()
@@ -57,7 +54,7 @@ class DemoDataFragment : Fragment() {
         // Initialize Listeners
         binding.demoDataSaveBtn.setOnClickListener {
             demo!!.price = binding.demoDataTaxiExpences.text.toString().toDouble()
-            mDemoViewModel.updateDemo(demo!!)
+            mDealerViewModel.updateDemo(demo!!)
         }
         binding.mapBtn.setOnClickListener {
             val intent = Intent(this.context, MapActivity::class.java)

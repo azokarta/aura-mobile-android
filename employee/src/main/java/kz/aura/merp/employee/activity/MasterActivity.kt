@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.adapter.MasterAdapter
+import kz.aura.merp.employee.adapter.ServiceApplicationAdapter
 import kz.aura.merp.employee.data.SharedViewModel
 import kz.aura.merp.employee.data.model.ServiceApplication
 import kz.aura.merp.employee.data.viewmodel.MasterViewModel
@@ -20,8 +20,6 @@ import kz.aura.merp.employee.databinding.ActivityMasterBinding
 import kz.aura.merp.employee.util.Helpers
 import kz.aura.merp.employee.util.LanguageHelper
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_fin_agent.*
-import kotlinx.android.synthetic.main.activity_master.*
 import kotlinx.android.synthetic.main.activity_master.network_disconnected
 import kotlinx.android.synthetic.main.activity_master.progress_bar
 import kotlinx.android.synthetic.main.activity_master.recyclerView
@@ -35,7 +33,7 @@ class MasterActivity : AppCompatActivity() {
     private val mMasterViewModel: MasterViewModel by viewModels()
     private val mSharedViewModel: SharedViewModel by viewModels()
     private val mReferenceViewModel: ReferenceViewModel by viewModels()
-    private val serviceApplicationAdapter: MasterAdapter by lazy { MasterAdapter() }
+    private val serviceApplicationAdapter: ServiceApplicationAdapter by lazy { ServiceApplicationAdapter() }
     private var masterId: Long? = null
     private lateinit var binding: ActivityMasterBinding
 
@@ -95,7 +93,7 @@ class MasterActivity : AppCompatActivity() {
         val data = getData()
         if (data != null) {
             val list = mMasterViewModel.changeData(data)
-            serviceApplicationAdapter.setData(list)
+            list?.let { serviceApplicationAdapter.setData(it) }
             removeData()
         }
     }

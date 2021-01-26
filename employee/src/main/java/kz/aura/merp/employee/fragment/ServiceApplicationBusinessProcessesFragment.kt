@@ -78,6 +78,7 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
         })
         mReferenceViewModel.trackStepOrdersBusinessProcesses.observe(viewLifecycleOwner, Observer { data ->
             trackStepOrdersBusinessProcesses.addAll(data.map { it.trackStepNameRu } as ArrayList)
+            stepsAdapter.setData(trackStepOrdersBusinessProcesses)
         })
         mMasterViewModel.updatedServiceApplication.observe(viewLifecycleOwner, Observer { data ->
             serviceApplication = data

@@ -91,11 +91,19 @@ class AuthorizationActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            Permissions.CAMERA_PERMISSION_REQUEST_CODE-> {
+            Permissions.CAMERA_PERMISSION_REQUEST_CODE -> {
                 if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
                     Toast.makeText(this, "Вы не разрешили доступ к камеру", Toast.LENGTH_LONG)
                         .show()
                     this.permissions.requestCameraPermission()
+                } else {
+                    this.permissions.requestGpsPermission()
+                }
+            }
+            Permissions.LOCATION_PERMISSION_REQUEST_CODE -> {
+                if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
+                    Toast.makeText(this, "Вы не разрешили доступ к местоположению", Toast.LENGTH_LONG).show()
+                    this.permissions.requestGpsPermission()
                 }
             }
         }

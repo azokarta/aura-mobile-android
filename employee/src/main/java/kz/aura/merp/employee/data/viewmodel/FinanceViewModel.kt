@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kz.aura.merp.employee.data.model.Client
 import kz.aura.merp.employee.data.model.TrackEmpProcess
-import kz.aura.merp.employee.service.FinanceApi
-import kz.aura.merp.employee.service.ServiceBuilder
+import kz.aura.merp.employee.data.service.FinanceApi
+import kz.aura.merp.employee.data.service.ServiceBuilder
 import kz.aura.merp.employee.util.Helpers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -76,11 +76,14 @@ class FinanceViewModel (application: Application) : AndroidViewModel(application
         }
     }
 
-    fun changeData(client: Client): ArrayList<Client> {
-        val foundData = clients.value!!.find { it.maCollectMoneyId == client.maCollectMoneyId }
-        val idx = clients.value!!.indexOf(foundData)
-        clients.value!![idx] = client
-        return clients.value!!
+    fun changeData(client: Client): ArrayList<Client>? {
+        if (clients.value?.isNotEmpty() == true) {
+            val foundData = clients.value!!.find { it.maCollectMoneyId == client.maCollectMoneyId }
+            val idx = clients.value!!.indexOf(foundData)
+            clients.value!![idx] = client
+            return clients.value!!
+        }
+        return null
     }
 
 }
