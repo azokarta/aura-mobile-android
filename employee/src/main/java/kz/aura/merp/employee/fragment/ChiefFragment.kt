@@ -36,9 +36,9 @@ class ChiefFragment : Fragment() {
             Helpers.saveDataByKey(requireContext(), staffId.toLong(), "staffId")
 
             when (position) {
-//                StaffPosition.DEALER -> openFragment(R.id.dealerFragment)
-//                StaffPosition.MASTER -> openFragment(R.id.masterFragment)
-//                StaffPosition.FIN_AGENT -> openFragment(R.id.financeFragment)
+                StaffPosition.DEALER -> openFragment(R.id.action_dealerFragment)
+                StaffPosition.MASTER -> openFragment(R.id.action_masterFragment)
+                StaffPosition.FIN_AGENT -> openFragment(R.id.action_financeFragment)
                 else -> Toast.makeText(requireContext(), "Произошла ошибка повторите попытку позже", Toast.LENGTH_LONG).show()
             }
         } else {

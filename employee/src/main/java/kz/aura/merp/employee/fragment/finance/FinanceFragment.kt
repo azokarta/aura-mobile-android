@@ -6,11 +6,13 @@ import android.view.*
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.network_disconnected.*
+import kotlinx.android.synthetic.main.network_disconnected.view.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.activity.SettingsActivity
 import kz.aura.merp.employee.adapter.ClientAdapter
@@ -23,9 +25,9 @@ import kz.aura.merp.employee.util.Helpers
 import kz.aura.merp.employee.util.Permissions
 
 class FinanceFragment : Fragment() {
-    private val mFinanceViewModel: FinanceViewModel by activityViewModels()
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
-    private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
+    private val mFinanceViewModel: FinanceViewModel by viewModels()
+    private val mSharedViewModel: SharedViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private val finAdapter: ClientAdapter by lazy { ClientAdapter() }
     private var collectorId: Long? = null
     private lateinit var _binding: FragmentFinanceBinding
@@ -64,7 +66,7 @@ class FinanceFragment : Fragment() {
         })
 
         // If network is disconnected and user clicks restart, get data again
-        restart.setOnClickListener {
+        binding.networkDisconnected.restart.setOnClickListener {
             if (Helpers.verifyAvailableNetwork(requireContext())) {
                 mFinanceViewModel.fetchClients(collectorId!!) // fetch clients
                 binding.progressBar.visibility = View.VISIBLE

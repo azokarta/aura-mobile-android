@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -33,8 +34,8 @@ class FinanceBusinessProcessFragment : Fragment(), StepsAdapter.Companion.Comple
     private var _binding: FragmentFinanceBusinessProcessesBinding? = null
     private val binding get() = _binding!!
     private var collectorId: Long? = null
-    private val mFinanceViewModel: FinanceViewModel by activityViewModels()
-    private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
+    private val mFinanceViewModel: FinanceViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.network_disconnected.*
+import kotlinx.android.synthetic.main.network_disconnected.view.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.activity.SettingsActivity
 import kz.aura.merp.employee.adapter.DemoAdapter
@@ -24,9 +26,9 @@ import kz.aura.merp.employee.util.Permissions
 
 class DealerFragment : Fragment() {
 
-    private val mDealerViewModel: DealerViewModel by activityViewModels()
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
-    private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
+    private val mDealerViewModel: DealerViewModel by viewModels()
+    private val mSharedViewModel: SharedViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private val adapter: DemoAdapter by lazy { DemoAdapter() }
     private lateinit var _binding: FragmentDealerBinding
     private val binding get() = _binding
@@ -64,7 +66,7 @@ class DealerFragment : Fragment() {
         })
 
         // If network is disconnected and user clicks restart, get data again
-        restart.setOnClickListener {
+        binding.networkDisconnected.restart.setOnClickListener {
             if (Helpers.verifyAvailableNetwork(requireContext())) {
                 mDealerViewModel.fetchAll(dealerId!!) // fetch demo list
                 binding.progressBar.visibility = View.VISIBLE

@@ -11,6 +11,7 @@ import android.net.ConnectivityManager
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.data.model.Auth
@@ -19,6 +20,7 @@ import kz.aura.merp.employee.data.model.Staff
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.error_dialog.view.*
+import kz.aura.merp.employee.activity.MainActivity
 import okhttp3.ResponseBody
 import java.lang.Exception
 
@@ -97,11 +99,8 @@ object Helpers {
         }
     }
 
-    fun clearPreviousAndOpenActivity(context: Context, activity: Activity) {
-        // Clear previous activities and open new activity
-        val intent = Intent(context, activity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(intent)
+    fun hideToolbar(activity: FragmentActivity) {
+        (activity as MainActivity).supportActionBar?.hide()
     }
 
     fun <T> saveDataByKey(context: Context, data: T, key: String) {

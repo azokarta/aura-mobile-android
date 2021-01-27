@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kz.aura.merp.employee.data.model.*
@@ -23,7 +24,7 @@ class FinanceClientInfoFragment : Fragment() {
     private var client: Client? = null
     private var _binding: FragmentFinanceClientInfoBinding? = null
     private val binding get() = _binding!!
-    private val mFinanceViewModel: FinanceViewModel by activityViewModels()
+    private val mFinanceViewModel: FinanceViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

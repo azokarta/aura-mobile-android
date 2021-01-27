@@ -9,6 +9,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -25,7 +26,7 @@ class OcrWebFragment : Fragment() {
 
     private val args: OcrWebFragmentArgs by navArgs()
 
-    private val mAuthViewModel: AuthViewModel by activityViewModels()
+    private val mAuthViewModel: AuthViewModel by viewModels()
     private var transactionId: String? = null
     private lateinit var progressDialog: ProgressDialog
     private lateinit var mView: View

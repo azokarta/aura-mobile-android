@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import im.delight.android.location.SimpleLocation
@@ -38,8 +39,8 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
     private var _binding: FragmentDemoBusinessProcessesBinding? = null
     private val binding get() = _binding!!
     private var dealerId: Long? = null
-    private val mDealerViewModel: DealerViewModel by activityViewModels()
-    private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
+    private val mDealerViewModel: DealerViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {

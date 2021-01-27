@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -34,8 +35,8 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
     private var _binding: FragmentServiceApplicationBusinessProcessesBinding? = null
     private val binding get() = _binding!!
     private var masterId: Long? = null
-    private val mMasterViewModel: MasterViewModel by activityViewModels()
-    private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
+    private val mMasterViewModel: MasterViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

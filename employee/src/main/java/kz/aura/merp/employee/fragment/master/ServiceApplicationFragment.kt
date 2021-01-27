@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_service_application.view.*
@@ -20,8 +21,8 @@ class ServiceApplicationFragment : Fragment() {
     
 //    private val args: ServiceApplicationFragmentArgs by navArgs()
 
-    private val mMasterViewModel: MasterViewModel by activityViewModels()
-    private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
+    private val mMasterViewModel: MasterViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private lateinit var mView: View
     
     override fun onCreateView(

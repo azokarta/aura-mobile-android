@@ -9,18 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_authorization.view.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.data.viewmodel.AuthViewModel
 import kz.aura.merp.employee.util.Helpers
+import kz.aura.merp.employee.util.Helpers.hideToolbar
 import kz.aura.merp.employee.util.Permissions
 import kz.aura.merp.employee.util.ProgressDialog
 
 class AuthorizationFragment : Fragment() {
 
-    private val mAuthViewModel: AuthViewModel by activityViewModels()
+    private val mAuthViewModel: AuthViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
     private lateinit var permissions: Permissions
     private lateinit var mView: View
@@ -29,6 +31,9 @@ class AuthorizationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Hide toolbar
+//        activity?.let { hideToolbar(it) }
+
         mView = inflater.inflate(R.layout.fragment_authorization, container, false)
         permissions = Permissions(requireContext(), requireActivity())
 
@@ -38,13 +43,7 @@ class AuthorizationFragment : Fragment() {
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(requireContext())
 
-        // Observe LiveData
-        mAuthViewModel.transactionId.observe(viewLifecycleOwner, Observer { transactionId ->
-            progressDialog.hideLoading() // hide loading
-            val action = AuthorizationFragmentDirections.actionAuthorizationFragmentToOcrWebFragment(transactionId)
-            findNavController().navigate(action)
-        })
-        mAuthViewModel.error.observe(viewLifecycleOwner, Observer { error ->
+        mAuthViewModel.error.observe(viewLifecycleOwner, { error ->
             progressDialog.hideLoading() // hide loading
             Helpers.exceptionHandler(error, requireContext()) // Show Error with alert dialog
         })
@@ -71,7 +70,11 @@ class AuthorizationFragment : Fragment() {
             Helpers.saveDataByKey(requireContext(), mView.ccp.fullNumberWithPlus, "phoneNumber")
 
             // Fetch transactionId for Ocr
-            mAuthViewModel.fetchTransactionId()
+            mAuthViewModel.fetchTransactionId().observe(this, { transactionId ->
+                progressDialog.hideLoading() // hide loading
+                val action = AuthorizationFragmentDirections.actionAuthorizationFragmentToOcrWebFragment(transactionId)
+                findNavController().navigate(action)
+            })
         } else {
             Toast.makeText(requireContext(), "Введите действующий номер телефона", Toast.LENGTH_LONG).show()
         }

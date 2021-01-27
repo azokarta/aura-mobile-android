@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kz.aura.merp.employee.data.model.ServiceApplication
@@ -21,7 +22,7 @@ class ServiceApplicationDataFragment : Fragment() {
     private var serviceApplication: ServiceApplication? = null
     private var _binding: FragmentServiceApplicationDataBinding? = null
     private val binding get() = _binding!!
-    private val mMasterViewModel: MasterViewModel by activityViewModels()
+    private val mMasterViewModel: MasterViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

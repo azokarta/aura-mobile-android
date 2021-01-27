@@ -6,12 +6,14 @@ import android.view.*
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 //import kotlinx.android.synthetic.main.activity_master.*
 import kotlinx.android.synthetic.main.network_disconnected.*
+import kotlinx.android.synthetic.main.network_disconnected.view.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.activity.SettingsActivity
 import kz.aura.merp.employee.adapter.ServiceApplicationAdapter
@@ -26,9 +28,9 @@ import kz.aura.merp.employee.util.Permissions
 
 class MasterFragment : Fragment() {
 
-    private val mMasterViewModel: MasterViewModel by activityViewModels()
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
-    private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
+    private val mMasterViewModel: MasterViewModel by viewModels()
+    private val mSharedViewModel: SharedViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private val serviceApplicationAdapter: ServiceApplicationAdapter by lazy { ServiceApplicationAdapter() }
     private var masterId: Long? = null
     private lateinit var binding: FragmentMasterBinding
@@ -66,7 +68,7 @@ class MasterFragment : Fragment() {
         })
 
         // If network is disconnected and user clicks restart, get data again
-        restart.setOnClickListener {
+        binding.networkDisconnected.restart.setOnClickListener {
             if (Helpers.verifyAvailableNetwork(requireContext())) {
                 mMasterViewModel.fetchServiceApplications(masterId!!) // fetch serviceApplications
                 binding.progressBar.visibility = View.VISIBLE

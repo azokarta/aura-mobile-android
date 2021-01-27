@@ -13,7 +13,6 @@ import kz.aura.merp.employee.util.Helpers.openActivityByPositionId
 import kz.aura.merp.employee.util.LanguageHelper
 import kz.aura.merp.employee.util.LanguageHelper.getLanguage
 import kotlinx.android.synthetic.main.settings_activity.*
-import kz.aura.merp.employee.util.Helpers.clearPreviousAndOpenActivity
 
 class SettingsActivity : AppCompatActivity() {
 

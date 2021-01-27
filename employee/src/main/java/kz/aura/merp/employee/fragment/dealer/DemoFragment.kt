@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_demo.view.*
@@ -19,8 +20,8 @@ class DemoFragment : Fragment() {
 
 //    private val args: DemoFragmentArgs by navArgs()
 
-    private val mDealerViewModel: DealerViewModel by activityViewModels()
-    private val mReferenceViewModel: ReferenceViewModel by activityViewModels()
+    private val mDealerViewModel: DealerViewModel by viewModels()
+    private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private lateinit var mView: View
 
     override fun onCreateView(

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import kz.aura.merp.employee.adapter.PhoneNumberAdapter
@@ -22,7 +23,7 @@ class DemoDataFragment : Fragment() {
     private val demoDataPhoneNumberAdapter: PhoneNumberAdapter by lazy { PhoneNumberAdapter() }
     private var _binding: FragmentDemoDataBinding? = null
     private val binding get() = _binding!!
-    private val mDealerViewModel: DealerViewModel by activityViewModels()
+    private val mDealerViewModel: DealerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

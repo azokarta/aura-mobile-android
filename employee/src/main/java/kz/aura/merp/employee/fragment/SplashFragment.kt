@@ -21,13 +21,7 @@ class SplashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         if (getToken(requireContext())?.isNotBlank() == true) {
-//            val positionId = getPositionId(requireContext())
-//            when (definePosition(positionId!!)) {
-//                StaffPosition.DEALER -> openFragment(R.id.dealerFragment)
-//                StaffPosition.MASTER -> openFragment(R.id.masterFragment)
-//                StaffPosition.FIN_AGENT -> openFragment(R.id.financeFragment)
-//                else -> openFragment(R.id.chiefFragment)
-//            }
+            // Passcode
         } else {
             openFragment(R.id.authorizationFragment)
         }
