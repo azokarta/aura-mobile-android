@@ -25,8 +25,7 @@
         tools:layout="@layout/fragment_splash" >
         <action
             android:id="@+id/action_splashFragment_to_authorizationFragment"
-            app:destination="@id/authorizationFragment"
-            app:popUpTo="@id/splashFragment" />
+            app:destination="@id/authorizationFragment" />
     </fragment>
     <fragment
         android:id="@+id/authorizationFragment"
