@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import kz.aura.merp.employee.activity.ClientActivity
 import kz.aura.merp.employee.data.model.Client
 import kz.aura.merp.employee.databinding.FinAgentCardBinding
 import kz.aura.merp.employee.diffUtil.ClientDiffUtil
@@ -42,9 +41,9 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.FinanceViewHolder>() {
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {
-                val intent = Intent(binding.root.context, ClientActivity::class.java)
-                intent.putExtra("client", client)
-                binding.root.context.startActivity(intent)
+//                val intent = Intent(binding.root.context, ClientActivity::class.java)
+//                intent.putExtra("client", client)
+//                binding.root.context.startActivity(intent)
             }
         }
     }

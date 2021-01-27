@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="mSharedViewModel"
             type="kz.aura.merp.employee.data.SharedViewModel" />
@@ -13,11 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="kz.aura.merp.employee.activity.FinanceAgentActivity">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+        tools:context=".fragment.finance.FinanceFragment">
 
         <ImageView
             android:id="@+id/noData"

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/splashFragment">
+
+    <!--    Global actions     -->
+    <action android:id="@+id/action_dealerFragment"
+        app:destination="@id/dealerFragment" />
+    <action android:id="@+id/action_masterFragment"
+        app:destination="@id/masterFragment" />
+    <action android:id="@+id/action_financeFragment"
+        app:destination="@id/financeFragment" />
+    <action android:id="@+id/action_authorizationFragment"
+        app:destination="@id/authorizationFragment"
+        app:popUpTo="@id/authorizationFragment"
+        app:popUpToInclusive="true" />
+    <!--  End   -->
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="kz.aura.merp.employee.fragment.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_authorizationFragment"
+            app:destination="@id/authorizationFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_chiefFragment"
+            app:destination="@id/chiefFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/authorizationFragment"
+        android:name="kz.aura.merp.employee.fragment.AuthorizationFragment"
+        android:label="fragment_authorization"
+        tools:layout="@layout/fragment_authorization" >
+        <action
+            android:id="@+id/action_authorizationFragment_to_chiefFragment"
+            app:destination="@id/chiefFragment" />
+        <action
+            android:id="@+id/action_authorizationFragment_to_ocrWebFragment"
+            app:destination="@id/ocrWebFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dealerFragment"
+        android:name="kz.aura.merp.employee.fragment.dealer.DealerFragment"
+        android:label="DealerFragment" />
+    <fragment
+        android:id="@+id/masterFragment"
+        android:name="kz.aura.merp.employee.fragment.master.MasterFragment"
+        android:label="MasterFragment" />
+    <fragment
+        android:id="@+id/financeFragment"
+        android:name="kz.aura.merp.employee.fragment.finance.FinanceFragment"
+        android:label="FinanceFragment" />
+    <fragment
+        android:id="@+id/chiefFragment"
+        android:name="kz.aura.merp.employee.fragment.ChiefFragment"
+        android:label="fragment_chief"
+        tools:layout="@layout/fragment_chief" />
+    <fragment
+        android:id="@+id/ocrWebFragment"
+        android:name="kz.aura.merp.employee.fragment.OcrWebFragment"
+        android:label="fragment_ocr_web"
+        tools:layout="@layout/fragment_ocr_web" >
+        <action
+            android:id="@+id/action_ocrWebFragment_to_authorizationFragment"
+            app:destination="@id/authorizationFragment"
+            app:popUpTo="@id/authorizationFragment"
+            app:popUpToInclusive="true"/>
+        <argument
+            android:name="transactionId"
+            app:argType="string" />
+    </fragment>
+</navigation>

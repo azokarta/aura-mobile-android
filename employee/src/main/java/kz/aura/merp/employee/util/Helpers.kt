@@ -13,10 +13,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.activity.ChiefActivity
-import kz.aura.merp.employee.activity.DealerActivity
-import kz.aura.merp.employee.activity.FinanceAgentActivity
-import kz.aura.merp.employee.activity.MasterActivity
 import kz.aura.merp.employee.data.model.Auth
 import kz.aura.merp.employee.data.model.Error
 import kz.aura.merp.employee.data.model.Staff
@@ -94,10 +90,10 @@ object Helpers {
     fun openActivityByPositionId(context: Context) {
         val positionId = getPositionId(context)
         when (positionId?.let { definePosition(it) }) {
-            StaffPosition.DEALER -> clearPreviousAndOpenActivity(context, DealerActivity())
-            StaffPosition.MASTER -> clearPreviousAndOpenActivity(context, MasterActivity())
-            StaffPosition.FIN_AGENT -> clearPreviousAndOpenActivity(context, FinanceAgentActivity())
-            else -> clearPreviousAndOpenActivity(context, ChiefActivity())
+//            StaffPosition.DEALER -> clearPreviousAndOpenActivity(context, DealerActivity())
+//            StaffPosition.MASTER -> clearPreviousAndOpenActivity(context, MasterActivity())
+//            StaffPosition.FIN_AGENT -> clearPreviousAndOpenActivity(context, FinanceAgentActivity())
+//            else -> clearPreviousAndOpenActivity(context, ChiefActivity())
         }
     }
 

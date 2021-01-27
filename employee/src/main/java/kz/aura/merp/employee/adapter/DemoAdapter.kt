@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import kz.aura.merp.employee.activity.DemoActivity
 import kz.aura.merp.employee.data.model.Demo
 import kz.aura.merp.employee.databinding.DemoCardBinding
 import kz.aura.merp.employee.diffUtil.DemoDiffUtil
@@ -42,9 +41,9 @@ class DemoAdapter : RecyclerView.Adapter<DemoAdapter.DemoViewHolder>() {
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {
-                val intent = Intent(binding.root.context, DemoActivity::class.java)
-                intent.putExtra("demo", demo)
-                binding.root.context.startActivity(intent)
+//                val intent = Intent(binding.root.context, DemoActivity::class.java)
+//                intent.putExtra("demo", demo)
+//                binding.root.context.startActivity(intent)
             }
         }
     }

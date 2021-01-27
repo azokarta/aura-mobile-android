@@ -70,7 +70,7 @@ class SettingsActivity : AppCompatActivity() {
             .remove("staffId")
             .remove("phoneNumber")
             .apply()
-        clearPreviousAndOpenActivity(this, AuthorizationActivity())
+//        clearPreviousAndOpenActivity(this, AuthorizationActivity())
     }
 
     override fun onSupportNavigateUp(): Boolean {
