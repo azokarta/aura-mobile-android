@@ -150,6 +150,8 @@ object Helpers {
         return bitmap
     }
 
+    fun showToast(context: Context, message: String) = Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+
     fun exceptionHandler(exception: Any, context: Context) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.error_dialog, null)
         val builder = MaterialAlertDialogBuilder(context)

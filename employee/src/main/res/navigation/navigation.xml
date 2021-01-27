@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_splashFragment_to_authorizationFragment"
             app:destination="@id/authorizationFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_passCodeFragment"
+            app:destination="@id/passCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/authorizationFragment"
@@ -101,4 +104,16 @@
         android:name="kz.aura.merp.employee.fragment.master.ServiceApplicationFragment"
         android:label="fragment_service_application"
         tools:layout="@layout/fragment_service_application" />
+    <fragment
+        android:id="@+id/passCodeFragment"
+        android:name="kz.aura.merp.employee.fragment.PassCodeFragment"
+        android:label="fragment_pass_code"
+        tools:layout="@layout/fragment_pass_code" >
+        <action
+            android:id="@+id/action_passCodeFragment_to_authorizationFragment"
+            app:destination="@id/authorizationFragment" />
+        <action
+            android:id="@+id/action_passCodeFragment_to_chiefFragment"
+            app:destination="@id/chiefFragment" />
+    </fragment>
 </navigation>
