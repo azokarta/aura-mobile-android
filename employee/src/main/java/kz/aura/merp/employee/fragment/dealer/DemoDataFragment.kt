@@ -28,7 +28,7 @@ class DemoDataFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            demo = it.getSerializable(ARG_PARAM1) as Demo?
+            demo = it.getParcelable(ARG_PARAM1) as Demo?
         }
     }
 
@@ -79,7 +79,7 @@ class DemoDataFragment : Fragment() {
         fun newInstance(demo: Demo) =
             DemoDataFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM1, demo)
+                    putParcelable(ARG_PARAM1, demo)
                 }
             }
     }

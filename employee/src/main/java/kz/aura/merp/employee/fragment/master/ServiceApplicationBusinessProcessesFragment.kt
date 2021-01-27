@@ -41,7 +41,7 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            serviceApplication = it.getSerializable(ARG_PARAM1) as ServiceApplication?
+            serviceApplication = it.getParcelable(ARG_PARAM1) as ServiceApplication?
         }
     }
 
@@ -166,7 +166,7 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
         fun newInstance(serviceApplication: ServiceApplication) =
             ServiceApplicationBusinessFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM1, serviceApplication)
+                    putParcelable(ARG_PARAM1, serviceApplication)
                 }
             }
     }

@@ -1,7 +1,10 @@
 package kz.aura.merp.employee.data.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
+@Parcelize
 data class Demo(
     val demoId: Long,
     val clientName: String,
@@ -17,7 +20,7 @@ data class Demo(
     val recoId: Long,
     val dateTimeFormatted: String,
     var ocrDemoStatus: String?
-): Serializable {
+): Parcelable {
 
     override fun equals(other: Any?): Boolean {
 
@@ -42,23 +45,6 @@ data class Demo(
         if (dateTimeFormatted != other.dateTimeFormatted) return false
 
         return true
-    }
-
-    override fun hashCode(): Int {
-        var result = demoId.hashCode()
-        result = 31 * result + clientName.hashCode()
-        result = 31 * result + address.hashCode()
-        result = 31 * result + price.hashCode()
-        result = 31 * result + note.hashCode()
-        result = 31 * result + crmPhoneDtoList.hashCode()
-        result = 31 * result + (resultId ?: 0)
-        result = 31 * result + dateTime.hashCode()
-        result = 31 * result + customerId.hashCode()
-        result = 31 * result + contractNumber.hashCode()
-        result = 31 * result + dealerId.hashCode()
-        result = 31 * result + recoId.hashCode()
-        result = 31 * result + dateTimeFormatted.hashCode()
-        return result
     }
 
 }

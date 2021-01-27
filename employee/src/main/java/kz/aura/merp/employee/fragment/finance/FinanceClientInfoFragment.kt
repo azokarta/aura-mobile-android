@@ -29,7 +29,7 @@ class FinanceClientInfoFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            client = it.getSerializable(ARG_PARAM1) as Client
+            client = it.getParcelable(ARG_PARAM1) as Client?
         }
     }
 
@@ -73,7 +73,7 @@ class FinanceClientInfoFragment : Fragment() {
         fun newInstance(client: Client) =
             FinanceClientInfoFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM1, client)
+                    putParcelable(ARG_PARAM1, client)
                 }
             }
     }

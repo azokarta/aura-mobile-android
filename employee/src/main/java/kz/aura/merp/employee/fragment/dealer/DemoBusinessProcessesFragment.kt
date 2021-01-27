@@ -46,7 +46,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            demo = it.getSerializable(ARG_PARAM1) as Demo?
+            demo = it.getParcelable(ARG_PARAM1) as Demo?
         }
     }
 
@@ -257,9 +257,9 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
     companion object {
         @JvmStatic
         fun newInstance(demo: Demo) =
-            FinanceClientInfoFragment().apply {
+            DemoBusinessProcessesFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM1, demo)
+                    putParcelable(ARG_PARAM1, demo)
                 }
             }
     }

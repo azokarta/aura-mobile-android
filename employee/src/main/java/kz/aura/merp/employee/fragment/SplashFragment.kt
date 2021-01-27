@@ -29,5 +29,5 @@ class SplashFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_splash, container, false)
     }
 
-    private fun openFragment(id: Int) = findNavController().navigate(R.id.action_splashFragment_to_passCodeFragment)
+    private fun openFragment(id: Int) = findNavController().navigate(id)
 }

@@ -39,12 +39,6 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.FinanceViewHolder>() {
         fun bind(client: Client) {
             binding.client = client
             binding.executePendingBindings()
-
-            binding.root.setOnClickListener {
-//                val intent = Intent(binding.root.context, ClientActivity::class.java)
-//                intent.putExtra("client", client)
-//                binding.root.context.startActivity(intent)
-            }
         }
     }
 

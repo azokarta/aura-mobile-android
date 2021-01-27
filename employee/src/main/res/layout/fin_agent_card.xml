@@ -16,6 +16,7 @@
         android:clickable="true"
         android:focusable="true"
         app:cardCornerRadius="10dp"
+        android:sendClientToClientFragment="@{client}"
         app:cardElevation="5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout

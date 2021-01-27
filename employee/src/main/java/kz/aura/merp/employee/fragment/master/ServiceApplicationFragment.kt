@@ -19,7 +19,7 @@ import kz.aura.merp.employee.util.TabLayoutFragmentAdapter
 
 class ServiceApplicationFragment : Fragment() {
     
-//    private val args: ServiceApplicationFragmentArgs by navArgs()
+    private val args: ServiceApplicationFragmentArgs by navArgs()
 
     private val mMasterViewModel: MasterViewModel by viewModels()
     private val mReferenceViewModel: ReferenceViewModel by viewModels()
@@ -28,7 +28,7 @@ class ServiceApplicationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mView = inflater.inflate(R.layout.fragment_service_application, container, false)
 
         val titles = ArrayList<String>()
@@ -37,8 +37,8 @@ class ServiceApplicationFragment : Fragment() {
         titles.add(getString(R.string.service))
         titles.add(getString(R.string.businessProcesses))
 
-//        fragments.add(ServiceApplicationDataFragment.newInstance(args.serviceApplication))
-//        fragments.add(ServiceApplicationBusinessFragment.newInstance(args.serviceApplication))
+        fragments.add(ServiceApplicationDataFragment.newInstance(args.serviceApplication))
+        fragments.add(ServiceApplicationBusinessFragment.newInstance(args.serviceApplication))
 
         val fragmentAdapter = TabLayoutFragmentAdapter(childFragmentManager, fragments, titles)
         mView.service_application_view_pager.adapter = fragmentAdapter
@@ -52,6 +52,6 @@ class ServiceApplicationFragment : Fragment() {
             Helpers.exceptionHandler(error, requireContext())
         })
         
-        return view
+        return mView
     }
 }

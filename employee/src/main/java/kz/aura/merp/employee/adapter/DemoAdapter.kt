@@ -39,12 +39,6 @@ class DemoAdapter : RecyclerView.Adapter<DemoAdapter.DemoViewHolder>() {
         fun bind(demo: Demo) {
             binding.demo = demo
             binding.executePendingBindings()
-
-            binding.root.setOnClickListener {
-//                val intent = Intent(binding.root.context, DemoActivity::class.java)
-//                intent.putExtra("demo", demo)
-//                binding.root.context.startActivity(intent)
-            }
         }
     }
 }

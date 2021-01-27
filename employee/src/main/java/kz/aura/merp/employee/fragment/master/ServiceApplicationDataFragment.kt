@@ -27,7 +27,7 @@ class ServiceApplicationDataFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            serviceApplication = it.getSerializable(ARG_PARAM1) as ServiceApplication?
+            serviceApplication = it.getParcelable(ARG_PARAM1) as ServiceApplication?
         }
     }
 
@@ -67,7 +67,7 @@ class ServiceApplicationDataFragment : Fragment() {
         fun newInstance(serviceApplication: ServiceApplication) =
             ServiceApplicationDataFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM1, serviceApplication)
+                    putParcelable(ARG_PARAM1, serviceApplication)
                 }
             }
     }

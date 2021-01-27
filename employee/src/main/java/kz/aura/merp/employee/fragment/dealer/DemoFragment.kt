@@ -18,7 +18,7 @@ import kz.aura.merp.employee.util.TabLayoutFragmentAdapter
 
 class DemoFragment : Fragment() {
 
-//    private val args: DemoFragmentArgs by navArgs()
+    private val args: DemoFragmentArgs by navArgs()
 
     private val mDealerViewModel: DealerViewModel by viewModels()
     private val mReferenceViewModel: ReferenceViewModel by viewModels()
@@ -36,8 +36,8 @@ class DemoFragment : Fragment() {
         titles.add(getString(R.string.demoData))
         titles.add(getString(R.string.businessProcesses))
 
-//        fragments.add(DemoDataFragment.newInstance(args.demo))
-//        fragments.add(DemoBusinessProcessesFragment.newInstance(args.demo))
+        fragments.add(DemoDataFragment.newInstance(args.demo))
+        fragments.add(DemoBusinessProcessesFragment.newInstance(args.demo))
 
         val fragmentAdapter = TabLayoutFragmentAdapter(childFragmentManager, fragments, titles)
         mView.demo_view_pager.adapter = fragmentAdapter

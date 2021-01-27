@@ -13,7 +13,7 @@ import kz.aura.merp.employee.util.TabLayoutFragmentAdapter
 
 class ClientFragment : Fragment() {
 
-//    private val args: ClientFragmentArgs by navArgs()
+    private val args: ClientFragmentArgs by navArgs()
 
     private lateinit var mView: View
 
@@ -30,8 +30,8 @@ class ClientFragment : Fragment() {
         titles.add(getString(R.string.info))
         titles.add(getString(R.string.businessProcesses))
 
-//        fragments.add(FinanceClientInfoFragment.newInstance(args.client))
-//        fragments.add(FinanceBusinessProcessFragment.newInstance(args.client))
+        fragments.add(FinanceClientInfoFragment.newInstance(args.client))
+        fragments.add(FinanceBusinessProcessFragment.newInstance(args.client))
 
         val fragmentAdapter = TabLayoutFragmentAdapter(childFragmentManager, fragments, titles)
         mView.fin_view_pager.adapter = fragmentAdapter

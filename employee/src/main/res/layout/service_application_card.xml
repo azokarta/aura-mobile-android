@@ -14,6 +14,7 @@
         android:layout_margin="12dp"
         android:clickable="true"
         android:focusable="true"
+        android:sendServiceApplicationToServiceApplicationFragment="@{serviceApplication}"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp">
 

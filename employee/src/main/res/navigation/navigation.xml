@@ -26,9 +26,6 @@
         <action
             android:id="@+id/action_splashFragment_to_authorizationFragment"
             app:destination="@id/authorizationFragment" />
-        <action
-            android:id="@+id/action_splashFragment_to_passCodeFragment"
-            app:destination="@id/passCodeFragment" />
     </fragment>
     <fragment
         android:id="@+id/authorizationFragment"
@@ -48,7 +45,11 @@
         android:label="DealerFragment" >
         <action
             android:id="@+id/action_dealerFragment_to_demoFragment"
-            app:destination="@id/demoFragment" />
+            app:destination="@id/demoFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
     </fragment>
     <fragment
         android:id="@+id/masterFragment"
@@ -56,7 +57,12 @@
         android:label="MasterFragment" >
         <action
             android:id="@+id/action_masterFragment_to_serviceApplicationFragment"
-            app:destination="@id/serviceApplicationFragment" />
+            app:destination="@id/serviceApplicationFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"
+            />
     </fragment>
     <fragment
         android:id="@+id/financeFragment"
@@ -93,27 +99,27 @@
         android:id="@+id/clientFragment"
         android:name="kz.aura.merp.employee.fragment.finance.ClientFragment"
         android:label="fragment_client"
-        tools:layout="@layout/fragment_client" />
+        tools:layout="@layout/fragment_client">
+        <argument
+            android:name="client"
+            app:argType="kz.aura.merp.employee.data.model.Client" />
+    </fragment>
     <fragment
         android:id="@+id/demoFragment"
         android:name="kz.aura.merp.employee.fragment.dealer.DemoFragment"
         android:label="fragment_demo"
-        tools:layout="@layout/fragment_demo" />
+        tools:layout="@layout/fragment_demo">
+        <argument
+            android:name="demo"
+            app:argType="kz.aura.merp.employee.data.model.Demo" />
+    </fragment>
     <fragment
         android:id="@+id/serviceApplicationFragment"
         android:name="kz.aura.merp.employee.fragment.master.ServiceApplicationFragment"
         android:label="fragment_service_application"
-        tools:layout="@layout/fragment_service_application" />
-    <fragment
-        android:id="@+id/passCodeFragment"
-        android:name="kz.aura.merp.employee.fragment.PassCodeFragment"
-        android:label="fragment_pass_code"
-        tools:layout="@layout/fragment_pass_code" >
-        <action
-            android:id="@+id/action_passCodeFragment_to_authorizationFragment"
-            app:destination="@id/authorizationFragment" />
-        <action
-            android:id="@+id/action_passCodeFragment_to_chiefFragment"
-            app:destination="@id/chiefFragment" />
+        tools:layout="@layout/fragment_service_application">
+        <argument
+            android:name="serviceApplication"
+            app:argType="kz.aura.merp.employee.data.model.ServiceApplication" />
     </fragment>
 </navigation>

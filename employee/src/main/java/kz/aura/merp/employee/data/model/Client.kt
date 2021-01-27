@@ -1,7 +1,10 @@
 package kz.aura.merp.employee.data.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
+@Parcelize
 data class Client (
     val contractId: Long,
     val contractDate: String,
@@ -25,7 +28,7 @@ data class Client (
     var maCollectResultId: Int,
     val contractDateFormatted: String,
     val nextPaymentDateFormatted: String
-): Serializable {
+): Parcelable {
 
     override fun equals(other: Any?): Boolean {
 

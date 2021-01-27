@@ -1,7 +1,10 @@
 package kz.aura.merp.employee.data.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
+@Parcelize
 data class ServiceApplication (
     var id: Long,
     var customerId : Long,
@@ -13,7 +16,7 @@ data class ServiceApplication (
     var description: String,
     val adate: String,
     val adateFromatted: String
-) : Serializable {
+) : Parcelable {
 
     override fun equals(other: Any?): Boolean {
 
@@ -35,20 +38,6 @@ data class ServiceApplication (
         if (adateFromatted != other.adateFromatted) return false
 
         return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + customerId.hashCode()
-        result = 31 * result + address.hashCode()
-        result = 31 * result + contractId.hashCode()
-        result = 31 * result + taxiExpenseAmount.hashCode()
-        result = 31 * result + applicantName.hashCode()
-        result = 31 * result + appStatus
-        result = 31 * result + description.hashCode()
-        result = 31 * result + adate.hashCode()
-        result = 31 * result + adateFromatted.hashCode()
-        return result
     }
 
 }

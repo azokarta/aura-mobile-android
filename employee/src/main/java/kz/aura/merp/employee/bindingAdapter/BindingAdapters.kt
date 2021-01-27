@@ -1,4 +1,4 @@
-package kz.aura.merp.employee.adapter
+package kz.aura.merp.employee.bindingAdapter
 
 import android.view.View
 import androidx.databinding.BindingAdapter

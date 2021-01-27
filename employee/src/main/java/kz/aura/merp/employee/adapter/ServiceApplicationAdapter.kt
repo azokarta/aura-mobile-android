@@ -39,12 +39,6 @@ class ServiceApplicationAdapter : RecyclerView.Adapter<ServiceApplicationAdapter
         fun bind(serviceApplication: ServiceApplication) {
             binding.serviceApplication = serviceApplication
             binding.executePendingBindings()
-
-            binding.root.setOnClickListener {
-//                val intent = Intent(binding.root.context, ServiceApplicationActivity::class.java)
-//                intent.putExtra("serviceApplication", serviceApplication)
-//                binding.root.context.startActivity(intent)
-            }
         }
     }
 }

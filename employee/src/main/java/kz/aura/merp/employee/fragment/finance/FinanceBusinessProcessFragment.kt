@@ -40,7 +40,7 @@ class FinanceBusinessProcessFragment : Fragment(), StepsAdapter.Companion.Comple
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            client = it.getSerializable(ARG_PARAM1) as Client
+            client = it.getParcelable(ARG_PARAM1) as Client?
         }
     }
 
@@ -165,7 +165,7 @@ class FinanceBusinessProcessFragment : Fragment(), StepsAdapter.Companion.Comple
         fun newInstance(client: Client) =
             FinanceBusinessProcessFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM1, client)
+                    putParcelable(ARG_PARAM1, client)
                 }
             }
     }
