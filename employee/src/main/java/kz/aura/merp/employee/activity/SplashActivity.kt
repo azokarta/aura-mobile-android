@@ -20,8 +20,8 @@ class SplashActivity : AppCompatActivity() {
 
         logo.alpha = 0f
         logo.animate().setDuration(1500).alpha(1f).withEndAction {
-            if (getToken(this) != "") {
-                openActivityByPositionId(this)
+            if (!getToken(this).isNullOrBlank()) {
+                clearPreviousAndOpenActivity(this, PassCodeActivity())
             } else {
                 clearPreviousAndOpenActivity(this, AuthorizationActivity())
             }

@@ -53,6 +53,8 @@ object Helpers {
         editor.apply()
     }
 
+    fun showToast(context: Context, message: String) = Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+
     fun definePosition(positionId: Int): StaffPosition {
         // we define position of employee and return constant
         return when (positionId) {
