@@ -41,4 +41,10 @@
     <string name="successfullySaved">Successfully saved</string>
     <string name="notSaved">Not saved</string>
     <string name="completed">Completed</string>
+    <string name="passCodeTitle"> Shortcut code </string>
+    <string name="passCodeSubTitle"> Come up with a code for quick access to the application </string>
+    <string name="passCodeSignInTitle"> Hello </string>
+    <string name="passCodeSignSubTitle"> Enter the code for quick access to the application </string>
+    <string name="passCodeReEnter"> Re-enter the code </string>
+    <string name="passCodeWrong"> Code is wrong, please re-enter </string>
 </resources>

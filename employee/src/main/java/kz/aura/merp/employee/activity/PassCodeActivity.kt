@@ -2,21 +2,36 @@ package kz.aura.merp.employee.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.activity_pass_code.*
 import kz.aura.merp.employee.R
+import kz.aura.merp.employee.util.Helpers.clearPreviousAndOpenActivity
+import kz.aura.merp.employee.util.Helpers.openActivityByPositionId
 import kz.aura.merp.employee.util.Helpers.showToast
+import kz.aura.merp.employee.util.PassCodeStatus
 
 class PassCodeActivity : AppCompatActivity() {
 
     private val code = arrayListOf<Int>()
+    private lateinit var passCodeStatus: PassCodeStatus
+    private val firstCreatedCode = arrayListOf<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pass_code)
 
+        passCodeStatus = intent.getSerializableExtra("passCodeStatus") as PassCodeStatus
+
         setListenersOfNumbers()
+
+        if (passCodeStatus == PassCodeStatus.VERIFY) {
+            changeText()
+        }
+    }
+
+    private fun changeText(title: String = "", subTitle: String = "") {
+        passCodeTitle.text = title
+        passCodeSubTitle.text = subTitle
     }
 
     private fun setListenersOfNumbers() {
@@ -75,14 +90,34 @@ class PassCodeActivity : AppCompatActivity() {
         code.add(num)
 
         if (code.size == 4) {
-            val typedCode = code.joinToString(separator = "")
-            val userCode = receivePassCode()
-            if (userCode == typedCode) {
-                showToast(this, "Success")
-            } else {
-                showToast(this, "WRONG")
-                paintLinesToBlack()
-                code.clear()
+            when (passCodeStatus) {
+                PassCodeStatus.CREATE -> {
+                    if (firstCreatedCode.isEmpty()) {
+                        firstCreatedCode.addAll(code)
+                        code.clear()
+                        paintLinesToBlack()
+                        changeText(R.string.passCodeTitle.toString(),R.string.passCodeReEnter.toString())
+                    } else if (firstCreatedCode == code) {
+                        savePassCode()
+                        openActivityByPositionId(this)
+                    } else {
+                        paintLinesToBlack()
+                        code.clear()
+                    }
+                }
+
+                PassCodeStatus.VERIFY -> {
+                    changeText(R.string.passCodeSignInTitle.toString(),R.string.passCodeSubTitle.toString())
+                    val typedCode = code.joinToString(separator = "")
+                    val userCode = receivePassCode()
+                    if (userCode == typedCode) {
+                        openActivityByPositionId(this)
+                    } else {
+                        showToast(this, R.string.passCodeWrong.toString())
+                        paintLinesToBlack()
+                        code.clear()
+                    }
+                }
             }
         }
     }
@@ -99,7 +134,15 @@ class PassCodeActivity : AppCompatActivity() {
         }
     }
 
-    private fun receivePassCode() = PreferenceManager.getDefaultSharedPreferences(this).getString("passCode", "")
+    private fun savePassCode() {
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .edit()
+            .putString("passCode", code.joinToString(separator = ""))
+            .apply()
+    }
+
+    private fun receivePassCode() =
+        PreferenceManager.getDefaultSharedPreferences(this).getString("passCode", "")
 
     private fun paintLinesToBlack() {
         typed1.setBackgroundResource(R.color.colorBlack)

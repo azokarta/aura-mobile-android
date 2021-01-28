@@ -51,6 +51,12 @@
     <string name="_8" translatable="false">8</string>
     <string name="_9" translatable="false">9</string>
     <string name="_0" translatable="false">0</string>
+    <string name="passCodeTitle"> Код быстрого доступа </string>
+    <string name="passCodeSubTitle"> Придумайте код для быстрого доступа к приложению </string>
+    <string name="passCodeSignInTitle"> Здравствуйте </string>
+    <string name="passCodeReEnter"> Введите код повторно </string>
+    <string name="passCodeSignSubTitle"> Введите код для быстрого доступа к приложению </string>
+    <string name="passCodeWrong"> Код неправильно, введите повторно </string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>

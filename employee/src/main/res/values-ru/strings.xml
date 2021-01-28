@@ -41,4 +41,10 @@
     <string name="successfullySaved">Успешно сохранен</string>
     <string name="notSaved">Не сохранен</string>
     <string name="completed">Завершен</string>
+    <string name="passCodeTitle"> Код быстрого доступа </string>
+    <string name="passCodeSubTitle"> Придумайте код для быстрого доступа к приложению </string>
+    <string name="passCodeSignInTitle"> Здравствуйте </string>
+    <string name="passCodeSignSubTitle"> Введите код для быстрого доступа к приложению </string>
+    <string name="passCodeReEnter"> Введите код повторно </string>
+    <string name="passCodeWrong"> Код неправильно, введите повторно </string>
 </resources>
