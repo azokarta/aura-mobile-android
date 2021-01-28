@@ -73,7 +73,7 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
 
     private fun setObserve() {
         mReferenceViewModel.serviceApplicationStatus.observe(viewLifecycleOwner, Observer { data ->
-            binding.resultBtn.text = data[serviceApplication!!.appStatus].nameRu
+            binding.resultBtn.text = data[serviceApplication!!.appStatus!!].nameRu
             results.addAll(data)
         })
         mReferenceViewModel.trackStepOrdersBusinessProcesses.observe(viewLifecycleOwner, Observer { data ->

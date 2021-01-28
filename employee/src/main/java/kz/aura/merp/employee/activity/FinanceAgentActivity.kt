@@ -1,73 +1,80 @@
-package kz.aura.merp.employee.fragment.finance
+package kz.aura.merp.employee.activity
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import kotlinx.android.synthetic.main.network_disconnected.*
-import kotlinx.android.synthetic.main.network_disconnected.view.*
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.activity.SettingsActivity
 import kz.aura.merp.employee.adapter.ClientAdapter
 import kz.aura.merp.employee.data.SharedViewModel
 import kz.aura.merp.employee.data.model.Client
 import kz.aura.merp.employee.data.viewmodel.FinanceViewModel
-import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
-import kz.aura.merp.employee.databinding.FragmentFinanceBinding
 import kz.aura.merp.employee.util.Helpers
+import kz.aura.merp.employee.util.LanguageHelper
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.network_disconnected.*
+import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
+import kz.aura.merp.employee.databinding.ActivityFinanceAgentBinding
+import kz.aura.merp.employee.util.Helpers.exceptionHandler
+import kz.aura.merp.employee.util.Helpers.verifyAvailableNetwork
 import kz.aura.merp.employee.util.Permissions
 
-class FinanceFragment : Fragment() {
+class FinanceAgentActivity : AppCompatActivity() {
+
     private val mFinanceViewModel: FinanceViewModel by viewModels()
     private val mSharedViewModel: SharedViewModel by viewModels()
     private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private val finAdapter: ClientAdapter by lazy { ClientAdapter() }
     private var collectorId: Long? = null
-    private lateinit var _binding: FragmentFinanceBinding
-    private val binding get() = _binding
+    private lateinit var binding: ActivityFinanceAgentBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        LanguageHelper.updateLanguage(this)
+
         // Data binding
-        _binding = FragmentFinanceBinding.inflate(layoutInflater)
+        binding = ActivityFinanceAgentBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         binding.mSharedViewModel = mSharedViewModel
+        val view = binding.root
+        setContentView(view)
+
+        setSupportActionBar(binding.toolbar as Toolbar)
+        supportActionBar?.title = getString(R.string.finAgent)
 
         // Get collector id
-        collectorId = Helpers.getStaffId(requireContext())
+        collectorId = Helpers.getStaffId(this)
 
         // Setup RecyclerView
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.layoutManager = LinearLayoutManager(applicationContext)
         binding.recyclerView.adapter = finAdapter
 
         // Observe MutableLiveData
-        mFinanceViewModel.clients.observe(viewLifecycleOwner, Observer { data ->
+        mFinanceViewModel.clients.observe(this, Observer { data ->
             mSharedViewModel.checkData(data)
             finAdapter.setData(data)
         })
 
-        Permissions(requireContext(), requireActivity()).enableLocation()
+        Permissions(this, this).enableLocation()
 
         // Observe errors
-        mFinanceViewModel.error.observe(viewLifecycleOwner, Observer { error ->
+        mFinanceViewModel.error.observe(this, Observer { error ->
             checkError(error)
         })
-        mReferenceViewModel.error.observe(viewLifecycleOwner, Observer { error ->
+        mReferenceViewModel.error.observe(this, Observer { error ->
             checkError(error)
         })
 
         // If network is disconnected and user clicks restart, get data again
-        binding.networkDisconnected.restart.setOnClickListener {
-            if (Helpers.verifyAvailableNetwork(requireContext())) {
+        restart.setOnClickListener {
+            if (verifyAvailableNetwork(this)) {
                 mFinanceViewModel.fetchClients(collectorId!!) // fetch clients
                 binding.progressBar.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.VISIBLE
@@ -77,7 +84,7 @@ class FinanceFragment : Fragment() {
 
         // Fetch clients
         mFinanceViewModel.fetchClients(collectorId!!)
-        return binding.root
+
     }
 
     override fun onResume() {
@@ -90,36 +97,36 @@ class FinanceFragment : Fragment() {
         }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val menuInflater = menuInflater
-//        menuInflater.inflate(R.menu.menu, menu)
-//
-//        return super.onCreateOptionsMenu(menu)
-//    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val menuInflater = menuInflater
+        menuInflater.inflate(R.menu.menu, menu)
 
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            R.id.menu_settings -> {
-//                val intent = Intent(requireContext(), SettingsActivity::class.java)
-//                startActivity(intent)
-//            }
-//        }
-//
-//        return super.onOptionsItemSelected(item)
-//    }
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_settings -> {
+                val intent = Intent(applicationContext, SettingsActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
 
     private fun checkError(error: Any) {
         binding.progressBar.visibility = View.INVISIBLE // hide progress bar
-        if (!Helpers.verifyAvailableNetwork(requireContext())) {
+        if (!verifyAvailableNetwork(this)) {
             binding.networkDisconnected.visibility = View.VISIBLE
             binding.recyclerView.visibility = View.INVISIBLE
         } else {
-            Helpers.exceptionHandler(error, requireContext()) // Show error
+            exceptionHandler(error, this) // Show error
         }
     }
 
     private fun getData(): Client? {
-        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val client = pref.getString("data", "")
         return if (client != "") {
             val obj = Gson().fromJson<Client>(client, Client::class.java)
@@ -130,9 +137,10 @@ class FinanceFragment : Fragment() {
     }
 
     private fun removeData() {
-        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = pref.edit()
         editor.remove("data")
         editor.apply()
     }
+
 }

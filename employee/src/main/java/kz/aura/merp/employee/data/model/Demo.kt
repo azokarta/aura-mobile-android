@@ -7,18 +7,18 @@ import java.io.Serializable
 @Parcelize
 data class Demo(
     val demoId: Long,
-    val clientName: String,
-    val address: String,
-    var price: Double,
-    var note: String,
-    val crmPhoneDtoList: ArrayList<PhoneNumber>,
+    val clientName: String?,
+    val address: String?,
+    var price: Double?,
+    var note: String?,
+    val crmPhoneDtoList: ArrayList<PhoneNumber>?,
     var resultId: Int?,
-    val dateTime: String,
-    val customerId: Long,
-    val contractNumber: Long,
-    val dealerId: Long,
-    val recoId: Long,
-    val dateTimeFormatted: String,
+    val dateTime: String?,
+    val customerId: Long?,
+    val contractNumber: Long?,
+    val dealerId: Long?,
+    val recoId: Long?,
+    val dateTimeFormatted: String?,
     var ocrDemoStatus: String?
 ): Parcelable {
 

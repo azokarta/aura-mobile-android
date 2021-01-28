@@ -1,19 +1,20 @@
 package kz.aura.merp.employee.bindingAdapter
 
+import android.content.Intent
 import android.view.View
 import androidx.databinding.BindingAdapter
-import androidx.navigation.findNavController
+import kz.aura.merp.employee.activity.ClientActivity
 import kz.aura.merp.employee.data.model.Client
-import kz.aura.merp.employee.fragment.finance.FinanceFragmentDirections
 
 class FinanceBinding {
     companion object {
-        @BindingAdapter("android:sendClientToClientFragment")
+        @BindingAdapter("android:sendClientToClientActivity")
         @JvmStatic
-        fun sendClientToClientFragment(view: View, client: Client) {
+        fun sendClientToClientActivity(view: View, client: Client) {
             view.setOnClickListener {
-                val action = FinanceFragmentDirections.actionFinanceFragmentToClientFragment(client)
-                it.findNavController().navigate(action)
+                val intent = Intent(view.context, ClientActivity::class.java)
+                intent.putExtra("client", client)
+                view.context.startActivity(intent)
             }
         }
     }

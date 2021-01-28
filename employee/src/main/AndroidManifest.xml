@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="kz.aura.merp.employee" >
+    package="kz.aura.merp.employee">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -13,24 +13,60 @@
         android:required="true" />
 
     <application
-        android:allowBackup="true"
         android:name=".Application"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        >
-        <activity
-            android:name=".activity.MainActivity"
-            android:windowSoftInputMode="adjustPan" >
+        android:usesCleartextTraffic="true">
+        <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.ServiceApplicationActivity"
+            android:parentActivityName=".activity.MasterActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kz.aura.merp.employee.activity.MasterActivity" />
+        </activity>
+        <activity
+            android:name=".activity.OcrWebActivity"
+            android:parentActivityName=".activity.AuthorizationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kz.aura.merp.employee.activity.AuthorizationActivity" />
+        </activity>
+        <activity android:name=".activity.MasterActivity" />
+        <activity android:name=".activity.FinanceAgentActivity" />
+        <activity
+            android:name=".activity.DemoActivity"
+            android:parentActivityName=".activity.DealerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kz.aura.merp.employee.activity.DealerActivity" />
+        </activity>
+        <activity android:name=".activity.DealerActivity" />
+        <activity
+            android:name=".activity.ClientActivity"
+            android:parentActivityName=".activity.FinanceAgentActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kz.aura.merp.employee.activity.FinanceAgentActivity" />
+        </activity>
+        <activity android:name=".activity.ChiefActivity" />
+        <activity
+            android:name=".activity.AuthorizationActivity"
+            android:configChanges="locale" />
+        <activity android:name=".activity.MapActivity" />
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:configChanges="locale" />
     </application>
 
 </manifest>

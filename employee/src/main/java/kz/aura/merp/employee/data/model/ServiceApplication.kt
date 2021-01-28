@@ -7,15 +7,15 @@ import java.io.Serializable
 @Parcelize
 data class ServiceApplication (
     var id: Long,
-    var customerId : Long,
-    var address: String = "",
-    var contractId: Long,
-    var taxiExpenseAmount : Double,
-    val applicantName: String,
+    var customerId : Long?,
+    var address: String? = "",
+    var contractId: Long?,
+    var taxiExpenseAmount : Double?,
+    val applicantName: String?,
     var appStatus: Int,
-    var description: String,
-    val adate: String,
-    val adateFromatted: String
+    var description: String?,
+    val adate: String?,
+    val adateFromatted: String?
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {

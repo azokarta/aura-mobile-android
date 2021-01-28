@@ -1,55 +1,63 @@
-package kz.aura.merp.employee.fragment.dealer
+package kz.aura.merp.employee.activity
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import kotlinx.android.synthetic.main.network_disconnected.*
-import kotlinx.android.synthetic.main.network_disconnected.view.*
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.activity.SettingsActivity
 import kz.aura.merp.employee.adapter.DemoAdapter
 import kz.aura.merp.employee.data.SharedViewModel
 import kz.aura.merp.employee.data.model.Demo
 import kz.aura.merp.employee.data.viewmodel.DealerViewModel
+import kz.aura.merp.employee.databinding.ActivityDealerBinding
+import kz.aura.merp.employee.util.Helpers.exceptionHandler
+import kz.aura.merp.employee.util.Helpers.getStaffId
+import kz.aura.merp.employee.util.LanguageHelper
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_dealer.*
+import kotlinx.android.synthetic.main.network_disconnected.*
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
-import kz.aura.merp.employee.databinding.FragmentDealerBinding
-import kz.aura.merp.employee.util.Helpers
+import kz.aura.merp.employee.util.Helpers.verifyAvailableNetwork
 import kz.aura.merp.employee.util.Permissions
 
-class DealerFragment : Fragment() {
+class DealerActivity : AppCompatActivity() {
 
     private val mDealerViewModel: DealerViewModel by viewModels()
     private val mSharedViewModel: SharedViewModel by viewModels()
     private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private val adapter: DemoAdapter by lazy { DemoAdapter() }
-    private lateinit var _binding: FragmentDealerBinding
-    private val binding get() = _binding
+    private lateinit var binding: ActivityDealerBinding
     private var dealerId: Long? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        LanguageHelper.updateLanguage(this)
+
         // Data binding
-        _binding = FragmentDealerBinding.inflate(layoutInflater)
+        binding = ActivityDealerBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         binding.mSharedViewModel = mSharedViewModel
+        val view = binding.root
+        setContentView(view)
 
-        Permissions(requireContext(), requireActivity()).enableLocation()
+        setSupportActionBar(toolbar as Toolbar)
+        supportActionBar?.title = getString(R.string.dealer)
+
+        Permissions(this, this).enableLocation()
 
         // Get dealer id
-        dealerId = Helpers.getStaffId(requireContext())
+        dealerId = getStaffId(this)
 
         // Observe MutableLiveData
-        mDealerViewModel.demoList.observe(viewLifecycleOwner, Observer { data ->
+        mDealerViewModel.demoList.observe(this, Observer { data ->
             mSharedViewModel.checkData(data)
             adapter.setData(data)
         })
@@ -58,27 +66,25 @@ class DealerFragment : Fragment() {
         setupRecyclerview()
 
         // Observe errors
-        mDealerViewModel.error.observe(viewLifecycleOwner, Observer { error ->
+        mDealerViewModel.error.observe(this, Observer { error ->
             checkError(error)
         })
-        mReferenceViewModel.error.observe(viewLifecycleOwner, Observer { error ->
+        mReferenceViewModel.error.observe(this, Observer { error ->
             checkError(error)
         })
 
         // If network is disconnected and user clicks restart, get data again
-        binding.networkDisconnected.restart.setOnClickListener {
-            if (Helpers.verifyAvailableNetwork(requireContext())) {
+        restart.setOnClickListener {
+            if (verifyAvailableNetwork(this)) {
                 mDealerViewModel.fetchAll(dealerId!!) // fetch demo list
-                binding.progressBar.visibility = View.VISIBLE
-                binding.recyclerView.visibility = View.VISIBLE
-                binding.networkDisconnected.visibility = View.GONE
+                progress_bar.visibility = View.VISIBLE
+                recyclerView.visibility = View.VISIBLE
+                network_disconnected.visibility = View.GONE
             }
         }
 
         // Fetch demoList
         mDealerViewModel.fetchAll(dealerId!!)
-
-        return binding.root
     }
 
     override fun onResume() {
@@ -93,25 +99,25 @@ class DealerFragment : Fragment() {
     }
 
     private fun checkError(error: Any) {
-        binding.progressBar.visibility = View.INVISIBLE // hide progress bar
-        if (!Helpers.verifyAvailableNetwork(requireContext())) {
-            binding.networkDisconnected.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.INVISIBLE
+        progress_bar.visibility = View.INVISIBLE // hide progress bar
+        if (!verifyAvailableNetwork(this)) {
+            network_disconnected.visibility = View.VISIBLE
+            recyclerView.visibility = View.INVISIBLE
         } else {
-            Helpers.exceptionHandler(error, requireContext()) // Show error
+            exceptionHandler(error, this) // Show error
         }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val menuInflater = menuInflater
-//        menuInflater.inflate(R.menu.menu, menu)
-//
-//        return super.onCreateOptionsMenu(menu)
-//    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val menuInflater = menuInflater
+        menuInflater.inflate(R.menu.menu, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
 
     private fun setupRecyclerview() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -123,12 +129,12 @@ class DealerFragment : Fragment() {
     }
 
     private fun toActivity(activity: Activity) {
-        val intent = Intent(requireContext(), activity::class.java)
+        val intent = Intent(applicationContext, activity::class.java)
         startActivity(intent)
     }
 
     private fun getData(): Demo? {
-        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val demo = pref.getString("data", "")
         return if (demo != "") {
             val obj = Gson().fromJson<Demo>(demo, Demo::class.java)
@@ -139,7 +145,7 @@ class DealerFragment : Fragment() {
     }
 
     private fun removeData() {
-        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = pref.edit()
         editor.remove("data")
         editor.apply()

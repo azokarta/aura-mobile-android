@@ -1,22 +1,22 @@
 package kz.aura.merp.employee.bindingAdapter
 
+import android.content.Intent
 import android.view.View
 import androidx.databinding.BindingAdapter
-import androidx.navigation.findNavController
-import kz.aura.merp.employee.R
+import kz.aura.merp.employee.activity.DemoActivity
 import kz.aura.merp.employee.data.model.Demo
-import kz.aura.merp.employee.fragment.dealer.DealerFragmentDirections
-import kz.aura.merp.employee.fragment.dealer.DemoFragmentDirections
+
 
 class DealerBinding {
 
     companion object {
-        @BindingAdapter("android:sendDemoToDemoFragment")
+        @BindingAdapter("android:sendDemoToDemoActivity")
         @JvmStatic
-        fun sendDemoToDemoFragment(view: View, demo: Demo) {
+        fun sendDemoToDemoActivity(view: View, demo: Demo) {
             view.setOnClickListener {
-                val action = DealerFragmentDirections.actionDealerFragmentToDemoFragment(demo)
-                it.findNavController().navigate(action)
+                val intent = Intent(view.context, DemoActivity::class.java)
+                intent.putExtra("demo", demo)
+                view.context.startActivity(intent)
             }
         }
     }

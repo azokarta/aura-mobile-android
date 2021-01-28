@@ -49,7 +49,7 @@ class DemoDataFragment : Fragment() {
             demo = data
             binding.demo = data
             binding.executePendingBindings()
-            demoDataPhoneNumberAdapter.setData(demo!!.crmPhoneDtoList)
+            demo!!.crmPhoneDtoList?.let { demoDataPhoneNumberAdapter.setData(it) }
         })
 
         // Initialize Listeners
@@ -63,7 +63,7 @@ class DemoDataFragment : Fragment() {
         }
 
         // Set phone list
-        demoDataPhoneNumberAdapter.setData(demo!!.crmPhoneDtoList)
+        demo!!.crmPhoneDtoList?.let { demoDataPhoneNumberAdapter.setData(it) }
 
         return binding.root
     }

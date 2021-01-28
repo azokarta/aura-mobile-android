@@ -15,32 +15,27 @@ import java.lang.Exception
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val apiService = ServiceBuilder.buildService(AuthApi::class.java, application)
 
+    val transactionId = MutableLiveData<String>()
     val onErrorToken = MutableLiveData<Boolean>()
     val positionId = MutableLiveData<Int>()
     val error = MutableLiveData<Any>()
 
-    fun fetchTransactionId(): MutableLiveData<String> {
-        val transactionId: MutableLiveData<String> = MutableLiveData()
+    fun fetchTransactionId() = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val response = apiService.fetchTransactionId()
 
-        viewModelScope.launch {
-            try {
-                val response = apiService.fetchTransactionId()
-
-                if (response.isSuccessful) {
-                    transactionId.postValue(response.body()!!.data)
-                } else {
-                    error.postValue(response.errorBody())
-                }
-            } catch (e: Exception) {
-                println(e)
-                error.postValue(e)
+            if (response.isSuccessful) {
+                transactionId.postValue(response.body()!!.data)
+            } else {
+                error.postValue(response.errorBody())
             }
+        } catch (e: Exception) {
+            println(e)
+            error.postValue(e)
         }
-
-        return transactionId
     }
 
-    fun fetchToken(transactionId: String) = viewModelScope.launch {
+    fun fetchToken(transactionId: String) = viewModelScope.launch(Dispatchers.IO) {
         try {
             val phoneNumber = getPhoneNumber()
             val response = apiService.fetchToken(phoneNumber, transactionId)

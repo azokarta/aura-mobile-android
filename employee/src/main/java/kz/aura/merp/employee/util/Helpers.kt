@@ -11,16 +11,18 @@ import android.net.ConnectivityManager
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import kz.aura.merp.employee.R
+import kz.aura.merp.employee.activity.ChiefActivity
+import kz.aura.merp.employee.activity.DealerActivity
+import kz.aura.merp.employee.activity.FinanceAgentActivity
+import kz.aura.merp.employee.activity.MasterActivity
 import kz.aura.merp.employee.data.model.Auth
 import kz.aura.merp.employee.data.model.Error
 import kz.aura.merp.employee.data.model.Staff
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.error_dialog.view.*
-import kz.aura.merp.employee.activity.MainActivity
 import okhttp3.ResponseBody
 import java.lang.Exception
 
@@ -92,15 +94,18 @@ object Helpers {
     fun openActivityByPositionId(context: Context) {
         val positionId = getPositionId(context)
         when (positionId?.let { definePosition(it) }) {
-//            StaffPosition.DEALER -> clearPreviousAndOpenActivity(context, DealerActivity())
-//            StaffPosition.MASTER -> clearPreviousAndOpenActivity(context, MasterActivity())
-//            StaffPosition.FIN_AGENT -> clearPreviousAndOpenActivity(context, FinanceAgentActivity())
-//            else -> clearPreviousAndOpenActivity(context, ChiefActivity())
+            StaffPosition.DEALER -> clearPreviousAndOpenActivity(context, DealerActivity())
+            StaffPosition.MASTER -> clearPreviousAndOpenActivity(context, MasterActivity())
+            StaffPosition.FIN_AGENT -> clearPreviousAndOpenActivity(context, FinanceAgentActivity())
+            else -> clearPreviousAndOpenActivity(context, ChiefActivity())
         }
     }
 
-    fun hideToolbar(activity: FragmentActivity) {
-        (activity as MainActivity).supportActionBar?.hide()
+    fun clearPreviousAndOpenActivity(context: Context, activity: Activity) {
+        // Clear previous activities and open new activity
+        val intent = Intent(context, activity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
 
     fun <T> saveDataByKey(context: Context, data: T, key: String) {
@@ -149,8 +154,6 @@ object Helpers {
         drawable.draw(canvas)
         return bitmap
     }
-
-    fun showToast(context: Context, message: String) = Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 
     fun exceptionHandler(exception: Any, context: Context) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.error_dialog, null)

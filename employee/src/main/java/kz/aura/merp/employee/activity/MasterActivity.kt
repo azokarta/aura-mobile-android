@@ -1,86 +1,91 @@
-package kz.aura.merp.employee.fragment.master
+package kz.aura.merp.employee.activity
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-//import kotlinx.android.synthetic.main.activity_master.*
-import kotlinx.android.synthetic.main.network_disconnected.*
-import kotlinx.android.synthetic.main.network_disconnected.view.*
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.activity.SettingsActivity
 import kz.aura.merp.employee.adapter.ServiceApplicationAdapter
 import kz.aura.merp.employee.data.SharedViewModel
 import kz.aura.merp.employee.data.model.ServiceApplication
 import kz.aura.merp.employee.data.viewmodel.MasterViewModel
-import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
-import kz.aura.merp.employee.databinding.FragmentMasterBinding
-//import kz.aura.merp.employee.databinding.ActivityMasterBinding
+import kz.aura.merp.employee.databinding.ActivityMasterBinding
 import kz.aura.merp.employee.util.Helpers
+import kz.aura.merp.employee.util.LanguageHelper
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_master.network_disconnected
+import kotlinx.android.synthetic.main.activity_master.progress_bar
+import kotlinx.android.synthetic.main.activity_master.recyclerView
+import kotlinx.android.synthetic.main.activity_master.toolbar
+import kotlinx.android.synthetic.main.network_disconnected.*
+import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.util.Permissions
 
-class MasterFragment : Fragment() {
+class MasterActivity : AppCompatActivity() {
 
     private val mMasterViewModel: MasterViewModel by viewModels()
     private val mSharedViewModel: SharedViewModel by viewModels()
     private val mReferenceViewModel: ReferenceViewModel by viewModels()
     private val serviceApplicationAdapter: ServiceApplicationAdapter by lazy { ServiceApplicationAdapter() }
     private var masterId: Long? = null
-    private lateinit var binding: FragmentMasterBinding
+    private lateinit var binding: ActivityMasterBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        LanguageHelper.updateLanguage(this)
+
         // Data binding
-        binding = FragmentMasterBinding.inflate(layoutInflater)
+        binding = ActivityMasterBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         binding.mSharedViewModel = mSharedViewModel
+        val view = binding.root
+        setContentView(view)
 
-        Permissions(requireContext(), requireActivity()).enableLocation()
+        setSupportActionBar(toolbar as Toolbar)
+        supportActionBar?.title = getString(R.string.master)
+
+        Permissions(this, this).enableLocation()
 
         // Get master id
-        masterId = Helpers.getStaffId(requireContext())
+        masterId = Helpers.getStaffId(this)
 
         // Setup RecyclerView
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = serviceApplicationAdapter
+        recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+        recyclerView.adapter = serviceApplicationAdapter
 
         // Observe MutableLiveData
-        mMasterViewModel.applications.observe(viewLifecycleOwner, Observer { data ->
+        mMasterViewModel.applications.observe(this, Observer { data ->
             mSharedViewModel.checkData(data)
             serviceApplicationAdapter.setData(data)
         })
 
         // Observe errors
-        mMasterViewModel.error.observe(viewLifecycleOwner, Observer { error ->
+        mMasterViewModel.error.observe(this, Observer { error ->
             checkError(error)
         })
-        mReferenceViewModel.error.observe(viewLifecycleOwner, Observer { error ->
+        mReferenceViewModel.error.observe(this, Observer { error ->
             checkError(error)
         })
 
         // If network is disconnected and user clicks restart, get data again
-        binding.networkDisconnected.restart.setOnClickListener {
-            if (Helpers.verifyAvailableNetwork(requireContext())) {
+        restart.setOnClickListener {
+            if (Helpers.verifyAvailableNetwork(this)) {
                 mMasterViewModel.fetchServiceApplications(masterId!!) // fetch serviceApplications
-                binding.progressBar.visibility = View.VISIBLE
-                binding.recyclerView.visibility = View.VISIBLE
-                binding.networkDisconnected.visibility = View.GONE
+                progress_bar.visibility = View.VISIBLE
+                recyclerView.visibility = View.VISIBLE
+                network_disconnected.visibility = View.GONE
             }
         }
 
         // Fetch serviceApplications
         mMasterViewModel.fetchServiceApplications(masterId!!)
-
-        return binding.root
     }
 
     override fun onResume() {
@@ -93,16 +98,16 @@ class MasterFragment : Fragment() {
         }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val menuInflater = menuInflater
-//        menuInflater.inflate(R.menu.menu, menu)
-//        return super.onCreateOptionsMenu(menu)
-//    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val menuInflater = menuInflater
+        menuInflater.inflate(R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_settings -> {
-                val intent = Intent(requireContext(), SettingsActivity::class.java)
+                val intent = Intent(applicationContext, SettingsActivity::class.java)
                 startActivity(intent)
             }
         }
@@ -110,17 +115,17 @@ class MasterFragment : Fragment() {
     }
 
     private fun checkError(error: Any) {
-        binding.progressBar.visibility = View.INVISIBLE // hide progress bar
-        if (!Helpers.verifyAvailableNetwork(requireContext())) {
-            binding.networkDisconnected.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.INVISIBLE
+        progress_bar.visibility = View.INVISIBLE // hide progress bar
+        if (!Helpers.verifyAvailableNetwork(this)) {
+            network_disconnected.visibility = View.VISIBLE
+            recyclerView.visibility = View.INVISIBLE
         } else {
-            Helpers.exceptionHandler(error, requireContext()) // Show error
+            Helpers.exceptionHandler(error, this) // Show error
         }
     }
 
     private fun getData(): ServiceApplication? {
-        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val serviceApplication = pref.getString("data", "")
         return if (serviceApplication != "") {
             val obj = Gson().fromJson<ServiceApplication>(serviceApplication, ServiceApplication::class.java)
@@ -131,7 +136,7 @@ class MasterFragment : Fragment() {
     }
 
     private fun removeData() {
-        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = pref.edit()
         editor.remove("data")
         editor.apply()

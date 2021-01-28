@@ -15,7 +15,7 @@
         android:layout_margin="12dp"
         android:clickable="true"
         android:focusable="true"
-        android:sendDemoToDemoFragment="@{demo}"
+        android:sendDemoToDemoActivity="@{demo}"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp">
 

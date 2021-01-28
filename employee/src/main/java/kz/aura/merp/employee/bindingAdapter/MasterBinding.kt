@@ -1,19 +1,20 @@
 package kz.aura.merp.employee.bindingAdapter
 
+import android.content.Intent
 import android.view.View
 import androidx.databinding.BindingAdapter
-import androidx.navigation.findNavController
+import kz.aura.merp.employee.activity.ServiceApplicationActivity
 import kz.aura.merp.employee.data.model.ServiceApplication
-import kz.aura.merp.employee.fragment.master.MasterFragmentDirections
 
 class MasterBinding {
     companion object {
-        @BindingAdapter("android:sendServiceApplicationToServiceApplicationFragment")
+        @BindingAdapter("android:sendServAppToServAppActivity")
         @JvmStatic
-        fun sendServiceApplicationToServiceApplicationFragment(view: View, serviceApplication: ServiceApplication) {
+        fun sendServAppToServAppActivity(view: View, serviceApplication: ServiceApplication) {
             view.setOnClickListener {
-                val action = MasterFragmentDirections.actionMasterFragmentToServiceApplicationFragment(serviceApplication)
-                it.findNavController().navigate(action)
+                val intent = Intent(view.context, ServiceApplicationActivity::class.java)
+                intent.putExtra("serviceApplication", serviceApplication)
+                view.context.startActivity(intent)
             }
         }
     }

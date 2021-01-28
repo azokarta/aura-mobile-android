@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.AuthorizationFragment">
+    tools:context="kz.aura.merp.employee.activity.AuthorizationActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -44,8 +44,8 @@
             app:layout_constraintStart_toEndOf="@+id/ccp"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/signIn"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sign_in_btn"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"
             android:layout_height="55dp"
@@ -56,16 +56,16 @@
             app:layout_constraintStart_toStartOf="@+id/ccp"
             app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/button2"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"
             android:layout_height="55dp"
             android:layout_marginTop="16dp"
             android:text="Test"
-            app:layout_constraintEnd_toEndOf="@+id/signIn"
-            app:layout_constraintStart_toStartOf="@+id/signIn"
-            app:layout_constraintTop_toBottomOf="@+id/signIn" />
+            app:layout_constraintEnd_toEndOf="@+id/sign_in_btn"
+            app:layout_constraintStart_toStartOf="@+id/sign_in_btn"
+            app:layout_constraintTop_toBottomOf="@+id/sign_in_btn" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -92,6 +92,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

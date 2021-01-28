@@ -72,7 +72,7 @@ class FinanceBusinessProcessFragment : Fragment(), StepsAdapter.Companion.Comple
 
     private fun setObserve() {
         mReferenceViewModel.maCollectResults.observe(viewLifecycleOwner, Observer { data ->
-            binding.resultBtn.text = data[client!!.maCollectResultId].nameRu
+            binding.resultBtn.text = data[client!!.maCollectResultId!!].nameRu
             results.addAll(data)
         })
         mReferenceViewModel.trackStepOrdersBusinessProcesses.observe(viewLifecycleOwner, Observer { data ->
