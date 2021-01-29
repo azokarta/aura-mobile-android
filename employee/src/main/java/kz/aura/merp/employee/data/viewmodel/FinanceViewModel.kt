@@ -21,7 +21,7 @@ class FinanceViewModel (application: Application) : AndroidViewModel(application
     val trackEmpProcessCollectMoney = MutableLiveData<ArrayList<TrackEmpProcess>>()
     val updatedClient = MutableLiveData<Client>()
 
-    fun fetchClients(collectorId: Long) = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchClients(collectorId: Long) = viewModelScope.launch {
         try {
             val response = apiService.fetchClients(collectorId)
 
@@ -35,7 +35,7 @@ class FinanceViewModel (application: Application) : AndroidViewModel(application
         }
     }
 
-    fun fetchTrackEmpProcessCollectMoney(maCollectMoneyId: Long) = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchTrackEmpProcessCollectMoney(maCollectMoneyId: Long) = viewModelScope.launch {
         try {
             val response = apiService.fetchTrackEmpProcessCollectMoney(maCollectMoneyId)
 
@@ -49,7 +49,7 @@ class FinanceViewModel (application: Application) : AndroidViewModel(application
         }
     }
 
-    fun updateClient(client: Client) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateClient(client: Client) = viewModelScope.launch {
         try {
             val response = apiService.updateClient(client)
 
@@ -64,7 +64,7 @@ class FinanceViewModel (application: Application) : AndroidViewModel(application
         }
     }
 
-    fun updateBusinessProcessStep(trackEmpProcess: TrackEmpProcess) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateBusinessProcessStep(trackEmpProcess: TrackEmpProcess) = viewModelScope.launch {
         try {
             val response = apiService.updateBusinessProcessStep(trackEmpProcess)
 

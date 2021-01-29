@@ -20,7 +20,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     val positionId = MutableLiveData<Int>()
     val error = MutableLiveData<Any>()
 
-    fun fetchTransactionId() = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchTransactionId() = viewModelScope.launch {
         try {
             val response = apiService.fetchTransactionId()
 
@@ -30,12 +30,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 error.postValue(response.errorBody())
             }
         } catch (e: Exception) {
-            println(e)
             error.postValue(e)
         }
     }
 
-    fun fetchToken(transactionId: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchToken(transactionId: String) = viewModelScope.launch {
         try {
             val phoneNumber = getPhoneNumber()
             val response = apiService.fetchToken(phoneNumber, transactionId)

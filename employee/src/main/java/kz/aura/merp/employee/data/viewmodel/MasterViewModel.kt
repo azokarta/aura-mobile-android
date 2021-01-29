@@ -22,7 +22,7 @@ class MasterViewModel(application: Application) : AndroidViewModel(application) 
     val updatedServiceApplication = MutableLiveData<ServiceApplication>()
     val error = MutableLiveData<Any>()
 
-    fun fetchServiceApplications(masterId: Long) = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchServiceApplications(masterId: Long) = viewModelScope.launch {
         try {
             val response = apiService.fetchApplications(masterId)
 
@@ -36,7 +36,7 @@ class MasterViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun fetchTrackEmpProcessServiceApplication(serviceApplicationId: Long) = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchTrackEmpProcessServiceApplication(serviceApplicationId: Long) = viewModelScope.launch {
         try {
             val response = apiService.fetchTrackEmpProcessServiceApplication(serviceApplicationId)
 
@@ -50,7 +50,7 @@ class MasterViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun updateServiceApplication(serviceApplication: ServiceApplication) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateServiceApplication(serviceApplication: ServiceApplication) = viewModelScope.launch {
         try {
             val response = apiService.updateServiceApplication(serviceApplication)
             if (response.isSuccessful) {
@@ -64,7 +64,7 @@ class MasterViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun updateStepBusinessProcess(trackEmpProcess: TrackEmpProcess) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateStepBusinessProcess(trackEmpProcess: TrackEmpProcess) = viewModelScope.launch {
         try {
             val response = apiService.updateBusinessProcessStep(trackEmpProcess)
 

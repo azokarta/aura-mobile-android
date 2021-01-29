@@ -48,6 +48,7 @@ class FinanceAgentActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar as Toolbar)
         supportActionBar?.title = getString(R.string.finAgent)
+        supportActionBar?.subtitle = Helpers.getStaff(this)?.username
 
         // Get collector id
         collectorId = Helpers.getStaffId(this)

@@ -17,7 +17,7 @@ import kz.aura.merp.employee.data.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.FragmentFinanceBusinessProcessesBinding
 import kz.aura.merp.employee.util.Helpers
-import im.delight.android.location.SimpleLocation
+import io.nlopez.smartlocation.SmartLocation
 import kotlinx.android.synthetic.main.fragment_finance_business_processes.*
 import kz.aura.merp.employee.adapter.StepsAdapter
 
@@ -30,7 +30,7 @@ class FinanceBusinessProcessFragment : Fragment(), StepsAdapter.Companion.Comple
     private val results = arrayListOf<FinanceResult>()
     private var trackStepOrdersBusinessProcesses = arrayListOf<String>()
     private val stepsAdapter: StepsAdapter by lazy { StepsAdapter(this) }
-    private lateinit var location: SimpleLocation
+    private lateinit var location: Location
     private var _binding: FragmentFinanceBusinessProcessesBinding? = null
     private val binding get() = _binding!!
     private var collectorId: Long? = null
@@ -60,7 +60,12 @@ class FinanceBusinessProcessFragment : Fragment(), StepsAdapter.Companion.Comple
         mReferenceViewModel.fetchTrackStepOrdersBusinessProcesses(bpId)
         mFinanceViewModel.fetchTrackEmpProcessCollectMoney(client!!.maCollectMoneyId)
 
-        location = SimpleLocation(this.requireContext())
+        // Getting a location
+        SmartLocation.with(requireContext()).location()
+            .start {
+                println("Latitude: ${it.latitude}, longitude: ${it.longitude}")
+                location = Location(it.latitude, it.longitude)
+            };
 
         // Set collector id
         collectorId = Helpers.getStaffId(this.requireContext())
@@ -134,21 +139,9 @@ class FinanceBusinessProcessFragment : Fragment(), StepsAdapter.Companion.Comple
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // make the device update its location
-        location.beginUpdates()
-
-        // ...
-    }
-
-    override fun onPause() {
-        // stop location updates (saves battery)
-        location.endUpdates()
-
-        // ...
-        super.onPause()
+    override fun onDestroy() {
+        SmartLocation.with(requireContext()).location().stop()
+        super.onDestroy()
     }
 
     override fun stepCompleted(position: Int) {

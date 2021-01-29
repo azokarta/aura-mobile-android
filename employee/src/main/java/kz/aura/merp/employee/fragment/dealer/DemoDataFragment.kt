@@ -41,7 +41,7 @@ class DemoDataFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.demo = demo
 
-        // Setup ReccyclerView
+        // Setup RecyclerView
         setupRecyclerView()
 
         // Observe MutableLiveData

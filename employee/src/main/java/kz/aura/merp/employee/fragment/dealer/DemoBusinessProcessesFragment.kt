@@ -10,7 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import im.delight.android.location.SimpleLocation
+import io.nlopez.smartlocation.SmartLocation
 import kotlinx.android.synthetic.main.fragment_demo_business_processes.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.StepsAdapter
@@ -35,7 +35,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
     private val demoResults = arrayListOf<DemoResult>()
     private var trackStepOrdersBusinessProcesses = arrayListOf<String>()
     private val stepsAdapter: StepsAdapter by lazy { StepsAdapter(this) }
-    private lateinit var location: SimpleLocation
+    private lateinit var location: Location
     private var _binding: FragmentDemoBusinessProcessesBinding? = null
     private val binding get() = _binding!!
     private var dealerId: Long? = null
@@ -66,8 +66,12 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
         mReferenceViewModel.fetchTrackStepOrdersBusinessProcesses(bpId)
         mDealerViewModel.fetchTrackEmpProcessDemo(demo!!.demoId)
 
-        // construct a new instance of SimpleLocation
-        location = SimpleLocation(this.requireContext());
+        // Getting a location
+        SmartLocation.with(requireContext()).location()
+            .start {
+                println("Latitude: ${it.latitude}, longitude: ${it.longitude}")
+                location = Location(it.latitude, it.longitude)
+            };
 
         // Set dealer id
         dealerId = Helpers.getStaffId(this.requireContext())
@@ -215,21 +219,9 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // make the device update its location
-        location.beginUpdates()
-
-        // ...
-    }
-
-    override fun onPause() {
-        // stop location updates (saves battery)
-        location.endUpdates()
-
-        // ...
-        super.onPause()
+    override fun onDestroy() {
+        SmartLocation.with(requireContext()).location().stop()
+        super.onDestroy()
     }
 
     override fun onDestroyView() {

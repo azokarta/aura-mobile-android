@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.PassCodeActivity"></activity>
+        <activity android:name=".activity.PassCodeActivity" />
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,31 +31,35 @@
         </activity>
         <activity
             android:name=".activity.ServiceApplicationActivity"
-            android:parentActivityName=".activity.MasterActivity">
+            android:parentActivityName=".activity.MasterActivity"
+            android:label="@string/service">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kz.aura.merp.employee.activity.MasterActivity" />
         </activity>
         <activity
             android:name=".activity.OcrWebActivity"
-            android:parentActivityName=".activity.AuthorizationActivity">
+            android:parentActivityName=".activity.AuthorizationActivity"
+            android:label="OCR">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kz.aura.merp.employee.activity.AuthorizationActivity" />
         </activity>
-        <activity android:name=".activity.MasterActivity" />
-        <activity android:name=".activity.FinanceAgentActivity" />
+        <activity android:name=".activity.MasterActivity" android:label="@string/master"/>
+        <activity android:name=".activity.FinanceAgentActivity" android:label="@string/finAgent" />
+        <activity android:name=".activity.DealerActivity" android:label="@string/dealer" />
         <activity
             android:name=".activity.DemoActivity"
-            android:parentActivityName=".activity.DealerActivity">
+            android:parentActivityName=".activity.DealerActivity"
+            android:label="@string/demo">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kz.aura.merp.employee.activity.DealerActivity" />
         </activity>
-        <activity android:name=".activity.DealerActivity" />
         <activity
             android:name=".activity.ClientActivity"
-            android:parentActivityName=".activity.FinanceAgentActivity">
+            android:parentActivityName=".activity.FinanceAgentActivity"
+            android:label="@string/client">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kz.aura.merp.employee.activity.FinanceAgentActivity" />
@@ -64,10 +68,16 @@
         <activity
             android:name=".activity.AuthorizationActivity"
             android:configChanges="locale" />
-        <activity android:name=".activity.MapActivity" />
+        <activity android:name=".activity.MapActivity" android:label="@string/map">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
         <activity
             android:name=".activity.SettingsActivity"
-            android:configChanges="locale" />
+            android:configChanges="locale" android:label="@string/settings"/>
     </application>
 
 </manifest>

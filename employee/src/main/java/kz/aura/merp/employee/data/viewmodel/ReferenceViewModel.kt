@@ -21,7 +21,7 @@ class ReferenceViewModel(application: Application) : AndroidViewModel(applicatio
     val maCollectResults = MutableLiveData<ArrayList<FinanceResult>>()
     val error = MutableLiveData<Any>()
 
-    fun fetchTrackedBussinessProcesses() = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchTrackedBussinessProcesses() = viewModelScope.launch {
         try {
             val response = apiService.getTrackedBusinessProcesses()
             if (response.isSuccessful) {
@@ -34,7 +34,7 @@ class ReferenceViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun fetchDemoResults() = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchDemoResults() = viewModelScope.launch {
         try {
             val response = apiService.getDemoResults()
 
@@ -48,7 +48,7 @@ class ReferenceViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun fetchTrackStepOrdersBusinessProcesses(bpId: Int) = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchTrackStepOrdersBusinessProcesses(bpId: Int) = viewModelScope.launch {
         try {
             val response = apiService.getTrackStepOrdersBussinessProcesses(bpId)
 
@@ -62,7 +62,7 @@ class ReferenceViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun fetchServiceApplicationStatus() = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchServiceApplicationStatus() = viewModelScope.launch {
         try {
             val response = apiService.getServiceApplicationStatus()
 
@@ -76,7 +76,7 @@ class ReferenceViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun fetchMaCollectResults() = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchMaCollectResults() = viewModelScope.launch {
         try {
             val response = apiService.fetchMaCollectResults()
 
@@ -90,7 +90,7 @@ class ReferenceViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun createStaffLocation(staffLocation: StaffLocation) = viewModelScope.launch(Dispatchers.IO) {
+    fun createStaffLocation(staffLocation: StaffLocation) = viewModelScope.launch {
         try {
             val response = apiService.newStaffLocation(staffLocation)
 

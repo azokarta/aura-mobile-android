@@ -28,8 +28,7 @@ class DemoActivity : AppCompatActivity() {
         setSupportActionBar(toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.demo)
-        println("DEMO: ${
-            intent.getParcelableExtra<Demo>("demo")}")
+
         val demo = intent.getParcelableExtra<Demo>("demo")!!
 
         val titles = ArrayList<String>()

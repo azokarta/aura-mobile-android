@@ -17,7 +17,7 @@ import kz.aura.merp.employee.data.viewmodel.MasterViewModel
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.FragmentServiceApplicationBusinessProcessesBinding
 import kz.aura.merp.employee.util.Helpers.getStaffId
-import im.delight.android.location.SimpleLocation
+import io.nlopez.smartlocation.SmartLocation
 import kotlinx.android.synthetic.main.fragment_service_application_business_processes.*
 import kz.aura.merp.employee.adapter.StepsAdapter
 
@@ -31,7 +31,7 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
     private val results = arrayListOf<ServiceApplicationStatus>()
     private var trackStepOrdersBusinessProcesses = arrayListOf<String>()
     private val stepsAdapter: StepsAdapter by lazy { StepsAdapter(this) }
-    private lateinit var location: SimpleLocation
+    private lateinit var location: Location
     private var _binding: FragmentServiceApplicationBusinessProcessesBinding? = null
     private val binding get() = _binding!!
     private var masterId: Long? = null
@@ -61,7 +61,12 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
         mReferenceViewModel.fetchTrackStepOrdersBusinessProcesses(bpId)
         mMasterViewModel.fetchTrackEmpProcessServiceApplication(serviceApplication!!.id)
 
-        location = SimpleLocation(this.requireContext())
+        // Getting a location
+        SmartLocation.with(requireContext()).location()
+            .start {
+                println("Latitude: ${it.latitude}, longitude: ${it.longitude}")
+                location = Location(it.latitude, it.longitude)
+            };
 
         // Set master id
         masterId = getStaffId(this.requireContext())
@@ -73,7 +78,7 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
 
     private fun setObserve() {
         mReferenceViewModel.serviceApplicationStatus.observe(viewLifecycleOwner, Observer { data ->
-            binding.resultBtn.text = data[serviceApplication!!.appStatus!!].nameRu
+            binding.resultBtn.text = data[serviceApplication!!.appStatus].nameRu
             results.addAll(data)
         })
         mReferenceViewModel.trackStepOrdersBusinessProcesses.observe(viewLifecycleOwner, Observer { data ->
@@ -118,21 +123,9 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
         dialog.show()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // make the device update its location
-        location.beginUpdates()
-
-        // ...
-    }
-
-    override fun onPause() {
-        // stop location updates (saves battery)
-        location.endUpdates()
-
-        // ...
-        super.onPause()
+    override fun onDestroy() {
+        SmartLocation.with(requireContext()).location().stop()
+        super.onDestroy()
     }
 
     private fun initBtnListeners() {

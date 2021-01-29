@@ -71,7 +71,8 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
                 binding.completedBtn.visibility = View.INVISIBLE
             }
             if (step < position) {
-                binding.stepIcon.setImageResource(R.drawable.default_icon)
+                binding.stepIcon.setImageResource(R.drawable.ic_baseline_radio_button_checked_24)
+                binding.stepIcon.setColorFilter(ContextCompat.getColor(binding.root.context, R.color.colorLightGray))
                 binding.stepLine.setImageResource(R.drawable.step_line)
                 binding.completedBtn.visibility = View.INVISIBLE
             }

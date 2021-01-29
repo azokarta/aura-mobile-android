@@ -22,7 +22,7 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
     val error = MutableLiveData<Any>()
     val smsSent = MutableLiveData<Boolean>()
 
-    fun fetchAll(staffId: Long) = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchAll(staffId: Long) = viewModelScope.launch {
         try {
             val response = apiService.getAll(staffId)
 
@@ -36,7 +36,7 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun fetchDemoById(demoId: Long) = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchDemoById(demoId: Long) = viewModelScope.launch {
         try {
             val response = apiService.fetchDemoById(demoId)
 
@@ -50,7 +50,7 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun updateDemo(demo: Demo) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateDemo(demo: Demo) = viewModelScope.launch {
         try {
             val response = apiService.updateDemo(demo)
 
@@ -65,7 +65,7 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun fetchTrackEmpProcessDemo(demoId: Long) = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchTrackEmpProcessDemo(demoId: Long) = viewModelScope.launch {
         try {
             val response = apiService.getTrackEmpProcessDemo(demoId)
 
@@ -79,7 +79,7 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun updateStepBusinessProcess(trackEmpProcess: TrackEmpProcess) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateStepBusinessProcess(trackEmpProcess: TrackEmpProcess) = viewModelScope.launch {
         try {
             val response = apiService.updateStepBusinessProcess(trackEmpProcess)
 
@@ -101,7 +101,8 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
         return null
     }
 
-    fun sendSms(demoId: Long, phoneCode: String, phoneNumber: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun sendSms(demoId: Long, phoneCode: String, phoneNumber: String) = viewModelScope.launch {
+
         try {
             val response = apiService.sendSms(demoId, phoneCode, phoneNumber)
 
@@ -115,7 +116,7 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun updateStatus(demoId: Long) = viewModelScope.launch(Dispatchers.IO) {
+    fun updateStatus(demoId: Long) = viewModelScope.launch {
         try {
             val response = apiService.updateStatus(demoId)
 

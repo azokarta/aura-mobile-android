@@ -46,24 +46,29 @@ class Permissions(val context: Context, val activity: Activity) {
     }
 
     fun enableLocation() {
-        val request = LocationRequest().setFastestInterval(1500).setInterval(3000).setPriority(
-            LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
+        val request = LocationRequest().setFastestInterval(5000).setInterval(1000).setPriority(
+            LocationRequest.PRIORITY_HIGH_ACCURACY)
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(request)
-        val result = LocationServices.getSettingsClient(context).checkLocationSettings(builder.build())
-        result.addOnCompleteListener {
-            try {
-                it.getResult(ApiException::class.java)
-            } catch (e: ApiException) {
-                when (e.statusCode) {
-                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
-                        try {
-                            val resolvable = e as ResolvableApiException
-                            resolvable.startResolutionForResult(activity, REQUEST_CHECK_SETTINGS);
-                        } catch (e: IntentSender.SendIntentException) {
-                            e.printStackTrace()
-                        }
-                    }
+        val result = LocationServices.getSettingsClient(activity).checkLocationSettings(builder.build())
+        result.addOnSuccessListener {
+            // All location settings are satisfied. The client can initialize
+            // location requests here.
+            // ...
+            println("ENABLED")
+        }
+
+        result.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException){
+                // Location settings are not satisfied, but this can be fixed
+                // by showing the user a dialog.
+                try {
+                    // Show the dialog by calling startResolutionForResult(),
+                    // and check the result in onActivityResult().
+                    exception.startResolutionForResult(activity,
+                        REQUEST_CHECK_SETTINGS)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
                 }
             }
         }

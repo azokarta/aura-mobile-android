@@ -1,10 +1,10 @@
 package kz.aura.merp.employee.activity
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -19,10 +19,10 @@ import com.yandex.runtime.Error
 import com.yandex.runtime.image.ImageProvider
 import com.yandex.runtime.network.NetworkError
 import com.yandex.runtime.network.RemoteError
-import im.delight.android.location.SimpleLocation
+import io.nlopez.smartlocation.SmartLocation
 import kotlinx.android.synthetic.main.activity_map.*
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.util.Constants
+import kz.aura.merp.employee.data.model.Location
 
 class MapActivity : AppCompatActivity(), Session.SearchListener, CameraListener {
 
@@ -30,7 +30,7 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, CameraListener 
     private var searchEdit: EditText? = null
     private var searchManager: SearchManager? = null
     private var searchSession: Session? = null
-    private lateinit var location: SimpleLocation
+    private lateinit var location: Location
 
     private fun submitQuery(query: String) {
         searchSession = searchManager!!.submit(
@@ -42,24 +42,20 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, CameraListener 
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        MapKitFactory.setApiKey(Constants.YANDEX_MAP_API_KEY)
         MapKitFactory.initialize(this)
         SearchFactory.initialize(this)
         setContentView(R.layout.activity_map)
         super.onCreate(savedInstanceState)
 
         setSupportActionBar(toolbar as Toolbar)
-        supportActionBar?.title = getString(R.string.map)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        location = SimpleLocation(this);
-
-        // if we can't access the location yet
-        if (!location.hasLocationEnabled()) {
-            // ask the user to enable location access
-            SimpleLocation.openSettings(this);
-        }
+        // Getting a location
+        SmartLocation.with(this).location()
+            .start {
+                println("Latitude: ${it.latitude}, longitude: ${it.longitude}")
+                location = Location(it.latitude, it.longitude)
+            };
 
         searchManager = SearchFactory.getInstance().createSearchManager(SearchManagerType.COMBINED);
 
@@ -67,13 +63,13 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, CameraListener 
 
         mapView.map.addCameraListener(this)
 
-        searchEdit = findViewById<View>(R.id.search_edit) as EditText
-        searchEdit!!.setOnEditorActionListener(OnEditorActionListener { _, actionId, _ ->
+//        searchEdit = findViewById<View>(R.id.search_edit) as EditText
+        searchEdit!!.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 submitQuery(searchEdit!!.text.toString())
             }
             false
-        })
+        }
 
         mapView.map.move(
             CameraPosition(Point(location.latitude, location.longitude), 16.0f, 0.0f, 0.0f),
@@ -96,33 +92,34 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, CameraListener 
         mapView.onStart()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // make the device update its location
-        location.beginUpdates()
-
-        // ...
-    }
-
-    override fun onPause() {
-        // stop location updates (saves battery)
-        location.endUpdates()
-
-        // ...
-        super.onPause()
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
     }
+
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        // Inflate the options menu from XML
+//        val inflater = menuInflater
+//        inflater.inflate(R.menu.options_menu, menu)
+//
+//        // Get the SearchView and set the searchable configuration
+//        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+//        (menu.findItem(R.id.menu_search).actionView as SearchView).apply {
+//            // Assumes current activity is the searchable activity
+//            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+//            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
+//        }
+//
+//        return true
+//    }
+
 
     override fun onSearchResponse(response: Response) {
         val mapObjects = mapView.map.mapObjects
         mapObjects.clear()
         for (searchResult in response.collection.children) {
             val resultLocation = searchResult.obj!!.geometry[0].point
+            println(searchResult.obj!!.name)
             if (resultLocation != null) {
                 mapObjects.addPlacemark(
                     resultLocation,
@@ -140,6 +137,11 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, CameraListener 
             errorMessage = "getString(R.string.network_error_message)"
         }
         Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroy() {
+        SmartLocation.with(this).location().stop()
+        super.onDestroy()
     }
 
     override fun onCameraPositionChanged(

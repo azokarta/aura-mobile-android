@@ -50,6 +50,7 @@ class MasterActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar as Toolbar)
         supportActionBar?.title = getString(R.string.master)
+        supportActionBar?.subtitle = Helpers.getStaff(this)?.username
 
         Permissions(this, this).enableLocation()
 

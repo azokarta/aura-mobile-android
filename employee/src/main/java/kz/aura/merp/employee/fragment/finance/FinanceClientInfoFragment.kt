@@ -52,7 +52,6 @@ class FinanceClientInfoFragment : Fragment() {
 
         // Initialize Listeners
         binding.infoSaveBtn.setOnClickListener {
-            client!!.taxiExpenseAmount = info_taxi_taxi_expences.text.toString().toDouble()
             mFinanceViewModel.updateClient(client!!)
         }
         binding.mapBtn.setOnClickListener {

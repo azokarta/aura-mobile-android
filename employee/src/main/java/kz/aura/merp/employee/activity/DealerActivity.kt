@@ -25,6 +25,7 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_dealer.*
 import kotlinx.android.synthetic.main.network_disconnected.*
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
+import kz.aura.merp.employee.util.Helpers.getStaff
 import kz.aura.merp.employee.util.Helpers.verifyAvailableNetwork
 import kz.aura.merp.employee.util.Permissions
 
@@ -50,6 +51,7 @@ class DealerActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar as Toolbar)
         supportActionBar?.title = getString(R.string.dealer)
+        supportActionBar?.subtitle = getStaff(this)?.username
 
         Permissions(this, this).enableLocation()
 
