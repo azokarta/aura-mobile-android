@@ -1,7 +1,14 @@
 package kz.aura.merp.employee.activity
 
+import android.content.Intent
+import android.hardware.biometrics.BiometricManager
+import android.hardware.biometrics.BiometricPrompt
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.activity_pass_code.*
 import kz.aura.merp.employee.R
@@ -16,6 +23,12 @@ class PassCodeActivity : AppCompatActivity() {
     private lateinit var passCodeStatus: PassCodeStatus
     private val firstCreatedCode = arrayListOf<Int>()
 
+
+    private lateinit var biometricPrompt: androidx.biometric.BiometricPrompt
+    private lateinit var promptInfo: androidx.biometric.BiometricPrompt.PromptInfo
+    private lateinit var biometricManager: androidx.biometric.BiometricManager
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pass_code)
@@ -26,6 +39,40 @@ class PassCodeActivity : AppCompatActivity() {
 
         if (passCodeStatus == PassCodeStatus.VERIFY) {
             changeText()
+        }
+
+
+        biometricManager = androidx.biometric.BiometricManager.from(this)
+        val executor = ContextCompat.getMainExecutor(this)
+
+
+        biometricPrompt = androidx.biometric.BiometricPrompt(this, executor,
+            object : androidx.biometric.BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                    notifyUser("$errString")
+                }
+
+                override fun onAuthenticationSucceeded(result: androidx.biometric.BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    goToHome()
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+
+                    notifyUser("Auth Failed")
+                }
+            })
+        promptInfo = androidx.biometric.BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Title")
+            .setSubtitle("Sub Title")
+            .setDescription("Description")
+            .setNegativeButtonText("use email login")
+            .build()
+
+          fingerprint.setOnClickListener() {
+            biometricPrompt.authenticate(promptInfo)
         }
     }
 
@@ -96,7 +143,8 @@ class PassCodeActivity : AppCompatActivity() {
                         firstCreatedCode.addAll(code)
                         code.clear()
                         paintLinesToBlack()
-                        changeText(R.string.passCodeTitle.toString(),R.string.passCodeReEnter.toString())
+
+                     changeText( getString(R.string.passCodeTitle),getString(R.string.passCodeReEnter))
                     } else if (firstCreatedCode == code) {
                         savePassCode()
                         openActivityByPositionId(this)
@@ -107,7 +155,7 @@ class PassCodeActivity : AppCompatActivity() {
                 }
 
                 PassCodeStatus.VERIFY -> {
-                    changeText(R.string.passCodeSignInTitle.toString(),R.string.passCodeSubTitle.toString())
+                    changeText(getString(R.string.passCodeSignInTitle),getString(R.string.passCodeSubTitle))
                     val typedCode = code.joinToString(separator = "")
                     val userCode = receivePassCode()
                     if (userCode == typedCode) {
@@ -150,4 +198,15 @@ class PassCodeActivity : AppCompatActivity() {
         typed3.setBackgroundResource(R.color.colorBlack)
         typed4.setBackgroundResource(R.color.colorBlack)
     }
+
+
+    private fun notifyUser(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun goToHome() {
+        val intent = Intent(this, AuthorizationActivity::class.java)
+        startActivity(intent)
+    }
+
 }

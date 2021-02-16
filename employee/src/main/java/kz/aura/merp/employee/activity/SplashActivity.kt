@@ -22,11 +22,11 @@ class SplashActivity : AppCompatActivity() {
 
         logo.alpha = 0f
         logo.animate().setDuration(1500).alpha(1f).withEndAction {
-          /*  val intent = Intent(this, PassCodeActivity::class.java)
+        /* val intent = Intent(this, PassCodeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             intent.putExtra("passCodeStatus", PassCodeStatus.CREATE)
             startActivity(intent)*/
-         if (!getToken(this).isNullOrBlank()) {
+     if (!getToken(this).isNullOrBlank()) {
                 val intent = Intent(this, PassCodeActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 intent.putExtra("passCodeStatus", PassCodeStatus.VERIFY)
