@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.data.model.PhoneNumber
 import kz.aura.merp.employee.databinding.PhoneNumberRowBinding
-import kz.aura.merp.employee.diffUtil.PhoneNumberDiffUtil
+import kz.aura.merp.employee.util.MobDiffUtil
 
 class PhoneNumberAdapter : RecyclerView.Adapter<PhoneNumberAdapter.DemoDataPhoneNumberViewHolder>() {
 
@@ -27,7 +27,7 @@ class PhoneNumberAdapter : RecyclerView.Adapter<PhoneNumberAdapter.DemoDataPhone
     override fun getItemCount(): Int = dataList.size
 
     fun setData(phoneNumbers: ArrayList<PhoneNumber>) {
-        val phoneDiffUtil = PhoneNumberDiffUtil(dataList, phoneNumbers)
+        val phoneDiffUtil = MobDiffUtil(dataList, phoneNumbers)
         val phoneDiffResult = DiffUtil.calculateDiff(phoneDiffUtil)
         this.dataList = phoneNumbers
         phoneDiffResult.dispatchUpdatesTo(this)

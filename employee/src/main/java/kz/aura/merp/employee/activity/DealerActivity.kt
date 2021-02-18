@@ -6,10 +6,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kz.aura.merp.employee.R
@@ -22,8 +23,6 @@ import kz.aura.merp.employee.util.Helpers.exceptionHandler
 import kz.aura.merp.employee.util.Helpers.getStaffId
 import kz.aura.merp.employee.util.LanguageHelper
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_dealer.*
-import kotlinx.android.synthetic.main.network_disconnected.*
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.util.Helpers.getStaff
 import kz.aura.merp.employee.util.Helpers.verifyAvailableNetwork
@@ -49,7 +48,8 @@ class DealerActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        setSupportActionBar(toolbar as Toolbar)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.dealer)
         supportActionBar?.subtitle = getStaff(this)?.username
 
@@ -59,7 +59,7 @@ class DealerActivity : AppCompatActivity() {
         dealerId = getStaffId(this)
 
         // Observe MutableLiveData
-        mDealerViewModel.demoList.observe(this, Observer { data ->
+        mDealerViewModel.demoList.observe(this, { data ->
             mSharedViewModel.checkData(data)
             adapter.setData(data)
         })
@@ -68,20 +68,20 @@ class DealerActivity : AppCompatActivity() {
         setupRecyclerview()
 
         // Observe errors
-        mDealerViewModel.error.observe(this, Observer { error ->
+        mDealerViewModel.error.observe(this, { error ->
             checkError(error)
         })
-        mReferenceViewModel.error.observe(this, Observer { error ->
+        mReferenceViewModel.error.observe(this, { error ->
             checkError(error)
         })
 
         // If network is disconnected and user clicks restart, get data again
-        restart.setOnClickListener {
+        findViewById<Button>(R.id.restart).setOnClickListener {
             if (verifyAvailableNetwork(this)) {
                 mDealerViewModel.fetchAll(dealerId!!) // fetch demo list
-                progress_bar.visibility = View.VISIBLE
-                recyclerView.visibility = View.VISIBLE
-                network_disconnected.visibility = View.GONE
+                binding.progressBar.visibility = View.VISIBLE
+                binding.recyclerView.visibility = View.VISIBLE
+                findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.GONE
             }
         }
 
@@ -101,10 +101,10 @@ class DealerActivity : AppCompatActivity() {
     }
 
     private fun checkError(error: Any) {
-        progress_bar.visibility = View.INVISIBLE // hide progress bar
+        binding.progressBar.visibility = View.INVISIBLE // hide progress bar
         if (!verifyAvailableNetwork(this)) {
-            network_disconnected.visibility = View.VISIBLE
-            recyclerView.visibility = View.INVISIBLE
+            findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.INVISIBLE
         } else {
             exceptionHandler(error, this) // Show error
         }
@@ -118,8 +118,8 @@ class DealerActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerview() {
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

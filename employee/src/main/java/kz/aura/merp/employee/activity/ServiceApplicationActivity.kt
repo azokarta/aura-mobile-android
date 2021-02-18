@@ -9,22 +9,25 @@ import androidx.lifecycle.Observer
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.data.model.ServiceApplication
 import kz.aura.merp.employee.util.TabLayoutFragmentAdapter
-import kotlinx.android.synthetic.main.activity_service_application.*
 import kz.aura.merp.employee.data.viewmodel.MasterViewModel
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
+import kz.aura.merp.employee.databinding.ActivityServiceApplicationBinding
 import kz.aura.merp.employee.fragment.master.ServiceApplicationBusinessFragment
 import kz.aura.merp.employee.fragment.master.ServiceApplicationDataFragment
 import kz.aura.merp.employee.util.Helpers
 
 class ServiceApplicationActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityServiceApplicationBinding
     private val mMasterViewModel: MasterViewModel by viewModels()
     private val mReferenceViewModel: ReferenceViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_service_application)
-        setSupportActionBar(toolbar as Toolbar)
+        binding = ActivityServiceApplicationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.service)
 
@@ -40,8 +43,8 @@ class ServiceApplicationActivity : AppCompatActivity() {
         fragments.add(ServiceApplicationBusinessFragment.newInstance(serviceApplication))
 
         val fragmentAdapter = TabLayoutFragmentAdapter(supportFragmentManager, fragments, titles)
-        service_application_view_pager.adapter = fragmentAdapter
-        service_application_tab_layout.setupWithViewPager(service_application_view_pager)
+        binding.serviceApplicationViewPager.adapter = fragmentAdapter
+        binding.serviceApplicationTabLayout.setupWithViewPager(binding.serviceApplicationViewPager)
 
         // Errors
         mMasterViewModel.error.observe(this, Observer { error ->

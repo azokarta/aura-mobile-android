@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +21,6 @@ import kz.aura.merp.employee.data.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.util.Helpers
 import kz.aura.merp.employee.util.LanguageHelper
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.network_disconnected.*
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.ActivityFinanceAgentBinding
 import kz.aura.merp.employee.util.Helpers.exceptionHandler
@@ -46,7 +47,8 @@ class FinanceAgentActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        setSupportActionBar(binding.toolbar as Toolbar)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.finAgent)
         supportActionBar?.subtitle = Helpers.getStaff(this)?.username
 
@@ -74,12 +76,12 @@ class FinanceAgentActivity : AppCompatActivity() {
         })
 
         // If network is disconnected and user clicks restart, get data again
-        restart.setOnClickListener {
+        findViewById<Button>(R.id.restart).setOnClickListener {
             if (verifyAvailableNetwork(this)) {
                 mFinanceViewModel.fetchClients(collectorId!!) // fetch clients
                 binding.progressBar.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.VISIBLE
-                binding.networkDisconnected.visibility = View.GONE
+                findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.GONE
             }
         }
 
@@ -119,7 +121,7 @@ class FinanceAgentActivity : AppCompatActivity() {
     private fun checkError(error: Any) {
         binding.progressBar.visibility = View.INVISIBLE // hide progress bar
         if (!verifyAvailableNetwork(this)) {
-            binding.networkDisconnected.visibility = View.VISIBLE
+            findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.VISIBLE
             binding.recyclerView.visibility = View.INVISIBLE
         } else {
             exceptionHandler(error, this) // Show error

@@ -102,7 +102,6 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun sendSms(demoId: Long, phoneCode: String, phoneNumber: String) = viewModelScope.launch {
-
         try {
             val response = apiService.sendSms(demoId, phoneCode, phoneNumber)
 
@@ -122,7 +121,7 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
 
             if (response.isSuccessful) {
                 updatedDemo.postValue(response.body()!!.data)
-                println("updated")
+                println("status updated")
             } else {
                 error.postValue(response.errorBody())
             }

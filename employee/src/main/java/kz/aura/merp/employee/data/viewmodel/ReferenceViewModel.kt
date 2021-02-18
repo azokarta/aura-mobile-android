@@ -20,6 +20,7 @@ class ReferenceViewModel(application: Application) : AndroidViewModel(applicatio
     val serviceApplicationStatus = MutableLiveData<ArrayList<ServiceApplicationStatus>>()
     val maCollectResults = MutableLiveData<ArrayList<FinanceResult>>()
     val error = MutableLiveData<Any>()
+    val contractTypes = MutableLiveData<ArrayList<ContractType>>()
 
     fun fetchTrackedBussinessProcesses() = viewModelScope.launch {
         try {
@@ -82,6 +83,20 @@ class ReferenceViewModel(application: Application) : AndroidViewModel(applicatio
 
             if (response.isSuccessful) {
                 maCollectResults.postValue(response.body()!!.data)
+            } else {
+                error.postValue(response.errorBody())
+            }
+        } catch (e: Exception) {
+            error.postValue(e)
+        }
+    }
+
+    fun fetchContractTypes(staffId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val response = apiService.getContractTypes(staffId)
+
+            if (response.isSuccessful) {
+                contractTypes.postValue(response.body()!!.data)
             } else {
                 error.postValue(response.errorBody())
             }

@@ -24,4 +24,7 @@ interface ReferenceApi {
 
     @POST("/ma-track-emp-process/staff/{staffId}")
     suspend fun newStaffLocation(@Body staffLocation: StaffLocation): Response<ResponseHelper<Any>>
+
+    @GET("/api/reference/contract-type")
+    suspend fun getContractTypes(@Query("staffId") staffId: Long): Response<ResponseHelper<ArrayList<ContractType>>>
 }

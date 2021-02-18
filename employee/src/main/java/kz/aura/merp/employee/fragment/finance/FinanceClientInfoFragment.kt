@@ -2,18 +2,14 @@ package kz.aura.merp.employee.fragment.finance
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kz.aura.merp.employee.data.model.*
 import kz.aura.merp.employee.data.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.databinding.FragmentFinanceClientInfoBinding
-import kotlinx.android.synthetic.main.fragment_finance_client_info.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.activity.MapActivity
 
@@ -42,24 +38,30 @@ class FinanceClientInfoFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.client = client
 
+        setHasOptionsMenu(true)
+
         // Observe MutableLiveData
         mFinanceViewModel.updatedClient.observe(viewLifecycleOwner, Observer { data ->
             client = data
             binding.client = data
             binding.executePendingBindings()
-            Snackbar.make(binding.infoSaveBtn, getString(R.string.successfullySaved), Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.root, getString(R.string.successfullySaved), Snackbar.LENGTH_LONG).show()
         })
 
-        // Initialize Listeners
-        binding.infoSaveBtn.setOnClickListener {
-            mFinanceViewModel.updateClient(client!!)
-        }
-        binding.mapBtn.setOnClickListener {
-            val intent = Intent(this.context, MapActivity::class.java)
-            startActivity(intent)
-        }
-
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.save_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.save -> {
+                mFinanceViewModel.updateClient(client!!)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

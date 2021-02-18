@@ -17,12 +17,11 @@ import kz.aura.merp.employee.activity.ChiefActivity
 import kz.aura.merp.employee.activity.DealerActivity
 import kz.aura.merp.employee.activity.FinanceAgentActivity
 import kz.aura.merp.employee.activity.MasterActivity
-import kz.aura.merp.employee.data.model.Auth
 import kz.aura.merp.employee.data.model.Error
 import kz.aura.merp.employee.data.model.Staff
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.error_dialog.view.*
+import kz.aura.merp.employee.databinding.ErrorDialogBinding
 import okhttp3.ResponseBody
 import java.lang.Exception
 
@@ -30,15 +29,13 @@ object Helpers {
 
     fun getToken(context: Context): String? {
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        val token = pref.getString("token", "")
-        return token
+        return pref.getString("token", "")
     }
 
-    fun saveTokenAndStaff(context: Context, auth: Auth) {
+    fun saveStaff(context: Context, staff: Staff) {
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = pref.edit()
-        val json = Gson().toJson(auth.userInfo);
-        editor.putString("token", auth.accessToken)
+        val json = Gson().toJson(staff);
         editor.putString("staff", json)
         editor.apply()
     }
@@ -121,7 +118,7 @@ object Helpers {
             is Float -> editor.putFloat(key, data)
             is Boolean -> editor.putBoolean(key, data)
             else -> {
-                Toast.makeText(context, "Произошла ошибка повторите попытку позже", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.unknownError), Toast.LENGTH_SHORT).show()
             }
         }
         editor.apply()
@@ -159,6 +156,7 @@ object Helpers {
 
     fun exceptionHandler(exception: Any, context: Context) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.error_dialog, null)
+        val binding = ErrorDialogBinding.bind(dialogView)
         val builder = MaterialAlertDialogBuilder(context)
             .setView(dialogView)
             .show()
@@ -166,28 +164,31 @@ object Helpers {
         when (exception) {
             is Exception -> {
                 if (!verifyAvailableNetwork(context)) {
-                    dialogView.error_title.text = "Интернет-соединение не подключен"
-                    dialogView.sub_error.visibility = View.GONE
+                    binding.errorTitle.text = "Интернет-соединение не подключен"
+                    binding.subError.visibility = View.GONE
                 } else {
-                    dialogView.error_title.text = exception.message
-                    dialogView.sub_error.visibility = View.GONE
+                    binding.errorTitle.text = exception.message
+                    binding.subError.visibility = View.GONE
                 }
             }
             is ResponseBody -> {
                 // Server error
                 val res = Gson().fromJson(exception.charStream(), Error::class.java)
-                dialogView.error_title.text = res.error
-                dialogView.sub_error.text = res.message
+                println(res.message)
+                println(res.error)
+                println(res.status)
+                binding.errorTitle.text = res.error
+                binding.subError.text = res.message
             }
             is String -> {
                 // Custom error
-                dialogView.error_title.text = exception
-                dialogView.sub_error.visibility = View.GONE
+                binding.errorTitle.text = exception
+                binding.subError.visibility = View.GONE
             }
         }
 
         // Hide alert dialog
-        dialogView.error_close.setOnClickListener {
+        binding.errorClose.setOnClickListener {
             builder.dismiss()
         }
     }

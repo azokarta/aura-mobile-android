@@ -8,25 +8,30 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import com.google.firebase.messaging.FirebaseMessaging
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.data.viewmodel.AuthViewModel
+import kz.aura.merp.employee.databinding.ActivityAuthorizationBinding
 import kz.aura.merp.employee.util.Helpers.exceptionHandler
+import kz.aura.merp.employee.util.Helpers.openActivityByPositionId
 import kz.aura.merp.employee.util.Helpers.saveDataByKey
+import kz.aura.merp.employee.util.Helpers.saveStaff
+import kz.aura.merp.employee.util.PassCodeStatus
 import kz.aura.merp.employee.util.ProgressDialog
-import kotlinx.android.synthetic.main.activity_authorization.*
 import kz.aura.merp.employee.util.Permissions
 
 
 class AuthorizationActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityAuthorizationBinding
     private val mAuthViewModel: AuthViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
     private lateinit var permissions: Permissions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_authorization)
+        binding = ActivityAuthorizationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         permissions = Permissions(this, this)
 
@@ -37,23 +42,39 @@ class AuthorizationActivity : AppCompatActivity() {
         progressDialog = ProgressDialog(this)
 
         // Observe LiveData
-        mAuthViewModel.transactionId.observe(this, Observer { transactionId ->
-            progressDialog.hideLoading() // hide loading
-            toOcrWebViewActivity(transactionId) // Go to OcrWebViewActivity
+        mAuthViewModel.authResponse.observe(this, { data ->
+            saveDataByKey(this, data.accessToken, "token")
+            // Get info about user
+            mAuthViewModel.getUserInfo(binding.phoneNumber.text.toString())
         })
-        mAuthViewModel.error.observe(this, Observer { error ->
+        mAuthViewModel.userInfo.observe(this, { data ->
+            saveStaff(this, data)
+            // Open PassCode activity for saving code
+            val intent = Intent(this, PassCodeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.putExtra("passCodeStatus", PassCodeStatus.VERIFY)
+            startActivity(intent)
+        })
+        mAuthViewModel.error.observe(this, { error ->
             progressDialog.hideLoading() // hide loading
             exceptionHandler(error, this) // Show Error with alert dialog
         })
 
-        // PhoneNumber Formatter
-        ccp.registerCarrierNumberEditText(phoneNumberEditText)
-
         // For test
-        button2.setOnClickListener {
+        binding.button2.setOnClickListener {
             goToActivity(ChiefActivity())
         }
 
+        // Receive token of FCM
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                println("Fetching FCM registration token failed ${task.exception}")
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+//            println(token)
+        }
     }
 
     private fun goToActivity(activity: Activity) {
@@ -63,24 +84,9 @@ class AuthorizationActivity : AppCompatActivity() {
     }
 
     fun signIn(view: View) {
-        if (ccp.isValidFullNumber) {
-            // show loading
-            progressDialog.showLoading()
-
-            // Save phoneNumber
-            saveDataByKey(this, ccp.fullNumberWithPlus, "phoneNumber")
-
-            // Fetch transactionId for Ocr
-            mAuthViewModel.fetchTransactionId()
-        } else {
-            Toast.makeText(this, "Введите действующий номер телефона", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun toOcrWebViewActivity(transactionId: String) {
-        val intent = Intent(this, OcrWebActivity::class.java)
-        intent.putExtra("transactionId", transactionId)
-        startActivity(intent)
+        val phoneNumber = binding.phoneNumber.text.toString()
+        val password = binding.password.text.toString()
+        mAuthViewModel.signIn(phoneNumber, password)
     }
 
     override fun onRequestPermissionsResult(
@@ -91,8 +97,7 @@ class AuthorizationActivity : AppCompatActivity() {
         when (requestCode) {
             Permissions.CAMERA_PERMISSION_REQUEST_CODE -> {
                 if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
-                    Toast.makeText(this, "Вы не разрешили доступ к камеру", Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(this, "Вы не разрешили доступ к камеру", Toast.LENGTH_LONG).show()
                     this.permissions.requestCameraPermission()
                 } else {
                     this.permissions.requestGpsPermission()

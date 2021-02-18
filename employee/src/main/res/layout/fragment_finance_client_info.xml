@@ -44,19 +44,6 @@
           app:layout_constraintStart_toEndOf="@+id/textView12"
           app:layout_constraintTop_toTopOf="@+id/textView12" />
 
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/mapBtn"
-          style="?attr/materialButtonOutlinedStyle"
-          android:layout_width="150dp"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
-          android:text="@string/map"
-          app:icon="@drawable/ic_baseline_map_24"
-          app:iconGravity="textStart"
-          app:iconPadding="10dp"
-          app:layout_constraintStart_toStartOf="@+id/info_phone_numbers"
-          app:layout_constraintTop_toBottomOf="@+id/info_phone_numbers" />
-
       <TextView
           android:id="@+id/textView13"
           android:layout_width="wrap_content"
@@ -104,20 +91,6 @@
           app:layout_constraintStart_toStartOf="@+id/textView11"
           app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
-      <Button
-          android:id="@+id/infoSaveBtn"
-          android:layout_width="250dp"
-          android:layout_height="55dp"
-          android:layout_marginTop="16dp"
-          android:text="@string/save"
-          android:textColor="@color/colorPrimary"
-          app:backgroundTint="@color/colorLightGray"
-          app:cornerRadius="5dp"
-          app:icon="@drawable/ic_baseline_save_24"
-          app:iconGravity="textStart"
-          app:iconTint="@color/colorPrimary"
-          app:layout_constraintStart_toStartOf="@+id/info_phone_numbers"
-          app:layout_constraintTop_toBottomOf="@+id/mapBtn" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

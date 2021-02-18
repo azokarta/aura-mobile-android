@@ -1,13 +1,12 @@
 package kz.aura.merp.employee.adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.data.model.Demo
 import kz.aura.merp.employee.databinding.DemoCardBinding
-import kz.aura.merp.employee.diffUtil.DemoDiffUtil
+import kz.aura.merp.employee.util.MobDiffUtil
 
 class DemoAdapter : RecyclerView.Adapter<DemoAdapter.DemoViewHolder>() {
 
@@ -25,13 +24,12 @@ class DemoAdapter : RecyclerView.Adapter<DemoAdapter.DemoViewHolder>() {
     }
 
     fun setData(demoList: ArrayList<Demo>) {
-        val demoDiffUtil = DemoDiffUtil(dataList, demoList)
+        val demoDiffUtil = MobDiffUtil(dataList, demoList)
         val demoDiffResult = DiffUtil.calculateDiff(demoDiffUtil)
         this.dataList.clear()
         this.dataList.addAll(demoList)
         demoDiffResult.dispatchUpdatesTo(this)
     }
-
 
     override fun getItemCount(): Int = dataList.size
 

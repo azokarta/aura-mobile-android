@@ -8,21 +8,25 @@ import android.widget.Toast
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.util.Helpers.saveDataByKey
 import kz.aura.merp.employee.util.StaffPosition
-import kotlinx.android.synthetic.main.activity_chief.*
+import kz.aura.merp.employee.databinding.ActivityChiefBinding
 
 class ChiefActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityChiefBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chief)
+        binding = ActivityChiefBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         supportActionBar?.hide() // Hide toolbar
 
-        dealer.setOnClickListener { signInToAccount(StaffPosition.DEALER) }
-        master.setOnClickListener { signInToAccount(StaffPosition.MASTER) }
-        fin_agent.setOnClickListener { signInToAccount(StaffPosition.FIN_AGENT) }
+        binding.dealer.setOnClickListener { signInToAccount(StaffPosition.DEALER) }
+        binding.master.setOnClickListener { signInToAccount(StaffPosition.MASTER) }
+        binding.finAgent.setOnClickListener { signInToAccount(StaffPosition.FIN_AGENT) }
     }
 
     private fun signInToAccount(position: StaffPosition) {
-        val staffId = staffId.text.toString()
+        val staffId = binding.staffId.text.toString()
         if (staffId.isNotEmpty()) {
             saveDataByKey(this, staffId.toLong(), "staffId")
 

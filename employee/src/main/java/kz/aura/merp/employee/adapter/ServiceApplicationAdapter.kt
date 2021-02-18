@@ -1,13 +1,12 @@
 package kz.aura.merp.employee.adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.data.model.ServiceApplication
 import kz.aura.merp.employee.databinding.ServiceApplicationCardBinding
-import kz.aura.merp.employee.diffUtil.ServiceApplicationDiffUtil
+import kz.aura.merp.employee.util.MobDiffUtil
 
 class ServiceApplicationAdapter : RecyclerView.Adapter<ServiceApplicationAdapter.MasterViewHolder>() {
 
@@ -25,7 +24,7 @@ class ServiceApplicationAdapter : RecyclerView.Adapter<ServiceApplicationAdapter
     }
 
     fun setData(serviceApplications: ArrayList<ServiceApplication>) {
-        val serviceApplicationDiffUtil = ServiceApplicationDiffUtil(dataList, serviceApplications)
+        val serviceApplicationDiffUtil = MobDiffUtil(dataList, serviceApplications)
         val serviceApplicationDiffResult = DiffUtil.calculateDiff(serviceApplicationDiffUtil)
         this.dataList.clear()
         this.dataList.addAll(serviceApplications)

@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,11 +22,6 @@ import kz.aura.merp.employee.databinding.ActivityMasterBinding
 import kz.aura.merp.employee.util.Helpers
 import kz.aura.merp.employee.util.LanguageHelper
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_master.network_disconnected
-import kotlinx.android.synthetic.main.activity_master.progress_bar
-import kotlinx.android.synthetic.main.activity_master.recyclerView
-import kotlinx.android.synthetic.main.activity_master.toolbar
-import kotlinx.android.synthetic.main.network_disconnected.*
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.util.Permissions
 
@@ -48,7 +45,8 @@ class MasterActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        setSupportActionBar(toolbar as Toolbar)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.master)
         supportActionBar?.subtitle = Helpers.getStaff(this)?.username
 
@@ -58,8 +56,8 @@ class MasterActivity : AppCompatActivity() {
         masterId = Helpers.getStaffId(this)
 
         // Setup RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(applicationContext)
-        recyclerView.adapter = serviceApplicationAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+        binding.recyclerView.adapter = serviceApplicationAdapter
 
         // Observe MutableLiveData
         mMasterViewModel.applications.observe(this, Observer { data ->
@@ -76,12 +74,12 @@ class MasterActivity : AppCompatActivity() {
         })
 
         // If network is disconnected and user clicks restart, get data again
-        restart.setOnClickListener {
+        findViewById<Button>(R.id.restart).setOnClickListener {
             if (Helpers.verifyAvailableNetwork(this)) {
                 mMasterViewModel.fetchServiceApplications(masterId!!) // fetch serviceApplications
-                progress_bar.visibility = View.VISIBLE
-                recyclerView.visibility = View.VISIBLE
-                network_disconnected.visibility = View.GONE
+                binding.progressBar.visibility = View.VISIBLE
+                binding.recyclerView.visibility = View.VISIBLE
+                findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.GONE
             }
         }
 
@@ -116,10 +114,10 @@ class MasterActivity : AppCompatActivity() {
     }
 
     private fun checkError(error: Any) {
-        progress_bar.visibility = View.INVISIBLE // hide progress bar
+        binding.progressBar.visibility = View.INVISIBLE // hide progress bar
         if (!Helpers.verifyAvailableNetwork(this)) {
-            network_disconnected.visibility = View.VISIBLE
-            recyclerView.visibility = View.INVISIBLE
+            findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.INVISIBLE
         } else {
             Helpers.exceptionHandler(error, this) // Show error
         }

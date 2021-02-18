@@ -1,12 +1,11 @@
-package kz.aura.merp.employee.diffUtil
+package kz.aura.merp.employee.util
 
 import androidx.recyclerview.widget.DiffUtil
-import kz.aura.merp.employee.data.model.PhoneNumber
 
-class PhoneNumberDiffUtil(
-    private val oldList: List<PhoneNumber>,
-    private val newList: List<PhoneNumber>
-) : DiffUtil.Callback() {
+class MobDiffUtil<T>(
+    private val oldList: List<T>,
+    private val newList: List<T>
+): DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size
     }

@@ -10,14 +10,16 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
-import kotlinx.android.synthetic.main.activity_pass_code.*
 import kz.aura.merp.employee.R
+import kz.aura.merp.employee.databinding.ActivityPassCodeBinding
 import kz.aura.merp.employee.util.Helpers.clearPreviousAndOpenActivity
 import kz.aura.merp.employee.util.Helpers.openActivityByPositionId
 import kz.aura.merp.employee.util.Helpers.showToast
 import kz.aura.merp.employee.util.PassCodeStatus
 
 class PassCodeActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityPassCodeBinding
 
     private val code = arrayListOf<Int>()
     private lateinit var passCodeStatus: PassCodeStatus
@@ -31,7 +33,8 @@ class PassCodeActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pass_code)
+        binding = ActivityPassCodeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         passCodeStatus = intent.getSerializableExtra("passCodeStatus") as PassCodeStatus
 
@@ -71,68 +74,68 @@ class PassCodeActivity : AppCompatActivity() {
             .setNegativeButtonText("use email login")
             .build()
 
-          fingerprint.setOnClickListener() {
+            binding.fingerprint.setOnClickListener() {
             biometricPrompt.authenticate(promptInfo)
         }
     }
 
     private fun changeText(title: String = "", subTitle: String = "") {
-        passCodeTitle.text = title
-        passCodeSubTitle.text = subTitle
+        binding.passCodeTitle.text = title
+        binding.passCodeSubTitle.text = subTitle
     }
 
     private fun setListenersOfNumbers() {
-        number1.setOnClickListener {
+        binding.number1.setOnClickListener {
             fillLine(1)
         }
 
-        number2.setOnClickListener {
+        binding.number2.setOnClickListener {
             fillLine(2)
         }
 
-        number3.setOnClickListener {
+        binding.number3.setOnClickListener {
             fillLine(3)
         }
 
-        number4.setOnClickListener {
+        binding.number4.setOnClickListener {
             fillLine(4)
         }
 
-        number5.setOnClickListener {
+        binding.number5.setOnClickListener {
             fillLine(5)
         }
 
-        number6.setOnClickListener {
+        binding.number6.setOnClickListener {
             fillLine(6)
         }
 
-        number7.setOnClickListener {
+        binding.number7.setOnClickListener {
             fillLine(7)
         }
 
-        number8.setOnClickListener {
+        binding.number8.setOnClickListener {
             fillLine(8)
         }
 
-        number9.setOnClickListener {
+        binding.number9.setOnClickListener {
             fillLine(9)
         }
 
-        number0.setOnClickListener {
+        binding.number0.setOnClickListener {
             fillLine(0)
         }
 
-        deleteNumber.setOnClickListener {
+        binding.deleteNumber.setOnClickListener {
             removeLastNumber()
         }
     }
 
     private fun fillLine(num: Int) {
         when (code.size) {
-            0 -> typed1.setBackgroundResource(R.color.colorPrimary)
-            1 -> typed2.setBackgroundResource(R.color.colorPrimary)
-            2 -> typed3.setBackgroundResource(R.color.colorPrimary)
-            3 -> typed4.setBackgroundResource(R.color.colorPrimary)
+            0 -> binding.typed1.setBackgroundResource(R.color.colorPrimary)
+            1 -> binding.typed2.setBackgroundResource(R.color.colorPrimary)
+            2 -> binding.typed3.setBackgroundResource(R.color.colorPrimary)
+            3 -> binding.typed4.setBackgroundResource(R.color.colorPrimary)
         }
         code.add(num)
 
@@ -173,10 +176,10 @@ class PassCodeActivity : AppCompatActivity() {
     private fun removeLastNumber() {
         if (code.size != 0) {
             when (code.size) {
-                1 -> typed1.setBackgroundResource(R.color.colorBlack)
-                2 -> typed2.setBackgroundResource(R.color.colorBlack)
-                3 -> typed3.setBackgroundResource(R.color.colorBlack)
-                4 -> typed4.setBackgroundResource(R.color.colorBlack)
+                1 -> binding.typed1.setBackgroundResource(R.color.colorBlack)
+                2 -> binding.typed2.setBackgroundResource(R.color.colorBlack)
+                3 -> binding.typed3.setBackgroundResource(R.color.colorBlack)
+                4 -> binding.typed4.setBackgroundResource(R.color.colorBlack)
             }
             code.removeLast()
         }
@@ -193,10 +196,10 @@ class PassCodeActivity : AppCompatActivity() {
         PreferenceManager.getDefaultSharedPreferences(this).getString("passCode", "")
 
     private fun paintLinesToBlack() {
-        typed1.setBackgroundResource(R.color.colorBlack)
-        typed2.setBackgroundResource(R.color.colorBlack)
-        typed3.setBackgroundResource(R.color.colorBlack)
-        typed4.setBackgroundResource(R.color.colorBlack)
+        binding.typed1.setBackgroundResource(R.color.colorBlack)
+        binding.typed2.setBackgroundResource(R.color.colorBlack)
+        binding.typed3.setBackgroundResource(R.color.colorBlack)
+        binding.typed4.setBackgroundResource(R.color.colorBlack)
     }
 
 

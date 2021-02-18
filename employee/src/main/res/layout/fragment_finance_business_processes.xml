@@ -41,21 +41,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/businessProcessesSaveBtn"
-            android:layout_width="250dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/save"
-            android:textColor="@color/colorPrimary"
-            app:backgroundTint="@color/colorLightGray"
-            app:cornerRadius="5dp"
-            app:icon="@drawable/ic_baseline_save_24"
-            app:iconGravity="textStart"
-            app:iconTint="@color/colorPrimary"
-            app:layout_constraintStart_toStartOf="@+id/resultBtn"
-            app:layout_constraintTop_toBottomOf="@+id/resultBtn" />
-
-        <Button
             android:id="@+id/resultBtn"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"

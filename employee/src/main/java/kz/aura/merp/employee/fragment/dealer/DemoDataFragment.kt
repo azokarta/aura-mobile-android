@@ -2,19 +2,19 @@ package kz.aura.merp.employee.fragment.dealer
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PhoneNumberAdapter
 import kz.aura.merp.employee.data.model.Demo
 import kz.aura.merp.employee.data.viewmodel.DealerViewModel
 import kz.aura.merp.employee.databinding.FragmentDemoDataBinding
 import kz.aura.merp.employee.activity.MapActivity
+import kz.aura.merp.employee.data.model.Location
 
 private const val ARG_PARAM1 = "demo"
 
@@ -41,6 +41,8 @@ class DemoDataFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.demo = demo
 
+        setHasOptionsMenu(true)
+
         // Setup RecyclerView
         setupRecyclerView()
 
@@ -50,15 +52,12 @@ class DemoDataFragment : Fragment() {
             binding.demo = data
             binding.executePendingBindings()
             demo!!.crmPhoneDtoList?.let { demoDataPhoneNumberAdapter.setData(it) }
+            Snackbar.make(binding.root, getString(R.string.successfullySaved), Snackbar.LENGTH_LONG).show()
         })
 
-        // Initialize Listeners
-        binding.demoDataSaveBtn.setOnClickListener {
-            demo!!.price = binding.demoDataTaxiExpences.text.toString().toDouble()
-            mDealerViewModel.updateDemo(demo!!)
-        }
         binding.mapBtn.setOnClickListener {
             val intent = Intent(this.context, MapActivity::class.java)
+            intent.putExtra("location", Location(43.224107, 76.877591, "adawdawdaw"))
             startActivity(intent)
         }
 
@@ -66,6 +65,20 @@ class DemoDataFragment : Fragment() {
         demo!!.crmPhoneDtoList?.let { demoDataPhoneNumberAdapter.setData(it) }
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.save_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.save -> {
+                demo!!.price = binding.demoDataTaxiExpences.text.toString().toDouble()
+                mDealerViewModel.updateDemo(demo!!)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupRecyclerView() {

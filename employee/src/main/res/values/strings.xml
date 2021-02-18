@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Аура сотрудники</string>
+    <string name="app_name">Аура сотрудники</string>
     <string name="language">Язык</string>
     <string name="ru">Русский</string>
     <string name="en">Англиский</string>
@@ -57,6 +57,14 @@
     <string name="passCodeReEnter"> Введите код повторно </string>
     <string name="passCodeSignSubTitle"> Введите код для быстрого доступа к приложению </string>
     <string name="passCodeWrong"> Код неправильно, введите повторно </string>
+    <string name="pointA">Точка А</string>
+    <string name="pointB">Точка B</string>
+    <string name="unknownError">Произошла ошибка повторите попытку позже</string>
+    <string name="recommendation">Рекомендация</string>
+    <string name="recommendationsSaved">Рекомендации сохранены</string>
+    <string name="remove">Удалить</string>
+    <string name="demoSuccessfullySaved">Демо успешно обновлен</string>
+    <string name="password">Пароль</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>
@@ -69,14 +77,14 @@
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_main2">MainActivity</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="title_activity_main2" translatable="false">MainActivity</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="first_fragment_label" translatable="false">First Fragment</string>
+    <string name="second_fragment_label" translatable="false">Second Fragment</string>
+    <string name="next" translatable="false">Next</string>
+    <string name="previous" translatable="false">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="hello_first_fragment" translatable="false">Hello first fragment</string>
+    <string name="hello_second_fragment" translatable="false">Hello second fragment. Arg: %1$s</string>
 </resources>

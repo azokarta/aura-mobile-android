@@ -1,18 +1,13 @@
 package kz.aura.merp.employee.fragment.master
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kz.aura.merp.employee.data.model.ServiceApplication
 import kz.aura.merp.employee.data.viewmodel.MasterViewModel
 import kz.aura.merp.employee.databinding.FragmentServiceApplicationDataBinding
-import kotlinx.android.synthetic.main.fragment_service_application_data.*
 import kz.aura.merp.employee.R
 
 private const val ARG_PARAM1 = "serviceApplication"
@@ -40,21 +35,31 @@ class ServiceApplicationDataFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.serviceApplication = serviceApplication
 
+        setHasOptionsMenu(true)
+
         // Observe MutableLiveData
-        mMasterViewModel.updatedServiceApplication.observe(viewLifecycleOwner, Observer { data ->
+        mMasterViewModel.updatedServiceApplication.observe(viewLifecycleOwner, { data ->
             serviceApplication = data
             binding.serviceApplication = data
             binding.executePendingBindings()
-            Snackbar.make(binding.serviceApplicationDataSaveBtn, getString(R.string.successfullySaved), Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.root, getString(R.string.successfullySaved), Snackbar.LENGTH_LONG).show()
         })
 
-        // Initialize Listeners
-        binding.serviceApplicationDataSaveBtn.setOnClickListener {
-            serviceApplication!!.taxiExpenseAmount = demo_data_taxi_expences.text.toString().toDouble()
-            mMasterViewModel.updateServiceApplication(serviceApplication!!)
-        }
-
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.save_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.save -> {
+                serviceApplication!!.taxiExpenseAmount = binding.demoDataTaxiExpences.text.toString().toDouble()
+                mMasterViewModel.updateServiceApplication(serviceApplication!!)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

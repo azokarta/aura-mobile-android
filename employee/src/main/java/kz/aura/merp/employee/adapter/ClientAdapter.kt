@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.data.model.Client
 import kz.aura.merp.employee.databinding.FinAgentCardBinding
-import kz.aura.merp.employee.diffUtil.ClientDiffUtil
+import kz.aura.merp.employee.util.MobDiffUtil
 
 class ClientAdapter : RecyclerView.Adapter<ClientAdapter.FinanceViewHolder>() {
 
@@ -24,7 +24,7 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.FinanceViewHolder>() {
     }
 
     fun setData(clients: ArrayList<Client>) {
-        val clientDiffUtil = ClientDiffUtil(dataList, clients)
+        val clientDiffUtil = MobDiffUtil(dataList, clients)
         val clientDiffResult = DiffUtil.calculateDiff(clientDiffUtil)
         this.dataList.clear()
         this.dataList.addAll(clients)

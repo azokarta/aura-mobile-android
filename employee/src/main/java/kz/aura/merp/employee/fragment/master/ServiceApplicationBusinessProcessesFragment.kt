@@ -2,11 +2,8 @@ package kz.aura.merp.employee.fragment.master
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +15,6 @@ import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.FragmentServiceApplicationBusinessProcessesBinding
 import kz.aura.merp.employee.util.Helpers.getStaffId
 import io.nlopez.smartlocation.SmartLocation
-import kotlinx.android.synthetic.main.fragment_service_application_business_processes.*
 import kz.aura.merp.employee.adapter.StepsAdapter
 
 private const val ARG_PARAM1 = "serviceApplication"
@@ -53,6 +49,8 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
         _binding = FragmentServiceApplicationBusinessProcessesBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.serviceApplication = serviceApplication
+
+        setHasOptionsMenu(true)
 
         // Observe MutableLiveData
         setObserve()
@@ -89,7 +87,7 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
             serviceApplication = data
             binding.serviceApplication = data
             binding.executePendingBindings() // Update view
-            Snackbar.make(binding.businessProcessesSaveBtn, getString(R.string.successfullySaved), Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.root, getString(R.string.successfullySaved), Snackbar.LENGTH_LONG).show()
         })
         mMasterViewModel.trackEmpProcessServiceApplication.observe(viewLifecycleOwner, Observer { data ->
             step = data.size
@@ -102,6 +100,20 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.save_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.save -> {
+                serviceApplication!!.description = binding.serviceBusinessProcessesCause.text.toString()
+                mMasterViewModel.updateServiceApplication(serviceApplication!!)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun showResultsAlertDialog() {
@@ -131,11 +143,6 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
     private fun initBtnListeners() {
         binding.resultBtn.setOnClickListener {
             showResultsAlertDialog()
-        }
-
-        binding.businessProcessesSaveBtn.setOnClickListener {
-            serviceApplication!!.description = service_business_processes_cause.text.toString()
-            mMasterViewModel.updateServiceApplication(serviceApplication!!)
         }
     }
 

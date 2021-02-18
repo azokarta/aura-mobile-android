@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Аура сотрудники</string>
     <string name="language">Язык</string>
     <string name="ru">Русский</string>
     <string name="en">Англиский</string>
@@ -47,4 +48,12 @@
     <string name="passCodeSignSubTitle"> Введите код для быстрого доступа к приложению </string>
     <string name="passCodeReEnter"> Введите код повторно </string>
     <string name="passCodeWrong"> Код неправильно, введите повторно </string>
+    <string name="pointA">Точка А</string>
+    <string name="pointB">Точка B</string>
+    <string name="unknownError">Произошла ошибка повторите попытку позже</string>
+    <string name="recommendation">Рекомендация</string>
+    <string name="recommendationsSaved">Рекомендации сохранены</string>
+    <string name="remove">Удалить</string>
+    <string name="demoSuccessfullySaved">Демо успешно обновлен</string>
+    <string name="password">Пароль</string>
 </resources>

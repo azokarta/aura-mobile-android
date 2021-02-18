@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.StepViewRowBinding
-import kz.aura.merp.employee.diffUtil.StepDiffUtil
+import kz.aura.merp.employee.util.MobDiffUtil
 
 class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerView.Adapter<StepsAdapter.StepsViewHolder>() {
     private var dataList = mutableListOf<String>()
@@ -21,17 +21,11 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
     }
 
     override fun onBindViewHolder(holder: StepsViewHolder, position: Int) {
-        holder.bind(dataList[position], position, step, dataList.size)
-
-        holder.binding.completedBtn.setOnClickListener {
-            step+=1
-            notifyDataSetChanged()
-            completedStepListener.stepCompleted(position)
-        }
+        holder.bind(position)
     }
 
     fun setData(steps: ArrayList<String>) {
-        val stepDiffUtil = StepDiffUtil(dataList, steps)
+        val stepDiffUtil = MobDiffUtil(dataList, steps)
         val stepDiffResult = DiffUtil.calculateDiff(stepDiffUtil)
         this.dataList.clear()
         this.dataList.addAll(steps)
@@ -50,12 +44,18 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
         }
     }
 
-    class StepsViewHolder(val binding: StepViewRowBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(stepTitle: String, position: Int, step: Int, size: Int) {
-            binding.stepTitle = stepTitle
+    inner class StepsViewHolder(val binding: StepViewRowBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(position: Int) {
+            binding.stepTitle = dataList[position]
             binding.executePendingBindings()
 
-            drawByStep(step, size, position)
+            drawByStep(step, dataList.size, position)
+
+            binding.completedBtn.setOnClickListener {
+                this@StepsAdapter.step+=1
+                notifyDataSetChanged()
+                completedStepListener.stepCompleted(position)
+            }
         }
 
         private fun drawByStep(step: Int, size: Int, position: Int) {
@@ -67,6 +67,7 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
             if (step > position) {
                 binding.stepIcon.setImageResource(R.drawable.ic_baseline_check_circle_24)
                 binding.stepLine.setImageResource(R.drawable.completed_line)
+                binding.stepIcon.setColorFilter(ContextCompat.getColor(binding.root.context, R.color.colorPrimary))
                 binding.stepText.setTextColor(ContextCompat.getColor(binding.root.context, R.color.colorBlack))
                 binding.completedBtn.visibility = View.INVISIBLE
             }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Aura employees</string>
     <string name="language">Language</string>
     <string name="ru">Russian</string>
     <string name="en">English</string>
@@ -47,4 +48,12 @@
     <string name="passCodeSignSubTitle"> Enter the code for quick access to the application </string>
     <string name="passCodeReEnter"> Re-enter the code </string>
     <string name="passCodeWrong"> Code is wrong, please re-enter </string>
+    <string name="pointA">Point А</string>
+    <string name="pointB">Point B</string>
+    <string name="unknownError">An error occurred please try again later</string>
+    <string name="recommendation">Recommendation</string>
+    <string name="recommendationsSaved">Recommendations saved</string>
+    <string name="remove">Remove</string>
+    <string name="demoSuccessfullySaved">Demo successfully saved</string>
+    <string name="password">Password</string>
 </resources>

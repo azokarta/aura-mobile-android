@@ -1,24 +1,18 @@
 package kz.aura.merp.employee.fragment.dealer
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.nlopez.smartlocation.SmartLocation
-import kotlinx.android.synthetic.main.fragment_demo_business_processes.*
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.StepsAdapter
 import kz.aura.merp.employee.data.model.*
 import kz.aura.merp.employee.data.viewmodel.DealerViewModel
 import kz.aura.merp.employee.data.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.FragmentDemoBusinessProcessesBinding
-import kz.aura.merp.employee.fragment.finance.FinanceClientInfoFragment
 import kz.aura.merp.employee.util.Helpers
 import kz.aura.merp.employee.util.Helpers.saveData
 import kz.aura.merp.employee.util.ProgressDialog
@@ -30,7 +24,7 @@ private const val soldId = 4
 
 class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.CompletedStepListener {
 
-    var step = 0;
+    var step = 0
     private var demo: Demo? = null
     private val demoResults = arrayListOf<DemoResult>()
     private var trackStepOrdersBusinessProcesses = arrayListOf<String>()
@@ -59,11 +53,17 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
         binding.lifecycleOwner = this
         binding.demo = demo
 
+        setHasOptionsMenu(true)
+
+        // Set dealer id
+        dealerId = Helpers.getStaffId(this.requireContext())
+
         // Observe MutableLiveData
         setObserve()
 
         mReferenceViewModel.fetchDemoResults()
         mReferenceViewModel.fetchTrackStepOrdersBusinessProcesses(bpId)
+        mReferenceViewModel.fetchContractTypes(dealerId!!)
         mDealerViewModel.fetchTrackEmpProcessDemo(demo!!.demoId)
 
         // Getting a location
@@ -73,11 +73,9 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
                 location = Location(it.latitude, it.longitude)
             };
 
-        // Set dealer id
-        dealerId = Helpers.getStaffId(this.requireContext())
 
         // PhoneNumber Formatter
-        binding.ccp.registerCarrierNumberEditText(binding.phoneNumberEditText)
+        binding.ccp.registerCarrierNumberEditText(binding.phoneNumber)
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this.requireContext())
@@ -90,17 +88,22 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
     }
 
     private fun setObserve() {
-        mReferenceViewModel.demoResults.observe(viewLifecycleOwner, Observer { data ->
+        // Observe demo results
+        mReferenceViewModel.demoResults.observe(viewLifecycleOwner, { data ->
             binding.demoResultBtn.text = data[demo!!.resultId!!].nameRu
             demoResults.addAll(data)
         })
+
+        // Observe titles of steps
         mReferenceViewModel.trackStepOrdersBusinessProcesses.observe(
             viewLifecycleOwner,
-            Observer { data ->
+            { data ->
                 trackStepOrdersBusinessProcesses.addAll(data.map { it.trackStepNameRu } as ArrayList)
                 stepsAdapter.setData(trackStepOrdersBusinessProcesses)
             })
-        mDealerViewModel.updatedDemo.observe(viewLifecycleOwner, Observer { data ->
+
+        // Observe updated demo
+        mDealerViewModel.updatedDemo.observe(viewLifecycleOwner, { data ->
             demo = data
             binding.demo = data
             binding.executePendingBindings() // Update view
@@ -108,28 +111,63 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
             binding.demoResultBtn.text = demoResults[data!!.resultId!!].nameRu
             progressDialog.hideLoading()
         })
-        mDealerViewModel.trackEmpProcessDemo.observe(viewLifecycleOwner, Observer { data ->
+
+        mDealerViewModel.trackEmpProcessDemo.observe(viewLifecycleOwner, { data ->
             step = data.size
             initBtnListeners()
             initStepView()
             stepsAdapter.setStep(step)
         })
-        mDealerViewModel.smsSent.observe(viewLifecycleOwner, Observer { data ->
+
+        // Observe if sms has been sent
+        mDealerViewModel.smsSent.observe(viewLifecycleOwner, {
             demo!!.ocrDemoStatus = "SENT_SMS"
             mDealerViewModel.updatedDemo.postValue(demo!!)
             checkDemoStatusIsSold()
             saveData(demo!!, this.requireContext())
             progressDialog.hideLoading()
         })
-        mDealerViewModel.error.observe(viewLifecycleOwner, Observer { data ->
+
+        // Observe error
+        mDealerViewModel.error.observe(viewLifecycleOwner, {
             progressDialog.hideLoading()
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.save_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.save -> {
+                demo!!.note = binding.demoBusinessProcessesCause.text.toString()
+                mDealerViewModel.updateDemo(demo!!)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initStepView() {
         binding.stepsRecyclerView.layoutManager = LinearLayoutManager(this.requireContext())
         binding.stepsRecyclerView.adapter = stepsAdapter
         binding.stepsRecyclerView.isNestedScrollingEnabled = false
+    }
+
+    private fun showContractTypesDialog(contractTypes: ArrayList<ContractType>) {
+        val builder = AlertDialog.Builder(this.requireContext())
+
+        builder.setTitle("Тип контракта")
+
+        builder.setItems((contractTypes.map { it.name } as ArrayList).toArray(arrayOfNulls<String>(0))) { _, i ->
+            binding.contractTypeBtn.text = contractTypes[i].name
+        }
+
+        builder.setPositiveButton("Отмена") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        builder.create().show()
     }
 
     private fun checkDemoStatusIsSold() {
@@ -150,7 +188,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
                 }
                 else -> {
                     binding.demoStatus.text = null
-                    binding.phoneNumberEditText.visibility = View.VISIBLE
+                    binding.phoneNumber.visibility = View.VISIBLE
                     binding.ccp.visibility = View.VISIBLE
                     binding.sendSms.visibility = View.VISIBLE
                     binding.receiveCustomerConfirmation.visibility = View.VISIBLE
@@ -165,7 +203,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
     }
 
     private fun hideSmsForm() {
-        binding.phoneNumberEditText.visibility = View.GONE
+        binding.phoneNumber.visibility = View.GONE
         binding.ccp.visibility = View.GONE
         binding.sendSms.visibility = View.GONE
     }
@@ -178,7 +216,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
 
         builder.setItems(demoResultsByLang.toArray(arrayOfNulls<String>(0))) { _, i ->
             demo!!.resultId = i
-
+//            contractTypeBtn.visibility = View.VISIBLE
             binding.demoResultBtn.text = demoResults[i].nameRu
             checkDemoStatusIsSold()
         }
@@ -187,8 +225,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
             dialog.dismiss()
         }
 
-        val dialog = builder.create()
-        dialog.show()
+        builder.create().show()
     }
 
     private fun initBtnListeners() {
@@ -196,16 +233,11 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
             showDemoResultsAlertDialog()
         }
 
-        binding.demoBusinessProcessesSaveBtn.setOnClickListener {
-            demo!!.note = demo_business_processes_cause.text.toString()
-            mDealerViewModel.updateDemo(demo!!)
-        }
-
         binding.sendSms.setOnClickListener {
-            if (ccp.isValidFullNumber) {
+            if (binding.ccp.isValidFullNumber) {
                 mDealerViewModel.sendSms(
-                    demo!!.demoId, ccp.selectedCountryCode, ccp.fullNumberWithPlus.replace(
-                        ccp.selectedCountryCodeWithPlus,
+                    demo!!.demoId, binding.ccp.selectedCountryCode, binding.ccp.fullNumberWithPlus.replace(
+                        binding.ccp.selectedCountryCodeWithPlus,
                         ""
                     )
                 )
@@ -216,6 +248,10 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
         binding.receiveCustomerConfirmation.setOnClickListener {
             mDealerViewModel.updateStatus(demo!!.demoId)
             progressDialog.showLoading()
+        }
+
+        binding.contractTypeBtn.setOnClickListener {
+            mReferenceViewModel.contractTypes.value?.let { it1 -> showContractTypesDialog(it1) }
         }
     }
 

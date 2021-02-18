@@ -21,6 +21,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <service
+            android:name="kz.aura.merp.employee.util.FirebaseService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
         <activity android:name=".activity.PassCodeActivity" />
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
@@ -37,14 +46,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kz.aura.merp.employee.activity.MasterActivity" />
         </activity>
-        <activity
-            android:name=".activity.OcrWebActivity"
-            android:parentActivityName=".activity.AuthorizationActivity"
-            android:label="OCR">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.employee.activity.AuthorizationActivity" />
-        </activity>
         <activity android:name=".activity.MasterActivity" android:label="@string/master"/>
         <activity android:name=".activity.FinanceAgentActivity" android:label="@string/finAgent" />
         <activity android:name=".activity.DealerActivity" android:label="@string/dealer" />
@@ -57,7 +58,7 @@
                 android:value="kz.aura.merp.employee.activity.DealerActivity" />
         </activity>
         <activity
-            android:name=".activity.ClientActivity"
+            android:name=".activity.PlanActivity"
             android:parentActivityName=".activity.FinanceAgentActivity"
             android:label="@string/client">
             <meta-data
@@ -68,13 +69,7 @@
         <activity
             android:name=".activity.AuthorizationActivity"
             android:configChanges="locale" />
-        <activity android:name=".activity.MapActivity" android:label="@string/map">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
-        </activity>
+        <activity android:name=".activity.MapActivity" android:label="@string/map" />
         <activity
             android:name=".activity.SettingsActivity"
             android:configChanges="locale" android:label="@string/settings"/>

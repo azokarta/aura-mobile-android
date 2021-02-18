@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-parcelize'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "kz.aura.merp.employee"
@@ -27,7 +28,8 @@ android {
     }
 
     buildFeatures{
-        dataBinding = true
+        viewBinding true
+        dataBinding true
     }
 
     compileOptions {
@@ -67,18 +69,23 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation 'com.xwray:groupie:2.8.0'
+
+    // Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
-    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
+
+    // OkHttp
     implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
-    implementation 'com.r0adkll:slidableactivity:2.0.6'
+
+    // Mapkit
     implementation 'com.yandex.android:maps.mobile:4.0.0-full'
+
+    // Multidex
     implementation 'com.android.support:multidex:1.0.3'
 
     // Navigation Component
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.3'
 
     // Lifecycle components
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
@@ -97,10 +104,21 @@ dependencies {
     // RecyclerView Animator
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
 
-    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    // Phone number formatter
     implementation 'com.hbb20:ccp:2.4.0'
-    //Biometric
-    implementation 'androidx.biometric:biometric:1.1.0'
+
     // SmartLocation
     implementation 'io.nlopez.smartlocation:library:3.3.3'
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:26.4.0')
+    implementation 'com.google.firebase:firebase-messaging'
+
+    //Biometric
+    implementation 'androidx.biometric:biometric:1.1.0'
 }
