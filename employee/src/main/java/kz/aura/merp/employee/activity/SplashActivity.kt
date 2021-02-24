@@ -1,3 +1,4 @@
+
 package kz.aura.merp.employee.activity
 
 import android.content.Intent
@@ -7,6 +8,7 @@ import kz.aura.merp.employee.util.Helpers.clearPreviousAndOpenActivity
 import kz.aura.merp.employee.util.Helpers.getToken
 import kz.aura.merp.employee.util.LanguageHelper.updateLanguage
 import kz.aura.merp.employee.databinding.ActivitySplashBinding
+import kz.aura.merp.employee.util.Helpers
 import kz.aura.merp.employee.util.PassCodeStatus
 
 class SplashActivity : AppCompatActivity() {

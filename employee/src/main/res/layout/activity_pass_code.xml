@@ -15,6 +15,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
+        android:gravity="center"
         android:text="@string/passCodeTitle"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
@@ -215,7 +216,7 @@
         android:background="@color/colorBlack"
         app:layout_constraintEnd_toStartOf="@+id/typed2"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/passCodeSubTitle"
         app:layout_constraintTop_toBottomOf="@+id/passCodeSubTitle" />
 
     <View
@@ -223,32 +224,29 @@
         android:layout_width="45dp"
         android:layout_height="2dp"
         android:background="@color/colorBlack"
-        app:layout_constraintBottom_toBottomOf="@+id/typed1"
-        app:layout_constraintEnd_toStartOf="@+id/typed4"
+        app:layout_constraintEnd_toStartOf="@+id/typed3"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/typed1"
         app:layout_constraintTop_toTopOf="@+id/typed1" />
 
     <View
         android:id="@+id/typed3"
-        android:layout_width="45dp"
+        android:layout_width="48dp"
         android:layout_height="2dp"
         android:background="@color/colorBlack"
-        app:layout_constraintBottom_toBottomOf="@+id/typed4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/typed4"
-        app:layout_constraintTop_toTopOf="@+id/typed4" />
-
-    <View
-        android:id="@+id/typed4"
-        android:layout_width="45dp"
-        android:layout_height="2dp"
-        android:background="@color/colorBlack"
-        app:layout_constraintBottom_toBottomOf="@+id/typed2"
-        app:layout_constraintEnd_toStartOf="@+id/typed3"
+        app:layout_constraintEnd_toStartOf="@+id/typed4"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/typed2"
         app:layout_constraintTop_toTopOf="@+id/typed2" />
+
+    <View
+        android:id="@+id/typed4"
+        android:layout_width="47dp"
+        android:layout_height="2dp"
+        android:background="@color/colorBlack"
+        app:layout_constraintEnd_toEndOf="@+id/passCodeSubTitle"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/typed3"
+        app:layout_constraintTop_toTopOf="@+id/typed3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -52,7 +52,7 @@ class AuthorizationActivity : AppCompatActivity() {
             // Open PassCode activity for saving code
             val intent = Intent(this, PassCodeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            intent.putExtra("passCodeStatus", PassCodeStatus.VERIFY)
+            intent.putExtra("passCodeStatus", PassCodeStatus.CREATE)
             startActivity(intent)
         })
         mAuthViewModel.error.observe(this, { error ->

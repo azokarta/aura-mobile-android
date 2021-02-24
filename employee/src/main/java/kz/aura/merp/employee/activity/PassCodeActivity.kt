@@ -41,7 +41,7 @@ class PassCodeActivity : AppCompatActivity() {
         setListenersOfNumbers()
 
         if (passCodeStatus == PassCodeStatus.VERIFY) {
-            changeText()
+            changeText(getString(R.string.passCodeSignInTitle),getString(R.string.passCodeSignSubTitle))
         }
 
 
@@ -63,7 +63,6 @@ class PassCodeActivity : AppCompatActivity() {
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-
                     notifyUser("Auth Failed")
                 }
             })
@@ -146,8 +145,7 @@ class PassCodeActivity : AppCompatActivity() {
                         firstCreatedCode.addAll(code)
                         code.clear()
                         paintLinesToBlack()
-
-                     changeText( getString(R.string.passCodeTitle),getString(R.string.passCodeReEnter))
+                        changeText( getString(R.string.passCodeTitle),getString(R.string.passCodeReEnter))
                     } else if (firstCreatedCode == code) {
                         savePassCode()
                         openActivityByPositionId(this)
@@ -158,13 +156,13 @@ class PassCodeActivity : AppCompatActivity() {
                 }
 
                 PassCodeStatus.VERIFY -> {
-                    changeText(getString(R.string.passCodeSignInTitle),getString(R.string.passCodeSubTitle))
+                   // changeText(getString(R.string.passCodeSignInTitle),getString(R.string.passCodeSubTitle))
                     val typedCode = code.joinToString(separator = "")
                     val userCode = receivePassCode()
                     if (userCode == typedCode) {
                         openActivityByPositionId(this)
                     } else {
-                        showToast(this, R.string.passCodeWrong.toString())
+                        changeText(getString(R.string.passCodeReEnter),getString(R.string.passCodeWrong))
                         paintLinesToBlack()
                         code.clear()
                     }
@@ -208,8 +206,7 @@ class PassCodeActivity : AppCompatActivity() {
     }
 
     private fun goToHome() {
-        val intent = Intent(this, AuthorizationActivity::class.java)
-        startActivity(intent)
+        openActivityByPositionId(this)
     }
 
 }
