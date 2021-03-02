@@ -4,14 +4,16 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Client (
+data class Plan (
     val contractId: Long,
     val contractDate: String?,
+    val contractNumber: Long,
     val paymentSchedule: Int?,
     val addrHomeId: Long?,
     val address: String?,
     val customerId: Long?,
-    var price: Double?,
+    val paymentOverdueDays: Int,
+    var toPay: Double?,
     val totalPaid: Double?,
     val nextPaymentDate: String?,
     val nextPaymentAmount: Double?,

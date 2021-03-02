@@ -25,7 +25,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         application,
         Constants.AUTH_URL
     )
-    private val apiService = ServiceBuilder.buildService(AuthApi::class.java, application)
 
     val authResponse = MutableLiveData<AuthResponse>()
     val userInfo = MutableLiveData<Staff>()
@@ -45,17 +44,21 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getUserInfo(phoneNumber: String) = viewModelScope.launch {
-        try {
-            val response = apiService.getUserInfo(phoneNumber)
+    fun getUserInfo(phoneNumber: String) {
+        println(phoneNumber)
+        val apiService = ServiceBuilder.buildService(AuthApi::class.java, getApplication())
+        viewModelScope.launch {
+            try {
+                val response = apiService.getUserInfo(phoneNumber)
 
-            if (response.isSuccessful) {
-                userInfo.postValue(response.body()!!.data)
-            } else {
-                error.postValue(response.errorBody())
+                if (response.isSuccessful) {
+                    userInfo.postValue(response.body()!!.data)
+                } else {
+                    error.postValue(response.errorBody())
+                }
+            } catch (e: Exception) {
+                error.postValue(e)
             }
-        } catch (e: Exception) {
-            error.postValue(e)
         }
     }
 
@@ -94,5 +97,4 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             .getDefaultSharedPreferences(getApplication())
             .getString("phoneNumber", "")!!
     }
-
 }

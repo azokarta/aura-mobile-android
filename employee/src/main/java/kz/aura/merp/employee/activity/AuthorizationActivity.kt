@@ -36,7 +36,7 @@ class AuthorizationActivity : AppCompatActivity() {
         permissions = Permissions(this, this)
 
         // Request camera permission
-        permissions.requestCameraPermission()
+//        permissions.requestCameraPermission()
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
@@ -45,7 +45,7 @@ class AuthorizationActivity : AppCompatActivity() {
         mAuthViewModel.authResponse.observe(this, { data ->
             saveDataByKey(this, data.accessToken, "token")
             // Get info about user
-            mAuthViewModel.getUserInfo(binding.phoneNumber.text.toString())
+            mAuthViewModel.getUserInfo(binding.ccp.fullNumberWithPlus)
         })
         mAuthViewModel.userInfo.observe(this, { data ->
             saveStaff(this, data)
@@ -64,6 +64,9 @@ class AuthorizationActivity : AppCompatActivity() {
         binding.button2.setOnClickListener {
             goToActivity(ChiefActivity())
         }
+
+        // Phone number formatter
+        binding.ccp.registerCarrierNumberEditText(binding.phoneNumber)
 
         // Receive token of FCM
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
@@ -84,9 +87,13 @@ class AuthorizationActivity : AppCompatActivity() {
     }
 
     fun signIn(view: View) {
-        val phoneNumber = binding.phoneNumber.text.toString()
-        val password = binding.password.text.toString()
-        mAuthViewModel.signIn(phoneNumber, password)
+        if (binding.ccp.isValidFullNumber) {
+            val phoneNumber = binding.ccp.fullNumberWithPlus
+            val password = binding.password.text.toString()
+            mAuthViewModel.signIn(phoneNumber, password)
+        } else {
+            Toast.makeText(this, getString(R.string.enterValidPhoneNumber), Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -97,7 +104,7 @@ class AuthorizationActivity : AppCompatActivity() {
         when (requestCode) {
             Permissions.CAMERA_PERMISSION_REQUEST_CODE -> {
                 if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
-                    Toast.makeText(this, "Вы не разрешили доступ к камеру", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.haveNotAllowedAccessToTheCamera), Toast.LENGTH_LONG).show()
                     this.permissions.requestCameraPermission()
                 } else {
                     this.permissions.requestGpsPermission()
@@ -105,7 +112,7 @@ class AuthorizationActivity : AppCompatActivity() {
             }
             Permissions.LOCATION_PERMISSION_REQUEST_CODE -> {
                 if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
-                    Toast.makeText(this, "Вы не разрешили доступ к местоположению", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.haveNotAllowedAccessToTheLocation), Toast.LENGTH_LONG).show()
                     this.permissions.requestGpsPermission()
                 }
             }

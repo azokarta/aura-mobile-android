@@ -4,12 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import kz.aura.merp.employee.data.model.Client
+import kz.aura.merp.employee.data.model.Plan
 import kz.aura.merp.employee.data.model.TrackEmpProcess
 import kz.aura.merp.employee.data.service.FinanceApi
 import kz.aura.merp.employee.data.service.ServiceBuilder
 import kz.aura.merp.employee.util.Helpers
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -17,16 +16,16 @@ class FinanceViewModel (application: Application) : AndroidViewModel(application
     private val apiService = ServiceBuilder.buildService(FinanceApi::class.java, application)
 
     val error = MutableLiveData<Any>()
-    val clients = MutableLiveData<ArrayList<Client>>()
+    val plans = MutableLiveData<ArrayList<Plan>>()
     val trackEmpProcessCollectMoney = MutableLiveData<ArrayList<TrackEmpProcess>>()
-    val updatedClient = MutableLiveData<Client>()
+    val updatedPlan = MutableLiveData<Plan>()
 
     fun fetchClients(collectorId: Long) = viewModelScope.launch {
         try {
             val response = apiService.fetchClients(collectorId)
 
             if (response.isSuccessful) {
-                clients.postValue(response.body()!!.data)
+                plans.postValue(response.body()!!.data)
             } else {
                 error.postValue(response.errorBody())
             }
@@ -49,12 +48,12 @@ class FinanceViewModel (application: Application) : AndroidViewModel(application
         }
     }
 
-    fun updateClient(client: Client) = viewModelScope.launch {
+    fun updatePlan(plan: Plan) = viewModelScope.launch {
         try {
-            val response = apiService.updateClient(client)
+            val response = apiService.updatePlan(plan)
 
             if (response.isSuccessful) {
-                updatedClient.postValue(response.body()!!.data)
+                updatedPlan.postValue(response.body()!!.data)
                 Helpers.saveData(response.body()!!.data, getApplication())
             } else {
                 error.postValue(response.errorBody())
@@ -76,12 +75,12 @@ class FinanceViewModel (application: Application) : AndroidViewModel(application
         }
     }
 
-    fun changeData(client: Client): ArrayList<Client>? {
-        if (clients.value?.isNotEmpty() == true) {
-            val foundData = clients.value!!.find { it.maCollectMoneyId == client.maCollectMoneyId }
-            val idx = clients.value!!.indexOf(foundData)
-            clients.value!![idx] = client
-            return clients.value!!
+    fun changeData(plan: Plan): ArrayList<Plan>? {
+        if (plans.value?.isNotEmpty() == true) {
+            val foundData = plans.value!!.find { it.maCollectMoneyId == plan.maCollectMoneyId }
+            val idx = plans.value!!.indexOf(foundData)
+            plans.value!![idx] = plan
+            return plans.value!!
         }
         return null
     }

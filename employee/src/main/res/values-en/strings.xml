@@ -31,7 +31,7 @@
     <string name="listOfApplications">List of applications</string>
     <string name="finAgent">Financial agent</string>
     <string name="info">Info</string>
-    <string name="client">Client</string>
+    <string name="plan">Plan</string>
     <string name="search">Search</string>
     <string name="close">Close</string>
     <string name="restart">Restart</string>
@@ -56,4 +56,31 @@
     <string name="remove">Remove</string>
     <string name="demoSuccessfullySaved">Demo successfully saved</string>
     <string name="password">Password</string>
+    <string name="statuses">Statuses</string>
+    <string name="leaving">Leaving</string>
+    <string name="gotToTheAddress">Got to the address</string>
+    <string name="filters">Filters</string>
+    <string name="quantity">Quantity</string>
+    <string name="all">All</string>
+    <string name="_new">New</string>
+    <string name="sortByProperties">Sort by properties</string>
+    <string name="date">Date</string>
+    <string name="name">Name</string>
+    <string name="status">Status</string>
+    <string name="price">Price</string>
+    <string name="cn">CN</string>
+    <string name="sort">Sort</string>
+    <string name="searchBy">Search by</string>
+    <string name="monthlyPlan">Monthly plan</string>
+    <string name="overdueInstallment">Overdue installment</string>
+    <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
+    <string name="enterValidPhoneNumber">Enter a valid phone number</string>
+    <string name="haveNotAllowedAccessToTheCamera">You have not allowed access to the camera</string>
+    <string name="haveNotAllowedAccessToTheLocation">You have not allowed access to the location</string>
+    <string name="networkDisconnected">Internet connection not connected</string>
+    <string name="description">Description</string>
+    <string name="serviceProcessStarted">Service process started</string>
+    <string name="serviceProcessFinished">Service process finished</string>
+
 </resources>

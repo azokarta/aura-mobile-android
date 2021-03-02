@@ -30,7 +30,7 @@
     <string name="listOfApplications">Список заявок</string>
     <string name="finAgent">Финансовый агент</string>
     <string name="info">Инфо</string>
-    <string name="client">Клиент</string>
+    <string name="plan">План</string>
     <string name="search">Поиск</string>
     <string name="close">Закрыть</string>
     <string name="restart">Перезагрузить</string>
@@ -65,6 +65,32 @@
     <string name="remove">Удалить</string>
     <string name="demoSuccessfullySaved">Демо успешно обновлен</string>
     <string name="password">Пароль</string>
+    <string name="statuses">Статусы</string>
+    <string name="leaving">Выезжаю</string>
+    <string name="gotToTheAddress">Доехал до адреса</string>
+    <string name="quantity">Количество</string>
+    <string name="all">Все</string>
+    <string name="filters">Фильтры</string>
+    <string name="_new">Новый</string>
+    <string name="sortByProperties">Сортировка по свойствам</string>
+    <string name="date">Дата</string>
+    <string name="name">Имя</string>
+    <string name="status">Статус</string>
+    <string name="price">Сумма</string>
+    <string name="cn">CN</string>
+    <string name="sort">Сортировка</string>
+    <string name="searchBy">Поиск по</string>
+    <string name="monthlyPlan">Ежемесячный план</string>
+    <string name="overdueInstallment">Просроченный взнос</string>
+    <string name="apply">Применить</string>
+    <string name="cancel">Отмена</string>
+    <string name="enterValidPhoneNumber">Введите действующий номер телефона</string>
+    <string name="haveNotAllowedAccessToTheCamera">Вы не разрешили доступ к камеру</string>
+    <string name="haveNotAllowedAccessToTheLocation">Вы не разрешили доступ к местоположению</string>
+    <string name="networkDisconnected">Интернет-соединение не подключен</string>
+    <string name="description">Примечание</string>
+    <string name="serviceProcessStarted">Сервис процесс начался</string>
+    <string name="serviceProcessFinished">Сервис процесс закончился</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>

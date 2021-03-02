@@ -55,7 +55,7 @@ class ServiceApplicationDataFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.save -> {
-                serviceApplication!!.taxiExpenseAmount = binding.demoDataTaxiExpences.text.toString().toDouble()
+                serviceApplication!!.description = binding.description.text.toString()
                 mMasterViewModel.updateServiceApplication(serviceApplication!!)
             }
         }

@@ -5,5 +5,5 @@ object Constants {
     const val WE_MOB_DEV = "http://werp.kz:32020"
     const val WE_MOB_TEST = "http://werp.kz:31020"
     const val OCR_URL = "https://aurakz.idkit.co"
-    const val AUTH_URL = "http://192.168.0.25:32001"
+    const val AUTH_URL = "http://werp.kz:32001"
 }

@@ -174,9 +174,6 @@ object Helpers {
             is ResponseBody -> {
                 // Server error
                 val res = Gson().fromJson(exception.charStream(), Error::class.java)
-                println(res.message)
-                println(res.error)
-                println(res.status)
                 binding.errorTitle.text = res.error
                 binding.subError.text = res.message
             }

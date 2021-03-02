@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data android:layout_width="wrap_content">
 
         <variable
-            name="client"
-            type="kz.aura.merp.employee.data.model.Client" />
+            name="plan"
+            type="kz.aura.merp.employee.data.model.Plan" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_margin="7dp"
         android:clickable="true"
         android:focusable="true"
+        android:sendPlanToPlanActivity="@{plan}"
         app:cardCornerRadius="10dp"
-        android:sendClientToClientActivity="@{client}"
         app:cardElevation="5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/fio"
@@ -40,7 +41,7 @@
                 android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@{@string/address+`:`}"
                 android:textColor="@color/colorBlack"
                 android:textSize="18sp"
@@ -52,13 +53,11 @@
                 android:id="@+id/phoneNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="24dp"
-                android:text="@{@string/phoneNumber+`:`}"
+                android:layout_marginTop="8dp"
+                android:text="@{@string/price+`:`}"
                 android:textColor="@color/colorBlack"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/address"
                 app:layout_constraintTop_toBottomOf="@+id/address" />
 
@@ -70,7 +69,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:text="@{client.firstname + ` ` + client.middlename + ` ` + client.lastname}"
+                android:text="@{plan.firstname + ` ` + plan.middlename + ` ` + plan.lastname}"
                 android:textColor="@color/colorBlack"
                 app:layout_constraintBottom_toBottomOf="@+id/fio"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -85,7 +84,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:text="@{client.address}"
+                android:text="@{plan.address}"
                 android:textColor="@color/colorBlack"
                 app:layout_constraintBottom_toBottomOf="@+id/address"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -100,7 +99,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                android:text="@{client.phone}"
+                android:text="@{Double.toString(plan.toPay)}"
                 android:textColor="@color/colorBlack"
                 app:layout_constraintBottom_toBottomOf="@+id/phoneNumber"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -119,6 +118,58 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{@string/cn+`:`}"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/phoneNumber"
+                app:layout_constraintTop_toBottomOf="@+id/phoneNumber" />
+
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="@{Long.toString(plan.contractNumber)}"
+                android:textColor="@color/colorBlack"
+                app:layout_constraintBottom_toBottomOf="@+id/textView25"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView25"
+                app:layout_constraintTop_toTopOf="@+id/textView25" />
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="0dp"
+                android:layout_height="19dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@{plan.contractDate}"
+                android:textColor="@color/colorBlack"
+                app:layout_constraintEnd_toStartOf="@+id/textView28"
+                app:layout_constraintTop_toBottomOf="@+id/textView26" />
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="24dp"
+                android:text="@{@string/overdueInstallment + ` ` + plan.paymentOverdueDays}"
+                android:textColor="@color/colorBlack"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/textView26"
+                app:layout_constraintTop_toTopOf="@+id/textView27" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>

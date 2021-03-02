@@ -65,41 +65,38 @@
             android:textColor="#000000" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/service_application_taxi_expences_label"
+            android:id="@+id/descriptionLabel"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textView5"
-            app:layout_constraintTop_toBottomOf="@+id/textView5"
             android:layout_width="0dp"
-            app:startIconDrawable="@drawable/ic_baseline_local_taxi_24"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:hint="@string/taxiExpense">
+            android:hint="@string/description"
+            app:layout_constraintEnd_toEndOf="@+id/service_application_phones"
+            app:layout_constraintStart_toStartOf="@+id/textView9"
+            app:layout_constraintTop_toBottomOf="@+id/textView9">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/demo_data_taxi_expences"
+                android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textAutoComplete"
-                android:textColor="#000000"
                 android:maxLength="100"
-                android:text="@{Double.toString(serviceApplication.taxiExpenseAmount)}"/>
+                android:text="@{serviceApplication.description}"
+                android:textColor="#000000" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/textView8"
-            app:layout_constraintStart_toStartOf="@+id/service_application_taxi_expences_label"
-            app:layout_constraintTop_toBottomOf="@+id/service_application_taxi_expences_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@{@string/phones+`:`}"
             android:textColor="#000000"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/service_application_phones"

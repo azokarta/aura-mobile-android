@@ -7,5 +7,6 @@
     app:title="Aura employee"
     android:theme="@style/ToolbarTheme"
     app:titleTextColor="@color/colorBlack"
+    app:subtitleTextColor="@color/colorBlack"
     style="@style/Widget.MaterialComponents.Toolbar.Primary"
 />
