@@ -14,6 +14,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kz.aura.merp.employee.databinding.ErrorDialogBinding
 import kz.aura.merp.employee.ui.activity.*
+import kz.aura.merp.employee.ui.activity.AuthorizationActivity
 import kz.aura.merp.employee.util.Constants.SELECTED_SERVER
 import kz.aura.merp.employee.util.Constants.WE_MOB_DEV_AUTH
 import kz.aura.merp.employee.util.Constants.WE_MOB_DEV_CRM

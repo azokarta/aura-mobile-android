@@ -89,7 +89,7 @@ class FinanceViewModel (application: Application) : AndroidViewModel(application
 
     fun changeData(plan: Plan): Boolean {
         return if (plansResponse.value?.data?.isNotEmpty() == true) {
-            val foundData = plansResponse.value?.data!!.find { it.contractId == plan.contractId }
+            val foundData = plansResponse.value?.data!!.find { it == plan }
             val idx = plansResponse.value?.data!!.indexOf(foundData)
             plansResponse.value?.data!![idx] = plan
             true

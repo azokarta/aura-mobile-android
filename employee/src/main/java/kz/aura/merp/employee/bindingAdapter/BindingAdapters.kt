@@ -1,6 +1,7 @@
 package kz.aura.merp.employee.bindingAdapter
 
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
 
@@ -24,6 +25,15 @@ class BindingAdapters {
             when(visibility){
                 true -> view.visibility = View.INVISIBLE
                 false -> view.visibility = View.VISIBLE
+            }
+        }
+
+        @BindingAdapter("android:visibleFilter")
+        @JvmStatic
+        fun visibleFilter(view: View, dataIsEmpty: Boolean) {
+            when (dataIsEmpty) {
+                true -> view.isVisible = false
+                false -> view.isVisible = true
             }
         }
 

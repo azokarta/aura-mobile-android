@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -73,16 +74,14 @@ class FinanceAgentActivity : AppCompatActivity() {
         setupFilterResources()
 
         // Setup RecyclerView
-        binding.recyclerView.layoutManager = LinearLayoutManager(applicationContext)
-        binding.recyclerView.adapter = finAdapter
-        binding.recyclerView.isNestedScrollingEnabled = false
+        setupRecyclerView()
 
         // If network is disconnected and user clicks restart, get data again
         findViewById<Button>(R.id.restart).setOnClickListener {
             if (verifyAvailableNetwork(this)) {
                 mFinanceViewModel.fetchPlans() // fetch clients
-                binding.progressBar.visibility = View.VISIBLE
-                binding.recyclerView.visibility = View.VISIBLE
+                binding.progressBar.isVisible = true
+                binding.recyclerView.isVisible = true
                 findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.GONE
             }
         }
@@ -110,6 +109,12 @@ class FinanceAgentActivity : AppCompatActivity() {
 //        }
     }
 
+    private fun setupRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+        binding.recyclerView.adapter = finAdapter
+        binding.recyclerView.isNestedScrollingEnabled = false
+    }
+
     private fun setupFilterResources() {
         filterSortParams = arrayListOf(
             getString(R.string.date),
@@ -121,13 +126,12 @@ class FinanceAgentActivity : AppCompatActivity() {
         mFinanceViewModel.plansResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    mSharedViewModel.hideLoading()
-                    binding.filterLayout.visibility = View.VISIBLE
+                    mSharedViewModel.hideLoading(res.data!!.isEmpty())
                     filterPlans()
                 }
                 is NetworkResult.Loading -> mSharedViewModel.showLoading()
                 is NetworkResult.Error -> {
-                    mSharedViewModel.hideLoading()
+                    mSharedViewModel.hideLoading(res.data!!.isEmpty())
                     declareErrorByStatus(res.message, res.status, this)
                 }
             }

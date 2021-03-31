@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.data.model.Result
 import kz.aura.merp.employee.databinding.ResultRowBinding
 import kz.aura.merp.employee.util.MobDiffUtil
+import kz.aura.merp.employee.view.OnSelectResult
 
-class ResultsAdapter(val callback: (position: Int) -> Unit) : RecyclerView.Adapter<ResultsAdapter.ResultsViewHolder>() {
+class ResultsAdapter(val iOnSelectResult: OnSelectResult) : RecyclerView.Adapter<ResultsAdapter.ResultsViewHolder>() {
 
     private var dataList = mutableListOf<Result>()
 
@@ -38,7 +39,7 @@ class ResultsAdapter(val callback: (position: Int) -> Unit) : RecyclerView.Adapt
             binding.executePendingBindings()
             binding.resultIcon.setImageResource(result.icon)
             binding.root.setOnClickListener {
-                callback.invoke(position)
+                iOnSelectResult.selectResult(position)
             }
         }
     }

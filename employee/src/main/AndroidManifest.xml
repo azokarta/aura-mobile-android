@@ -6,11 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<!--    <uses-permission android:name="android.permission.CAMERA" />-->
-
-<!--    <uses-feature-->
-<!--        android:name="android.hardware.camera"-->
-<!--        android:required="true" />-->
 
     <application
         android:name=".Application"
@@ -44,31 +39,16 @@
         </activity>
         <activity
             android:name="kz.aura.merp.employee.ui.activity.ServiceApplicationActivity"
-            android:parentActivityName="kz.aura.merp.employee.ui.activity.MasterActivity"
             android:label="@string/service"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.employee.ui.activity.MasterActivity" />
-        </activity>
+            android:screenOrientation="portrait" />
         <activity android:name="kz.aura.merp.employee.ui.activity.MasterActivity" android:label="@string/master" android:screenOrientation="portrait"/>
         <activity android:name="kz.aura.merp.employee.ui.activity.FinanceAgentActivity" android:label="@string/finAgent" android:screenOrientation="portrait" />
         <activity android:name="kz.aura.merp.employee.ui.activity.DealerActivity" android:label="@string/dealer" android:screenOrientation="portrait" />
         <activity
             android:name="kz.aura.merp.employee.ui.activity.DemoActivity"
-            android:parentActivityName="kz.aura.merp.employee.ui.activity.DealerActivity"
-            android:label="@string/demo" android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.employee.ui.activity.DealerActivity" />
-        </activity>
+            android:label="@string/demo" android:screenOrientation="portrait" />
         <activity
-            android:name="kz.aura.merp.employee.ui.activity.PlanActivity"
-            android:parentActivityName="kz.aura.merp.employee.ui.activity.FinanceAgentActivity" android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.employee.ui.activity.FinanceAgentActivity" />
-        </activity>
+            android:name="kz.aura.merp.employee.ui.activity.PlanActivity" android:screenOrientation="portrait" />
         <activity android:name="kz.aura.merp.employee.ui.activity.ChiefActivity" android:screenOrientation="portrait" />
         <activity
             android:name="kz.aura.merp.employee.ui.activity.AuthorizationActivity"

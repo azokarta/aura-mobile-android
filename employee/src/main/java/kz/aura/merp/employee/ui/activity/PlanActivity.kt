@@ -9,6 +9,7 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
@@ -22,11 +23,16 @@ import kz.aura.merp.employee.databinding.ActivityPlanBinding
 import kz.aura.merp.employee.databinding.CauseAlertDialogBinding
 import kz.aura.merp.employee.databinding.PriceAlertDialogBinding
 import kz.aura.merp.employee.databinding.ResultsAlertDialogBinding
+import kz.aura.merp.employee.ui.alertDialog.BanksDialogFragment
+import kz.aura.merp.employee.ui.alertDialog.ResultsDialogFragment
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.ProgressDialog
 import kz.aura.merp.employee.util.declareErrorByStatus
 
-class PlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepListener {
+class PlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepListener,
+    ResultsDialogFragment.ResultsDialogListener,
+    BanksDialogFragment.BanksDialogListener
+{
 
     private lateinit var binding: ActivityPlanBinding
     private val mFinanceViewModel: FinanceViewModel by viewModels()
@@ -116,7 +122,6 @@ class PlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepLi
                     binding.plan = plan
                     binding.resultBtn.isEnabled = mFinanceViewModel.businessProcessStatusesResponse.value!!.data!!.last().id == plan.planBusinessProcessId
                     displayPlanResultIcons()
-                    binding.executePendingBindings()
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
@@ -184,7 +189,7 @@ class PlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepLi
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    showBanksAlertDialog(res.data!!)
+                    showBanksAlertDialog()
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
@@ -226,6 +231,25 @@ class PlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepLi
                 collectMoneyAmount
             )
         )
+    }
+
+    override fun onResultsDialogPositiveClick(dialog: DialogFragment, position: Int) {
+        binding.resultBtn.text = results[position].name
+        when (results[position].id) {
+            2L -> {
+                planResult.resultId = results[position].id
+                if (mFinanceViewModel.paymentMethodsResponse.value?.data == null) {
+                    progressDialog.showLoading()
+                    mFinanceViewModel.fetchPaymentMethods()
+                } else {
+                    showPaymentMethodsAlertDialog(mFinanceViewModel.paymentMethodsResponse.value!!.data!!)
+                }
+            }
+            else -> {
+                planResult.resultId = results[position].id
+                showCauseAlertDialog()
+            }
+        }
     }
 
     private fun displayPlanResultIcons() {
@@ -332,27 +356,8 @@ class PlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepLi
         dialog.show()
     }
 
-    private fun showBanksAlertDialog(banks: ArrayList<Bank>) {
-        val builder = AlertDialog.Builder(this)
-        val banksView = LayoutInflater.from(this).inflate(R.layout.results_alert_dialog, null)
-        val banksBinding = ResultsAlertDialogBinding.bind(banksView)
-
-        builder.setTitle(getString(R.string.paymentMethod))
-        builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-            changeResultBtnText()
-            dialog.dismiss()
-        }
-        builder.setOnCancelListener {
-            changeResultBtnText()
-        }
-        builder.setView(banksBinding.root)
-
-        val dialog = builder.create()
-        val banksAdapter = ResultsAdapter {
-            dialog.dismiss()
-            planResult.bankId = banks[it].id
-            showPriceAlertDialog()
-        }
+    private fun showBanksAlertDialog() {
+        val banks = mFinanceViewModel.banksResponse.value!!.data!!
         val banksByIcon: List<Result> = banks.map {
             when (it.id) {
                 2L -> Result(it.name, R.drawable.ic_forte_bank)
@@ -363,45 +368,18 @@ class PlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepLi
                 else -> return
             }
         }
-        banksAdapter.setData(banksByIcon)
-
-        banksBinding.resultRecyclerView.layoutManager = LinearLayoutManager(this)
-        banksBinding.resultRecyclerView.adapter = banksAdapter
-
-        dialog.show()
+        val dialog = BanksDialogFragment(banksByIcon)
+        dialog.show(supportFragmentManager, "BanksDialogFragment")
     }
 
-    private fun showResultsAlertDialog() {
-        val builder = AlertDialog.Builder(this)
-        val resultsView = LayoutInflater.from(this).inflate(R.layout.results_alert_dialog, null)
-        val resultsBinding = ResultsAlertDialogBinding.bind(resultsView)
+    override fun onBanksDialogPositiveClick(dialog: DialogFragment, position: Int) {
+        val banks = mFinanceViewModel.banksResponse.value!!.data!!
+        dialog.dismiss()
+        planResult.bankId = banks[position].id
+        showPriceAlertDialog()
+    }
 
-        builder.setTitle(getString(R.string.result))
-        builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-            dialog.dismiss()
-        }
-        builder.setView(resultsBinding.root)
-
-        val dialog = builder.create()
-        val resultsAdapter = ResultsAdapter {
-            dialog.dismiss()
-            binding.resultBtn.text = results[it].name
-            when (results[it].id) {
-                2L -> {
-                    planResult.resultId = results[it].id
-                    if (mFinanceViewModel.paymentMethodsResponse.value?.data == null) {
-                        progressDialog.showLoading()
-                        mFinanceViewModel.fetchPaymentMethods()
-                    } else {
-                        showPaymentMethodsAlertDialog(mFinanceViewModel.paymentMethodsResponse.value!!.data!!)
-                    }
-                }
-                else -> {
-                    planResult.resultId = results[it].id
-                    showCauseAlertDialog()
-                }
-            }
-        }
+    private fun showResultsDialog() {
         val resultsByIcon: List<Result> = results.map {
             when (it.id) {
                 1L -> Result(it.name, R.drawable.ic_baseline_help_outline_24)
@@ -411,12 +389,8 @@ class PlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepLi
                 else -> return
             }
         }
-        resultsAdapter.setData(resultsByIcon)
-
-        resultsBinding.resultRecyclerView.layoutManager = LinearLayoutManager(this)
-        resultsBinding.resultRecyclerView.adapter = resultsAdapter
-
-        dialog.show()
+        val dialog = ResultsDialogFragment(resultsByIcon)
+        dialog.show(supportFragmentManager, "ResultsDialogFragment")
     }
 
     private fun showCauseAlertDialog() {
@@ -471,7 +445,7 @@ class PlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepLi
                     planResult.paymentMethodId = paymentMethods[it].id
                     if (mFinanceViewModel.banksResponse.value?.data == null) {
                         mFinanceViewModel.fetchBanks()
-                    } else showBanksAlertDialog(mFinanceViewModel.banksResponse.value!!.data!!)
+                    } else showBanksAlertDialog()
                 }
                 1L -> showPriceAlertDialog()
                 else -> updateResult(
