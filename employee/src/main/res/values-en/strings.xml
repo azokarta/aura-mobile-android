@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Aura employees</string>
     <string name="language">Language</string>
     <string name="ru">Russian</string>
     <string name="en">English</string>
@@ -72,7 +71,8 @@
     <string name="sort">Sort</string>
     <string name="searchBy">Search by</string>
     <string name="monthlyPlan">Monthly plan</string>
-    <string name="overdueInstallment">Overdue installment</string>
+    <string name="expiredDays">Expired days</string>
+    <string name="unfinished">Unfinished</string>
     <string name="apply">Apply</string>
     <string name="cancel">Cancel</string>
     <string name="enterValidPhoneNumber">Enter a valid phone number</string>
@@ -82,5 +82,39 @@
     <string name="description">Description</string>
     <string name="serviceProcessStarted">Service process started</string>
     <string name="serviceProcessFinished">Service process finished</string>
-
+    <string name="reallyWantToChangeStatusOfPlan">Do you really want to change status of plan ?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="contractDate">Contract date</string>
+    <string name="paymentDate">Payment date</string>
+    <string name="show">Show</string>
+    <string name="hide">Hide</string>
+    <string name="paid">Paid</string>
+    <string name="showPaymentSchedule">Show payment schedule</string>
+    <string name="hidePaymentSchedule">Hide payment schedule</string>
+    <string name="firstPayment">First payment</string>
+    <string name="paymentMethod">Payment method</string>
+    <string name="server">Server</string>
+    <string name="theAmountOfTheDeal">The amount of the deal</string>
+    <string name="theAmountToPay">The amount to pay</string>
+    <string name="wrongPosition">Wrong position</string>
+    <string name="userDoesNotExist">User does not exist</string>
+    <string name="wrongLoginOrPassword">Wrong login or password</string>
+    <string name="problematic">Problematic</string>
+    <string name="contractStatus">Contract status</string>
+    <string name="remainder">Remainder</string>
+    <string name="serialNumber">Serial number</string>
+    <string name="myApplications">My applications</string>
+    <string name="application_number">Application\'s number</string>
+    <string name="application_date">Application\'s date</string>
+    <string name="fullname_of_client">Fullname of client</string>
+    <string name="fullname_of_operator">Fullname of operator</string>
+    <string name="application_status">Application\'s status</string>
+    <string name="application_type">Application\'s type</string>
+    <string name="finance_status">Status of finance</string>
+    <string name="physical_status">Physical status</string>
+    <string name="customer_address">Customer\'s address</string>
+    <string name="customer_phone_numbers">Customer\'s phone numbers</string>
+    <string name="category_of_client">Category of client</string>
+    <string name="operator_by_plan">Operator by plan</string>
 </resources>

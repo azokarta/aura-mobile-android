@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Аура сотрудники</string>
+    <string name="app_name" translatable="false">WeMob</string>
     <string name="language">Язык</string>
     <string name="ru">Русский</string>
     <string name="en">Англиский</string>
@@ -81,9 +81,10 @@
     <string name="sort">Сортировка</string>
     <string name="searchBy">Поиск по</string>
     <string name="monthlyPlan">Ежемесячный план</string>
-    <string name="overdueInstallment">Просроченный взнос</string>
+    <string name="expiredDays">Просроченные дни</string>
     <string name="apply">Применить</string>
     <string name="cancel">Отмена</string>
+    <string name="unfinished">Незавершенные</string>
     <string name="enterValidPhoneNumber">Введите действующий номер телефона</string>
     <string name="haveNotAllowedAccessToTheCamera">Вы не разрешили доступ к камеру</string>
     <string name="haveNotAllowedAccessToTheLocation">Вы не разрешили доступ к местоположению</string>
@@ -91,6 +92,41 @@
     <string name="description">Примечание</string>
     <string name="serviceProcessStarted">Сервис процесс начался</string>
     <string name="serviceProcessFinished">Сервис процесс закончился</string>
+    <string name="reallyWantToChangeStatusOfPlan">Вы точно хотите изменить статус плана ?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="contractDate">Дата договора</string>
+    <string name="paymentDate">Дата оплаты</string>
+    <string name="show">Показать</string>
+    <string name="hide">Скрыть</string>
+    <string name="paid">Оплачено</string>
+    <string name="showPaymentSchedule">Показать график платежей</string>
+    <string name="hidePaymentSchedule">Скрыть график платежей</string>
+    <string name="firstPayment">Первоначальный платеж</string>
+    <string name="paymentMethod">Способ оплаты</string>
+    <string name="server">Сервер</string>
+    <string name="theAmountOfTheDeal">Сумма договора</string>
+    <string name="theAmountToPay">Сумма к оплате</string>
+    <string name="wrongPosition">Неправильный должность</string>
+    <string name="userDoesNotExist">Такой пользователь не существует</string>
+    <string name="wrongLoginOrPassword">Неверный логин или пароль</string>
+    <string name="problematic">Проблемные</string>
+    <string name="contractStatus">Статус договора</string>
+    <string name="remainder">Остаток</string>
+    <string name="serialNumber">Серийный номер</string>
+    <string name="myApplications">Мои заявки</string>
+    <string name="application_number">Номер заявки</string>
+    <string name="application_date">Дата заявки</string>
+    <string name="fullname_of_client">Фио клиента</string>
+    <string name="fullname_of_operator">Фио оператора</string>
+    <string name="application_status">Статус заявки</string>
+    <string name="application_type">Тип заявки</string>
+    <string name="finance_status">Статус финанса</string>
+    <string name="physical_status">Физический статус</string>
+    <string name="customer_address">Адрес клиента</string>
+    <string name="customer_phone_numbers">Телефоны клиента</string>
+    <string name="category_of_client">Категория клиента</string>
+    <string name="operator_by_plan">Оператор по плану</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>

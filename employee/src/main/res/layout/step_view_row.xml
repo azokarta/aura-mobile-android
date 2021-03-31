@@ -34,15 +34,6 @@
             app:layout_constraintStart_toEndOf="@+id/stepIcon"
             app:layout_constraintTop_toTopOf="@+id/stepIcon" />
 
-        <TextView
-            android:id="@+id/completedBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/completed"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/stepText"
-            android:textColor="@color/colorPrimary" />
-
         <ImageView
             android:id="@+id/stepLine"
             android:layout_width="wrap_content"

@@ -9,7 +9,7 @@
 
         <variable
             name="mSharedViewModel"
-            type="kz.aura.merp.employee.data.SharedViewModel" />
+            type="kz.aura.merp.employee.viewmodel.SharedViewModel" />
 
         <variable
             name="quantityOfList"
@@ -31,7 +31,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="kz.aura.merp.employee.activity.MasterActivity">
+        tools:context=".ui.activity.MasterActivity">
 
         <include
             android:id="@+id/toolbar"
@@ -125,7 +125,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
-                        android:text="@string/monthlyPlan"
+                        android:text="@string/myApplications"
                         android:textColor="@color/colorBlack"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -220,6 +220,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:overScrollMode="never"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -230,6 +231,7 @@
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:hideProgressBar="@{mSharedViewModel.dataReceived}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

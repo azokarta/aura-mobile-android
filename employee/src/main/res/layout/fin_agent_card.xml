@@ -28,38 +28,34 @@
                 android:id="@+id/fio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
                 android:text="@{@string/fullName+`:`}"
                 android:textColor="@color/colorBlack"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/textView2"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@+id/view"
-                app:layout_constraintTop_toTopOf="@+id/view" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
 
             <TextView
-                android:id="@+id/address"
+                android:id="@+id/textView51"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@{@string/address+`:`}"
+                android:text="@{@string/cn+`:`}"
                 android:textColor="@color/colorBlack"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/textView6"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="@+id/fio"
                 app:layout_constraintTop_toBottomOf="@+id/fio" />
-
-            <TextView
-                android:id="@+id/phoneNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@{@string/price+`:`}"
-                android:textColor="@color/colorBlack"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/address"
-                app:layout_constraintTop_toBottomOf="@+id/address" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -67,29 +63,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="@{plan.firstname + ` ` + plan.middlename + ` ` + plan.lastname}"
+                android:text="@{plan.fullName}"
                 android:textColor="@color/colorBlack"
                 app:layout_constraintBottom_toBottomOf="@+id/fio"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/fio"
                 app:layout_constraintTop_toTopOf="@+id/fio" />
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="@{plan.address}"
-                android:textColor="@color/colorBlack"
-                app:layout_constraintBottom_toBottomOf="@+id/address"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/address"
-                app:layout_constraintTop_toTopOf="@+id/address" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -97,21 +77,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="@{Double.toString(plan.toPay)}"
+                android:text="@{Long.toString(plan.contractNumber)}"
                 android:textColor="@color/colorBlack"
-                app:layout_constraintBottom_toBottomOf="@+id/phoneNumber"
+                app:layout_constraintBottom_toBottomOf="@+id/textView51"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/phoneNumber"
-                app:layout_constraintTop_toTopOf="@+id/phoneNumber" />
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView51"
+                app:layout_constraintTop_toTopOf="@+id/textView51" />
 
             <View
                 android:id="@+id/view"
                 android:layout_width="5dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/vertical_divider"
@@ -120,56 +99,50 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView25"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@{@string/cn+`:`}"
-                android:textColor="@color/colorBlack"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/phoneNumber"
-                app:layout_constraintTop_toBottomOf="@+id/phoneNumber" />
-
-            <TextView
-                android:id="@+id/textView26"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="@{Long.toString(plan.contractNumber)}"
-                android:textColor="@color/colorBlack"
-                app:layout_constraintBottom_toBottomOf="@+id/textView25"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView25"
-                app:layout_constraintTop_toTopOf="@+id/textView25" />
-
-            <TextView
-                android:id="@+id/textView27"
-                android:layout_width="0dp"
-                android:layout_height="19dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:text="@{plan.contractDate}"
-                android:textColor="@color/colorBlack"
-                app:layout_constraintEnd_toStartOf="@+id/textView28"
-                app:layout_constraintTop_toBottomOf="@+id/textView26" />
-
-            <TextView
                 android:id="@+id/textView28"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="24dp"
-                android:text="@{@string/overdueInstallment + ` ` + plan.paymentOverdueDays}"
+                android:text="@{@string/expiredDays + `: `}"
                 android:textColor="@color/colorBlack"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/textView26"
-                app:layout_constraintTop_toTopOf="@+id/textView27" />
+                app:layout_constraintStart_toStartOf="@+id/textView51"
+                app:layout_constraintTop_toBottomOf="@+id/textView51" />
+
+            <TextView
+                android:id="@+id/paymentOverdueDays"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView28"
+                app:layout_constraintStart_toEndOf="@+id/textView28"
+                app:layout_constraintTop_toTopOf="@+id/textView28" />
+
+            <ImageView
+                android:id="@+id/paymentMethod"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/paymentOverdueDays"
+                app:layout_constraintStart_toEndOf="@+id/paymentOverdueDays"
+                app:layout_constraintTop_toTopOf="@+id/paymentOverdueDays"
+                app:srcCompat="@drawable/ic_baseline_account_balance_24" />
+
+            <ImageView
+                android:id="@+id/bankId"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/paymentMethod"
+                app:layout_constraintStart_toEndOf="@+id/paymentMethod"
+                app:layout_constraintTop_toTopOf="@+id/paymentMethod"
+                app:srcCompat="@drawable/ic_kaspi_bank" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>

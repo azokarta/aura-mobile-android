@@ -9,7 +9,7 @@
 
         <variable
             name="mSharedViewModel"
-            type="kz.aura.merp.employee.data.SharedViewModel" />
+            type="kz.aura.merp.employee.viewmodel.SharedViewModel" />
 
         <variable
             name="quantityOfList"
@@ -31,7 +31,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="kz.aura.merp.employee.activity.FinanceAgentActivity">
+        tools:context=".ui.activity.FinanceAgentActivity">
 
         <include
             android:id="@+id/toolbar"
@@ -88,7 +88,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -244,6 +243,18 @@
                         app:layout_constraintBottom_toBottomOf="@+id/textView30"
                         app:layout_constraintStart_toEndOf="@+id/textView30"
                         app:layout_constraintTop_toTopOf="@+id/textView30" />
+
+                    <TextView
+                        android:id="@+id/problematic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/problematic"
+                        android:textColor="@color/red"
+                        android:textSize="18sp"
+                        android:visibility="invisible"
+                        app:layout_constraintStart_toStartOf="@+id/filterList"
+                        app:layout_constraintTop_toBottomOf="@+id/filterList" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

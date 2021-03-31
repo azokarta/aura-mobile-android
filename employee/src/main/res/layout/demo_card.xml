@@ -49,7 +49,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/fio" />
 
             <TextView
-                android:id="@+id/phoneNumber"
+                android:id="@+id/textView51"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -98,10 +98,10 @@
                 android:layout_marginLeft="8dp"
                 android:text="@{demo.crmPhoneDtoList[0].phoneNumber}"
                 android:textColor="@color/colorBlack"
-                app:layout_constraintBottom_toBottomOf="@+id/phoneNumber"
+                app:layout_constraintBottom_toBottomOf="@+id/textView51"
                 app:layout_constraintEnd_toEndOf="@+id/textView3"
-                app:layout_constraintStart_toEndOf="@+id/phoneNumber"
-                app:layout_constraintTop_toTopOf="@+id/phoneNumber" />
+                app:layout_constraintStart_toEndOf="@+id/textView51"
+                app:layout_constraintTop_toTopOf="@+id/textView51" />
 
             <View
                 android:id="@+id/view"

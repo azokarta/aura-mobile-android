@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="kz.aura.merp.employee.fragment.ServiceApplicationBusinessProcessesFragment">
+        tools:context=".ui.fragment.ServiceApplicationBusinessProcessesFragment">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/service_business_processes_cause_text_field"
@@ -35,7 +35,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="100"
-                android:text="@{serviceApplication.description}"
                 android:textColor="@color/colorBlack" />
 
         </com.google.android.material.textfield.TextInputLayout>

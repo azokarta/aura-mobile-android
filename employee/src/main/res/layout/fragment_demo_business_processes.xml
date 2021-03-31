@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:fitsSystemWindows="true"
-        tools:context="kz.aura.merp.employee.fragment.DemoBusinessProcessesFragment">
+        tools:context=".ui.fragment.DemoBusinessProcessesFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

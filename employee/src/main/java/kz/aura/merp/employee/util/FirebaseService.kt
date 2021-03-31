@@ -1,6 +1,5 @@
 package kz.aura.merp.employee.util
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -14,7 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.activity.DealerActivity
+import kz.aura.merp.employee.ui.activity.DealerActivity
 import kotlin.random.Random
 
 private const val CHANNEL_ID = "my_channel"
@@ -22,6 +21,7 @@ private const val CHANNEL_ID = "my_channel"
 class FirebaseService : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage) {
+        println(p0.data)
         val intent = Intent(this, DealerActivity::class.java)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = Random.nextInt()
@@ -35,7 +35,7 @@ class FirebaseService : FirebaseMessagingService() {
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(p0.data["title"])
             .setContentText(p0.data["message"])
-            .setSmallIcon(R.drawable.aura_logo)
+            .setSmallIcon(R.drawable.logo)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
         notificationManager.notify(notificationID, builder.build())

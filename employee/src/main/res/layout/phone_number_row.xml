@@ -5,7 +5,7 @@
     <data>
         <variable
             name="phone"
-            type="kz.aura.merp.employee.data.model.PhoneNumber" />
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,7 +16,8 @@
             android:id="@+id/phone_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{phone.phoneNumber}"
+            android:layout_marginTop="16dp"
+            android:text="@{phone}"
             android:textColor="@color/colorBlack"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

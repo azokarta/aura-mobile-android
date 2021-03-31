@@ -1,16 +1,20 @@
 package kz.aura.merp.employee.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.data.model.Plan
 import kz.aura.merp.employee.databinding.FinAgentCardBinding
 import kz.aura.merp.employee.util.MobDiffUtil
 
 class PlanAdapter : RecyclerView.Adapter<PlanAdapter.FinanceViewHolder>() {
 
-    private var dataList = mutableListOf<Plan>()
+    var dataList = mutableListOf<Plan>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinanceViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -31,13 +35,78 @@ class PlanAdapter : RecyclerView.Adapter<PlanAdapter.FinanceViewHolder>() {
         clientDiffResult.dispatchUpdatesTo(this)
     }
 
-
     override fun getItemCount(): Int = dataList.size
 
-    class FinanceViewHolder(private val binding: FinAgentCardBinding) : RecyclerView.ViewHolder(binding.root) {
+    class FinanceViewHolder(private val binding: FinAgentCardBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(plan: Plan) {
+            val textColor: Int = when {
+                plan.paymentOverDueDays!! > 0 -> ContextCompat.getColor(binding.root.context, R.color.red)
+                plan.paymentOverDueDays < 0 -> ContextCompat.getColor(binding.root.context, R.color.green)
+                plan.paymentOverDueDays == 0 -> ContextCompat.getColor(binding.root.context, R.color.yellow)
+                else -> R.color.colorBlack
+            }
+
             binding.plan = plan
+            binding.paymentOverdueDays.text = if (plan.paymentOverDueDays < 0) {
+                plan.paymentOverDueDays.toString().drop(1)
+            } else {
+                plan.paymentOverDueDays.toString()
+            }
+            binding.paymentOverdueDays.setTextColor(textColor)
             binding.executePendingBindings()
+            displayPaymentMethodIcons(plan)
+        }
+
+        private fun displayPaymentMethodIcons(plan: Plan) {
+            val paymentMethodId = plan.planPaymentMethodId
+            val bankDrawable = when (plan.planPaymentBankId) {
+                2L -> R.drawable.ic_forte_bank
+                4L -> R.drawable.ic_halyk_bank
+                5L -> R.drawable.ic_center_credit_bank
+                6L -> R.drawable.ic_atf_bank
+                7L -> R.drawable.ic_kaspi_bank
+                else -> R.drawable.ic_baseline_account_balance_24
+            }
+
+            binding.paymentMethod.visibility = View.VISIBLE
+            binding.bankId.visibility = View.VISIBLE
+
+            when (plan.planResultId) {
+                1L -> {
+                    binding.paymentMethod.setImageResource(R.drawable.ic_baseline_help_outline_24)
+                    binding.bankId.visibility = View.GONE
+                }
+                2L -> {
+                    when (paymentMethodId) {
+                        1L -> {
+                            binding.paymentMethod.setImageResource(R.drawable.ic_baseline_money_24)
+                            binding.bankId.visibility = View.GONE
+                        }
+                        2L -> {
+                            binding.paymentMethod.setImageResource(R.drawable.ic_outline_change_circle_24)
+                            binding.bankId.setImageResource(bankDrawable)
+                        }
+                        3L -> {
+                            binding.paymentMethod.setImageResource(R.drawable.ic_baseline_account_balance_24)
+                            binding.bankId.setImageResource(bankDrawable)
+                        }
+                    }
+                }
+                3L -> {
+                    binding.paymentMethod.setImageResource(R.drawable.ic_baseline_date_range_24)
+                    binding.bankId.visibility = View.GONE
+                }
+                4L -> {
+                    binding.paymentMethod.setImageResource(R.drawable.ic_baseline_close_24)
+                    binding.bankId.visibility = View.GONE
+                }
+                else -> {
+                    binding.paymentMethod.visibility = View.GONE
+                    binding.bankId.visibility = View.GONE
+                }
+            }
+
         }
     }
 

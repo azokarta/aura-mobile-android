@@ -3,7 +3,7 @@ package kz.aura.merp.employee.bindingAdapter
 import android.content.Intent
 import android.view.View
 import androidx.databinding.BindingAdapter
-import kz.aura.merp.employee.activity.PlanActivity
+import kz.aura.merp.employee.ui.activity.PlanActivity
 import kz.aura.merp.employee.data.model.Plan
 
 class FinanceBinding {

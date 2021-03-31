@@ -7,12 +7,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
+import kz.aura.merp.employee.data.model.BusinessProcessStatus
 import kz.aura.merp.employee.databinding.StepViewRowBinding
 import kz.aura.merp.employee.util.MobDiffUtil
 
 class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerView.Adapter<StepsAdapter.StepsViewHolder>() {
-    private var dataList = mutableListOf<String>()
-    private var step = 0
+    private var dataList = mutableListOf<BusinessProcessStatus>()
+    private var step: Long? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StepsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -24,7 +25,7 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
         holder.bind(position)
     }
 
-    fun setData(steps: ArrayList<String>) {
+    fun setData(steps: ArrayList<BusinessProcessStatus>) {
         val stepDiffUtil = MobDiffUtil(dataList, steps)
         val stepDiffResult = DiffUtil.calculateDiff(stepDiffUtil)
         this.dataList.clear()
@@ -32,50 +33,50 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
         stepDiffResult.dispatchUpdatesTo(this)
     }
 
-    fun setStep(step: Int) {
+    fun setStep(step: Long?) {
         this.step = step
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = dataList.size
 
     companion object {
         interface CompletedStepListener {
-            fun stepCompleted(position: Int)
+            fun stepCompleted(businessProcessStatus: BusinessProcessStatus)
         }
     }
 
     inner class StepsViewHolder(val binding: StepViewRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.stepTitle = dataList[position]
+            binding.stepTitle = dataList[position].name
             binding.executePendingBindings()
 
             drawByStep(step, dataList.size, position)
 
-            binding.completedBtn.setOnClickListener {
-                this@StepsAdapter.step+=1
-                notifyDataSetChanged()
-                completedStepListener.stepCompleted(position)
+            binding.root.setOnClickListener {
+                if (step == null && dataList[position].id == 1L) {
+                    this@StepsAdapter.step = dataList[position].id
+                    notifyDataSetChanged()
+                    completedStepListener.stepCompleted(dataList[position])
+                }
+                if (step != null && step!! < dataList[position].id) {
+                    this@StepsAdapter.step = dataList[position].id
+                    notifyDataSetChanged()
+                    completedStepListener.stepCompleted(dataList[position])
+                }
             }
         }
 
-        private fun drawByStep(step: Int, size: Int, position: Int) {
-            if (step == position) {
-                binding.stepText.setTextColor(ContextCompat.getColor(binding.root.context, R.color.colorBlack))
-                binding.stepIcon.setImageResource(R.drawable.ic_baseline_radio_button_checked_24)
-                binding.completedBtn.visibility = View.VISIBLE
-            }
-            if (step > position) {
+        private fun drawByStep(step: Long?, size: Int, position: Int) {
+            if (step != null  && step >= dataList[position].id) {
                 binding.stepIcon.setImageResource(R.drawable.ic_baseline_check_circle_24)
                 binding.stepLine.setImageResource(R.drawable.completed_line)
                 binding.stepIcon.setColorFilter(ContextCompat.getColor(binding.root.context, R.color.colorPrimary))
-                binding.stepText.setTextColor(ContextCompat.getColor(binding.root.context, R.color.colorBlack))
-                binding.completedBtn.visibility = View.INVISIBLE
             }
-            if (step < position) {
+            if (step == null || step < dataList[position].id) {
                 binding.stepIcon.setImageResource(R.drawable.ic_baseline_radio_button_checked_24)
                 binding.stepIcon.setColorFilter(ContextCompat.getColor(binding.root.context, R.color.colorLightGray))
                 binding.stepLine.setImageResource(R.drawable.step_line)
-                binding.completedBtn.visibility = View.INVISIBLE
             }
             if (position == size - 1) {
                 binding.stepLine.visibility = View.GONE

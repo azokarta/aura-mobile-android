@@ -21,6 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <service android:name="kz.aura.merp.employee.util.BackgroundService" />
+
         <service
             android:name="kz.aura.merp.employee.util.FirebaseService"
             android:exported="false">
@@ -30,8 +32,10 @@
         </service>
 
 
-        <activity android:name=".activity.PassCodeActivity" />
-        <activity android:name=".activity.SplashActivity">
+        <activity android:name="kz.aura.merp.employee.ui.activity.PassCodeActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="kz.aura.merp.employee.ui.activity.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,38 +43,40 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ServiceApplicationActivity"
-            android:parentActivityName=".activity.MasterActivity"
-            android:label="@string/service">
+            android:name="kz.aura.merp.employee.ui.activity.ServiceApplicationActivity"
+            android:parentActivityName="kz.aura.merp.employee.ui.activity.MasterActivity"
+            android:label="@string/service"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.employee.activity.MasterActivity" />
+                android:value="kz.aura.merp.employee.ui.activity.MasterActivity" />
         </activity>
-        <activity android:name=".activity.MasterActivity" android:label="@string/master"/>
-        <activity android:name=".activity.FinanceAgentActivity" android:label="@string/finAgent" />
-        <activity android:name=".activity.DealerActivity" android:label="@string/dealer" />
+        <activity android:name="kz.aura.merp.employee.ui.activity.MasterActivity" android:label="@string/master" android:screenOrientation="portrait"/>
+        <activity android:name="kz.aura.merp.employee.ui.activity.FinanceAgentActivity" android:label="@string/finAgent" android:screenOrientation="portrait" />
+        <activity android:name="kz.aura.merp.employee.ui.activity.DealerActivity" android:label="@string/dealer" android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.DemoActivity"
-            android:parentActivityName=".activity.DealerActivity"
-            android:label="@string/demo">
+            android:name="kz.aura.merp.employee.ui.activity.DemoActivity"
+            android:parentActivityName="kz.aura.merp.employee.ui.activity.DealerActivity"
+            android:label="@string/demo" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.employee.activity.DealerActivity" />
+                android:value="kz.aura.merp.employee.ui.activity.DealerActivity" />
         </activity>
         <activity
-            android:name=".activity.PlanActivity"
-            android:parentActivityName=".activity.FinanceAgentActivity">
+            android:name="kz.aura.merp.employee.ui.activity.PlanActivity"
+            android:parentActivityName="kz.aura.merp.employee.ui.activity.FinanceAgentActivity" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="kz.aura.merp.employee.activity.FinanceAgentActivity" />
+                android:value="kz.aura.merp.employee.ui.activity.FinanceAgentActivity" />
         </activity>
-        <activity android:name=".activity.ChiefActivity" />
+        <activity android:name="kz.aura.merp.employee.ui.activity.ChiefActivity" android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.AuthorizationActivity"
-            android:configChanges="locale" />
-        <activity android:name=".activity.MapActivity" android:label="@string/map" />
+            android:name="kz.aura.merp.employee.ui.activity.AuthorizationActivity"
+            android:configChanges="locale" android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible"  />
+        <activity android:name="kz.aura.merp.employee.ui.activity.MapActivity" android:label="@string/map" android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name="kz.aura.merp.employee.ui.activity.SettingsActivity" android:screenOrientation="portrait"
             android:configChanges="locale" android:label="@string/settings"/>
     </application>
 

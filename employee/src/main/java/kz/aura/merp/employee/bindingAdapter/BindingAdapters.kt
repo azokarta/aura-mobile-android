@@ -14,7 +14,7 @@ class BindingAdapters {
             if (dataReceived.value!! && emptyDatabase.value!!) {
                 view.visibility = View.VISIBLE
             } else {
-                view.visibility = View.INVISIBLE
+                view.visibility = View.GONE
             }
         }
 
