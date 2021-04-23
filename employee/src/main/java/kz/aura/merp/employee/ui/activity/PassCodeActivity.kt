@@ -173,10 +173,10 @@ class PassCodeActivity : AppCompatActivity() {
     private fun removeLastNumber() {
         if (code.size != 0) {
             when (code.size) {
-                1 -> binding.typed1.setBackgroundResource(R.color.colorBlack)
-                2 -> binding.typed2.setBackgroundResource(R.color.colorBlack)
-                3 -> binding.typed3.setBackgroundResource(R.color.colorBlack)
-                4 -> binding.typed4.setBackgroundResource(R.color.colorBlack)
+                1 -> binding.typed1.setBackgroundResource(R.color.black)
+                2 -> binding.typed2.setBackgroundResource(R.color.black)
+                3 -> binding.typed3.setBackgroundResource(R.color.black)
+                4 -> binding.typed4.setBackgroundResource(R.color.black)
             }
             code.removeLast()
         }
@@ -193,10 +193,10 @@ class PassCodeActivity : AppCompatActivity() {
         PreferenceManager.getDefaultSharedPreferences(this).getString("passCode", "")
 
     private fun paintLinesToBlack() {
-        binding.typed1.setBackgroundResource(R.color.colorBlack)
-        binding.typed2.setBackgroundResource(R.color.colorBlack)
-        binding.typed3.setBackgroundResource(R.color.colorBlack)
-        binding.typed4.setBackgroundResource(R.color.colorBlack)
+        binding.typed1.setBackgroundResource(R.color.black)
+        binding.typed2.setBackgroundResource(R.color.black)
+        binding.typed3.setBackgroundResource(R.color.black)
+        binding.typed4.setBackgroundResource(R.color.black)
     }
 
 

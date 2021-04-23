@@ -4,17 +4,16 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import kz.aura.merp.employee.data.model.Demo
-import kz.aura.merp.employee.data.model.TrackEmpProcess
-import kz.aura.merp.employee.data.network.DealerApi
-import kz.aura.merp.employee.data.network.ServiceBuilder
+import kz.aura.merp.employee.model.Demo
+import kz.aura.merp.employee.model.TrackEmpProcess
+import kz.aura.merp.employee.data.network.CrmApi
 import kz.aura.merp.employee.util.saveData
 import kotlinx.coroutines.launch
 import kz.aura.merp.employee.util.Link
 import java.lang.Exception
 
 class DealerViewModel(application: Application): AndroidViewModel(application) {
-    private val apiService = ServiceBuilder.buildService(DealerApi::class.java, application, Link.CRM)
+//    private val apiService = ServiceBuilder.buildService(CrmApi::class.java, application, Link.CRM)
 
     val demoList = MutableLiveData<ArrayList<Demo>>()
     val updatedDemo = MutableLiveData<Demo>()
@@ -24,13 +23,13 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
 
     fun fetchAll(staffId: Long) = viewModelScope.launch {
         try {
-            val response = apiService.getAll(staffId)
+//            val response = apiService.getAll(staffId)
 
-            if (response.isSuccessful) {
-                demoList.postValue(response.body()!!.data)
-            } else {
-                error.postValue(response.errorBody())
-            }
+//            if (response.isSuccessful) {
+//                demoList.postValue(response.body()!!.data)
+//            } else {
+//                error.postValue(response.errorBody())
+//            }
         } catch (e: Exception) {
             error.postValue(e)
         }
@@ -38,14 +37,14 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
 
     fun updateDemo(demo: Demo) = viewModelScope.launch {
         try {
-            val response = apiService.updateDemo(demo)
-
-            if (response.isSuccessful) {
-                updatedDemo.postValue(response.body()!!.data)
-                saveData(response.body()!!.data, getApplication())
-            } else {
-                error.postValue(response.errorBody())
-            }
+//            val response = apiService.updateDemo(demo)
+//
+//            if (response.isSuccessful) {
+//                updatedDemo.postValue(response.body()!!.data)
+//                saveData(response.body()!!.data, getApplication())
+//            } else {
+//                error.postValue(response.errorBody())
+//            }
         } catch (e: Exception) {
             error.postValue(e)
         }
@@ -53,13 +52,13 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
 
     fun fetchTrackEmpProcessDemo(demoId: Long) = viewModelScope.launch {
         try {
-            val response = apiService.getTrackEmpProcessDemo(demoId)
-
-            if (response.isSuccessful) {
-                trackEmpProcessDemo.postValue(response.body()!!.data)
-            } else {
-                error.postValue(response.errorBody())
-            }
+//            val response = apiService.getTrackEmpProcessDemo(demoId)
+//
+//            if (response.isSuccessful) {
+//                trackEmpProcessDemo.postValue(response.body()!!.data)
+//            } else {
+//                error.postValue(response.errorBody())
+//            }
         } catch (e: Exception) {
             error.postValue(e)
         }
@@ -67,11 +66,11 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
 
     fun updateStepBusinessProcess(trackEmpProcess: TrackEmpProcess) = viewModelScope.launch {
         try {
-            val response = apiService.updateStepBusinessProcess(trackEmpProcess)
-
-            if (!response.isSuccessful) {
-                error.postValue(response.errorBody())
-            }
+//            val response = apiService.updateStepBusinessProcess(trackEmpProcess)
+//
+//            if (!response.isSuccessful) {
+//                error.postValue(response.errorBody())
+//            }
         } catch (e: Throwable) {
             error.postValue(e)
         }
@@ -89,13 +88,13 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
 
     fun sendSms(demoId: Long, phoneCode: String, phoneNumber: String) = viewModelScope.launch {
         try {
-            val response = apiService.sendSms(demoId, phoneCode, phoneNumber)
-
-            if (response.isSuccessful && response.body()!!.success) {
-                smsSent.postValue(true)
-            } else {
-                error.postValue(response.errorBody())
-            }
+//            val response = apiService.sendSms(demoId, phoneCode, phoneNumber)
+//
+//            if (response.isSuccessful && response.body()!!.success) {
+//                smsSent.postValue(true)
+//            } else {
+//                error.postValue(response.errorBody())
+//            }
         } catch (e: Exception) {
             error.postValue(e)
         }
@@ -103,14 +102,14 @@ class DealerViewModel(application: Application): AndroidViewModel(application) {
 
     fun updateStatus(demoId: Long) = viewModelScope.launch {
         try {
-            val response = apiService.updateStatus(demoId)
-
-            if (response.isSuccessful) {
-                updatedDemo.postValue(response.body()!!.data)
-                println("status updated")
-            } else {
-                error.postValue(response.errorBody())
-            }
+//            val response = apiService.updateStatus(demoId)
+//
+//            if (response.isSuccessful) {
+//                updatedDemo.postValue(response.body()!!.data)
+//                println("status updated")
+//            } else {
+//                error.postValue(response.errorBody())
+//            }
         } catch (e: Exception) {
             error.postValue(e)
         }

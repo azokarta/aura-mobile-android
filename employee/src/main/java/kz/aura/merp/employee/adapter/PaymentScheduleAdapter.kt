@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import kz.aura.merp.employee.data.model.PaymentSchedule
+import kz.aura.merp.employee.model.PaymentSchedule
 import kz.aura.merp.employee.databinding.PaymentScheduleRowBinding
 import kz.aura.merp.employee.util.MobDiffUtil
 

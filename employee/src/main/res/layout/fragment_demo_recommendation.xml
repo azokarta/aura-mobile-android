@@ -19,7 +19,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         app:backgroundTint="@color/colorPrimary"
-        app:tint="@color/colorWhite"
+        app:tint="@color/white"
         android:src="@drawable/ic_outline_add_24"
         android:focusable="true" />
 </FrameLayout>

@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.data.model.Error
-import kz.aura.merp.employee.data.model.Staff
+import kz.aura.merp.employee.model.Error
+import kz.aura.merp.employee.model.Staff
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kz.aura.merp.employee.databinding.ErrorDialogBinding
@@ -91,7 +91,7 @@ fun showToast(context: Context, message: String) =
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 
 fun definePosition(positionId: Int): StaffPosition? {
-    // we define position of employee and return constant
+    // Define position of employee and return constant
     return when (positionId) {
         4, 3, 10, 105 -> StaffPosition.DEALER
         9 -> StaffPosition.FIN_AGENT
@@ -133,8 +133,7 @@ fun openActivityByPositionId(context: Context) {
     when (positionId?.let { definePosition(it) }) {
         StaffPosition.DEALER -> clearPreviousAndOpenActivity(context, DealerActivity())
         StaffPosition.MASTER -> clearPreviousAndOpenActivity(context, MasterActivity())
-        StaffPosition.FIN_AGENT -> clearPreviousAndOpenActivity(context, FinanceAgentActivity())
-        else -> clearPreviousAndOpenActivity(context, ChiefActivity())
+        StaffPosition.FIN_AGENT -> clearPreviousAndOpenActivity(context, FinanceActivity())
     }
 }
 
@@ -164,13 +163,12 @@ fun <T> saveDataByKey(context: Context, data: T, key: String) {
 }
 
 fun verifyAvailableNetwork(context: Context): Boolean {
-    val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val networkInfo = connectivityManager.activeNetworkInfo
     return networkInfo != null && networkInfo.isConnected
 }
 
-fun receiveError(errorBody: ResponseBody): String {
+fun receiveErrorMessage(errorBody: ResponseBody): String? {
     val res = Gson().fromJson(errorBody.charStream(), Error::class.java)
     return res.message
 }
@@ -210,4 +208,21 @@ fun showException(message: String? = null, context: Context, title: String? = nu
     binding.errorClose.setOnClickListener {
         builder.dismiss()
     }
+}
+
+fun getReportsListFinance() : String {
+    return "<!doctype html>\n" +
+            "<html lang=\"en\">\n" +
+            "  <head>\n" +
+            "    <!-- Required meta tags -->\n" +
+            "    <meta charset=\"utf-8\">\n" +
+            "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
+            "\n" +
+            "    <title>Hello, world!</title>\n" +
+            "  </head>\n" +
+            "  <body>\n" +
+            "    <h1>Hello, world!</h1>\n" +
+            """   for(i in 1..20) 'a' """ +
+            "  </body>\n" +
+            "</html>"
 }

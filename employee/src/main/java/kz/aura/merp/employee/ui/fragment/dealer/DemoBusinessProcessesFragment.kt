@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.StepsAdapter
-import kz.aura.merp.employee.data.model.*
+import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.viewmodel.DealerViewModel
 import kz.aura.merp.employee.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.FragmentDemoBusinessProcessesBinding

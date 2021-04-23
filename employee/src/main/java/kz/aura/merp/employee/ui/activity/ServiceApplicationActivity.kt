@@ -6,10 +6,9 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.data.model.ServiceApplication
-import kz.aura.merp.employee.util.TabLayoutFragmentAdapter
+import kz.aura.merp.employee.model.ServiceApplication
+//import kz.aura.merp.employee.util.TabLayoutFragmentAdapter
 import kz.aura.merp.employee.viewmodel.MasterViewModel
 import kz.aura.merp.employee.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.ActivityServiceApplicationBinding
@@ -45,8 +44,8 @@ class ServiceApplicationActivity : AppCompatActivity() {
         fragments.add(ServiceApplicationDataFragment.newInstance(serviceApplication))
         fragments.add(ServiceApplicationBusinessFragment.newInstance(serviceApplication))
 
-        val fragmentAdapter = TabLayoutFragmentAdapter(supportFragmentManager, fragments, titles)
-        binding.serviceApplicationViewPager.adapter = fragmentAdapter
+//        val fragmentAdapter = TabLayoutFragmentAdapter(supportFragmentManager, fragments, titles)
+//        binding.serviceApplicationViewPager.adapter = fragmentAdapter
         binding.serviceApplicationTabLayout.setupWithViewPager(binding.serviceApplicationViewPager)
 
         // Errors

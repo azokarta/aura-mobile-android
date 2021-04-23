@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
-import kz.aura.merp.employee.data.model.DemoRecommendation
+import kz.aura.merp.employee.model.DemoRecommendation
 import kz.aura.merp.employee.databinding.DemoRecommendationCardBinding
 
 class DemoRecommendationAdapter : RecyclerView.Adapter<DemoRecommendationAdapter.DemoRecommendationViewHolder>() {

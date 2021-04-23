@@ -4,21 +4,20 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import kz.aura.merp.employee.data.model.ServiceApplication
-import kz.aura.merp.employee.data.model.TrackEmpProcess
-import kz.aura.merp.employee.data.model.TrackEmpProcessServiceApplication
-import kz.aura.merp.employee.data.network.MasterApi
-import kz.aura.merp.employee.data.network.ServiceBuilder
+import kz.aura.merp.employee.model.ServiceApplication
+import kz.aura.merp.employee.model.TrackEmpProcess
+import kz.aura.merp.employee.model.TrackEmpProcessServiceApplication
+import kz.aura.merp.employee.data.network.ServiceApi
 import kotlinx.coroutines.launch
-import kz.aura.merp.employee.data.model.Filters
+import kz.aura.merp.employee.model.Filters
 import kz.aura.merp.employee.util.Link
 import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.util.receiveError
+import kz.aura.merp.employee.util.receiveErrorMessage
 import kz.aura.merp.employee.util.saveData
 import java.lang.Exception
 
 class MasterViewModel(application: Application) : AndroidViewModel(application) {
-    private val apiService = ServiceBuilder.buildService(MasterApi::class.java, application, Link.SERVICE)
+//    private val apiService = ServiceBuilder.buildService(ServiceApi::class.java, application, Link.SERVICE)
 
     val applicationsResponse: MutableLiveData<NetworkResult<ArrayList<ServiceApplication>>> = MutableLiveData()
     val trackEmpProcessServiceApplication: MutableLiveData<NetworkResult<ArrayList<TrackEmpProcessServiceApplication>>> = MutableLiveData()
@@ -28,13 +27,13 @@ class MasterViewModel(application: Application) : AndroidViewModel(application) 
 
     fun fetchServiceApplications() = viewModelScope.launch {
         try {
-            val response = apiService.fetchApplications()
-
-            if (response.isSuccessful) {
-                applicationsResponse.postValue(NetworkResult.Success(response.body()!!.data))
-            } else {
-                applicationsResponse.postValue(NetworkResult.Error(receiveError(response.errorBody()!!), response.code()))
-            }
+//            val response = apiService.fetchApplications()
+//
+//            if (response.isSuccessful) {
+//                applicationsResponse.postValue(NetworkResult.Success(response.body()!!.data))
+//            } else {
+//                applicationsResponse.postValue(NetworkResult.Error(receiveError(response.errorBody()!!), response.code()))
+//            }
         } catch (e: Exception) {
             applicationsResponse.postValue(NetworkResult.Error(e.message))
         }
@@ -42,13 +41,13 @@ class MasterViewModel(application: Application) : AndroidViewModel(application) 
 
     fun fetchFilters(applicationNumber: Long) = viewModelScope.launch {
         try {
-            val response = apiService.fetchFilters(applicationNumber)
-
-            if (response.isSuccessful) {
-                filtersResponse.postValue(NetworkResult.Success(response.body()!!.data))
-            } else {
-                filtersResponse.postValue(NetworkResult.Error(receiveError(response.errorBody()!!), response.code()))
-            }
+//            val response = apiService.fetchFilters(applicationNumber)
+//
+//            if (response.isSuccessful) {
+//                filtersResponse.postValue(NetworkResult.Success(response.body()!!.data))
+//            } else {
+//                filtersResponse.postValue(NetworkResult.Error(receiveError(response.errorBody()!!), response.code()))
+//            }
         } catch (e: Exception) {
             filtersResponse.postValue(NetworkResult.Error(e.message))
         }
@@ -56,13 +55,13 @@ class MasterViewModel(application: Application) : AndroidViewModel(application) 
 
     fun updateServiceApplication(serviceApplication: ServiceApplication) = viewModelScope.launch {
         try {
-            val response = apiService.updateServiceApplication(serviceApplication)
-            if (response.isSuccessful) {
-                updatedServiceApplication.postValue(NetworkResult.Success(response.body()!!.data))
-                saveData(response.body()!!.data, getApplication())
-            } else {
-                updatedServiceApplication.postValue(NetworkResult.Error(receiveError(response.errorBody()!!), response.code()))
-            }
+//            val response = apiService.updateServiceApplication(serviceApplication)
+//            if (response.isSuccessful) {
+//                updatedServiceApplication.postValue(NetworkResult.Success(response.body()!!.data))
+//                saveData(response.body()!!.data, getApplication())
+//            } else {
+//                updatedServiceApplication.postValue(NetworkResult.Error(receiveError(response.errorBody()!!), response.code()))
+//            }
         } catch (e: Exception) {
             updatedServiceApplication.postValue(NetworkResult.Error(e.message))
         }
@@ -70,11 +69,11 @@ class MasterViewModel(application: Application) : AndroidViewModel(application) 
 
     fun updateStepBusinessProcess(trackEmpProcess: TrackEmpProcess) = viewModelScope.launch {
         try {
-            val response = apiService.updateBusinessProcessStep(trackEmpProcess)
-
-            if (!response.isSuccessful) {
-                error.postValue(response.errorBody())
-            }
+//            val response = apiService.updateBusinessProcessStep(trackEmpProcess)
+//
+//            if (!response.isSuccessful) {
+//                error.postValue(response.errorBody())
+//            }
         } catch (e: Throwable) {
             error.postValue(e)
         }

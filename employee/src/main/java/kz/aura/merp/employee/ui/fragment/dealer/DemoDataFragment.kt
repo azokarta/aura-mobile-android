@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PhoneNumbersAdapter
-import kz.aura.merp.employee.data.model.Demo
+import kz.aura.merp.employee.model.Demo
 import kz.aura.merp.employee.viewmodel.DealerViewModel
 import kz.aura.merp.employee.databinding.FragmentDemoDataBinding
 import kz.aura.merp.employee.ui.activity.MapActivity
-import kz.aura.merp.employee.data.model.Location
+import kz.aura.merp.employee.model.Location
 
 private const val ARG_PARAM1 = "demo"
 

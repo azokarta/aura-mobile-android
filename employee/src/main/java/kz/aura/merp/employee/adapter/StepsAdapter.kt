@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.data.model.BusinessProcessStatus
+import kz.aura.merp.employee.model.BusinessProcessStatus
 import kz.aura.merp.employee.databinding.StepViewRowBinding
 import kz.aura.merp.employee.util.MobDiffUtil
 
@@ -75,7 +75,7 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
             }
             if (step == null || step < dataList[position].id) {
                 binding.stepIcon.setImageResource(R.drawable.ic_baseline_radio_button_checked_24)
-                binding.stepIcon.setColorFilter(ContextCompat.getColor(binding.root.context, R.color.colorLightGray))
+                binding.stepIcon.setColorFilter(ContextCompat.getColor(binding.root.context, R.color.lightGray))
                 binding.stepLine.setImageResource(R.drawable.step_line)
             }
             if (position == size - 1) {

@@ -1,8 +1,8 @@
 package kz.aura.merp.employee.data.network
 
-import kz.aura.merp.employee.data.model.AuthResponse
-import kz.aura.merp.employee.data.model.ResponseHelper
-import kz.aura.merp.employee.data.model.Staff
+import kz.aura.merp.employee.model.AuthResponse
+import kz.aura.merp.employee.model.ResponseHelper
+import kz.aura.merp.employee.model.Staff
 import retrofit2.Response
 import retrofit2.http.*
 

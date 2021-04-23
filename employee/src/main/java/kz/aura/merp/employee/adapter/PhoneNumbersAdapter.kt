@@ -1,25 +1,26 @@
 package kz.aura.merp.employee.adapter
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import kz.aura.merp.employee.data.model.PhoneNumber
 import kz.aura.merp.employee.databinding.PhoneNumberRowBinding
 import kz.aura.merp.employee.util.MobDiffUtil
 
-class PhoneNumbersAdapter : RecyclerView.Adapter<PhoneNumbersAdapter.DemoDataPhoneNumberViewHolder>() {
+class PhoneNumbersAdapter : RecyclerView.Adapter<PhoneNumbersAdapter.PhoneNumbersViewHolder>() {
 
     var dataList = emptyList<String?>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DemoDataPhoneNumberViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhoneNumbersViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = PhoneNumberRowBinding.inflate(inflater, parent, false)
 
-        return DemoDataPhoneNumberViewHolder(binding)
+        return PhoneNumbersViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: DemoDataPhoneNumberViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PhoneNumbersViewHolder, position: Int) {
         val phoneNumber = dataList[position]
         holder.bind(phoneNumber)
     }
@@ -35,10 +36,23 @@ class PhoneNumbersAdapter : RecyclerView.Adapter<PhoneNumbersAdapter.DemoDataPho
         }
     }
 
-    class DemoDataPhoneNumberViewHolder(val binding: PhoneNumberRowBinding) : RecyclerView.ViewHolder(binding.root) {
+    class PhoneNumbersViewHolder(val binding: PhoneNumberRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(phoneNumber: String?) {
             binding.phone = phoneNumber
             binding.executePendingBindings()
+
+            binding.callBtn.setOnClickListener {
+                dialPhoneNumber(phoneNumber)
+            }
+        }
+
+        private fun dialPhoneNumber(phoneNumber: String?) {
+            val intent = Intent(Intent.ACTION_DIAL).apply {
+                data = Uri.parse("tel:$phoneNumber")
+            }
+            if (intent.resolveActivity(binding.root.context.packageManager) != null) {
+                binding.root.context.startActivity(intent)
+            }
         }
     }
 

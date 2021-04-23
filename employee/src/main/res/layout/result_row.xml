@@ -41,7 +41,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:text="@{result}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/resultIcon"
                 app:layout_constraintEnd_toEndOf="parent"

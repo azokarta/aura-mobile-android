@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.DemoAdapter
 import kz.aura.merp.employee.viewmodel.SharedViewModel
-import kz.aura.merp.employee.data.model.Demo
+import kz.aura.merp.employee.model.Demo
 import kz.aura.merp.employee.viewmodel.DealerViewModel
 import kz.aura.merp.employee.databinding.ActivityDealerBinding
 import kz.aura.merp.employee.util.getStaffId

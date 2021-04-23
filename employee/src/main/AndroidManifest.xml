@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
         <service android:name="kz.aura.merp.employee.util.BackgroundService" />
 
         <service
@@ -42,14 +43,13 @@
             android:label="@string/service"
             android:screenOrientation="portrait" />
         <activity android:name="kz.aura.merp.employee.ui.activity.MasterActivity" android:label="@string/master" android:screenOrientation="portrait"/>
-        <activity android:name="kz.aura.merp.employee.ui.activity.FinanceAgentActivity" android:label="@string/finAgent" android:screenOrientation="portrait" />
+        <activity android:name="kz.aura.merp.employee.ui.activity.FinanceActivity" android:label="@string/finAgent" android:screenOrientation="portrait" />
         <activity android:name="kz.aura.merp.employee.ui.activity.DealerActivity" android:label="@string/dealer" android:screenOrientation="portrait" />
         <activity
             android:name="kz.aura.merp.employee.ui.activity.DemoActivity"
             android:label="@string/demo" android:screenOrientation="portrait" />
         <activity
             android:name="kz.aura.merp.employee.ui.activity.PlanActivity" android:screenOrientation="portrait" />
-        <activity android:name="kz.aura.merp.employee.ui.activity.ChiefActivity" android:screenOrientation="portrait" />
         <activity
             android:name="kz.aura.merp.employee.ui.activity.AuthorizationActivity"
             android:configChanges="locale" android:screenOrientation="portrait"

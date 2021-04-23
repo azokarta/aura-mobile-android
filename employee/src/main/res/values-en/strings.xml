@@ -117,4 +117,18 @@
     <string name="customer_phone_numbers">Customer\'s phone numbers</string>
     <string name="category_of_client">Category of client</string>
     <string name="operator_by_plan">Operator by plan</string>
+    <string name="loading">Loading…</string>
+    <string name="history">History</string>
+    <string name="paymentSchedule">Payment schedule</string>
+    <string name="error">Error</string>
+    <string name="update">Update</string>
+    <string name="left">Left</string>
+    <string name="results">Results</string>
+    <string name="calls">Calls</string>
+    <string name="scheduled_calls">Scheduled calls</string>
+    <string name="contract">Contract</string>
+    <string name="сontribution_history">Contribution history</string>
+    <string name="сontribution">Сontribution</string>
+    <string name="сontributions">Взносы</string>
+    <string name="amount_of_contribution">Amount of contribution</string>
 </resources>

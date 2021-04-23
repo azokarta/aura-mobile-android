@@ -11,12 +11,8 @@ class BindingAdapters {
 
         @BindingAdapter("android:emptyDatabase", "android:dataReceived")
         @JvmStatic
-        fun emptyDatabase(view: View, emptyDatabase: MutableLiveData<Boolean>, dataReceived: MutableLiveData<Boolean>) {
-            if (dataReceived.value!! && emptyDatabase.value!!) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
+        fun emptyDatabase(view: View, emptyDatabase: Boolean, dataReceived: Boolean) {
+            view.isVisible = dataReceived && emptyDatabase
         }
 
         @BindingAdapter("android:hideProgressBar")

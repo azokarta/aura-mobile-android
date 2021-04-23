@@ -7,7 +7,7 @@
 
         <variable
             name="demo"
-            type="kz.aura.merp.employee.data.model.Demo" />
+            type="kz.aura.merp.employee.model.Demo" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@{@string/fullName+`:`}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/demo_data_id"
@@ -78,7 +78,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:text="@{demo.clientName}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toEndOf="@+id/textView4"
                 app:layout_constraintTop_toTopOf="@+id/textView4" />
 
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@{@string/address+`:`}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/textView4"
@@ -101,7 +101,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:text="@{demo.address}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toEndOf="@+id/textView7"
                 app:layout_constraintTop_toTopOf="@+id/textView7" />
 
@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@{@string/phones+`:`}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/textView7"
@@ -149,7 +149,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:text="@{Long.toString(demo.demoId)}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/demo_data_id"
                 app:layout_constraintStart_toEndOf="@+id/demo_data_id"
                 app:layout_constraintTop_toTopOf="@+id/demo_data_id" />

@@ -1,6 +1,6 @@
 package kz.aura.merp.employee.data.network
 
-import kz.aura.merp.employee.data.model.*
+import kz.aura.merp.employee.model.*
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -34,4 +34,16 @@ interface FinanceApi {
 
     @GET("/references/paymentMethods")
     suspend fun fetchPaymentMethods(): Response<ResponseHelper<ArrayList<PaymentMethod>>>
+
+    @GET("/plans/{contractId}/payment_history")
+    suspend fun fetchHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<PlanHistoryItem>>>
+
+    @GET("/plans/collect_money_results")
+    suspend fun fetchContributions(): Response<ResponseHelper<ArrayList<Contribution>>>
+
+    @GET("/plans/calls")
+    suspend fun fetchCalls(): Response<ResponseHelper<ArrayList<Call>>>
+
+    @GET("/plans/collect_money_results")
+    suspend fun fetchScheduledCalls(): Response<ResponseHelper<ArrayList<ScheduledCall>>>
 }

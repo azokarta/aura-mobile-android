@@ -6,7 +6,7 @@
     <data>
         <variable
             name="demo"
-            type="kz.aura.merp.employee.data.model.Demo" />
+            type="kz.aura.merp.employee.model.Demo" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -30,7 +30,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
                 android:text="@{@string/fullName+`:`}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/view"
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@{@string/address+`:`}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/fio"
@@ -55,7 +55,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="24dp"
                 android:text="@{@string/phoneNumber+`:`}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -71,7 +71,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:text="@{demo.clientName}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/fio"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/fio"
@@ -84,7 +84,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:text="@{demo.address}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/address"
                 app:layout_constraintEnd_toEndOf="@+id/textView2"
                 app:layout_constraintStart_toEndOf="@+id/address"
@@ -97,7 +97,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:text="@{demo.crmPhoneDtoList[0].phoneNumber}"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/textView51"
                 app:layout_constraintEnd_toEndOf="@+id/textView3"
                 app:layout_constraintStart_toEndOf="@+id/textView51"

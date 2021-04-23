@@ -7,7 +7,7 @@
 
         <variable
             name="demo"
-            type="kz.aura.merp.employee.data.model.Demo" />
+            type="kz.aura.merp.employee.model.Demo" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:maxLength="100"
                     android:text="@{demo.note}"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/black" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/demoResult"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@+id/demo_business_processes_cause_text_field"
                 app:layout_constraintTop_toBottomOf="@+id/demo_business_processes_cause_text_field" />
 

@@ -22,7 +22,7 @@ import com.yandex.mapkit.transport.masstransit.Session
 import io.nlopez.smartlocation.OnLocationUpdatedListener
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.data.model.Location
+import kz.aura.merp.employee.model.Location
 import kz.aura.merp.employee.databinding.ActivityMapBinding
 
 class MapActivity : AppCompatActivity(), OnLocationUpdatedListener, Session.RouteListener, com.yandex.mapkit.search.Session.SearchListener {

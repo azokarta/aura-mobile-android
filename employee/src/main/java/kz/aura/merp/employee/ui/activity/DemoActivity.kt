@@ -6,17 +6,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.data.model.Demo
-import kz.aura.merp.employee.util.TabLayoutFragmentAdapter
+import kz.aura.merp.employee.model.Demo
+//import kz.aura.merp.employee.util.TabLayoutFragmentAdapter
 import kz.aura.merp.employee.viewmodel.DealerViewModel
 import kz.aura.merp.employee.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.ActivityDemoBinding
 import kz.aura.merp.employee.ui.fragment.dealer.DemoBusinessProcessesFragment
 import kz.aura.merp.employee.ui.fragment.dealer.DemoDataFragment
 import kz.aura.merp.employee.ui.fragment.dealer.DemoRecommendationFragment
-import kz.aura.merp.employee.util.showException
 
 class DemoActivity : AppCompatActivity() {
 
@@ -50,8 +48,8 @@ class DemoActivity : AppCompatActivity() {
         fragments.add(DemoBusinessProcessesFragment.newInstance(demo))
         fragments.add(DemoRecommendationFragment())
 
-        val fragmentAdapter = TabLayoutFragmentAdapter(supportFragmentManager, fragments, titles)
-        binding.demoViewPager.adapter = fragmentAdapter
+//        val fragmentAdapter = TabLayoutFragmentAdapter(supportFragmentManager, fragments, titles)
+//        binding.demoViewPager.adapter = fragmentAdapter
         binding.demoTabLayout.setupWithViewPager(binding.demoViewPager)
 
         // Errors

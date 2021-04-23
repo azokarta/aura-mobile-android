@@ -5,11 +5,9 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
-import kz.aura.merp.employee.data.model.ServiceApplication
+import kz.aura.merp.employee.model.ServiceApplication
 import kz.aura.merp.employee.viewmodel.MasterViewModel
 import kz.aura.merp.employee.databinding.FragmentServiceApplicationDataBinding
-import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PhoneNumbersAdapter
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.declareErrorByStatus

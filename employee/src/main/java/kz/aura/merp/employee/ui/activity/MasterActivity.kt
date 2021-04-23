@@ -18,7 +18,7 @@ import com.google.android.material.chip.Chip
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.ServiceApplicationAdapter
 import kz.aura.merp.employee.viewmodel.SharedViewModel
-import kz.aura.merp.employee.data.model.ServiceApplication
+import kz.aura.merp.employee.model.ServiceApplication
 import kz.aura.merp.employee.viewmodel.MasterViewModel
 import kz.aura.merp.employee.databinding.ActivityMasterBinding
 import com.google.gson.Gson
@@ -91,13 +91,13 @@ class MasterActivity : AppCompatActivity() {
         mMasterViewModel.applicationsResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    mSharedViewModel.hideLoading()
+                    mSharedViewModel.hideLoading(res.data!!.isEmpty())
                     binding.filterLayout.visibility = View.VISIBLE
                     filterServiceApplications()
                 }
                 is NetworkResult.Loading -> mSharedViewModel.showLoading()
                 is NetworkResult.Error -> {
-                    mSharedViewModel.hideLoading()
+                    mSharedViewModel.hideLoading(res.data!!.isEmpty())
                     declareErrorByStatus(res.message, res.status, this)
                 }
             }
@@ -245,7 +245,6 @@ class MasterActivity : AppCompatActivity() {
         serviceApplicationAdapter.setData(filteredApplications)
 
         binding.quantityOfList = filteredApplications.size
-        mSharedViewModel.checkData(filteredApplications)
         binding.executePendingBindings()
     }
 
@@ -304,7 +303,7 @@ class MasterActivity : AppCompatActivity() {
         chip.setChipBackgroundColorResource(R.color.gray)
         chip.checkedIcon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_check_24)
         chip.isCheckable = true
-        chip.setTextColor(resources.getColor(R.color.colorBlack))
+        chip.setTextColor(resources.getColor(R.color.black))
         return chip
     }
 

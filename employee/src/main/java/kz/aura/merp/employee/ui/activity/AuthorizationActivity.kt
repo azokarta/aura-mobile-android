@@ -44,7 +44,7 @@ class AuthorizationActivity : AppCompatActivity() {
         binding.ccp.registerCarrierNumberEditText(binding.phoneNumber)
     }
 
-    fun observeLiveData() {
+    private fun observeLiveData() {
         mAuthViewModel.signInResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {

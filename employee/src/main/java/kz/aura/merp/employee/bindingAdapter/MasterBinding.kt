@@ -4,7 +4,7 @@ import android.content.Intent
 import android.view.View
 import androidx.databinding.BindingAdapter
 import kz.aura.merp.employee.ui.activity.ServiceApplicationActivity
-import kz.aura.merp.employee.data.model.ServiceApplication
+import kz.aura.merp.employee.model.ServiceApplication
 
 class MasterBinding {
     companion object {

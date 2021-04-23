@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import kz.aura.merp.employee.data.model.Result
+import kz.aura.merp.employee.model.Result
 import kz.aura.merp.employee.databinding.ResultRowBinding
 import kz.aura.merp.employee.util.MobDiffUtil
 import kz.aura.merp.employee.view.OnSelectResult
@@ -36,8 +36,8 @@ class ResultsAdapter(val iOnSelectResult: OnSelectResult) : RecyclerView.Adapter
     inner class ResultsViewHolder(private val binding: ResultRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(result: Result, position: Int) {
             binding.result = result.title
-            binding.executePendingBindings()
             binding.resultIcon.setImageResource(result.icon)
+            binding.executePendingBindings()
             binding.root.setOnClickListener {
                 iOnSelectResult.selectResult(position)
             }

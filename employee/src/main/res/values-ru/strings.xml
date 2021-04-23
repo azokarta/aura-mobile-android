@@ -117,4 +117,18 @@
     <string name="customer_phone_numbers">Телефоны клиента</string>
     <string name="category_of_client">Категория клиента</string>
     <string name="operator_by_plan">Оператор по плану</string>
+    <string name="loading">Загрузка</string>
+    <string name="history">История</string>
+    <string name="paymentSchedule">График платежей</string>
+    <string name="error">Ошибка</string>
+    <string name="update">Обновить</string>
+    <string name="left">Осталось</string>
+    <string name="results">Результаты</string>
+    <string name="calls">Звонки</string>
+    <string name="scheduled_calls">Назначенные звонки</string>
+    <string name="contract">Договор</string>
+    <string name="сontribution_history">История взноса</string>
+    <string name="сontribution">Взнос</string>
+    <string name="сontributions">Взносы</string>
+    <string name="amount_of_contribution">Сумма взноса</string>
 </resources>

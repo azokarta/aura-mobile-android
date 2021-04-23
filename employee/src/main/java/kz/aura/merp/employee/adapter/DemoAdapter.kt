@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import kz.aura.merp.employee.data.model.Demo
+import kz.aura.merp.employee.model.Demo
 import kz.aura.merp.employee.databinding.DemoCardBinding
 import kz.aura.merp.employee.util.MobDiffUtil
 

@@ -4,7 +4,7 @@ import android.content.Intent
 import android.view.View
 import androidx.databinding.BindingAdapter
 import kz.aura.merp.employee.ui.activity.DemoActivity
-import kz.aura.merp.employee.data.model.Demo
+import kz.aura.merp.employee.model.Demo
 
 
 class DealerBinding {
