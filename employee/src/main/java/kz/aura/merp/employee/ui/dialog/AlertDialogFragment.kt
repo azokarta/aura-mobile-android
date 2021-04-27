@@ -7,26 +7,11 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import kz.aura.merp.employee.R
 
-class AlertDialogFragment(private val title: String) : DialogFragment() {
-    private lateinit var listener: AlertDialogListener
+class AlertDialogFragment(private val listener: AlertDialogListener, private val title: String) : DialogFragment() {
 
     interface AlertDialogListener {
         fun onAlertDialogPositiveClick(dialog: DialogFragment)
-        fun onAlertDialogNegativeClick(dialog: DialogFragment)
-    }
-
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            listener = context as AlertDialogListener
-        } catch (e: ClassCastException) {
-            // The activity doesn't implement the interface, throw exception
-            throw ClassCastException((context.toString() +
-                    " must implement AlertDialogListener"))
-        }
+        fun onAlertDialogNegativeClick(dialog: DialogFragment) {}
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

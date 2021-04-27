@@ -37,7 +37,6 @@ import kotlin.collections.ArrayList
 class MonthlyPlanFragment : Fragment() {
 
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
     private val plansAdapter: PlanAdapter by lazy { PlanAdapter() }
     private var _binding: FragmentMonthlyPlanBinding? = null
     private val binding get() = _binding!!
@@ -59,7 +58,6 @@ class MonthlyPlanFragment : Fragment() {
     ): View {
         _binding = FragmentMonthlyPlanBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.mSharedViewModel = mSharedViewModel
 
         setupFilterResources()
 
@@ -110,16 +108,26 @@ class MonthlyPlanFragment : Fragment() {
         )
     }
 
+    private fun showLoadingOrNoData(visibility: Boolean, dataIsEmpty: Boolean = true) {
+        if (visibility) {
+            binding.emptyData = true
+            binding.dataReceived = false
+        } else {
+            binding.emptyData = dataIsEmpty
+            binding.dataReceived = true
+        }
+    }
+
     private fun observeLiveData() {
         mFinanceViewModel.plansResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     filterPlans()
                 }
-                is NetworkResult.Loading -> mSharedViewModel.showLoading()
+                is NetworkResult.Loading -> showLoadingOrNoData(true)
                 is NetworkResult.Error -> {
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     checkError(res)
                 }
             }
@@ -140,12 +148,8 @@ class MonthlyPlanFragment : Fragment() {
                     this.businessProcessStatuses.addAll(res.data!!)
                     setupFilterBottomSheet()
                 }
-                is NetworkResult.Loading -> {
-                }
-                is NetworkResult.Error -> {
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
-                    checkError(res)
-                }
+                is NetworkResult.Loading -> { }
+                is NetworkResult.Error -> checkError(res)
             }
         })
     }

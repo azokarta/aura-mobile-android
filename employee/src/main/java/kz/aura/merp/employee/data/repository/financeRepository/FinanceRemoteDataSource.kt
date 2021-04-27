@@ -40,4 +40,28 @@ class FinanceRemoteDataSource @Inject constructor(
     suspend fun fetchCalls(): Response<ResponseHelper<ArrayList<Call>>> {
         return financeApi.fetchCalls()
     }
+
+    suspend fun fetchCallHistory(): Response<ResponseHelper<ArrayList<Call>>> {
+        return financeApi.fetchCalls()
+    }
+
+    suspend fun assignCollectMoney(contractId: Long?, plan: ChangePlanResult): Response<ResponseHelper<Any>> {
+        return financeApi.assignCollectMoney(contractId, plan)
+    }
+
+    suspend fun fetchBanks(): Response<ResponseHelper<ArrayList<Bank>>> {
+        return financeApi.fetchBanks()
+    }
+
+    suspend fun fetchPaymentMethods(): Response<ResponseHelper<ArrayList<PaymentMethod>>> {
+        return financeApi.fetchPaymentMethods()
+    }
+
+    suspend fun fetchPlanResults(): Response<ResponseHelper<ArrayList<PlanResult>>> {
+        return financeApi.fetchPlanResults()
+    }
+
+    suspend fun fetchPlanContributions(contractId: Long): Response<ResponseHelper<ArrayList<Contribution>>> {
+        return financeApi.fetchPlanContributions(contractId)
+    }
 }

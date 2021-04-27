@@ -22,13 +22,19 @@ class FinanceViewModel @Inject constructor(
 
     val plansResponse: MutableLiveData<NetworkResult<ArrayList<Plan>>> = MutableLiveData()
     val updatedPlanResponse: MutableLiveData<NetworkResult<Plan>> = MutableLiveData()
-    val businessProcessStatusesResponse: MutableLiveData<NetworkResult<ArrayList<BusinessProcessStatus>>> = MutableLiveData()
-    val planResultsResponse: MutableLiveData<NetworkResult<ArrayList<PlanResult>>> = MutableLiveData()
-    val paymentScheduleResponse: MutableLiveData<NetworkResult<ArrayList<PaymentSchedule>>> = MutableLiveData()
+    val businessProcessStatusesResponse: MutableLiveData<NetworkResult<ArrayList<BusinessProcessStatus>>> =
+        MutableLiveData()
+    val planResultsResponse: MutableLiveData<NetworkResult<ArrayList<PlanResult>>> =
+        MutableLiveData()
+    val paymentScheduleResponse: MutableLiveData<NetworkResult<ArrayList<PaymentSchedule>>> =
+        MutableLiveData()
     val banksResponse: MutableLiveData<NetworkResult<ArrayList<Bank>>> = MutableLiveData()
-    val paymentMethodsResponse: MutableLiveData<NetworkResult<ArrayList<PaymentMethod>>> = MutableLiveData()
-    val planHistoryResponse: MutableLiveData<NetworkResult<ArrayList<PlanHistoryItem>>> = MutableLiveData()
-    val contributionsResponse: MutableLiveData<NetworkResult<ArrayList<Contribution>>> = MutableLiveData()
+    val paymentMethodsResponse: MutableLiveData<NetworkResult<ArrayList<PaymentMethod>>> =
+        MutableLiveData()
+    val planHistoryResponse: MutableLiveData<NetworkResult<ArrayList<PlanHistoryItem>>> =
+        MutableLiveData()
+    val contributionsResponse: MutableLiveData<NetworkResult<ArrayList<Contribution>>> =
+        MutableLiveData()
     val callsResponse: MutableLiveData<NetworkResult<ArrayList<Call>>> = MutableLiveData()
 
     fun fetchPlans() = viewModelScope.launch {
@@ -39,28 +45,40 @@ class FinanceViewModel @Inject constructor(
             if (response.isSuccessful) {
                 plansResponse.postValue(NetworkResult.Success(response.body()!!.data))
             } else {
-                plansResponse.postValue(NetworkResult.Error(receiveErrorMessage(response.errorBody()!!), response.code()))
+                plansResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
             }
         } catch (e: Exception) {
             plansResponse.postValue(NetworkResult.Error(e.message))
         }
     }
 
-    fun updateBusinessProcessStep(contractId: Long, businessProcess: ChangeBusinessProcess) = viewModelScope.launch {
-        updatedPlanResponse.postValue(NetworkResult.Loading())
-        try {
-            val response = financeRepository.remote.updateBusinessProcessStep(contractId, businessProcess)
+    fun updateBusinessProcessStep(contractId: Long, businessProcess: ChangeBusinessProcess) =
+        viewModelScope.launch {
+            updatedPlanResponse.postValue(NetworkResult.Loading())
+            try {
+                val response =
+                    financeRepository.remote.updateBusinessProcessStep(contractId, businessProcess)
 
-            if (response.isSuccessful) {
-                updatedPlanResponse.postValue(NetworkResult.Success(response.body()!!.data))
-                saveData(response.body()!!.data, getApplication())
-            } else {
-                updatedPlanResponse.postValue(NetworkResult.Error(receiveErrorMessage(response.errorBody()!!), response.code()))
+                if (response.isSuccessful) {
+                    updatedPlanResponse.postValue(NetworkResult.Success(response.body()!!.data))
+                    saveData(response.body()!!.data, getApplication())
+                } else {
+                    updatedPlanResponse.postValue(
+                        NetworkResult.Error(
+                            receiveErrorMessage(response.errorBody()!!),
+                            response.code()
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                updatedPlanResponse.postValue(NetworkResult.Error(e.message))
             }
-        } catch (e: Exception) {
-            updatedPlanResponse.postValue(NetworkResult.Error(e.message))
         }
-    }
 
     fun changeData(plan: Plan): Boolean {
         return if (plansResponse.value?.data?.isNotEmpty() == true) {
@@ -79,7 +97,13 @@ class FinanceViewModel @Inject constructor(
             if (response.isSuccessful) {
                 businessProcessStatusesResponse.postValue(NetworkResult.Success(response.body()!!.data))
             } else {
-                businessProcessStatusesResponse.postValue(NetworkResult.Error(receiveErrorMessage(response.errorBody()!!), response.code()))
+                businessProcessStatusesResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(
+                            response.errorBody()!!
+                        ), response.code()
+                    )
+                )
             }
         } catch (e: Exception) {
             businessProcessStatusesResponse.postValue(NetworkResult.Error(e.message))
@@ -94,7 +118,12 @@ class FinanceViewModel @Inject constructor(
             if (response.isSuccessful) {
                 paymentScheduleResponse.postValue(NetworkResult.Success(response.body()!!.data))
             } else {
-                paymentScheduleResponse.postValue(NetworkResult.Error(receiveErrorMessage(response.errorBody()!!), response.code()))
+                paymentScheduleResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
             }
         } catch (e: Exception) {
             paymentScheduleResponse.postValue(NetworkResult.Error(e.message))
@@ -109,7 +138,12 @@ class FinanceViewModel @Inject constructor(
             if (response.isSuccessful) {
                 contributionsResponse.postValue(NetworkResult.Success(response.body()!!.data))
             } else {
-                contributionsResponse.postValue(NetworkResult.Error(receiveErrorMessage(response.errorBody()!!), response.code()))
+                contributionsResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
             }
         } catch (e: Exception) {
             contributionsResponse.postValue(NetworkResult.Error(e.message))
@@ -124,70 +158,131 @@ class FinanceViewModel @Inject constructor(
             if (response.isSuccessful) {
                 callsResponse.postValue(NetworkResult.Success(response.body()!!.data))
             } else {
-                callsResponse.postValue(NetworkResult.Error(receiveErrorMessage(response.errorBody()!!), response.code()))
+                callsResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
             }
         } catch (e: Exception) {
             callsResponse.postValue(NetworkResult.Error(e.message))
         }
     }
 
-    //    fun fetchPlanResults() = viewModelScope.launch {
-//        planResultsResponse.postValue(NetworkResult.Loading())
-//        try {
-//            val response = apiService.fetchPlanResults()
-//
-//            if (response.isSuccessful) {
-//                planResultsResponse.postValue(NetworkResult.Success(response.body()!!.data))
-//            } else {
-//                planResultsResponse.postValue(NetworkResult.Error(receiveError(response.errorBody()!!), response.code()))
-//            }
-//        } catch (e: Exception) {
-//            planResultsResponse.postValue(NetworkResult.Error(e.message))
-//        }
-//    }
-//
-//    fun fetchBanks() = viewModelScope.launch {
-//        banksResponse.postValue(NetworkResult.Loading())
-//        try {
-//            val response = apiService.fetchBanks()
-//
-//            if (response.isSuccessful) {
-//                banksResponse.postValue(NetworkResult.Success(response.body()!!.data))
-//            } else {
-//                banksResponse.postValue(NetworkResult.Error(receiveError(response.errorBody()!!), response.code()))
-//            }
-//        } catch (e: Exception) {
-//            banksResponse.postValue(NetworkResult.Error(e.message))
-//        }
-//    }
-//
-//    fun fetchPaymentMethods() = viewModelScope.launch {
-//        paymentMethodsResponse.postValue(NetworkResult.Loading())
-//        try {
-//            val response = apiService.fetchPaymentMethods()
-//
-//            if (response.isSuccessful) {
-//                paymentMethodsResponse.postValue(NetworkResult.Success(response.body()!!.data))
-//            } else {
-//                paymentMethodsResponse.postValue(NetworkResult.Error(receiveError(response.errorBody()!!), response.code()))
-//            }
-//        } catch (e: Exception) {
-//            paymentMethodsResponse.postValue(NetworkResult.Error(e.message))
-//        }
-//    }
+    fun fetchCallHistory() = viewModelScope.launch {
+        callsResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchCallHistory()
 
-//    fun fetchHistory(contractId: Long) = viewModelScope.launch {
-//        planHistoryResponse.postValue(NetworkResult.Loading())
-//        try {
-//            val response = apiService.fetchHistory(contractId)
-//
-//            if (response.isSuccessful) {
-//                planHistoryResponse.postValue(NetworkResult.Success(response.body()!!.data))
-//            } else {
-//                planHistoryResponse.postValue(NetworkResult.Error(receiveError(response.errorBody()!!), response.code()))
-//            }
-//        } catch (e: Exception) {
-//            planHistoryResponse.postValue(NetworkResult.Error(e.message))
-//        }
-//    }
+            if (response.isSuccessful) {
+                callsResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                callsResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            callsResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    fun assignCollectMoney(contractId: Long?, plan: ChangePlanResult) = viewModelScope.launch {
+        updatedPlanResponse.postValue(NetworkResult.Loading())
+        println(plan)
+        try {
+            val response = financeRepository.remote.assignCollectMoney(contractId, plan)
+
+            if (response.isSuccessful) {
+                println(response.body())
+            } else {
+                updatedPlanResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            updatedPlanResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    fun fetchBanks() = viewModelScope.launch {
+        banksResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchBanks()
+
+            if (response.isSuccessful) {
+                banksResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                banksResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            banksResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    fun fetchPaymentMethods() = viewModelScope.launch {
+        paymentMethodsResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchPaymentMethods()
+
+            if (response.isSuccessful) {
+                paymentMethodsResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                paymentMethodsResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            paymentMethodsResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    fun fetchPlanResults() = viewModelScope.launch {
+        planResultsResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchPlanResults()
+
+            if (response.isSuccessful) {
+                planResultsResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                planResultsResponse.postValue(NetworkResult.Error(receiveErrorMessage(response.errorBody()!!), response.code()))
+            }
+        } catch (e: Exception) {
+            planResultsResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    fun fetchPlanContributions(contractId: Long) = viewModelScope.launch {
+        contributionsResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchPlanContributions(contractId)
+
+            if (response.isSuccessful) {
+                contributionsResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                contributionsResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            contributionsResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
 }

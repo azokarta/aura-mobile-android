@@ -36,6 +36,7 @@ class PlanActivity : AppCompatActivity() {
 
         val fragments = arrayListOf(
             ContractFragment.newInstance(plan),
+            PlanContributionsFragment.newInstance(plan),
             PlanPaymentScheduleFragment.newInstance(plan.contractId!!, plan.contractCurrencyName!!),
             PlanCallsFragment(),
             PlanScheduledCallsFragment()
@@ -45,9 +46,10 @@ class PlanActivity : AppCompatActivity() {
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> getString(R.string.contract)
-                1 -> getString(R.string.paymentSchedule)
-                2 -> getString(R.string.calls)
-                3 -> getString(R.string.scheduled_calls)
+                1 -> getString(R.string.сontributions)
+                2 -> getString(R.string.paymentSchedule)
+                3 -> getString(R.string.calls)
+                4 -> getString(R.string.scheduled_calls)
                 else -> null
             }
         }.attach()

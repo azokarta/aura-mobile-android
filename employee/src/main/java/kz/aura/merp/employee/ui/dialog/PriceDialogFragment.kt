@@ -9,26 +9,11 @@ import androidx.fragment.app.DialogFragment
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.PriceAlertDialogBinding
 
-class PriceDialogFragment(val remainder: Int) : DialogFragment() {
-    private lateinit var listener: PriceDialogListener
+class PriceDialogFragment(private val listener: PriceDialogListener, val remainder: Int) : DialogFragment() {
 
     interface PriceDialogListener {
         fun onPriceDialogPositiveClick(dialog: DialogFragment, price: Int)
-        fun onPriceDialogNegativeClick(dialog: DialogFragment)
-    }
-
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the PriceDialogListener so we can send events to the host
-            listener = context as PriceDialogListener
-        } catch (e: ClassCastException) {
-            // The activity doesn't implement the interface, throw exception
-            throw ClassCastException((context.toString() +
-                    " must implement PriceDialogListener"))
-        }
+        fun onPriceDialogNegativeClick(dialog: DialogFragment) {}
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.adapter.CallsAdapter
 import kz.aura.merp.employee.databinding.FragmentCallsBinding
 import kz.aura.merp.employee.util.NetworkResult
@@ -16,6 +17,7 @@ import kz.aura.merp.employee.util.verifyAvailableNetwork
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 
+@AndroidEntryPoint
 class CallsFragment : Fragment() {
 
     private var _binding: FragmentCallsBinding? = null
@@ -30,6 +32,7 @@ class CallsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCallsBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
 
         setupRecyclerView()
 
@@ -37,6 +40,16 @@ class CallsFragment : Fragment() {
 
         // Fetch calls
         mFinanceViewModel.fetchCalls()
+
+        // If network is disconnected and user clicks restart, get data again
+        binding.networkDisconnected.restart.setOnClickListener {
+            if (verifyAvailableNetwork(requireContext())) {
+                mFinanceViewModel.fetchCalls()
+                binding.progressBar.isVisible = true
+                binding.recyclerView.isVisible = true
+                binding.networkDisconnected.root.isVisible = false
+            }
+        }
 
         return binding.root
     }
@@ -51,21 +64,28 @@ class CallsFragment : Fragment() {
         mFinanceViewModel.callsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     callsAdapter.setData(res.data!!)
                 }
                 is NetworkResult.Loading -> {
-                    mSharedViewModel.showLoading()
+                    showLoadingOrNoData(true)
                 }
                 is NetworkResult.Error -> {
-                    println(res.data)
-                    println(res.message)
-                    println(res.status)
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     checkError(res)
                 }
             }
         })
+    }
+
+    private fun showLoadingOrNoData(visibility: Boolean, dataIsEmpty: Boolean = true) {
+        if (visibility) {
+            binding.emptyData = true
+            binding.dataReceived = false
+        } else {
+            binding.emptyData = dataIsEmpty
+            binding.dataReceived = true
+        }
     }
 
     private fun <T> checkError(res: NetworkResult.Error<T>) {
@@ -76,4 +96,8 @@ class CallsFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

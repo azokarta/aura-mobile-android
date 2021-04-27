@@ -1,7 +1,5 @@
 package kz.aura.merp.employee.model
 
-import java.time.Duration
-
 data class Call(
     val phoneNumber: String,
     val callStatusId: Long,
@@ -9,7 +7,7 @@ data class Call(
     val callDirectionId: Long,
     val callDirectionName: String,
     val callDateTime: String,
-    val duration: Duration,
+    val duration: String,
     val description: String?,
     val contractId: Long,
     val contractNumber: Long,

@@ -170,6 +170,7 @@ fun verifyAvailableNetwork(context: Context): Boolean {
 
 fun receiveErrorMessage(errorBody: ResponseBody): String? {
     val res = Gson().fromJson(errorBody.charStream(), Error::class.java)
+    println(res)
     return res.message
 }
 
@@ -190,6 +191,7 @@ fun declareErrorByStatus(message: String?, status: Int? = null, context: Context
         }
         400 -> showException(message, context, "Bad request")
         500 -> showException(message, context, "Internal server error")
+        404 -> showException(message, context, "Not Found")
         else -> showException(message, context)
     }
 }

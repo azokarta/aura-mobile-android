@@ -9,26 +9,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.CauseAlertDialogBinding
 
-class CauseDialogFragment : DialogFragment() {
-    private lateinit var listener: CauseDialogListener
+class CauseDialogFragment(private val listener: CauseDialogListener) : DialogFragment() {
 
     interface CauseDialogListener {
         fun onCauseDialogPositiveClick(dialog: DialogFragment, cause: String)
-        fun onCauseDialogNegativeClick(dialog: DialogFragment)
-    }
-
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            listener = context as CauseDialogListener
-        } catch (e: ClassCastException) {
-            // The activity doesn't implement the interface, throw exception
-            throw ClassCastException((context.toString() +
-                    " must implement CauseDialogListener"))
-        }
+        fun onCauseDialogNegativeClick(dialog: DialogFragment) {}
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

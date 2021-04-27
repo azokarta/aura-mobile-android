@@ -24,7 +24,6 @@ class ContributionsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
     private val contributionsAdapter: ContributionsAdapter by lazy { ContributionsAdapter() }
 
     override fun onCreateView(
@@ -33,7 +32,6 @@ class ContributionsFragment : Fragment() {
     ): View {
         _binding = FragmentContributionsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.mSharedViewModel = mSharedViewModel
 
         setupRecyclerView()
 
@@ -41,6 +39,16 @@ class ContributionsFragment : Fragment() {
 
         // Fetch contributions
         mFinanceViewModel.fetchContributions()
+
+        // If network is disconnected and user clicks restart, get data again
+        binding.networkDisconnected.restart.setOnClickListener {
+            if (verifyAvailableNetwork(requireContext())) {
+                mFinanceViewModel.fetchContributions()
+                binding.progressBar.isVisible = true
+                binding.recyclerView.isVisible = true
+                binding.networkDisconnected.root.isVisible = false
+            }
+        }
 
         return binding.root
     }
@@ -55,16 +63,26 @@ class ContributionsFragment : Fragment() {
         mFinanceViewModel.contributionsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     contributionsAdapter.setData(res.data!!)
                 }
-                is NetworkResult.Loading -> mSharedViewModel.showLoading()
+                is NetworkResult.Loading -> showLoadingOrNoData(true)
                 is NetworkResult.Error -> {
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     checkError(res)
                 }
             }
         })
+    }
+
+    private fun showLoadingOrNoData(visibility: Boolean, dataIsEmpty: Boolean = true) {
+        if (visibility) {
+            binding.emptyData = true
+            binding.dataReceived = false
+        } else {
+            binding.emptyData = dataIsEmpty
+            binding.dataReceived = true
+        }
     }
 
     private fun <T> checkError(res: NetworkResult.Error<T>) {
@@ -73,5 +91,10 @@ class ContributionsFragment : Fragment() {
         } else {
             declareErrorByStatus(res.message, res.status, requireContext())
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

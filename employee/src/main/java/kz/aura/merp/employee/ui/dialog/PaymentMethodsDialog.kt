@@ -12,27 +12,12 @@ import kz.aura.merp.employee.model.Result
 import kz.aura.merp.employee.databinding.ResultsAlertDialogBinding
 import kz.aura.merp.employee.view.OnSelectResult
 
-class PaymentMethodsDialog(val paymentMethods: List<Result>) : DialogFragment(), OnSelectResult {
-    private lateinit var listener: PaymentMethodsDialogListener
+class PaymentMethodsDialog(private val listener: PaymentMethodsDialogListener, val paymentMethods: List<Result>) : DialogFragment(), OnSelectResult {
     private val methodsAdapter: ResultsAdapter by lazy { ResultsAdapter(this) }
 
     interface PaymentMethodsDialogListener {
         fun onPaymentMethodsDialogPositiveClick(dialog: DialogFragment, position: Int)
-        fun onPaymentMethodsDialogNegativeClick(dialog: DialogFragment)
-    }
-
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            listener = context as PaymentMethodsDialogListener
-        } catch (e: ClassCastException) {
-            // The activity doesn't implement the interface, throw exception
-            throw ClassCastException((context.toString() +
-                    " must implement PaymentMethodsDialogListener"))
-        }
+        fun onPaymentMethodsDialogNegativeClick(dialog: DialogFragment) {}
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

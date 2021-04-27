@@ -20,7 +20,6 @@ import kz.aura.merp.employee.viewmodel.SharedViewModel
 @AndroidEntryPoint
 class PlanPaymentScheduleFragment : Fragment() {
 
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
     private var _binding: FragmentPlanPaymentScheduleBinding? = null
     private val binding get() = _binding!!
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
@@ -42,19 +41,18 @@ class PlanPaymentScheduleFragment : Fragment() {
     ): View {
         _binding = FragmentPlanPaymentScheduleBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.mSharedViewModel = mSharedViewModel
 
         setupRecyclerView()
 
         mFinanceViewModel.paymentScheduleResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     paymentScheduleAdapter.setData(res.data!!, currency)
                 }
-                is NetworkResult.Loading -> mSharedViewModel.showLoading()
+                is NetworkResult.Loading -> showLoadingOrNoData(true)
                 is NetworkResult.Error -> {
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     checkError(res)
                 }
             }
@@ -79,6 +77,16 @@ class PlanPaymentScheduleFragment : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = paymentScheduleAdapter
         binding.recyclerView.isNestedScrollingEnabled = false
+    }
+
+    private fun showLoadingOrNoData(visibility: Boolean, dataIsEmpty: Boolean = true) {
+        if (visibility) {
+            binding.emptyData = true
+            binding.dataReceived = false
+        } else {
+            binding.emptyData = dataIsEmpty
+            binding.dataReceived = true
+        }
     }
 
     private fun <T> checkError(res: NetworkResult.Error<T>) {
