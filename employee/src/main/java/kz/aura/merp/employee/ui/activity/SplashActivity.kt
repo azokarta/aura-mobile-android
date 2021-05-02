@@ -5,11 +5,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
-import kz.aura.merp.employee.util.clearPreviousAndOpenActivity
-import kz.aura.merp.employee.util.getToken
 import kz.aura.merp.employee.util.LanguageHelper.updateLanguage
 import kz.aura.merp.employee.databinding.ActivitySplashBinding
-import kz.aura.merp.employee.util.PassCodeStatus
+import kz.aura.merp.employee.util.*
 
 class SplashActivity : AppCompatActivity() {
 
