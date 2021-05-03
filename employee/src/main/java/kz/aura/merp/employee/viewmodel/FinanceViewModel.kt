@@ -31,11 +31,13 @@ class FinanceViewModel @Inject constructor(
     val banksResponse: MutableLiveData<NetworkResult<ArrayList<Bank>>> = MutableLiveData()
     val paymentMethodsResponse: MutableLiveData<NetworkResult<ArrayList<PaymentMethod>>> =
         MutableLiveData()
-    val planHistoryResponse: MutableLiveData<NetworkResult<ArrayList<PlanHistoryItem>>> =
-        MutableLiveData()
     val contributionsResponse: MutableLiveData<NetworkResult<ArrayList<Contribution>>> =
         MutableLiveData()
     val callsResponse: MutableLiveData<NetworkResult<ArrayList<Call>>> = MutableLiveData()
+    val assignCollectMoneyResponse: MutableLiveData<NetworkResult<ArrayList<Contribution>>> = MutableLiveData()
+    val callDirectionsResponse: MutableLiveData<NetworkResult<ArrayList<CallDirection>>> = MutableLiveData()
+    val callStatusesResponse: MutableLiveData<NetworkResult<ArrayList<CallStatus>>> = MutableLiveData()
+    val assignCallResponse: MutableLiveData<NetworkResult<ArrayList<Call>>> = MutableLiveData()
 
     fun fetchPlans() = viewModelScope.launch {
         plansResponse.postValue(NetworkResult.Loading())
@@ -191,15 +193,14 @@ class FinanceViewModel @Inject constructor(
     }
 
     fun assignCollectMoney(contractId: Long?, plan: ChangePlanResult) = viewModelScope.launch {
-        updatedPlanResponse.postValue(NetworkResult.Loading())
-        println(plan)
+        assignCollectMoneyResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.assignCollectMoney(contractId, plan)
 
             if (response.isSuccessful) {
-                println(response.body())
+                assignCollectMoneyResponse.postValue(NetworkResult.Success(response.body()!!.data))
             } else {
-                updatedPlanResponse.postValue(
+                assignCollectMoneyResponse.postValue(
                     NetworkResult.Error(
                         receiveErrorMessage(response.errorBody()!!),
                         response.code()
@@ -207,7 +208,7 @@ class FinanceViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            updatedPlanResponse.postValue(NetworkResult.Error(e.message))
+            assignCollectMoneyResponse.postValue(NetworkResult.Error(e.message))
         }
     }
 
@@ -283,6 +284,66 @@ class FinanceViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             contributionsResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    fun fetchCallDirections() = viewModelScope.launch {
+        callDirectionsResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchCallDirections()
+
+            if (response.isSuccessful) {
+                callDirectionsResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                callDirectionsResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            callDirectionsResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    fun fetchCallStatuses() = viewModelScope.launch {
+        callStatusesResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchCallStatuses()
+
+            if (response.isSuccessful) {
+                callStatusesResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                callStatusesResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            callStatusesResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    fun assignCall(assignCall: AssignCall, contractId: Long) = viewModelScope.launch {
+        assignCallResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.assignCall(assignCall, contractId)
+
+            if (response.isSuccessful) {
+                assignCallResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                assignCallResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            assignCallResponse.postValue(NetworkResult.Error(e.message))
         }
     }
 }

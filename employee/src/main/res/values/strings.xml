@@ -144,6 +144,7 @@
     <string name="add_contribution">Добавить взнос</string>
     <string name="select_phone_number">Выберите телефон номер</string>
     <string name="bank">Банк</string>
+    <string name="add_call">Добавить звонок</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>

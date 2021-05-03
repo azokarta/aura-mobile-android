@@ -121,4 +121,7 @@ dependencies {
 
     // MaskEditText
     implementation 'ru.egslava:MaskedEditText:1.0.5'
+
+    // Joda
+    implementation 'net.danlew:android.joda:2.10.9.1'
 }

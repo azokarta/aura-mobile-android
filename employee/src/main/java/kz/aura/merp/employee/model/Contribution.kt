@@ -1,5 +1,9 @@
 package kz.aura.merp.employee.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Contribution(
     val id: Long?,
     val contractId: Long,
@@ -26,4 +30,4 @@ data class Contribution(
     val collectorFirstname: String?,
     val collectorMiddlename: String?,
     val collectorLastname: String?
-)
+): Parcelable

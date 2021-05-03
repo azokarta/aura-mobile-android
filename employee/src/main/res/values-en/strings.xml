@@ -134,4 +134,5 @@
     <string name="add_contribution">Add contribution</string>
     <string name="select_phone_number">Select the phone number</string>
     <string name="bank">Bank</string>
+    <string name="add_call">Add call</string>
 </resources>

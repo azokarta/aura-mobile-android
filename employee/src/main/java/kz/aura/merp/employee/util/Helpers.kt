@@ -170,7 +170,6 @@ fun verifyAvailableNetwork(context: Context): Boolean {
 
 fun receiveErrorMessage(errorBody: ResponseBody): String? {
     val res = Gson().fromJson(errorBody.charStream(), Error::class.java)
-    println(res)
     return res.message
 }
 

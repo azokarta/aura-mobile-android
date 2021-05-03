@@ -1,6 +1,7 @@
 package kz.aura.merp.employee.ui.activity
 
 import android.R.attr.country
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -16,8 +17,10 @@ import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityAddContributionBinding
 import kz.aura.merp.employee.model.ChangePlanResult
+import kz.aura.merp.employee.model.Contribution
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.ProgressDialog
+import kz.aura.merp.employee.util.declareErrorByStatus
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 
@@ -187,6 +190,7 @@ class AddContributionActivity : AppCompatActivity() {
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
+                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })
@@ -201,6 +205,7 @@ class AddContributionActivity : AppCompatActivity() {
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
+                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })
@@ -215,6 +220,25 @@ class AddContributionActivity : AppCompatActivity() {
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
+                    declareErrorByStatus(res.message, res.status, this)
+                }
+            }
+        })
+        mFinanceViewModel.assignCollectMoneyResponse.observe(this, { res ->
+            when (res) {
+                is NetworkResult.Success -> {
+                    progressDialog.hideLoading()
+                    val intent = Intent();
+                    intent.putExtra("contributions", res.data)
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+                is NetworkResult.Loading -> {
+                    progressDialog.showLoading()
+                }
+                is NetworkResult.Error -> {
+                    progressDialog.hideLoading()
+                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })

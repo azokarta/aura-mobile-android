@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.databinding.PhoneNumberRowBinding
+import kz.aura.merp.employee.ui.activity.AddCallActivity
 import kz.aura.merp.employee.util.MobDiffUtil
 
 class PhoneNumbersAdapter : RecyclerView.Adapter<PhoneNumbersAdapter.PhoneNumbersViewHolder>() {
@@ -42,15 +43,8 @@ class PhoneNumbersAdapter : RecyclerView.Adapter<PhoneNumbersAdapter.PhoneNumber
             binding.executePendingBindings()
 
             binding.callBtn.setOnClickListener {
-                dialPhoneNumber(phoneNumber)
-            }
-        }
-
-        private fun dialPhoneNumber(phoneNumber: String?) {
-            val intent = Intent(Intent.ACTION_DIAL).apply {
-                data = Uri.parse("tel:$phoneNumber")
-            }
-            if (intent.resolveActivity(binding.root.context.packageManager) != null) {
+                val intent = Intent(binding.root.context, AddCallActivity::class.java)
+                intent.putExtra("phoneNumber", phoneNumber)
                 binding.root.context.startActivity(intent)
             }
         }

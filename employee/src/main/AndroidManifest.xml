@@ -16,7 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activity.AddCallActivity"></activity>
 
         <service android:name=".util.BackgroundService" />
         <service
@@ -39,6 +38,9 @@
         <activity
             android:name=".ui.activity.ServiceApplicationActivity"
             android:label="@string/service"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.AddCallActivity"
+            android:windowSoftInputMode="adjustResize|stateVisible"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.MasterActivity"

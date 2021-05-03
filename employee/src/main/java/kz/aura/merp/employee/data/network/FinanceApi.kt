@@ -12,7 +12,7 @@ interface FinanceApi {
     suspend fun assignCollectMoney(
         @Path("contractId") contractId: Long?,
         @Body plan: ChangePlanResult
-    ): Response<ResponseHelper<Any>>
+    ): Response<ResponseHelper<ArrayList<Contribution>>>
 
     @POST("/plans/{contractId}/change_business_process_status")
     suspend fun updateBusinessProcessStep(
@@ -52,4 +52,15 @@ interface FinanceApi {
 
     @GET("/plans/{contractId}/collect_moneys")
     suspend fun fetchPlanContributions(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<Contribution>>>
+
+    @POST("/plans/{contractId}/assign_call")
+    suspend fun assignCall(
+        @Body assignCall: AssignCall,
+        @Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<Call>>>
+
+    @GET("/references/call_directions")
+    suspend fun fetchCallDirections(): Response<ResponseHelper<ArrayList<CallDirection>>>
+
+    @GET("/references/call_statuses")
+    suspend fun fetchCallStatuses(): Response<ResponseHelper<ArrayList<CallStatus>>>
 }
