@@ -24,7 +24,6 @@ class CallsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
     private val callsAdapter: CallsAdapter by lazy { CallsAdapter() }
 
     override fun onCreateView(

@@ -38,7 +38,7 @@ class PlanActivity : AppCompatActivity() {
             ContractFragment.newInstance(plan),
             PlanContributionsFragment.newInstance(plan),
             PlanPaymentScheduleFragment.newInstance(plan.contractId!!, plan.contractCurrencyName!!),
-            PlanCallsFragment(),
+            PlanCallsFragment.newInstance(plan.contractId!!),
             PlanScheduledCallsFragment()
         )
 

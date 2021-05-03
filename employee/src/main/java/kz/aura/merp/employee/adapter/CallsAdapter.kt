@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.databinding.CallCardBinding
 import kz.aura.merp.employee.model.Call
 import kz.aura.merp.employee.util.MobDiffUtil
+import kz.aura.merp.employee.view.OnSelectPhoneNumber
 
-class CallsAdapter : RecyclerView.Adapter<CallsAdapter.CallsViewHolder>() {
+class CallsAdapter(val iOnSelectPhoneNumber: OnSelectPhoneNumber? = null) : RecyclerView.Adapter<CallsAdapter.CallsViewHolder>() {
 
     private var dataList = mutableListOf<Call>()
 
@@ -35,10 +36,14 @@ class CallsAdapter : RecyclerView.Adapter<CallsAdapter.CallsViewHolder>() {
         callsDiffResult.dispatchUpdatesTo(this)
     }
 
-    class CallsViewHolder(private val binding: CallCardBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class CallsViewHolder(private val binding: CallCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(call: Call) {
             binding.call = call
             binding.executePendingBindings()
+
+            binding.root.setOnClickListener {
+                iOnSelectPhoneNumber?.selectPhoneNumber(call.phoneNumber)
+            }
         }
     }
 }

@@ -1,16 +1,14 @@
 package kz.aura.merp.employee.adapter
 
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.databinding.PhoneNumberRowBinding
-import kz.aura.merp.employee.ui.activity.AddCallActivity
 import kz.aura.merp.employee.util.MobDiffUtil
+import kz.aura.merp.employee.view.OnSelectPhoneNumber
 
-class PhoneNumbersAdapter : RecyclerView.Adapter<PhoneNumbersAdapter.PhoneNumbersViewHolder>() {
+class PhoneNumbersAdapter(private val iOnSelectPhoneNumber: OnSelectPhoneNumber) : RecyclerView.Adapter<PhoneNumbersAdapter.PhoneNumbersViewHolder>() {
 
     var dataList = emptyList<String?>()
 
@@ -37,15 +35,13 @@ class PhoneNumbersAdapter : RecyclerView.Adapter<PhoneNumbersAdapter.PhoneNumber
         }
     }
 
-    class PhoneNumbersViewHolder(val binding: PhoneNumberRowBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PhoneNumbersViewHolder(val binding: PhoneNumberRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(phoneNumber: String?) {
             binding.phone = phoneNumber
             binding.executePendingBindings()
 
             binding.callBtn.setOnClickListener {
-                val intent = Intent(binding.root.context, AddCallActivity::class.java)
-                intent.putExtra("phoneNumber", phoneNumber)
-                binding.root.context.startActivity(intent)
+                iOnSelectPhoneNumber.selectPhoneNumber(phoneNumber!!)
             }
         }
     }

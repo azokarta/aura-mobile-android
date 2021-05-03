@@ -1,11 +1,14 @@
 package kz.aura.merp.employee.ui.fragment.finance
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,20 +18,22 @@ import kz.aura.merp.employee.adapter.PhoneNumbersAdapter
 import kz.aura.merp.employee.adapter.StepsAdapter
 import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.databinding.FragmentContractBinding
+import kz.aura.merp.employee.ui.activity.AddCallActivity
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.ProgressDialog
 import kz.aura.merp.employee.util.declareErrorByStatus
+import kz.aura.merp.employee.view.OnSelectPhoneNumber
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 @AndroidEntryPoint
-class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListener {
+class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListener, OnSelectPhoneNumber {
 
     private var _binding: FragmentContractBinding? = null
     private val binding get() = _binding!!
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
     private lateinit var plan: Plan
     private val stepsAdapter: StepsAdapter by lazy { StepsAdapter(this) }
-    private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter() }
+    private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
     private lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,6 +146,7 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
 
     companion object {
         private const val ARG_PARAM1 = "plan"
+        private const val requestCode = 1000
 
         @JvmStatic
         fun newInstance(plan: Plan) =
@@ -154,5 +160,23 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun selectPhoneNumber(phoneNumber: String) {
+        val intent = Intent(binding.root.context, AddCallActivity::class.java)
+        intent.putExtra("phoneNumber", phoneNumber)
+        intent.putExtra("callDirectionId", 1)
+        intent.putExtra("contractId", plan.contractId)
+        startActivityForResult(intent, requestCode);
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ContractFragment.requestCode) {
+            if (resultCode == Activity.RESULT_OK) {
+                val calls = data?.getParcelableArrayListExtra<Call>("calls")!!.toCollection(ArrayList<Call>())
+                mFinanceViewModel.callsResponse.postValue(NetworkResult.Success(calls))
+            }
+        }
     }
 }

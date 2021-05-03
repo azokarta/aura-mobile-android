@@ -35,19 +35,16 @@ interface FinanceApi {
     @GET("/references/payment_methods")
     suspend fun fetchPaymentMethods(): Response<ResponseHelper<ArrayList<PaymentMethod>>>
 
-    @GET("/plans/{contractId}/payment_history")
-    suspend fun fetchHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<PlanHistoryItem>>>
-
     @GET("/plans/collect_moneys")
     suspend fun fetchContributions(): Response<ResponseHelper<ArrayList<Contribution>>>
 
     @GET("/plans/calls")
     suspend fun fetchCalls(): Response<ResponseHelper<ArrayList<Call>>>
 
-    @GET("/plans/collect_money_results")
+    @GET("/plans/scheduled_calls")
     suspend fun fetchScheduledCalls(): Response<ResponseHelper<ArrayList<ScheduledCall>>>
 
-    @GET("/plans/{contractId}/calls")
+    @GET("/plans/{contractId}/history/calls")
     suspend fun fetchCallHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<Call>>>
 
     @GET("/plans/{contractId}/collect_moneys")
@@ -63,4 +60,7 @@ interface FinanceApi {
 
     @GET("/references/call_statuses")
     suspend fun fetchCallStatuses(): Response<ResponseHelper<ArrayList<CallStatus>>>
+
+    @GET("/plans/{contractId}/history/scheduled_calls")
+    suspend fun fetchScheduledCallsHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<ScheduledCall>>>
 }

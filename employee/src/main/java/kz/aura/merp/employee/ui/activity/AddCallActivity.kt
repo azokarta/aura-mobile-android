@@ -104,7 +104,6 @@ class AddCallActivity : AppCompatActivity() {
                         it.longitude,
                         it.latitude
                     )
-                    println(assign)
                     mFinanceViewModel.assignCall(assign, contractId)
                 }
         }

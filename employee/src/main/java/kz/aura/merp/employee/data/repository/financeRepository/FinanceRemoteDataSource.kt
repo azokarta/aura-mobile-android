@@ -41,8 +41,8 @@ class FinanceRemoteDataSource @Inject constructor(
         return financeApi.fetchCalls()
     }
 
-    suspend fun fetchCallHistory(): Response<ResponseHelper<ArrayList<Call>>> {
-        return financeApi.fetchCalls()
+    suspend fun fetchCallHistory(contractId: Long): Response<ResponseHelper<ArrayList<Call>>> {
+        return financeApi.fetchCallHistory(contractId)
     }
 
     suspend fun assignCollectMoney(contractId: Long?, plan: ChangePlanResult): Response<ResponseHelper<ArrayList<Contribution>>> {
@@ -75,5 +75,13 @@ class FinanceRemoteDataSource @Inject constructor(
 
     suspend fun assignCall(assignCall: AssignCall, contractId: Long): Response<ResponseHelper<ArrayList<Call>>> {
         return financeApi.assignCall(assignCall, contractId)
+    }
+
+    suspend fun fetchScheduledCalls(): Response<ResponseHelper<ArrayList<ScheduledCall>>> {
+        return financeApi.fetchScheduledCalls()
+    }
+
+    suspend fun fetchScheduledCallsHistory(contractId: Long): Response<ResponseHelper<ArrayList<ScheduledCall>>> {
+        return financeApi.fetchScheduledCallsHistory(contractId)
     }
 }

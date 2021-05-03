@@ -1,5 +1,9 @@
 package kz.aura.merp.employee.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Call(
     val phoneNumber: String,
     val callStatusId: Long,
@@ -15,4 +19,4 @@ data class Call(
     val callerFirstName: String?,
     val callerMiddleName: String?,
     val callerLastName: String?
-)
+): Parcelable

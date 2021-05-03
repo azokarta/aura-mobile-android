@@ -38,6 +38,7 @@ class FinanceViewModel @Inject constructor(
     val callDirectionsResponse: MutableLiveData<NetworkResult<ArrayList<CallDirection>>> = MutableLiveData()
     val callStatusesResponse: MutableLiveData<NetworkResult<ArrayList<CallStatus>>> = MutableLiveData()
     val assignCallResponse: MutableLiveData<NetworkResult<ArrayList<Call>>> = MutableLiveData()
+    val scheduledCallsResponse: MutableLiveData<NetworkResult<ArrayList<ScheduledCall>>> = MutableLiveData()
 
     fun fetchPlans() = viewModelScope.launch {
         plansResponse.postValue(NetworkResult.Loading())
@@ -172,10 +173,10 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchCallHistory() = viewModelScope.launch {
+    fun fetchCallHistory(contractId: Long) = viewModelScope.launch {
         callsResponse.postValue(NetworkResult.Loading())
         try {
-            val response = financeRepository.remote.fetchCallHistory()
+            val response = financeRepository.remote.fetchCallHistory(contractId)
 
             if (response.isSuccessful) {
                 callsResponse.postValue(NetworkResult.Success(response.body()!!.data))
@@ -346,4 +347,45 @@ class FinanceViewModel @Inject constructor(
             assignCallResponse.postValue(NetworkResult.Error(e.message))
         }
     }
+
+    fun fetchScheduledCalls() = viewModelScope.launch {
+        scheduledCallsResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchScheduledCalls()
+
+            if (response.isSuccessful) {
+                scheduledCallsResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                scheduledCallsResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            scheduledCallsResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    fun fetchScheduledCallsHistory(contractId: Long) = viewModelScope.launch {
+        scheduledCallsResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchScheduledCallsHistory(contractId)
+
+            if (response.isSuccessful) {
+                scheduledCallsResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                scheduledCallsResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            scheduledCallsResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
 }
