@@ -1,5 +1,6 @@
 package kz.aura.merp.employee.view
 
 interface OnSelectPhoneNumber {
-    fun selectPhoneNumber(phoneNumber: String)
+    fun incoming(phoneNumber: String)
+    fun outgoing(phoneNumber: String)
 }

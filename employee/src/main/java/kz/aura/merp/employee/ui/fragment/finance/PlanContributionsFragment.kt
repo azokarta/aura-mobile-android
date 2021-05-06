@@ -32,8 +32,6 @@ class PlanContributionsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var plan: Plan
-    private val results = arrayListOf<PlanResult>()
-    private val planResult: ChangePlanResult = ChangePlanResult("", 0, null, 0, 0, 0.0, 0.0, 0)
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
     private lateinit var progressDialog: ProgressDialog
     private val contributionsAdapter: ContributionsAdapter by lazy { ContributionsAdapter() }
@@ -67,7 +65,6 @@ class PlanContributionsFragment : Fragment() {
         }
 
         mFinanceViewModel.fetchPlanContributions(plan.contractId!!)
-        mFinanceViewModel.fetchPlanResults()
 
         // If network is disconnected and user clicks restart, get data again
         binding.networkDisconnected.restart.setOnClickListener {
@@ -89,19 +86,6 @@ class PlanContributionsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        mFinanceViewModel.planResultsResponse.observe(viewLifecycleOwner, { res ->
-            when (res) {
-                is NetworkResult.Success -> {
-                    progressDialog.hideLoading()
-                    results.addAll(res.data!!)
-                }
-                is NetworkResult.Loading -> progressDialog.showLoading()
-                is NetworkResult.Error -> {
-                    progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, requireContext())
-                }
-            }
-        })
         mFinanceViewModel.contributionsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
@@ -140,6 +124,7 @@ class PlanContributionsFragment : Fragment() {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 val contributions = data?.getParcelableArrayListExtra<Contribution>("contributions")!!.toCollection(ArrayList<Contribution>())
+                showLoadingOrNoData(false, contributions.isNullOrEmpty())
                 contributionsAdapter.setData(contributions)
             }
         }

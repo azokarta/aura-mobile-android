@@ -5,22 +5,29 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityPassCodeBinding
-import kz.aura.merp.employee.util.openActivityByPositionId
+import kz.aura.merp.employee.model.Salary
+import kz.aura.merp.employee.util.openActivityByPosition
 import kz.aura.merp.employee.util.PassCodeStatus
+import kz.aura.merp.employee.util.definePosition
+import kz.aura.merp.employee.viewmodel.AuthViewModel
 
+@AndroidEntryPoint
 class PassCodeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPassCodeBinding
 
+    private val mAuthViewModel: AuthViewModel by viewModels()
     private val code = arrayListOf<Int>()
     private lateinit var passCodeStatus: PassCodeStatus
     private val firstCreatedCode = arrayListOf<Int>()
-
+    private var salary: Salary? = null
 
     private lateinit var biometricPrompt: androidx.biometric.BiometricPrompt
     private lateinit var promptInfo: androidx.biometric.BiometricPrompt.PromptInfo
@@ -75,6 +82,12 @@ class PassCodeActivity : AppCompatActivity() {
             binding.fingerprint.setOnClickListener() {
             biometricPrompt.authenticate(promptInfo)
         }
+
+        mAuthViewModel.salary.observe(this, { salary ->
+            this.salary = salary
+        })
+
+        mAuthViewModel.getSalary()
     }
 
     private fun changeText(title: String = "", subTitle: String = "") {
@@ -147,7 +160,8 @@ class PassCodeActivity : AppCompatActivity() {
                         changeText( getString(R.string.passCodeTitle),getString(R.string.passCodeReEnter))
                     } else if (firstCreatedCode == code) {
                         savePassCode()
-                        openActivityByPositionId(this)
+                        val position = definePosition(arrayListOf(salary!!))!!
+                        openActivityByPosition(this, position)
                     } else {
                         paintLinesToBlack()
                         code.clear()
@@ -159,7 +173,8 @@ class PassCodeActivity : AppCompatActivity() {
                     val typedCode = code.joinToString(separator = "")
                     val userCode = receivePassCode()
                     if (userCode == typedCode) {
-                        openActivityByPositionId(this)
+                        val position = definePosition(arrayListOf(salary!!))!!
+                        openActivityByPosition(this, position)
                     } else {
                         changeText(getString(R.string.passCodeReEnter),getString(R.string.passCodeWrong))
                         paintLinesToBlack()
@@ -205,7 +220,8 @@ class PassCodeActivity : AppCompatActivity() {
     }
 
     private fun goToHome() {
-        openActivityByPositionId(this)
+        val position = definePosition(arrayListOf(salary!!))!!
+        openActivityByPosition(this, position)
     }
 
 }

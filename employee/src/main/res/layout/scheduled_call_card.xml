@@ -60,7 +60,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{scheduledCall.callDateTime, default=`20.11.2021`}"
+                android:text="@{scheduledCall.scheduledDateTime, default=`20.11.2021`}"
                 android:layout_toRightOf="@+id/imageView16"
                 android:layout_toEndOf="@+id/imageView16"
                 android:layout_alignTop="@+id/imageView16"

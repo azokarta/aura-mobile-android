@@ -96,13 +96,25 @@
                 android:layout_marginStart="12dp" />
 
             <TextView
+                android:id="@+id/callDirection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{call.callStatusName, default=`DDD`}"
+                android:text="@{call.callDirectionName, default=`Call direction`}"
                 android:textColor="@color/black"
                 android:layout_below="@id/contractNumber"
                 android:layout_alignStart="@+id/contractNumber"
                 android:layout_alignLeft="@+id/contractNumber"
+                android:layout_marginTop="16dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{call.callStatusName, default=`Call status`}"
+                android:textColor="@color/black"
+                android:layout_below="@id/callDirection"
+                android:layout_alignStart="@+id/callDirection"
+                android:layout_alignLeft="@+id/callDirection"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"/>
 

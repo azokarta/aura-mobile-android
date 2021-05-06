@@ -8,7 +8,7 @@ import kz.aura.merp.employee.databinding.PhoneNumberRowBinding
 import kz.aura.merp.employee.util.MobDiffUtil
 import kz.aura.merp.employee.view.OnSelectPhoneNumber
 
-class PhoneNumbersAdapter(private val iOnSelectPhoneNumber: OnSelectPhoneNumber) : RecyclerView.Adapter<PhoneNumbersAdapter.PhoneNumbersViewHolder>() {
+class PhoneNumbersAdapter(private val iOnSelectPhoneNumber: OnSelectPhoneNumber? = null) : RecyclerView.Adapter<PhoneNumbersAdapter.PhoneNumbersViewHolder>() {
 
     var dataList = emptyList<String?>()
 
@@ -40,8 +40,11 @@ class PhoneNumbersAdapter(private val iOnSelectPhoneNumber: OnSelectPhoneNumber)
             binding.phone = phoneNumber
             binding.executePendingBindings()
 
-            binding.callBtn.setOnClickListener {
-                iOnSelectPhoneNumber.selectPhoneNumber(phoneNumber!!)
+            binding.incomingBtn.setOnClickListener {
+                iOnSelectPhoneNumber?.incoming(phoneNumber!!)
+            }
+            binding.outgoingBtn.setOnClickListener {
+                iOnSelectPhoneNumber?.outgoing(phoneNumber!!)
             }
         }
     }

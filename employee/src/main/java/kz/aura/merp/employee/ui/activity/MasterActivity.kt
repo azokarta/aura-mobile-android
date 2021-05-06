@@ -57,7 +57,7 @@ class MasterActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.master)
-        supportActionBar?.subtitle = getStaff(this)?.username
+//        supportActionBar?.subtitle = getStaff(this)?.username
 
         // Turn off screenshot
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)

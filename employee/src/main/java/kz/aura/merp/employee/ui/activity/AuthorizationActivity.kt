@@ -13,6 +13,7 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.viewmodel.AuthViewModel
 import kz.aura.merp.employee.databinding.ActivityAuthorizationBinding
 import kz.aura.merp.employee.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AuthorizationActivity : AppCompatActivity() {
@@ -51,9 +52,9 @@ class AuthorizationActivity : AppCompatActivity() {
                     // Hide loading
                     progressDialog.hideLoading()
                     // Save token
-                    saveDataByKey(this, res.data!!.accessToken, "token")
+                    mAuthViewModel.saveToken(res.data!!.accessToken)
                     // Get info about user
-                    mAuthViewModel.getUserInfo(binding.ccp.fullNumberWithPlus)
+                    mAuthViewModel.getUserInfo()
                 }
                 is NetworkResult.Loading -> {
                     progressDialog.showLoading()
@@ -68,10 +69,10 @@ class AuthorizationActivity : AppCompatActivity() {
             when(res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    if (definePosition(res.data!!.salaryDtoList[0].positionId) == null) {
+                    if (definePosition(res.data!!) == null) {
                         showException(getString(R.string.wrongPosition), this)
                     } else {
-                        saveStaff(this, res.data)
+                        mAuthViewModel.saveSalary(defineCorrectSalary(res.data)!!)
                         // Open PassCode activity for saving code
                         val intent = Intent(this, PassCodeActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK

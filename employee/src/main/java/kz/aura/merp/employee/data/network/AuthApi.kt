@@ -2,7 +2,7 @@ package kz.aura.merp.employee.data.network
 
 import kz.aura.merp.employee.model.AuthResponse
 import kz.aura.merp.employee.model.ResponseHelper
-import kz.aura.merp.employee.model.Staff
+import kz.aura.merp.employee.model.Salary
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -23,8 +23,6 @@ interface AuthApi {
          @Query("password") password: String
     ): Response<AuthResponse>
 
-    @GET("/userinfo")
-    suspend fun getUserInfo(
-        @Query("mobileNumber") mobileNumber: String
-    ): Response<ResponseHelper<Staff>>
+    @GET("/current_user_info/salaries")
+    suspend fun getUserInfo(): Response<ResponseHelper<ArrayList<Salary>>>
 }

@@ -9,7 +9,7 @@ import kz.aura.merp.employee.model.Call
 import kz.aura.merp.employee.util.MobDiffUtil
 import kz.aura.merp.employee.view.OnSelectPhoneNumber
 
-class CallsAdapter(val iOnSelectPhoneNumber: OnSelectPhoneNumber? = null) : RecyclerView.Adapter<CallsAdapter.CallsViewHolder>() {
+class CallsAdapter : RecyclerView.Adapter<CallsAdapter.CallsViewHolder>() {
 
     private var dataList = mutableListOf<Call>()
 
@@ -40,10 +40,6 @@ class CallsAdapter(val iOnSelectPhoneNumber: OnSelectPhoneNumber? = null) : Recy
         fun bind(call: Call) {
             binding.call = call
             binding.executePendingBindings()
-
-            binding.root.setOnClickListener {
-                iOnSelectPhoneNumber?.selectPhoneNumber(call.phoneNumber)
-            }
         }
     }
 }

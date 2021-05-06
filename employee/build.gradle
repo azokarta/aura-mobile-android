@@ -98,7 +98,7 @@ dependencies {
     implementation 'com.todkars:shimmer-recyclerview:0.4.0'
 
     // DataStore
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha08"
+    implementation "androidx.datastore:datastore-preferences:1.0.0-beta01"
 
     //Dagger - Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"

@@ -11,7 +11,6 @@ import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.viewmodel.MasterViewModel
 import kz.aura.merp.employee.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.FragmentServiceApplicationBusinessProcessesBinding
-import kz.aura.merp.employee.util.getStaffId
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.adapter.StepsAdapter
 
@@ -64,7 +63,7 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
             };
 
         // Set master id
-        masterId = getStaffId(this.requireContext())
+//        masterId = getStaffId(this.requireContext())
 
         initStepView()
 

@@ -197,6 +197,20 @@ class MonthlyPlanFragment : Fragment() {
         bottomSheetBinding.search.setEndIconOnClickListener {
             bottomSheetBinding.search.editText?.setText("")
         }
+        bottomSheetBinding.searchByEditText.setOnItemClickListener { _, _, i, _ ->
+            selectedSearchBy = i
+            when (i) {
+                0 -> bottomSheetBinding.search.editText?.inputType = InputType.TYPE_CLASS_NUMBER
+                1 -> bottomSheetBinding.search.editText?.inputType = InputType.TYPE_CLASS_TEXT
+            }
+        }
+        binding.clearFilter.setOnClickListener {
+            selectedSearchBy = 0
+            selectedStatusFilter = 0
+            selectedSortFilter = 0
+            problematic = false
+            filterPlans()
+        }
 
 
         // Initialize search params
@@ -205,20 +219,13 @@ class MonthlyPlanFragment : Fragment() {
         bottomSheetBinding.searchByEditText.setText(items[0])
         bottomSheetBinding.searchByEditText.setAdapter(adapter)
 
-        bottomSheetBinding.searchByEditText.setOnItemClickListener { _, _, i, _ ->
-            selectedSearchBy = i
-            when (i) {
-                0 -> bottomSheetBinding.search.editText?.inputType = InputType.TYPE_CLASS_NUMBER
-                1 -> bottomSheetBinding.search.editText?.inputType = InputType.TYPE_CLASS_TEXT
-            }
-        }
-
         // Init content view
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
 
     }
 
     private fun checkChips() {
+        bottomSheetBinding.problematic.isChecked = problematic
         bottomSheetBinding.statusesChipGroup.check(selectedStatusFilter)
         bottomSheetBinding.sortChipGroup.check(selectedSortFilter)
     }
@@ -289,8 +296,8 @@ class MonthlyPlanFragment : Fragment() {
 
         // Sort by selected parameter
         when (selectedSortFilter) {
-            0 -> filteredPlans.sortBy { it.contractDate }
-            1 -> filteredPlans.sortBy { it.customerLastname + it.customerFirstname + it.customerMiddlename }
+            0 -> filteredPlans.sortByDescending { it.contractDate }
+            1 -> filteredPlans.sortByDescending { it.customerLastname + " " + it.customerFirstname + " " + it.customerMiddlename }
         }
 
         // Filter problematic plans

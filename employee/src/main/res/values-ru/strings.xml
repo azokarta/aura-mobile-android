@@ -79,7 +79,7 @@
     <string name="haveNotAllowedAccessToTheCamera">Вы не разрешили доступ к камеру</string>
     <string name="haveNotAllowedAccessToTheLocation">Вы не разрешили доступ к местоположению</string>
     <string name="networkDisconnected">Интернет-соединение не подключен</string>
-    <string name="description">Примечание</string>
+    <string name="note">Примечание</string>
     <string name="serviceProcessStarted">Сервис процесс начался</string>
     <string name="serviceProcessFinished">Сервис процесс закончился</string>
     <string name="reallyWantToChangeStatusOfPlan">Вы точно хотите изменить статус плана ?</string>
@@ -135,4 +135,10 @@
     <string name="select_phone_number">Выберите телефон номер</string>
     <string name="bank">Банк</string>
     <string name="add_call">Добавить звонок</string>
+    <string name="incoming">Входящий</string>
+    <string name="outgoing">Исходящий</string>
+    <string name="description">Описание</string>
+    <string name="time">Время</string>
+    <string name="clear_filter">Очистить фильтр</string>
+    <string name="calls_for_one_month">Звонки на 1 месяц</string>
 </resources>

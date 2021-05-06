@@ -2,18 +2,18 @@ package kz.aura.merp.employee.ui.activity
 
 import android.content.Intent
 import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.databinding.ActivityAddCallBinding
+import kz.aura.merp.employee.databinding.ActivityOutgoingBinding
 import kz.aura.merp.employee.model.AssignCall
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.ProgressDialog
@@ -21,34 +21,32 @@ import kz.aura.merp.employee.util.declareErrorByStatus
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.Duration
-import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import java.util.*
-
 
 @AndroidEntryPoint
-class AddCallActivity : AppCompatActivity() {
+class OutgoingActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAddCallBinding
+    private lateinit var binding: ActivityOutgoingBinding
 
     private lateinit var progressDialog: ProgressDialog
     private val mFinanceViewModel: FinanceViewModel by viewModels()
     private lateinit var phoneNumber: String
     private var callDirectionId: Long = 1L
-    private var startedTime: DateTime? = null
-    private var duration: Duration? = null
-    private var selectedStatusId: Long = 0L
     private var contractId: Long = 0L
+    private var callStatusId: Long = 0L
+    private var duration: Duration? = null
+    private var startedTime: DateTime? = null
+    private val requestCode = 1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAddCallBinding.inflate(layoutInflater)
+        binding = ActivityOutgoingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         contractId = intent.getLongExtra("contractId", 0L)
         phoneNumber = intent.getStringExtra("phoneNumber")!!
-        callDirectionId = intent.getLongExtra("callDirectionId", 1)
+        callDirectionId = intent.getLongExtra("callDirectionId", 1L)
 
         // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -65,7 +63,7 @@ class AddCallActivity : AppCompatActivity() {
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
-        setupObserver()
+        setupObservers()
 
         mFinanceViewModel.fetchCallStatuses()
 
@@ -74,42 +72,13 @@ class AddCallActivity : AppCompatActivity() {
         binding.save.setOnClickListener(::save)
 
         binding.callStatusText.setOnItemClickListener { _, _, i, _ ->
-            selectedStatusId = mFinanceViewModel.callStatusesResponse.value!!.data!![i].id
+            callStatusId = mFinanceViewModel.callStatusesResponse.value!!.data!![i].id
         }
 
         dialPhoneNumber(phoneNumber)
     }
 
-    private fun dialPhoneNumber(phoneNumber: String?) {
-        val intent = Intent(Intent.ACTION_DIAL).apply {
-            data = Uri.parse("tel:$phoneNumber")
-        }
-        startActivityForResult(intent, 1000)
-    }
-
-    private fun save(view: View) {
-        val description = binding.descriptionText.text.toString()
-        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
-        val formattedDate: String = dtf.print(startedTime)
-        if (selectedStatusId != 0L) {
-            SmartLocation.with(this).location().oneFix()
-                .start {
-                    val assign = AssignCall(
-                        phoneNumber,
-                        selectedStatusId,
-                        callDirectionId,
-                        formattedDate,
-                        duration!!,
-                        description,
-                        it.longitude,
-                        it.latitude
-                    )
-                    mFinanceViewModel.assignCall(assign, contractId)
-                }
-        }
-    }
-
-    private fun setupObserver() {
+    private fun setupObservers() {
         mFinanceViewModel.callStatusesResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
@@ -153,14 +122,46 @@ class AddCallActivity : AppCompatActivity() {
         })
     }
 
+
+    private fun save(view: View) {
+        val typedPhoneNumber = binding.phoneNumberText.text.toString()
+        val description = binding.descriptionText.text.toString()
+        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
+        val currentDate: String = dtf.print(DateTime.now())
+
+        if (phoneNumber.isNotBlank() && callStatusId != 0L) {
+            SmartLocation.with(this).location().oneFix()
+                .start {
+                    val assign = AssignCall(
+                        typedPhoneNumber,
+                        null,
+                        callDirectionId,
+                        currentDate,
+                        duration!!.toString(),
+                        description,
+                        it.longitude,
+                        it.latitude
+                    )
+                    mFinanceViewModel.assignCall(assign, contractId)
+                }
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
     }
 
+    private fun dialPhoneNumber(phoneNumber: String?) {
+        val intent = Intent(Intent.ACTION_DIAL).apply {
+            data = Uri.parse("tel:$phoneNumber")
+        }
+        startActivityForResult(intent, requestCode)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1000) {
+        if (requestCode == this.requestCode) {
             val endTime = DateTime.now()
             duration = Duration(startedTime, endTime)
         }

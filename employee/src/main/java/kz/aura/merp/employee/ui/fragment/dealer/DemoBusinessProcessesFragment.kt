@@ -15,7 +15,6 @@ import kz.aura.merp.employee.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.databinding.FragmentDemoBusinessProcessesBinding
 import kz.aura.merp.employee.util.saveData
 import kz.aura.merp.employee.util.ProgressDialog
-import kz.aura.merp.employee.util.getStaffId
 
 
 private const val bpId = 1
@@ -56,7 +55,7 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
         setHasOptionsMenu(true)
 
         // Set dealer id
-        dealerId = getStaffId(this.requireContext())
+//        dealerId = getStaffId(this.requireContext())
 
         // Observe MutableLiveData
         setObserve()

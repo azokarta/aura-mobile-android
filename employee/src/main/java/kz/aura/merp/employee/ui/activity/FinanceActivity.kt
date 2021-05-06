@@ -3,6 +3,7 @@ package kz.aura.merp.employee.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -11,11 +12,13 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityFinanceBinding
 import kz.aura.merp.employee.ui.fragment.finance.*
 import kz.aura.merp.employee.util.*
+import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 @AndroidEntryPoint
 class FinanceActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFinanceBinding
+    private val mFinanceViewModel: FinanceViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +32,7 @@ class FinanceActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.finAgent)
-        supportActionBar?.subtitle = getStaff(this)?.username
+        supportActionBar?.subtitle = mFinanceViewModel.getStaffUsername()
 
         // Turn off screenshot
         window.setFlags(

@@ -1,7 +1,5 @@
 package kz.aura.merp.employee.ui.fragment.finance
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,27 +9,21 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.CallsAdapter
 import kz.aura.merp.employee.databinding.FragmentPlanCallsBinding
-import kz.aura.merp.employee.model.Call
-import kz.aura.merp.employee.model.Plan
-import kz.aura.merp.employee.ui.activity.AddCallActivity
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.declareErrorByStatus
 import kz.aura.merp.employee.util.verifyAvailableNetwork
-import kz.aura.merp.employee.view.OnSelectPhoneNumber
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
-import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class PlanCallsFragment : Fragment(), OnSelectPhoneNumber {
+class PlanCallsFragment : Fragment() {
 
     private var _binding: FragmentPlanCallsBinding? = null
     private val binding get() = _binding!!
 
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
-    private val callsAdapter: CallsAdapter by lazy { CallsAdapter(this) }
+    private val callsAdapter: CallsAdapter by lazy { CallsAdapter() }
     private var contractId: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +54,17 @@ class PlanCallsFragment : Fragment(), OnSelectPhoneNumber {
                 binding.progressBar.isVisible = true
                 binding.recyclerView.isVisible = true
                 binding.networkDisconnected.root.isVisible = false
+            }
+        }
+
+        binding.toggleButton.addOnButtonCheckedListener { toggleButton, checkedId, isChecked ->
+            when (checkedId) {
+                1 -> {
+                    callsAdapter.setData(mFinanceViewModel.callsResponse.value!!.data!!)
+                }
+                2 -> {
+                    callsAdapter.setData(mFinanceViewModel.callsHistoryResponse.value!!.data!!)
+                }
             }
         }
 
@@ -117,7 +120,6 @@ class PlanCallsFragment : Fragment(), OnSelectPhoneNumber {
 
     companion object {
         private const val ARG_PARAM1 = "contractId"
-        private const val requestCode = 2000
 
         @JvmStatic
         fun newInstance(contractId: Long) =
@@ -126,23 +128,5 @@ class PlanCallsFragment : Fragment(), OnSelectPhoneNumber {
                     putLong(ARG_PARAM1, contractId)
                 }
             }
-    }
-
-    override fun selectPhoneNumber(phoneNumber: String) {
-        val intent = Intent(binding.root.context, AddCallActivity::class.java)
-        intent.putExtra("phoneNumber", phoneNumber)
-        intent.putExtra("callDirectionId", 2)
-        intent.putExtra("contractId", contractId)
-        startActivityForResult(intent, requestCode);
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
-                val calls = data?.getParcelableArrayListExtra<Call>("calls")!!.toCollection(ArrayList<Call>())
-                callsAdapter.setData(calls)
-            }
-        }
     }
 }

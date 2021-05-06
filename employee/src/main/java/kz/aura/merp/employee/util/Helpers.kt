@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.preference.PreferenceManager
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.model.Error
-import kz.aura.merp.employee.model.Staff
+import kz.aura.merp.employee.model.Salary
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kz.aura.merp.employee.databinding.ErrorDialogBinding
@@ -31,6 +31,9 @@ import kz.aura.merp.employee.util.Constants.WE_MOB_TEST_CRM
 import kz.aura.merp.employee.util.Constants.WE_MOB_TEST_FINANCE
 import kz.aura.merp.employee.util.Constants.WE_MOB_TEST_MAIN
 import kz.aura.merp.employee.util.Constants.WE_MOB_TEST_SERVICE
+import kz.aura.merp.employee.util.Constants.crmPositions
+import kz.aura.merp.employee.util.Constants.financePositions
+import kz.aura.merp.employee.util.Constants.servicePositions
 import okhttp3.ResponseBody
 
 fun getToken(context: Context): String? {
@@ -38,10 +41,10 @@ fun getToken(context: Context): String? {
     return pref.getString("token", "")
 }
 
-fun saveStaff(context: Context, staff: Staff) {
+fun saveStaff(context: Context, salary: Salary) {
     val pref = PreferenceManager.getDefaultSharedPreferences(context)
     val editor = pref.edit()
-    val json = Gson().toJson(staff);
+    val json = Gson().toJson(salary);
     editor.putString("staff", json)
     editor.apply()
 }
@@ -90,47 +93,31 @@ fun <T> saveData(data: T, context: Context) {
 fun showToast(context: Context, message: String) =
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 
-fun definePosition(positionId: Int): StaffPosition? {
+fun defineCorrectSalary(salaries: ArrayList<Salary>) = salaries.find {
+    when (it.positionId) {
+        in crmPositions -> true
+        in financePositions -> true
+        in servicePositions -> true
+        else -> {
+            false
+        }
+    }
+}
+
+fun definePosition(salaries: ArrayList<Salary>): StaffPosition? {
+    val foundSalary = defineCorrectSalary(salaries)
+
     // Define position of employee and return constant
-    return when (positionId) {
-        4, 3, 10, 105 -> StaffPosition.DEALER
-        9 -> StaffPosition.FIN_AGENT
-        16, 17 -> StaffPosition.MASTER
+    return when (foundSalary?.positionId) {
+        in crmPositions -> StaffPosition.DEALER
+        in financePositions -> StaffPosition.FIN_AGENT
+        in servicePositions -> StaffPosition.MASTER
         else -> null
     }
 }
 
-fun getStaffId(context: Context): Long {
-    val staff = getStaff(context)
-    return if (staff != null) {
-        // Employees use staff
-        staff.staffId
-    } else {
-        // Chiefs use staff id
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        pref.getLong("staffId", 0L)
-    }
-}
-
-fun getStaff(context: Context): Staff? {
-    val pref = PreferenceManager.getDefaultSharedPreferences(context)
-    val data = pref.getString("staff", "")
-    return if (!data.isNullOrEmpty()) {
-        val obj: Staff = Gson().fromJson<Staff>(data, Staff::class.java)
-        obj
-    } else {
-        null
-    }
-}
-
-fun getPositionId(context: Context): Int? {
-    val staff = getStaff(context)
-    return staff?.let { it.salaryDtoList[0].positionId }
-}
-
-fun openActivityByPositionId(context: Context) {
-    val positionId = getPositionId(context)
-    when (positionId?.let { definePosition(it) }) {
+fun openActivityByPosition(context: Context, position: StaffPosition) {
+    when (position) {
         StaffPosition.DEALER -> clearPreviousAndOpenActivity(context, DealerActivity())
         StaffPosition.MASTER -> clearPreviousAndOpenActivity(context, MasterActivity())
         StaffPosition.FIN_AGENT -> clearPreviousAndOpenActivity(context, FinanceActivity())

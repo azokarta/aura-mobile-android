@@ -5,7 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kz.aura.merp.employee.data.DataStoreRepository
 import kz.aura.merp.employee.data.repository.financeRepository.FinanceRepository
 import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.util.NetworkResult
@@ -17,8 +19,11 @@ import javax.inject.Inject
 @HiltViewModel
 class FinanceViewModel @Inject constructor(
     private val financeRepository: FinanceRepository,
+    private val dataStoreRepository: DataStoreRepository,
     application: Application
 ) : AndroidViewModel(application) {
+
+    private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.IO)
 
     val plansResponse: MutableLiveData<NetworkResult<ArrayList<Plan>>> = MutableLiveData()
     val updatedPlanResponse: MutableLiveData<NetworkResult<Plan>> = MutableLiveData()
@@ -33,14 +38,15 @@ class FinanceViewModel @Inject constructor(
         MutableLiveData()
     val contributionsResponse: MutableLiveData<NetworkResult<ArrayList<Contribution>>> =
         MutableLiveData()
-    val callsResponse: MutableLiveData<NetworkResult<ArrayList<Call>>> = MutableLiveData()
+    val callsHistoryResponse: MutableLiveData<NetworkResult<ArrayList<Call>>> = MutableLiveData()
     val assignCollectMoneyResponse: MutableLiveData<NetworkResult<ArrayList<Contribution>>> = MutableLiveData()
     val callDirectionsResponse: MutableLiveData<NetworkResult<ArrayList<CallDirection>>> = MutableLiveData()
     val callStatusesResponse: MutableLiveData<NetworkResult<ArrayList<CallStatus>>> = MutableLiveData()
     val assignCallResponse: MutableLiveData<NetworkResult<ArrayList<Call>>> = MutableLiveData()
     val scheduledCallsResponse: MutableLiveData<NetworkResult<ArrayList<ScheduledCall>>> = MutableLiveData()
+    val callsResponse: MutableLiveData<NetworkResult<ArrayList<Call>>> = MutableLiveData()
 
-    fun fetchPlans() = viewModelScope.launch {
+    fun fetchPlans() = scope.launch {
         plansResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchPlans()
@@ -61,7 +67,7 @@ class FinanceViewModel @Inject constructor(
     }
 
     fun updateBusinessProcessStep(contractId: Long, businessProcess: ChangeBusinessProcess) =
-        viewModelScope.launch {
+        scope.launch {
             updatedPlanResponse.postValue(NetworkResult.Loading())
             try {
                 val response =
@@ -92,7 +98,7 @@ class FinanceViewModel @Inject constructor(
         } else false
     }
 
-    fun fetchBusinessProcessStatuses() = viewModelScope.launch {
+    fun fetchBusinessProcessStatuses() = scope.launch {
         businessProcessStatusesResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchBusinessProcessStatuses()
@@ -113,7 +119,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchPaymentSchedule(contractId: Long) = viewModelScope.launch {
+    fun fetchPaymentSchedule(contractId: Long) = scope.launch {
         paymentScheduleResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchPaymentSchedule(contractId)
@@ -133,7 +139,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchContributions() = viewModelScope.launch {
+    fun fetchContributions() = scope.launch {
         contributionsResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchContributions()
@@ -153,7 +159,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchCalls() = viewModelScope.launch {
+    fun fetchCalls() = scope.launch {
         callsResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchCalls()
@@ -173,15 +179,15 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchCallHistory(contractId: Long) = viewModelScope.launch {
-        callsResponse.postValue(NetworkResult.Loading())
+    fun fetchCallHistory(contractId: Long) = scope.launch {
+        callsHistoryResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchCallHistory(contractId)
 
             if (response.isSuccessful) {
-                callsResponse.postValue(NetworkResult.Success(response.body()!!.data))
+                callsHistoryResponse.postValue(NetworkResult.Success(response.body()!!.data))
             } else {
-                callsResponse.postValue(
+                callsHistoryResponse.postValue(
                     NetworkResult.Error(
                         receiveErrorMessage(response.errorBody()!!),
                         response.code()
@@ -189,11 +195,11 @@ class FinanceViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            callsResponse.postValue(NetworkResult.Error(e.message))
+            callsHistoryResponse.postValue(NetworkResult.Error(e.message))
         }
     }
 
-    fun assignCollectMoney(contractId: Long?, plan: ChangePlanResult) = viewModelScope.launch {
+    fun assignCollectMoney(contractId: Long?, plan: ChangePlanResult) = scope.launch {
         assignCollectMoneyResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.assignCollectMoney(contractId, plan)
@@ -213,7 +219,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchBanks() = viewModelScope.launch {
+    fun fetchBanks() = scope.launch {
         banksResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchBanks()
@@ -233,7 +239,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchPaymentMethods() = viewModelScope.launch {
+    fun fetchPaymentMethods() = scope.launch {
         paymentMethodsResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchPaymentMethods()
@@ -253,7 +259,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchPlanResults() = viewModelScope.launch {
+    fun fetchPlanResults() = scope.launch {
         planResultsResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchPlanResults()
@@ -268,7 +274,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchPlanContributions(contractId: Long) = viewModelScope.launch {
+    fun fetchPlanContributions(contractId: Long) = scope.launch {
         contributionsResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchPlanContributions(contractId)
@@ -288,7 +294,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchCallDirections() = viewModelScope.launch {
+    fun fetchCallDirections() = scope.launch {
         callDirectionsResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchCallDirections()
@@ -308,7 +314,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchCallStatuses() = viewModelScope.launch {
+    fun fetchCallStatuses() = scope.launch {
         callStatusesResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchCallStatuses()
@@ -328,7 +334,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun assignCall(assignCall: AssignCall, contractId: Long) = viewModelScope.launch {
+    fun assignCall(assignCall: AssignCall, contractId: Long) = scope.launch {
         assignCallResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.assignCall(assignCall, contractId)
@@ -348,7 +354,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchScheduledCalls() = viewModelScope.launch {
+    fun fetchScheduledCalls() = scope.launch {
         scheduledCallsResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchScheduledCalls()
@@ -368,7 +374,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchScheduledCallsHistory(contractId: Long) = viewModelScope.launch {
+    fun fetchScheduledCallsHistory(contractId: Long) = scope.launch {
         scheduledCallsResponse.postValue(NetworkResult.Loading())
         try {
             val response = financeRepository.remote.fetchScheduledCallsHistory(contractId)
@@ -388,4 +394,14 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
+
+    fun getStaffUsername(): String {
+        var username = ""
+        scope.launch {
+            dataStoreRepository.salaryFlow.collect { value ->
+                username = value.username!!
+            }
+        }
+        return username
+    }
 }

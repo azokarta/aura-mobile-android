@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,7 +17,8 @@ import kz.aura.merp.employee.adapter.PhoneNumbersAdapter
 import kz.aura.merp.employee.adapter.StepsAdapter
 import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.databinding.FragmentContractBinding
-import kz.aura.merp.employee.ui.activity.AddCallActivity
+import kz.aura.merp.employee.ui.activity.IncomingActivity
+import kz.aura.merp.employee.ui.activity.OutgoingActivity
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.ProgressDialog
 import kz.aura.merp.employee.util.declareErrorByStatus
@@ -161,15 +161,6 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
         super.onDestroyView()
         _binding = null
     }
-
-    override fun selectPhoneNumber(phoneNumber: String) {
-        val intent = Intent(binding.root.context, AddCallActivity::class.java)
-        intent.putExtra("phoneNumber", phoneNumber)
-        intent.putExtra("callDirectionId", 1)
-        intent.putExtra("contractId", plan.contractId)
-        startActivityForResult(intent, requestCode);
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ContractFragment.requestCode) {
@@ -178,5 +169,21 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
                 mFinanceViewModel.callsResponse.postValue(NetworkResult.Success(calls))
             }
         }
+    }
+
+    override fun incoming(phoneNumber: String) {
+        val intent = Intent(binding.root.context, IncomingActivity::class.java)
+        intent.putExtra("phoneNumber", phoneNumber)
+        intent.putExtra("callDirectionId", 2L)
+        intent.putExtra("contractId", plan.contractId)
+        startActivityForResult(intent, requestCode);
+    }
+
+    override fun outgoing(phoneNumber: String) {
+        val intent = Intent(binding.root.context, OutgoingActivity::class.java)
+        intent.putExtra("phoneNumber", phoneNumber)
+        intent.putExtra("callDirectionId", 1L)
+        intent.putExtra("contractId", plan.contractId)
+        startActivityForResult(intent, requestCode);
     }
 }

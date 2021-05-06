@@ -10,10 +10,8 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivitySettingsBinding
-import kz.aura.merp.employee.util.openActivityByPositionId
-import kz.aura.merp.employee.util.LanguageHelper
+import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.util.LanguageHelper.getLanguage
-import kz.aura.merp.employee.util.clearPreviousAndOpenActivity
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -63,7 +61,8 @@ class SettingsActivity : AppCompatActivity() {
             if (p1.equals("language")) {
                 val lang = p0?.getString(p1, "").toString()
                 LanguageHelper.updateLanguage(this.requireContext(), lang)
-                openActivityByPositionId(this.requireContext())
+//                val position = definePosition(arrayListOf(mAuthViewModel.getSalary()!!))!!
+//                openActivityByPosition(this, position)
             }
         }
 

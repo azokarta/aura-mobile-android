@@ -20,11 +20,9 @@ import kz.aura.merp.employee.viewmodel.SharedViewModel
 import kz.aura.merp.employee.model.Demo
 import kz.aura.merp.employee.viewmodel.DealerViewModel
 import kz.aura.merp.employee.databinding.ActivityDealerBinding
-import kz.aura.merp.employee.util.getStaffId
 import kz.aura.merp.employee.util.LanguageHelper
 import com.google.gson.Gson
 import kz.aura.merp.employee.viewmodel.ReferenceViewModel
-import kz.aura.merp.employee.util.getStaff
 import kz.aura.merp.employee.util.verifyAvailableNetwork
 import kz.aura.merp.employee.util.Permissions
 
@@ -54,12 +52,12 @@ class DealerActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.dealer)
-        supportActionBar?.subtitle = getStaff(this)?.username
+//        supportActionBar?.subtitle = getStaff(this)?.username
 
         Permissions(this, this).enableLocation()
 
         // Get dealer id
-        dealerId = getStaffId(this)
+//        dealerId = getStaffId(this)
 
         // Observe MutableLiveData
         mDealerViewModel.demoList.observe(this, { data ->

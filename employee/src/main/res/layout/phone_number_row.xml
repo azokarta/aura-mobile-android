@@ -9,7 +9,7 @@
             type="String" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -17,31 +17,41 @@
             android:id="@+id/phone_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:text="@{phone, default=`+7707356944`}"
             android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_alignParentLeft="true" />
 
         <View
             android:id="@+id/view2"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/lightGray"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/phone_number"
-            app:layout_constraintTop_toBottomOf="@+id/phone_number" />
+            android:background="@color/lightGray"/>
 
         <ImageButton
-            android:id="@+id/callBtn"
+            android:id="@+id/incomingBtn"
             style="@style/Widget.MaterialComponents.TimePicker.ImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/view2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_baseline_call_24" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_baseline_phone_callback_24"
+            android:tint="@color/colorPrimary" />
+
+        <ImageButton
+            android:id="@+id/outgoingBtn"
+            style="@style/Widget.MaterialComponents.TimePicker.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="6dp"
+            android:layout_marginRight="8dp"
+            android:layout_toStartOf="@+id/incomingBtn"
+            android:layout_toLeftOf="@+id/incomingBtn"
+            android:src="@drawable/ic_baseline_phone_forwarded_24"
+            android:tint="@color/colorPrimary" />
+    </RelativeLayout>
 </layout>

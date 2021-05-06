@@ -106,6 +106,7 @@ class AddContributionActivity : AppCompatActivity() {
     }
 
     private fun save(view: View) {
+        progressDialog.showLoading()
         var reasonDescription: String? = binding.reasonDescriptionText.text.toString()
         var phoneNumber: String? = binding.phoneNumberText.text.toString()
         var amount: String? = binding.amountText.text.toString()
@@ -233,9 +234,7 @@ class AddContributionActivity : AppCompatActivity() {
                     setResult(RESULT_OK, intent);
                     finish();
                 }
-                is NetworkResult.Loading -> {
-                    progressDialog.showLoading()
-                }
+                is NetworkResult.Loading -> {}
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
                     declareErrorByStatus(res.message, res.status, this)
