@@ -199,6 +199,26 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
+    fun fetchCallsForMonth(contractId: Long) = scope.launch {
+        callsResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchCallsForMonth(contractId)
+
+            if (response.isSuccessful) {
+                callsResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                callsResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            callsResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
     fun assignCollectMoney(contractId: Long?, plan: ChangePlanResult) = scope.launch {
         assignCollectMoneyResponse.postValue(NetworkResult.Loading())
         try {

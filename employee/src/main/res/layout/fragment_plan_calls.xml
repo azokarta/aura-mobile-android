@@ -6,101 +6,104 @@
     <data>
 
         <variable
-            name="dataReceived"
-            type="Boolean" />
-
-        <variable
-            name="emptyData"
-            type="Boolean" />
+            name="mSharedViewModel"
+            type="kz.aura.merp.employee.viewmodel.SharedViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         tools:context=".ui.fragment.finance.PlanCallsFragment">
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/toggleButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/button1"
-                style="?attr/materialButtonOutlinedStyle"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/calls_for_one_month" />
+                android:layout_marginTop="8dp"
+                app:checkedButton="@id/button1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:singleSelection="true">
 
-            <Button
-                android:id="@+id/button2"
-                style="?attr/materialButtonOutlinedStyle"
+                <Button
+                    android:id="@+id/button1"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/calls_for_one_month" />
+
+                <Button
+                    android:id="@+id/button2"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/history" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toggleButton" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/history" />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+                android:hideProgressBar="@{mSharedViewModel.dataReceived}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toggleButton" />
+            <ImageView
+                android:id="@+id/noData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:dataReceived="@{mSharedViewModel.dataReceived}"
+                android:emptyDatabase="@{mSharedViewModel.emptyData}"
+                android:src="@drawable/ic_no_data"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.37" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hideProgressBar="@{dataReceived}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/noDataText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:dataReceived="@{mSharedViewModel.dataReceived}"
+                android:emptyDatabase="@{mSharedViewModel.emptyData}"
+                android:text="@string/noData"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/noData"
+                app:layout_constraintStart_toStartOf="@+id/noData"
+                app:layout_constraintTop_toBottomOf="@+id/noData" />
 
-        <ImageView
-            android:id="@+id/noData"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:dataReceived="@{dataReceived}"
-            android:emptyDatabase="@{emptyData}"
-            android:src="@drawable/ic_no_data"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.37" />
+            <include
+                android:id="@+id/networkDisconnected"
+                layout="@layout/network_disconnected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/noDataText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:dataReceived="@{dataReceived}"
-            android:emptyDatabase="@{emptyData}"
-            android:text="@string/noData"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="@+id/noData"
-            app:layout_constraintStart_toStartOf="@+id/noData"
-            app:layout_constraintTop_toBottomOf="@+id/noData" />
-
-        <include
-            android:id="@+id/networkDisconnected"
-            layout="@layout/network_disconnected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </layout>

@@ -5,15 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.activity.IncomingActivity">
+
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/callStatusField"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:id="@+id/phoneNumberField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -21,16 +22,17 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:hint="@string/status"
+        android:hint="@string/phoneNumber"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <AutoCompleteTextView
-            android:id="@+id/callStatusText"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/phoneNumberText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none" />
+            android:inputType="phone" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -38,11 +40,11 @@
         android:id="@+id/descriptionField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:hint="@string/description"
-        app:layout_constraintEnd_toEndOf="@+id/callStatusField"
-        app:layout_constraintStart_toStartOf="@+id/callStatusField"
-        app:layout_constraintTop_toBottomOf="@+id/callStatusField">
+        app:layout_constraintEnd_toEndOf="@+id/phoneNumberField"
+        app:layout_constraintStart_toStartOf="@+id/selectTimeBtn"
+        app:layout_constraintTop_toBottomOf="@+id/selectTimeBtn">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/descriptionText"
@@ -64,4 +66,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/selectTimeBtn"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/time"
+        app:layout_constraintStart_toStartOf="@+id/phoneNumberField"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberField" />
 </androidx.constraintlayout.widget.ConstraintLayout>

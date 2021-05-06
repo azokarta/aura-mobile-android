@@ -72,10 +72,6 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun saveToken(token: String) = scope.launch {
-        dataStoreRepository.saveToken(token)
-    }
-
     fun saveSalary(salary: Salary) = scope.launch {
         dataStoreRepository.saveSalary(salary)
     }

@@ -39,10 +39,10 @@
             android:name=".ui.activity.ServiceApplicationActivity"
             android:label="@string/service"
             android:screenOrientation="fullSensor" />
-<!--        <activity-->
-<!--            android:name=".ui.activity.IncomingActivity"-->
-<!--            android:screenOrientation="portrait"-->
-<!--            android:windowSoftInputMode="adjustResize|stateVisible" />-->
+        <activity
+            android:name=".ui.activity.IncomingActivity"
+            android:screenOrientation="fullSensor"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity android:name=".ui.activity.OutgoingActivity"
             android:screenOrientation="fullSensor"
             android:windowSoftInputMode="adjustResize|stateVisible" />

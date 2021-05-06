@@ -40,6 +40,11 @@ fun getToken(context: Context): String? {
     val pref = PreferenceManager.getDefaultSharedPreferences(context)
     return pref.getString("token", "")
 }
+fun saveToken(context: Context, token: String) = PreferenceManager.getDefaultSharedPreferences(context).apply {
+    edit()
+        .putString("token", token)
+        .apply()
+}
 
 fun saveStaff(context: Context, salary: Salary) {
     val pref = PreferenceManager.getDefaultSharedPreferences(context)

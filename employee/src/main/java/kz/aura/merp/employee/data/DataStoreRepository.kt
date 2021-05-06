@@ -11,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_PASS_CODE
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_POSITION_ID
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_TOKEN
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_USERNAME
@@ -26,6 +27,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         val PREFERENCES_TOKEN = stringPreferencesKey("token")
         val PREFERENCES_POSITION_ID = longPreferencesKey("positionId")
         val PREFERENCES_USERNAME = stringPreferencesKey("username")
+        val PREFERENCES_PASS_CODE = stringPreferencesKey("passcode")
     }
 
     private val dataStore: DataStore<Preferences> = context.dataStore
@@ -41,6 +43,10 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
             val username = preferences[PREFERENCES_USERNAME] ?: ""
             Salary(positionId = positionId, username = username)
         }
+    val passCodeFlow: Flow<String> = dataStore.data
+        .map { preferences ->
+            preferences[PREFERENCES_PASS_CODE] ?: ""
+        }
 
     suspend fun saveToken(token: String) {
         dataStore.edit { settings ->
@@ -52,6 +58,12 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         dataStore.edit { settings ->
             settings[PREFERENCES_POSITION_ID] = salary.positionId!!
             settings[PREFERENCES_USERNAME] = salary.username!!
+        }
+    }
+
+    suspend fun savePassCode(passcode: String) {
+        dataStore.edit { settings ->
+            settings[PREFERENCES_PASS_CODE] = passcode
         }
     }
 

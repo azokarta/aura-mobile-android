@@ -72,11 +72,11 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
 
         binding.save.setOnClickListener(::save)
 
-//        binding.selectTimeBtn.setOnClickListener {
-//            showTimePicker()
-//        }
-//
-//        binding.phoneNumberText.setText(phoneNumber)
+        binding.selectTimeBtn.setOnClickListener {
+            showTimePicker()
+        }
+
+        binding.phoneNumberText.setText(phoneNumber)
     }
 
     private fun save(view: View) {
@@ -85,12 +85,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
         val description = binding.descriptionText.text.toString()
         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
         val currentDate: String = dtf.print(DateTime.now())
-        val typedPhoneNumber =" binding.phoneNumberText.text.toString()"
-        val durationDate = DateTime.now()
-        durationDate.withHourOfDay(selectedHour)
-        durationDate.withMinuteOfHour(selectedMinute)
-        val duration = Duration(durationDate).toString()
-        println(durationDate)
+        val typedPhoneNumber = binding.phoneNumberText.text.toString()
         if (typedPhoneNumber.isNotBlank() && selectedHour != 0 && selectedMinute != 0 && description.isNotBlank()) {
             SmartLocation.with(this).location().oneFix()
                 .start {
@@ -99,7 +94,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
                         null,
                         callDirectionId,
                         currentDate,
-                        duration,
+                        "PT${selectedHour}H${selectedMinute}M",
                         description,
                         it.longitude,
                         it.latitude
@@ -119,8 +114,8 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
     override fun onPositiveButtonClick(hour: Int, minute: Int) {
         selectedHour = hour
         selectedMinute = minute
-        val time = "$hour, $minute"
-//        binding.selectTimeBtn.text = time
+        val time = "$hour h, $minute m"
+        binding.selectTimeBtn.text = time
     }
 
     private fun setupObservers() {

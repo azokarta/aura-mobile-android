@@ -44,6 +44,10 @@ class FinanceRemoteDataSource @Inject constructor(
         return financeApi.fetchCallHistory(contractId)
     }
 
+    suspend fun fetchCallsForMonth(contractId: Long): Response<ResponseHelper<ArrayList<Call>>> {
+        return financeApi.fetchCallsForMonth(contractId)
+    }
+
     suspend fun assignCollectMoney(contractId: Long?, plan: ChangePlanResult): Response<ResponseHelper<ArrayList<Contribution>>> {
         return financeApi.assignCollectMoney(contractId, plan)
     }

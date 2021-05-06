@@ -1,6 +1,7 @@
 package kz.aura.merp.employee.util
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.collect
 import kz.aura.merp.employee.Application
@@ -16,25 +17,11 @@ class Interceptor @Inject constructor(
 ) : Interceptor {
     @Volatile private var host: HttpUrl? = null
     private var link: Link = Link.MAIN
-    private var token: String = ""
-
-    init {
-
-    }
-
-
 
     fun setHost(link: Link) {
         this.link = link
         this.host = HttpUrl.parse(defineUri(link))
     }
-
-    suspend fun setToken(token: String) {
-        (context.applicationContext as Application).dataStoreRepository.tokenFlow.collect { value ->
-
-        }
-    }
-
 
     override fun intercept(chain: Interceptor.Chain): Response {
         var newUrl: HttpUrl = chain.request().url()
@@ -54,7 +41,7 @@ class Interceptor @Inject constructor(
             .addHeader("Cache-Control", "public, max-age=60")
             .addHeader("Accept-Language", LanguageHelper.getLanguage(context))
         newRequest = if (link != Link.AUTH) {
-            newRequest.addHeader("Authorization", "Bearer $token")
+            newRequest.addHeader("Authorization", "Bearer ${getToken(context)}")
         } else {
             newRequest.addHeader("Authorization", "Basic V0VNT0I6d2Vtb2I=")
         }

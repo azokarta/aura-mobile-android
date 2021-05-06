@@ -28,10 +28,10 @@ class SplashActivity : AppCompatActivity() {
         // Turn off screenshot
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
-        mAuthViewModel.token.observe(this, { token ->
+        mAuthViewModel.salary.observe(this, { salary ->
             binding.logo.alpha = 0f
             binding.logo.animate().setDuration(1500).alpha(1f).withEndAction {
-                if (token.isNotBlank()) {
+                if (getToken(this)?.isNotBlank() == true && salary != null) {
                     val intent = Intent(this, PassCodeActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     intent.putExtra("passCodeStatus", PassCodeStatus.VERIFY)
@@ -42,7 +42,7 @@ class SplashActivity : AppCompatActivity() {
             }
         })
 
-        mAuthViewModel.getToken()
+        mAuthViewModel.getSalary()
     }
 
 }

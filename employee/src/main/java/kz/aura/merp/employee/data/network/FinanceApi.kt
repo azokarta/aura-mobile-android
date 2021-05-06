@@ -63,4 +63,7 @@ interface FinanceApi {
 
     @GET("/plans/{contractId}/history/scheduled_calls")
     suspend fun fetchScheduledCallsHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<ScheduledCall>>>
+
+    @GET("/plans/{contractId}/calls")
+    suspend fun fetchCallsForMonth(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<Call>>>
 }

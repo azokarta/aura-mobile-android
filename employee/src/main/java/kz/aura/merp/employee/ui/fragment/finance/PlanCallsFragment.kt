@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.adapter.CallsAdapter
@@ -15,6 +17,7 @@ import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.declareErrorByStatus
 import kz.aura.merp.employee.util.verifyAvailableNetwork
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
 class PlanCallsFragment : Fragment() {
@@ -23,11 +26,13 @@ class PlanCallsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
+    private lateinit var mSharedViewModel: SharedViewModel
     private val callsAdapter: CallsAdapter by lazy { CallsAdapter() }
     private var contractId: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mSharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         arguments?.let {
             contractId = it.getLong(ARG_PARAM1)
         }
@@ -39,13 +44,14 @@ class PlanCallsFragment : Fragment() {
     ): View {
         _binding = FragmentPlanCallsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+        binding.mSharedViewModel = mSharedViewModel
 
         setupRecyclerView()
 
         setupObservers()
 
         // Fetch calls
-        mFinanceViewModel.fetchCallHistory(contractId)
+        mFinanceViewModel.fetchCallsForMonth(contractId)
 
         // If network is disconnected and user clicks restart, get data again
         binding.networkDisconnected.restart.setOnClickListener {
@@ -59,11 +65,15 @@ class PlanCallsFragment : Fragment() {
 
         binding.toggleButton.addOnButtonCheckedListener { toggleButton, checkedId, isChecked ->
             when (checkedId) {
-                1 -> {
+                toggleButton[0].id -> {
                     callsAdapter.setData(mFinanceViewModel.callsResponse.value!!.data!!)
                 }
-                2 -> {
-                    callsAdapter.setData(mFinanceViewModel.callsHistoryResponse.value!!.data!!)
+                toggleButton[1].id -> {
+                    if (mFinanceViewModel.callsHistoryResponse.value == null) {
+                        mFinanceViewModel.fetchCallHistory(contractId)
+                    } else {
+                        callsAdapter.setData(mFinanceViewModel.callsHistoryResponse.value!!.data!!)
+                    }
                 }
             }
         }
@@ -81,28 +91,33 @@ class PlanCallsFragment : Fragment() {
         mFinanceViewModel.callsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
+                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
                     callsAdapter.setData(res.data!!)
                 }
                 is NetworkResult.Loading -> {
-                    showLoadingOrNoData(true)
+                    mSharedViewModel.showLoading()
                 }
                 is NetworkResult.Error -> {
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
+                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
                     checkError(res)
                 }
             }
         })
-    }
-
-    private fun showLoadingOrNoData(visibility: Boolean, dataIsEmpty: Boolean = true) {
-        if (visibility) {
-            binding.emptyData = true
-            binding.dataReceived = false
-        } else {
-            binding.emptyData = dataIsEmpty
-            binding.dataReceived = true
-        }
+        mFinanceViewModel.callsHistoryResponse.observe(viewLifecycleOwner, { res ->
+            when (res) {
+                is NetworkResult.Success -> {
+                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    callsAdapter.setData(res.data!!)
+                }
+                is NetworkResult.Loading -> {
+                    mSharedViewModel.showLoading()
+                }
+                is NetworkResult.Error -> {
+                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    checkError(res)
+                }
+            }
+        })
     }
 
     private fun <T> checkError(res: NetworkResult.Error<T>) {

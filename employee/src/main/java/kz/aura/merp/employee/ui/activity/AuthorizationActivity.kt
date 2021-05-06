@@ -52,7 +52,7 @@ class AuthorizationActivity : AppCompatActivity() {
                     // Hide loading
                     progressDialog.hideLoading()
                     // Save token
-                    mAuthViewModel.saveToken(res.data!!.accessToken)
+                    saveToken(this, res.data!!.accessToken)
                     // Get info about user
                     mAuthViewModel.getUserInfo()
                 }
