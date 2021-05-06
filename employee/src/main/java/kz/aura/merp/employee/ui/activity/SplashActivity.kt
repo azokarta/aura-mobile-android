@@ -11,6 +11,7 @@ import kz.aura.merp.employee.util.LanguageHelper.updateLanguage
 import kz.aura.merp.employee.databinding.ActivitySplashBinding
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.AuthViewModel
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {

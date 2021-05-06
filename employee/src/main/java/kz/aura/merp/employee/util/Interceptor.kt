@@ -2,6 +2,8 @@ package kz.aura.merp.employee.util
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.collect
+import kz.aura.merp.employee.Application
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -16,14 +18,23 @@ class Interceptor @Inject constructor(
     private var link: Link = Link.MAIN
     private var token: String = ""
 
+    init {
+
+    }
+
+
+
     fun setHost(link: Link) {
         this.link = link
         this.host = HttpUrl.parse(defineUri(link))
     }
 
-    fun setToken(token: String) {
-        this.token = token
+    suspend fun setToken(token: String) {
+        (context.applicationContext as Application).dataStoreRepository.tokenFlow.collect { value ->
+
+        }
     }
+
 
     override fun intercept(chain: Interceptor.Chain): Response {
         var newUrl: HttpUrl = chain.request().url()

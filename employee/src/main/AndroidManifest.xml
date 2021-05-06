@@ -16,7 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activity.OutgoingActivity"></activity>
 
         <service android:name=".util.BackgroundService" />
         <service
@@ -29,7 +28,7 @@
 
         <activity
             android:name=".ui.activity.SplashActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,51 +38,54 @@
         <activity
             android:name=".ui.activity.ServiceApplicationActivity"
             android:label="@string/service"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.activity.IncomingActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor" />
+<!--        <activity-->
+<!--            android:name=".ui.activity.IncomingActivity"-->
+<!--            android:screenOrientation="portrait"-->
+<!--            android:windowSoftInputMode="adjustResize|stateVisible" />-->
+        <activity android:name=".ui.activity.OutgoingActivity"
+            android:screenOrientation="fullSensor"
             android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name=".ui.activity.MasterActivity"
             android:label="@string/master"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.activity.PassCodeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.activity.AddContributionActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name=".ui.activity.FinanceActivity"
             android:label="@string/finAgent"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.activity.DealerActivity"
             android:label="@string/dealer"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.activity.DemoActivity"
             android:label="@string/demo"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.activity.PlanActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.activity.AuthorizationActivity"
             android:configChanges="locale"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible" />
+            android:screenOrientation="fullSensor"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name=".ui.activity.MapActivity"
             android:label="@string/map"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.activity.SettingsActivity"
             android:configChanges="locale"
             android:label="@string/settings"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
     </application>
 
 </manifest>

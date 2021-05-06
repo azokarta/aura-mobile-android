@@ -72,11 +72,11 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
 
         binding.save.setOnClickListener(::save)
 
-        binding.selectTimeBtn.setOnClickListener {
-            showTimePicker()
-        }
-
-        binding.phoneNumberText.setText(phoneNumber)
+//        binding.selectTimeBtn.setOnClickListener {
+//            showTimePicker()
+//        }
+//
+//        binding.phoneNumberText.setText(phoneNumber)
     }
 
     private fun save(view: View) {
@@ -85,7 +85,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
         val description = binding.descriptionText.text.toString()
         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
         val currentDate: String = dtf.print(DateTime.now())
-        val typedPhoneNumber = binding.phoneNumberText.text.toString()
+        val typedPhoneNumber =" binding.phoneNumberText.text.toString()"
         val durationDate = DateTime.now()
         durationDate.withHourOfDay(selectedHour)
         durationDate.withMinuteOfHour(selectedMinute)
@@ -120,7 +120,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
         selectedHour = hour
         selectedMinute = minute
         val time = "$hour, $minute"
-        binding.selectTimeBtn.text = time
+//        binding.selectTimeBtn.text = time
     }
 
     private fun setupObservers() {

@@ -1,10 +1,6 @@
 package kz.aura.merp.employee.data.repository.financeRepository
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kz.aura.merp.employee.data.network.FinanceApi
-import kz.aura.merp.employee.di.NetworkModule
 import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.util.Interceptor
 import kz.aura.merp.employee.util.Link
@@ -15,8 +11,6 @@ class FinanceRemoteDataSource @Inject constructor(
     private val financeApi: FinanceApi,
     interceptor: Interceptor
 ) {
-
-    private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.IO)
 
     init {
         interceptor.setHost(Link.FINANCE)
