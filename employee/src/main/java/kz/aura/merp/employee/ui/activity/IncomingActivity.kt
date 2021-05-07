@@ -39,7 +39,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
     private lateinit var progressDialog: ProgressDialog
     private val mFinanceViewModel: FinanceViewModel by viewModels()
     private lateinit var phoneNumber: String
-    private var callDirectionId: Long = 1L
+    private var callDirectionId: Long = 2L
     private var contractId: Long = 0L
     private var selectedHour: Int = 0
     private var selectedMinute: Int = 0
@@ -51,13 +51,12 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
 
         contractId = intent.getLongExtra("contractId", 0L)
         phoneNumber = intent.getStringExtra("phoneNumber")!!
-        callDirectionId = intent.getLongExtra("callDirectionId", 2L)
 
         // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.add_call)
+        supportActionBar?.title = getString(R.string.add_incoming_call)
 
         // Turn off screenshot
         window.setFlags(
@@ -107,14 +106,14 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
     }
 
     private fun showTimePicker() {
-        val timePicker = TimePickerFragment(this)
+        val timePicker = TimePickerFragment(this, selectedHour, selectedMinute)
         timePicker.show(supportFragmentManager)
     }
 
     override fun onPositiveButtonClick(hour: Int, minute: Int) {
         selectedHour = hour
         selectedMinute = minute
-        val time = "$hour h, $minute m"
+        val time = "$hour:$minute"
         binding.selectTimeBtn.text = time
     }
 

@@ -2,25 +2,23 @@ package kz.aura.merp.employee.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.longPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_PASS_CODE
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_POSITION_ID
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_TOKEN
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_USERNAME
 import kz.aura.merp.employee.model.Salary
+import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
-@ViewModelScoped
+@Singleton
 class DataStoreRepository @Inject constructor(@ApplicationContext private val context: Context) {
 
     private object PreferenceKeys {
@@ -30,6 +28,8 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         val PREFERENCES_PASS_CODE = stringPreferencesKey("passcode")
     }
 
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
     private val dataStore: DataStore<Preferences> = context.dataStore
 
     val tokenFlow: Flow<String> = dataStore.data
@@ -38,6 +38,13 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         }
 
     val salaryFlow: Flow<Salary> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
         .map { preferences ->
             val positionId = preferences[PREFERENCES_POSITION_ID] ?: 0
             val username = preferences[PREFERENCES_USERNAME] ?: ""

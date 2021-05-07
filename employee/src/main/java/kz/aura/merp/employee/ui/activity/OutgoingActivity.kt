@@ -46,13 +46,12 @@ class OutgoingActivity : AppCompatActivity() {
 
         contractId = intent.getLongExtra("contractId", 0L)
         phoneNumber = intent.getStringExtra("phoneNumber")!!
-        callDirectionId = intent.getLongExtra("callDirectionId", 1L)
 
         // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.add_call)
+        supportActionBar?.title = getString(R.string.add_outgoing_call)
 
         // Turn off screenshot
         window.setFlags(
@@ -63,10 +62,6 @@ class OutgoingActivity : AppCompatActivity() {
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
-        setupObservers()
-
-        mFinanceViewModel.fetchCallStatuses()
-
         startedTime = DateTime.now()
 
         binding.save.setOnClickListener(::save)
@@ -74,6 +69,12 @@ class OutgoingActivity : AppCompatActivity() {
         binding.callStatusText.setOnItemClickListener { _, _, i, _ ->
             callStatusId = mFinanceViewModel.callStatusesResponse.value!!.data!![i].id
         }
+
+        binding.phoneNumberText.setText(phoneNumber)
+
+        setupObservers()
+
+        mFinanceViewModel.fetchCallStatuses()
 
         dialPhoneNumber(phoneNumber)
     }

@@ -174,7 +174,6 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
     override fun incoming(phoneNumber: String) {
         val intent = Intent(binding.root.context, IncomingActivity::class.java)
         intent.putExtra("phoneNumber", phoneNumber)
-        intent.putExtra("callDirectionId", 2L)
         intent.putExtra("contractId", plan.contractId)
         startActivityForResult(intent, requestCode);
     }
@@ -182,7 +181,6 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
     override fun outgoing(phoneNumber: String) {
         val intent = Intent(binding.root.context, OutgoingActivity::class.java)
         intent.putExtra("phoneNumber", phoneNumber)
-        intent.putExtra("callDirectionId", 1L)
         intent.putExtra("contractId", plan.contractId)
         startActivityForResult(intent, requestCode);
     }

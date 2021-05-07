@@ -7,6 +7,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -18,9 +19,7 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityAddContributionBinding
 import kz.aura.merp.employee.model.ChangePlanResult
 import kz.aura.merp.employee.model.Contribution
-import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.util.ProgressDialog
-import kz.aura.merp.employee.util.declareErrorByStatus
+import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 
@@ -41,6 +40,7 @@ class AddContributionActivity : AppCompatActivity() {
     private var resultId: Long? = null
     private var paymentMethodId: Long? = null
     private var bankId: Long? = null
+    private var businessProcessId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,8 +59,9 @@ class AddContributionActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE
         )
 
-        contractId = intent.getLongExtra("contractId", 0)
+        contractId = intent.getLongExtra("contractId", 0L)
         clientPhoneNumbers = intent.getStringArrayExtra("clientPhoneNumbers")!!
+        businessProcessId = intent.getLongExtra("businessProcessId", 0L)
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
@@ -73,12 +74,13 @@ class AddContributionActivity : AppCompatActivity() {
 
         binding.resultText.setOnItemClickListener { _, _, i, _ ->
             resultId = mFinanceViewModel.planResultsResponse.value!!.data!![i].id
+            clearChilds(Field.RESULT)
             when (i) {
                 0, 2, 3 -> {
-                    visibleField(reasonDescriptionField)
+                    visibleField(Field.REASON_DESCRIPTION)
                 }
                 1 -> {
-                    visibleField(paymentField)
+                    visibleField(Field.PAYMENT)
                     fetchPaymentMethods()
                 }
             }
@@ -86,46 +88,43 @@ class AddContributionActivity : AppCompatActivity() {
 
         binding.paymentMethodText.setOnItemClickListener { _, _, i, _ ->
             paymentMethodId = mFinanceViewModel.paymentMethodsResponse.value!!.data!![i].id
+            clearChilds(Field.PAYMENT)
             when (i) {
                 0, 2 -> {
-                    visibleField(bankField)
+                    visibleField(Field.BANK)
                     fetchBanks()
                 }
                 1, 3 -> {
-                    visibleField(amountField)
+                    visibleField(Field.AMOUNT)
                 }
             }
         }
 
         binding.bankText.setOnItemClickListener { _, _, i, _ ->
             bankId = mFinanceViewModel.banksResponse.value!!.data!![i].id
-            visibleField(amountField)
+            visibleField(Field.AMOUNT)
+            clearChilds(Field.BANK)
         }
 
-        binding.save.setOnClickListener(::save)
+        binding.save.setOnClickListener {
+            hideKeyboard(this)
+            if (paymentMethodId == 1L && businessProcessId != 2L) {
+                showException(getString(R.string.have_not_marked_the_status), this)
+            } else {
+                if (validation()) {
+                    save()
+                } else {
+                    Toast.makeText(this, getString(R.string.fill_out_all_fields), Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
-    private fun save(view: View) {
+    private fun save() {
         progressDialog.showLoading()
-        var reasonDescription: String? = binding.reasonDescriptionText.text.toString()
-        var phoneNumber: String? = binding.phoneNumberText.text.toString()
-        var amount: String? = binding.amountText.text.toString()
-        when (resultId) {
-            1L, 3L, 4L -> {
-                paymentMethodId = null
-                bankId = null
-                amount = null
-                phoneNumber = null
-            }
-            else -> {
-                reasonDescription = null
-            }
-        }
-        when (paymentMethodId) {
-            1L, 4L -> {
-                bankId = null
-            }
-        }
+        val reasonDescription: String? = if (binding.reasonDescriptionText.text.toString().isBlank()) null else binding.reasonDescriptionText.text.toString()
+        val phoneNumber: String = binding.phoneNumberText.text.toString()
+        val amount: String? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString()
 
         SmartLocation.with(this).location().oneFix()
             .start {
@@ -146,26 +145,21 @@ class AddContributionActivity : AppCompatActivity() {
 
     }
 
-//    private fun define(phoneNumber: String) {
-//        if (!phoneNumber.replace(" ", "")
-//                .contains(country.getPhoneCode())
-//        ) throw RuntimeException("Код телефона неправильно указан")
-//
-//        if (!deleteChars(phoneNumber).matches("[0-9]+")) throw RuntimeException("Номер телефона содержит недопустимое знаки")
-//
-//        if (deleteChars(phoneNumber).length !== deleteChars(country.getTelPattern()).length() + deleteChars(
-//                country.getPhoneCode()
-//            ).length()
-//        ) throw RuntimeException("Длина номера телефона неправильно")
-//    }
-//
-//    private fun deleteChars(str: String): String {
-//        return str.replace("+", "")
-//            .replace("-", "")
-//            .replace("(", "")
-//            .replace(")", "")
-//            .replace(" ", "")
-//    }
+    private fun validation(): Boolean {
+        val phoneNumber: String = binding.phoneNumberText.text.toString()
+        val amount: String = binding.amountText.text.toString()
+        return if (resultId == 2L) {
+            when (paymentMethodId) {
+                3L, 2L -> {
+                    !(bankId == null || amount.isBlank() || phoneNumber.isBlank())
+                }
+                1L, 4L -> {
+                    !(amount.isBlank() || phoneNumber.isBlank())
+                }
+                else -> false
+            }
+        } else resultId != null
+    }
 
     private fun fetchPaymentMethods() {
         if (mFinanceViewModel.paymentMethodsResponse.value?.data.isNullOrEmpty()) {
@@ -250,30 +244,30 @@ class AddContributionActivity : AppCompatActivity() {
         }
     }
 
-    private fun visibleField(field: String) {
+    private fun visibleField(field: Field) {
         when (field) {
-            "REASON_DESCRIPTION" -> {
+            Field.REASON_DESCRIPTION -> {
                 binding.reasonDescriptionField.isVisible = true
                 binding.paymentMethodField.isVisible = false
                 binding.amountField.isVisible = false
                 binding.bankField.isVisible = false
                 binding.phoneNumberField.isVisible = false
             }
-            "PAYMENT" -> {
+            Field.PAYMENT -> {
                 binding.paymentMethodField.isVisible = true
                 binding.amountField.isVisible = false
                 binding.bankField.isVisible = false
                 binding.reasonDescriptionField.isVisible = false
                 binding.phoneNumberField.isVisible = false
             }
-            "AMOUNT" -> {
+            Field.AMOUNT -> {
                 binding.amountField.isVisible = true
                 binding.paymentMethodField.isVisible = true
                 binding.reasonDescriptionField.isVisible = false
                 binding.phoneNumberField.isVisible = true
                 binding.bankField.isVisible = !(paymentMethodId == 1L || paymentMethodId == 4L)
             }
-            "BANK" -> {
+            Field.BANK -> {
                 binding.bankField.isVisible = true
                 binding.paymentMethodField.isVisible = true
                 binding.reasonDescriptionField.isVisible = false
@@ -281,6 +275,36 @@ class AddContributionActivity : AppCompatActivity() {
                 binding.phoneNumberField.isVisible = false
             }
         }
+    }
+
+    private fun clearChilds(parent: Field) {
+        when (parent) {
+            Field.RESULT -> {
+                binding.paymentMethodText.setText("")
+                binding.bankText.setText("")
+                binding.amountText.setText("")
+                binding.phoneNumberText.setText("")
+                binding.reasonDescriptionText.setText("")
+
+                paymentMethodId = null
+                bankId = null
+            }
+            Field.PAYMENT -> {
+                binding.bankText.setText("")
+                binding.amountText.setText("")
+                binding.phoneNumberText.setText("")
+
+                bankId = null
+            }
+            Field.BANK -> {
+                binding.amountText.setText("")
+                binding.phoneNumberText.setText("")
+            }
+        }
+    }
+
+    enum class Field {
+        REASON_DESCRIPTION, PAYMENT, AMOUNT, BANK, RESULT
     }
 
     override fun onSupportNavigateUp(): Boolean {

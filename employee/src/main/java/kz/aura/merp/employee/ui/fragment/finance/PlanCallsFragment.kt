@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.CallsAdapter
 import kz.aura.merp.employee.databinding.FragmentPlanCallsBinding
 import kz.aura.merp.employee.util.NetworkResult
@@ -63,16 +64,22 @@ class PlanCallsFragment : Fragment() {
             }
         }
 
-        binding.toggleButton.addOnButtonCheckedListener { toggleButton, checkedId, isChecked ->
-            when (checkedId) {
-                toggleButton[0].id -> {
-                    callsAdapter.setData(mFinanceViewModel.callsResponse.value!!.data!!)
-                }
-                toggleButton[1].id -> {
-                    if (mFinanceViewModel.callsHistoryResponse.value == null) {
-                        mFinanceViewModel.fetchCallHistory(contractId)
-                    } else {
-                        callsAdapter.setData(mFinanceViewModel.callsHistoryResponse.value!!.data!!)
+        binding.toggleButton.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            val callsHistory = mFinanceViewModel.callsHistoryResponse.value
+            val calls = mFinanceViewModel.callsResponse.value
+            if (isChecked) {
+                when (checkedId) {
+                    binding.callsForMonthBtn.id -> {
+                        if (calls == null) {
+                            callsAdapter.setData(mFinanceViewModel.callsResponse.value!!.data!!)
+                        }
+                    }
+                    binding.callsHistoryBtn.id -> {
+                        if (callsHistory == null) {
+                            mFinanceViewModel.fetchCallHistory(contractId)
+                        } else {
+                            callsAdapter.setData(mFinanceViewModel.callsHistoryResponse.value!!.data!!)
+                        }
                     }
                 }
             }
@@ -91,10 +98,12 @@ class PlanCallsFragment : Fragment() {
         mFinanceViewModel.callsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
+                    enableToggleButton(true)
                     mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
                     callsAdapter.setData(res.data!!)
                 }
                 is NetworkResult.Loading -> {
+                    enableToggleButton(false)
                     mSharedViewModel.showLoading()
                 }
                 is NetworkResult.Error -> {
@@ -106,10 +115,12 @@ class PlanCallsFragment : Fragment() {
         mFinanceViewModel.callsHistoryResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
+                    enableToggleButton(true)
                     mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
                     callsAdapter.setData(res.data!!)
                 }
                 is NetworkResult.Loading -> {
+                    enableToggleButton(false)
                     mSharedViewModel.showLoading()
                 }
                 is NetworkResult.Error -> {
@@ -118,6 +129,10 @@ class PlanCallsFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun enableToggleButton(bool: Boolean) {
+        binding.toggleButton.isVisible = bool
     }
 
     private fun <T> checkError(res: NetworkResult.Error<T>) {

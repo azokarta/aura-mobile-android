@@ -1,8 +1,10 @@
 package kz.aura.merp.employee.ui.activity
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.*
+import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -32,7 +34,6 @@ class FinanceActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.finAgent)
-        supportActionBar?.subtitle = mFinanceViewModel.getStaffUsername()
 
         // Turn off screenshot
         window.setFlags(
@@ -60,6 +61,10 @@ class FinanceActivity : AppCompatActivity() {
             }
         }.attach()
 
+        mFinanceViewModel.staffUsername.observe(this, { username -> supportActionBar?.subtitle = username })
+
+        mFinanceViewModel.getStaffUsername()
+
 //        Intent(this, BackgroundService::class.java).also { intent ->
 //            intent.putExtra("link", Link.FINANCE)
 //            startService(intent)
@@ -82,5 +87,22 @@ class FinanceActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val v: View? = getCurrentFocus()
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm: InputMethodManager =
+                        getSystemService<Any>(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 }

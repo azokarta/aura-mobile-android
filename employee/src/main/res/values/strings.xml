@@ -151,7 +151,10 @@
     <string name="time">Время</string>
     <string name="clear_filter">Очистить фильтр</string>
     <string name="calls_for_one_month">Звонки на 1 месяц</string>
-
+    <string name="add_incoming_call">Добавить входящий звонок</string>
+    <string name="add_outgoing_call">Добавить исходящий звонок</string>
+    <string name="have_not_marked_the_status">Вы не отметили статус: Выезжаю и Доехал до адреса</string>
+    <string name="fill_out_all_fields">Пожалуйста, заполните все поля</string>
     <string-array name="language_entries">
         <item>@string/ru</item>
         <item>@string/en</item>

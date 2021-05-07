@@ -38,7 +38,7 @@
                 android:id="@+id/imageView15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_call_24"
+                android:src="@{call.callDirectionId == 1 ? @drawable/ic_baseline_phone_forwarded_24 : @drawable/ic_baseline_phone_callback_24}"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"

@@ -141,4 +141,8 @@
     <string name="time">Time</string>
     <string name="clear_filter">Clear filter</string>
     <string name="calls_for_one_month">Calls for 1 month</string>
+    <string name="add_incoming_call">Add incoming call</string>
+    <string name="add_outgoing_call">Add outgoing call</string>
+    <string name="have_not_marked_the_status">You have not marked the status: Leaving and Arrived to the address</string>
+    <string name="fill_out_all_fields">Please fill out all fields</string>
 </resources>

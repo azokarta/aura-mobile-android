@@ -11,6 +11,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
@@ -61,6 +62,7 @@ class PlanContributionsFragment : Fragment() {
             val intent = Intent(requireContext(), AddContributionActivity::class.java)
             intent.putExtra("contractId", plan.contractId!!)
             intent.putExtra("clientPhoneNumbers", plan.customerPhoneNumbers!!.toTypedArray())
+            intent.putExtra("businessProcessId", plan.planBusinessProcessId)
             startActivityForResult(intent, 1);
         }
 
@@ -86,6 +88,15 @@ class PlanContributionsFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        mFinanceViewModel.updatedPlanResponse.observe(viewLifecycleOwner, { res ->
+            when (res) {
+                is NetworkResult.Success -> {
+                    plan = res.data!!
+                }
+                is NetworkResult.Loading -> {}
+                is NetworkResult.Error -> {}
+            }
+        })
         mFinanceViewModel.contributionsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
@@ -126,6 +137,8 @@ class PlanContributionsFragment : Fragment() {
                 val contributions = data?.getParcelableArrayListExtra<Contribution>("contributions")!!.toCollection(ArrayList<Contribution>())
                 showLoadingOrNoData(false, contributions.isNullOrEmpty())
                 contributionsAdapter.setData(contributions)
+                Snackbar.make(binding.addContribution, R.string.successfullySaved, Snackbar.LENGTH_SHORT)
+                    .show()
             }
         }
     }

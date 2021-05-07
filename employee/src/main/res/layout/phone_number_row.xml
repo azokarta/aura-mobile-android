@@ -21,6 +21,7 @@
             android:layout_alignParentTop="true"
             android:text="@{phone, default=`+7707356944`}"
             android:textColor="@color/black"
+            android:layout_marginTop="10dp"
             android:layout_alignParentLeft="true" />
 
         <View

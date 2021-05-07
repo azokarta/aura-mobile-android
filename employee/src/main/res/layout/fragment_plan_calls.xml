@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="mSharedViewModel"
             type="kz.aura.merp.employee.viewmodel.SharedViewModel" />
@@ -25,21 +24,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:checkedButton="@id/button1"
+                app:checkedButton="@id/callsForMonthBtn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:singleSelection="true">
 
                 <Button
-                    android:id="@+id/button1"
+                    android:id="@+id/callsForMonthBtn"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/calls_for_one_month" />
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/callsHistoryBtn"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

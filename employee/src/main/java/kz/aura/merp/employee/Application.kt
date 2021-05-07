@@ -1,11 +1,12 @@
 package kz.aura.merp.employee
 
 import android.app.Application
+import android.view.MotionEvent
+import android.widget.EditText
 import com.yandex.mapkit.MapKitFactory
 import dagger.hilt.android.HiltAndroidApp
-import kz.aura.merp.employee.data.DataStoreRepository
 import kz.aura.merp.employee.util.Constants
-import javax.inject.Inject
+
 
 @HiltAndroidApp
 class Application : Application() {

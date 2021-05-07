@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -37,6 +38,7 @@ import kotlin.collections.ArrayList
 class MonthlyPlanFragment : Fragment() {
 
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
+    private lateinit var mSharedViewModel: SharedViewModel
     private val plansAdapter: PlanAdapter by lazy { PlanAdapter() }
     private var _binding: FragmentMonthlyPlanBinding? = null
     private val binding get() = _binding!!
@@ -50,7 +52,11 @@ class MonthlyPlanFragment : Fragment() {
     private var selectedSearchBy: Int = 0
     private var searchQuery: String = ""
     private var problematic: Boolean = false
-    private var nextTime: Date? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mSharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,6 +64,7 @@ class MonthlyPlanFragment : Fragment() {
     ): View {
         _binding = FragmentMonthlyPlanBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+        binding.mSharedViewModel = mSharedViewModel
 
         setupFilterResources()
 
@@ -90,8 +97,6 @@ class MonthlyPlanFragment : Fragment() {
             println(token)
         }
 
-        setMinuteForUpdate()
-
         return binding.root
     }
 
@@ -108,26 +113,16 @@ class MonthlyPlanFragment : Fragment() {
         )
     }
 
-    private fun showLoadingOrNoData(visibility: Boolean, dataIsEmpty: Boolean = true) {
-        if (visibility) {
-            binding.emptyData = true
-            binding.dataReceived = false
-        } else {
-            binding.emptyData = dataIsEmpty
-            binding.dataReceived = true
-        }
-    }
-
     private fun observeLiveData() {
         mFinanceViewModel.plansResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
+                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
                     filterPlans()
                 }
-                is NetworkResult.Loading -> showLoadingOrNoData(true)
+                is NetworkResult.Loading -> mSharedViewModel.showLoading()
                 is NetworkResult.Error -> {
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
+                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
                     checkError(res)
                 }
             }
@@ -184,7 +179,6 @@ class MonthlyPlanFragment : Fragment() {
             selectedStatusFilter = bottomSheetBinding.statusesChipGroup.checkedChipId
             binding.problematic.visibility = if (problematic) View.VISIBLE else View.INVISIBLE
             filterPlans()
-            changeTextsFilter()
             bottomSheetDialog.dismiss()
         }
         binding.filterList.setOnClickListener {
@@ -205,10 +199,12 @@ class MonthlyPlanFragment : Fragment() {
             }
         }
         binding.clearFilter.setOnClickListener {
+            binding.problematic.isVisible = false
             selectedSearchBy = 0
             selectedStatusFilter = 0
             selectedSortFilter = 0
             problematic = false
+            searchQuery = ""
             filterPlans()
         }
 
@@ -225,6 +221,7 @@ class MonthlyPlanFragment : Fragment() {
     }
 
     private fun checkChips() {
+        bottomSheetBinding.search.editText?.setText(searchQuery)
         bottomSheetBinding.problematic.isChecked = problematic
         bottomSheetBinding.statusesChipGroup.check(selectedStatusFilter)
         bottomSheetBinding.sortChipGroup.check(selectedSortFilter)
@@ -243,6 +240,7 @@ class MonthlyPlanFragment : Fragment() {
     }
 
     private fun filterPlans() {
+        changeTextsFilter()
         val filteredPlans = arrayListOf<Plan>().apply { addAll(mFinanceViewModel.plansResponse.value!!.data!!) }
 
         // Filter by search
@@ -325,30 +323,6 @@ class MonthlyPlanFragment : Fragment() {
                 filterPlans()
             }
             removeData()
-        }
-    }
-
-    private fun setMinuteForUpdate() {
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.add(Calendar.MINUTE, 3)
-        nextTime = calendar.time
-    }
-
-    private fun updatePlans() {
-        if (nextTime!!.before(Calendar.getInstance().time)) {
-            plansAdapter.clear()
-            mFinanceViewModel.fetchPlans()
-            setMinuteForUpdate()
-        } else {
-            val diff: Long = nextTime!!.time - Calendar.getInstance().time.time
-            val diffMinutes = diff / (60 * 1000)
-            val diffSeconds = diff / 1000
-
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.left)+" $diffMinutes min. $diffSeconds sec.",
-                Toast.LENGTH_LONG
-            ).show()
         }
     }
 
