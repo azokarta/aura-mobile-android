@@ -5,6 +5,7 @@ import android.text.Html
 import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -26,10 +27,12 @@ import kz.aura.merp.employee.model.BusinessProcessStatus
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.databinding.FragmentMonthlyPlanBinding
 import kz.aura.merp.employee.databinding.PlanFilterBottomSheetBinding
+import kz.aura.merp.employee.ui.dialog.PlanFilterDialogFragment
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.declareErrorByStatus
 import kz.aura.merp.employee.util.verifyAvailableNetwork
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 import java.util.*
 import kotlin.collections.ArrayList
@@ -38,20 +41,11 @@ import kotlin.collections.ArrayList
 class MonthlyPlanFragment : Fragment() {
 
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
+    private val mFilterViewModel: PlanFilterViewModel by activityViewModels()
     private lateinit var mSharedViewModel: SharedViewModel
     private val plansAdapter: PlanAdapter by lazy { PlanAdapter() }
     private var _binding: FragmentMonthlyPlanBinding? = null
     private val binding get() = _binding!!
-    private lateinit var filterSortParams: ArrayList<String>
-    private lateinit var bottomSheetDialog: BottomSheetDialog
-    private lateinit var bottomSheetView: View
-    private lateinit var bottomSheetBinding: PlanFilterBottomSheetBinding
-    private var selectedStatusFilter: Int = 0
-    private var selectedSortFilter: Int = 0
-    private val businessProcessStatuses: ArrayList<BusinessProcessStatus> = arrayListOf()
-    private var selectedSearchBy: Int = 0
-    private var searchQuery: String = ""
-    private var problematic: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +60,6 @@ class MonthlyPlanFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.mSharedViewModel = mSharedViewModel
 
-        setupFilterResources()
-
         // Setup RecyclerView
         setupRecyclerView()
 
@@ -79,6 +71,11 @@ class MonthlyPlanFragment : Fragment() {
                 binding.recyclerView.isVisible = true
                 binding.networkDisconnected.root.isVisible = false
             }
+        }
+
+        binding.filterList.setOnClickListener {
+            val dialog = PlanFilterDialogFragment()
+            dialog.show(childFragmentManager, "PlanFilterBottomSheetDialog")
         }
 
         observeLiveData()
@@ -106,13 +103,6 @@ class MonthlyPlanFragment : Fragment() {
         binding.recyclerView.isNestedScrollingEnabled = false
     }
 
-    private fun setupFilterResources() {
-        filterSortParams = arrayListOf(
-            getString(R.string.date),
-            getString(R.string.fullName)
-        )
-    }
-
     private fun observeLiveData() {
         mFinanceViewModel.plansResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
@@ -127,133 +117,47 @@ class MonthlyPlanFragment : Fragment() {
                 }
             }
         })
-        mFinanceViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
-            when (res) {
-                is NetworkResult.Success -> {
-                    this.businessProcessStatuses.add(
-                        BusinessProcessStatus(
-                            0,
-                            getString(R.string._new),
-                            "",
-                            "",
-                            "",
-                            ""
-                        )
-                    )
-                    this.businessProcessStatuses.addAll(res.data!!)
-                    setupFilterBottomSheet()
-                }
-                is NetworkResult.Loading -> { }
-                is NetworkResult.Error -> checkError(res)
-            }
+        mFilterViewModel.filterParams.observe(viewLifecycleOwner, { params ->
+            filterPlans(
+                params.query,
+                params.selectedSearchBy,
+                params.selectedStatusFilter,
+                params.selectedSortFilter,
+                params.problematic
+            )
         })
     }
 
-    private fun setupFilterBottomSheet() {
-        bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
-        bottomSheetView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.plan_filter_bottom_sheet, view?.findViewById(R.id.bottomSheetContainer))
-        bottomSheetBinding = PlanFilterBottomSheetBinding.bind(bottomSheetView)
-
-        // Add chips
-        for (process in businessProcessStatuses) {
-            bottomSheetBinding.statusesChipGroup.addView(
-                createChip(
-                    process.name,
-                    process.id.toInt()
-                )
-            )
-        }
-        for ((idx, value) in filterSortParams.withIndex()) {
-            bottomSheetBinding.sortChipGroup.addView(createChip(value, idx))
-        }
-
-        changeTextsFilter()
-
-        checkChips()
-
-        // Init listeners
-        bottomSheetBinding.apply.setOnClickListener {
-            searchQuery = bottomSheetBinding.search.editText?.text.toString()
-            selectedSortFilter = bottomSheetBinding.sortChipGroup.checkedChipId
-            selectedStatusFilter = bottomSheetBinding.statusesChipGroup.checkedChipId
-            binding.problematic.visibility = if (problematic) View.VISIBLE else View.INVISIBLE
-            filterPlans()
-            bottomSheetDialog.dismiss()
-        }
-        binding.filterList.setOnClickListener {
-            checkChips()
-            bottomSheetDialog.show()
-        }
-        bottomSheetBinding.problematic.setOnCheckedChangeListener { _, bool ->
-            problematic = bool
-        }
-        bottomSheetBinding.search.setEndIconOnClickListener {
-            bottomSheetBinding.search.editText?.setText("")
-        }
-        bottomSheetBinding.searchByEditText.setOnItemClickListener { _, _, i, _ ->
-            selectedSearchBy = i
-            when (i) {
-                0 -> bottomSheetBinding.search.editText?.inputType = InputType.TYPE_CLASS_NUMBER
-                1 -> bottomSheetBinding.search.editText?.inputType = InputType.TYPE_CLASS_TEXT
-            }
-        }
-        binding.clearFilter.setOnClickListener {
-            binding.problematic.isVisible = false
-            selectedSearchBy = 0
-            selectedStatusFilter = 0
-            selectedSortFilter = 0
-            problematic = false
-            searchQuery = ""
-            filterPlans()
-        }
-
-
-        // Initialize search params
-        val items = listOf(getString(R.string.cn), getString(R.string.fullName))
-        val adapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
-        bottomSheetBinding.searchByEditText.setText(items[0])
-        bottomSheetBinding.searchByEditText.setAdapter(adapter)
-
-        // Init content view
-        bottomSheetDialog.setContentView(bottomSheetBinding.root)
-
-    }
-
-    private fun checkChips() {
-        bottomSheetBinding.search.editText?.setText(searchQuery)
-        bottomSheetBinding.problematic.isChecked = problematic
-        bottomSheetBinding.statusesChipGroup.check(selectedStatusFilter)
-        bottomSheetBinding.sortChipGroup.check(selectedSortFilter)
-    }
-
-    private fun changeTextsFilter() {
+    private fun changeTextsFilter(selectedSortFilter: Int, selectedStatusFilter: Int, query: String, selectedSearchBy: Int) {
+        val filterSortParams = arrayListOf(
+            getString(R.string.date),
+            getString(R.string.fullName)
+        )
         binding.sort = filterSortParams[selectedSortFilter]
-        binding.status =
-            businessProcessStatuses.find { it.id == selectedStatusFilter.toLong() }?.name
+        binding.status = mFinanceViewModel.businessProcessStatusesResponse.value?.data?.find { it.id == selectedStatusFilter.toLong() }?.name
         binding.searchBySn = when (selectedSearchBy) {
-            0 -> if (searchQuery.isNotBlank()) "${getString(R.string.cn)} = $searchQuery" else ""
-            1 -> if (searchQuery.isNotBlank()) "${getString(R.string.fullName)} = $searchQuery" else ""
+            0 -> if (query.isNotBlank()) "${getString(R.string.cn)} = $query" else ""
+            1 -> if (query.isNotBlank()) "${getString(R.string.fullName)} = $query" else ""
             else -> ""
         }
         binding.executePendingBindings()
     }
 
-    private fun filterPlans() {
-        changeTextsFilter()
+    private fun filterPlans(query: String = "", selectedSearchBy: Int = 0, selectedStatusFilter: Int = 0, selectedSortFilter: Int = 0, problematic: Boolean = false) {
+        changeTextsFilter(selectedSortFilter, selectedStatusFilter, query, selectedSearchBy)
         val filteredPlans = arrayListOf<Plan>().apply { addAll(mFinanceViewModel.plansResponse.value!!.data!!) }
 
         // Filter by search
         when (selectedSearchBy) {
             0 -> {
                 val filterByCN =
-                    filteredPlans.filter { it.contractNumber.toString().indexOf(searchQuery) >= 0 }
+                    filteredPlans.filter { it.contractNumber.toString().indexOf(query) >= 0 }
                 filteredPlans.clear()
                 filteredPlans.addAll(filterByCN)
             }
             1 -> {
                 val conditions = ArrayList<(Plan) -> Boolean>()
-                searchQuery.toLowerCase(Locale.ROOT).split(" ").map {
+                query.toLowerCase(Locale.ROOT).split(" ").map {
                     conditions.add { plan ->
                         (plan.customerLastname + " " + plan.customerFirstname + " " + plan.customerMiddlename).toLowerCase(
                             Locale.ROOT
@@ -343,17 +247,6 @@ class MonthlyPlanFragment : Fragment() {
         } else {
             null
         }
-    }
-
-    private fun createChip(title: String, id: Int): Chip {
-        val chip = Chip(requireContext())
-        chip.text = title
-        chip.id = id
-        chip.setChipBackgroundColorResource(R.color.gray)
-        chip.checkedIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_check_24)
-        chip.isCheckable = true
-        chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-        return chip
     }
 
     private fun removeData() {

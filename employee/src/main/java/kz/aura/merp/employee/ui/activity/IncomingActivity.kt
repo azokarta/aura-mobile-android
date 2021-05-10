@@ -1,12 +1,14 @@
 package kz.aura.merp.employee.ui.activity
 
+import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,12 +24,8 @@ import kz.aura.merp.employee.util.ProgressDialog
 import kz.aura.merp.employee.util.declareErrorByStatus
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
-import org.joda.time.Duration
-import org.joda.time.Interval
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import org.joda.time.format.DateTimeParser
-import java.sql.Time
 import java.util.*
 
 
@@ -139,5 +137,21 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 }

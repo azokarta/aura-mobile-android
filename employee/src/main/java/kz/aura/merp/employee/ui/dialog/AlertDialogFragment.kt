@@ -4,8 +4,12 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.MotionEvent
+import android.widget.EditText
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.DialogFragment
 import kz.aura.merp.employee.R
+
 
 class AlertDialogFragment(private val listener: AlertDialogListener, private val title: String) : DialogFragment() {
 
@@ -37,5 +41,4 @@ class AlertDialogFragment(private val listener: AlertDialogListener, private val
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
-
 }
