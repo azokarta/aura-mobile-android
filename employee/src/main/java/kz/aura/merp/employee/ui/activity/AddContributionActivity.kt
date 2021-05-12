@@ -114,7 +114,7 @@ class AddContributionActivity : AppCompatActivity() {
                 if (validation()) {
                     save()
                 } else {
-                    Toast.makeText(this, getString(R.string.fill_out_all_fields), Toast.LENGTH_LONG).show()
+                    showException(getString(R.string.fill_out_all_fields), this)
                 }
             }
         }

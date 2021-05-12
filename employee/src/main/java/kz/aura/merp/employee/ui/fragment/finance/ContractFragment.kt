@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
@@ -17,6 +18,7 @@ import kz.aura.merp.employee.adapter.PhoneNumbersAdapter
 import kz.aura.merp.employee.adapter.StepsAdapter
 import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.databinding.FragmentContractBinding
+import kz.aura.merp.employee.ui.activity.AddContributionActivity
 import kz.aura.merp.employee.ui.activity.IncomingActivity
 import kz.aura.merp.employee.ui.activity.OutgoingActivity
 import kz.aura.merp.employee.util.NetworkResult
@@ -56,6 +58,14 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
 
         initStepView()
         initPhoneNumbers()
+
+        binding.addContribution.setOnClickListener {
+            val intent = Intent(requireContext(), AddContributionActivity::class.java)
+            intent.putExtra("contractId", plan.contractId!!)
+            intent.putExtra("clientPhoneNumbers", plan.customerPhoneNumbers!!.toTypedArray())
+            intent.putExtra("businessProcessId", plan.planBusinessProcessId)
+            startActivityForResult(intent, contributionRequestCode);
+        }
 
         // Observe MutableLiveData
         setObserve()
@@ -146,7 +156,8 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
 
     companion object {
         private const val ARG_PARAM1 = "plan"
-        private const val requestCode = 1000
+        private const val callRequestCode = 1000
+        private const val contributionRequestCode = 2000
 
         @JvmStatic
         fun newInstance(plan: Plan) =
@@ -163,10 +174,23 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ContractFragment.requestCode) {
-            if (resultCode == Activity.RESULT_OK) {
-                val calls = data?.getParcelableArrayListExtra<Call>("calls")!!.toCollection(ArrayList<Call>())
-                mFinanceViewModel.callsResponse.postValue(NetworkResult.Success(calls))
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                callRequestCode -> {
+                    val calls = data?.getParcelableArrayListExtra<Call>("calls")!!
+                        .toCollection(ArrayList<Call>())
+                    mFinanceViewModel.callsResponse.postValue(NetworkResult.Success(calls))
+                }
+                contributionRequestCode -> {
+                    val contributions = data?.getParcelableArrayListExtra<Contribution>("contributions")!!.toCollection(ArrayList<Contribution>())
+                    mFinanceViewModel.contributionsResponse.postValue(NetworkResult.Success(contributions))
+                    Snackbar.make(
+                        binding.addContribution,
+                        R.string.successfullySaved,
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .show()
+                }
             }
         }
     }
@@ -175,13 +199,13 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
         val intent = Intent(binding.root.context, IncomingActivity::class.java)
         intent.putExtra("phoneNumber", phoneNumber)
         intent.putExtra("contractId", plan.contractId)
-        startActivityForResult(intent, requestCode);
+        startActivityForResult(intent, callRequestCode);
     }
 
     override fun outgoing(phoneNumber: String) {
         val intent = Intent(binding.root.context, OutgoingActivity::class.java)
         intent.putExtra("phoneNumber", phoneNumber)
         intent.putExtra("contractId", plan.contractId)
-        startActivityForResult(intent, requestCode);
+        startActivityForResult(intent, callRequestCode);
     }
 }

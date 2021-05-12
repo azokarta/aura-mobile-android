@@ -3,19 +3,25 @@ package kz.aura.merp.employee.ui.activity
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivitySettingsBinding
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.util.LanguageHelper.getLanguage
+import kz.aura.merp.employee.viewmodel.AuthViewModel
 
+@AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
+    private val mAuthViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +47,18 @@ class SettingsActivity : AppCompatActivity() {
 
     class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
+        private val mAuthViewModel: AuthViewModel by activityViewModels()
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
             val connectionPref: Preference? = findPreference("language")
             connectionPref!!.summary = getLanguage(this.requireContext())
+
+            mAuthViewModel.salary.observe(this, {
+                findPreference<Preference>("language")!!.isEnabled = true
+            })
+
+            mAuthViewModel.getSalary()
         }
 
         override fun onResume() {
@@ -61,8 +75,8 @@ class SettingsActivity : AppCompatActivity() {
             if (p1.equals("language")) {
                 val lang = p0?.getString(p1, "").toString()
                 LanguageHelper.updateLanguage(this.requireContext(), lang)
-//                val position = definePosition(arrayListOf(mAuthViewModel.getSalary()!!))!!
-//                openActivityByPosition(this, position)
+                val position = definePosition(arrayListOf(mAuthViewModel.salary.value!!))!!
+                openActivityByPosition(requireContext(), position)
             }
         }
 
@@ -72,10 +86,8 @@ class SettingsActivity : AppCompatActivity() {
         PreferenceManager.getDefaultSharedPreferences(application)
             .edit()
             .remove("token")
-            .remove("staff")
-            .remove("staffId")
-            .remove("phoneNumber")
             .apply()
+        mAuthViewModel.clearSettings()
         clearPreviousAndOpenActivity(this, AuthorizationActivity())
     }
 

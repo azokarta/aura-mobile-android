@@ -19,9 +19,7 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityIncomingBinding
 import kz.aura.merp.employee.model.AssignCall
 import kz.aura.merp.employee.ui.dialog.TimePickerFragment
-import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.util.ProgressDialog
-import kz.aura.merp.employee.util.declareErrorByStatus
+import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -39,8 +37,9 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
     private lateinit var phoneNumber: String
     private var callDirectionId: Long = 2L
     private var contractId: Long = 0L
-    private var selectedHour: Int = 0
-    private var selectedMinute: Int = 0
+    private var selectedHour: Int? = null
+    private var selectedMinute: Int? = null
+    private var countryCode: CountryCode = CountryCode.KZ
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,13 +76,14 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
     }
 
     private fun save(view: View) {
-        progressDialog.showLoading()
-
         val description = binding.descriptionText.text.toString()
         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
         val currentDate: String = dtf.print(DateTime.now())
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
-        if (typedPhoneNumber.isNotBlank() && selectedHour != 0 && selectedMinute != 0 && description.isNotBlank()) {
+
+        if (typedPhoneNumber.isNotBlank() && selectedHour != null && selectedMinute != null && typedPhoneNumber.length == countryCode.format.length) {
+            progressDialog.showLoading()
+
             SmartLocation.with(this).location().oneFix()
                 .start {
                     val assign = AssignCall(
@@ -99,7 +99,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
                     mFinanceViewModel.assignCall(assign, contractId)
                 }
         } else {
-            Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show()
+            showException(getString(R.string.fill_out_all_fields), this)
         }
     }
 
@@ -131,6 +131,10 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
                     declareErrorByStatus(res.message, res.status, this)
                 }
             }
+        })
+        mFinanceViewModel.countryCode.observe(this, { countryCode ->
+            this.countryCode = countryCode
+            binding.phoneNumberText.mask = countryCode.format
         })
     }
 

@@ -155,6 +155,13 @@
     <string name="add_outgoing_call">Добавить исходящий звонок</string>
     <string name="have_not_marked_the_status">Вы не отметили статус: Выезжаю и Доехал до адреса</string>
     <string name="fill_out_all_fields">Пожалуйста, заполните все поля</string>
+    <string name="country_calling_code">Телефонный код страны</string>
+    <string name="contract_date">Дата контракта</string>
+    <string name="payment_date">Дата оплаты</string>
+    <string name="overdue_days">Просроченные дни</string>
+    <string name="deadline_did_not_come">Срок не пришел</string>
+    <string name="explanation_about_colors">Объяснение о цветах</string>
+
     <string-array name="language_entries">
         <item>@string/ru</item>
         <item>@string/en</item>

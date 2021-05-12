@@ -145,4 +145,10 @@
     <string name="add_outgoing_call">Add outgoing call</string>
     <string name="have_not_marked_the_status">You have not marked the status: Leaving and Arrived to the address</string>
     <string name="fill_out_all_fields">Please fill out all fields</string>
+    <string name="country_calling_code">Country calling code</string>
+    <string name="contract_date">Contract date</string>
+    <string name="payment_date">Payment date</string>
+    <string name="overdue_days">Overdue days</string>
+    <string name="deadline_did_not_come">Deadline did not come</string>
+    <string name="explanation_about_colors">Explanation about colors</string>
 </resources>

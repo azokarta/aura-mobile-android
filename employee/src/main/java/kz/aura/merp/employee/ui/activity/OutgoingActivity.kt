@@ -15,9 +15,7 @@ import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityOutgoingBinding
 import kz.aura.merp.employee.model.AssignCall
-import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.util.ProgressDialog
-import kz.aura.merp.employee.util.declareErrorByStatus
+import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.Duration
@@ -38,6 +36,7 @@ class OutgoingActivity : AppCompatActivity() {
     private var duration: Duration? = null
     private var startedTime: DateTime? = null
     private val requestCode = 1000
+    private var countryCode: CountryCode = CountryCode.KZ
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +74,7 @@ class OutgoingActivity : AppCompatActivity() {
         setupObservers()
 
         mFinanceViewModel.fetchCallStatuses()
+        mFinanceViewModel.getCountryCode()
 
         dialPhoneNumber(phoneNumber)
     }
@@ -121,6 +121,11 @@ class OutgoingActivity : AppCompatActivity() {
                 }
             }
         })
+
+        mFinanceViewModel.countryCode.observe(this, { countryCode ->
+            this.countryCode = countryCode
+            binding.phoneNumberText.mask = countryCode.format
+        })
     }
 
 
@@ -130,7 +135,7 @@ class OutgoingActivity : AppCompatActivity() {
         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
         val currentDate: String = dtf.print(DateTime.now())
 
-        if (phoneNumber.isNotBlank() && callStatusId != 0L) {
+        if (phoneNumber.isNotBlank() && callStatusId != 0L && typedPhoneNumber.length == countryCode.format.length) {
             SmartLocation.with(this).location().oneFix()
                 .start {
                     val assign = AssignCall(
@@ -145,6 +150,8 @@ class OutgoingActivity : AppCompatActivity() {
                     )
                     mFinanceViewModel.assignCall(assign, contractId)
                 }
+        } else {
+            showException(getString(R.string.fill_out_all_fields), this)
         }
     }
 

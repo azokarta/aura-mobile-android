@@ -72,22 +72,4 @@ class FinanceActivity : AppCompatActivity() {
 //            startService(intent)
 //        }
     }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val menuInflater = menuInflater
-        menuInflater.inflate(R.menu.menu, menu)
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_settings -> {
-                val intent = Intent(applicationContext, SettingsActivity::class.java)
-                startActivity(intent)
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
 }

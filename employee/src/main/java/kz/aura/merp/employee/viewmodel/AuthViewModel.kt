@@ -30,8 +30,11 @@ class AuthViewModel @Inject constructor(
 
     val signInResponse: MutableLiveData<NetworkResult<AuthResponse>> = MutableLiveData()
     val userInfoResponse: MutableLiveData<NetworkResult<ArrayList<Salary>>> = MutableLiveData()
-    val token: MutableLiveData<String> = MutableLiveData()
     val salary: MutableLiveData<Salary> = MutableLiveData()
+
+    fun saveCountryCallingCode(countryCallingCode: String) = scope.launch {
+        dataStoreRepository.saveCountryCallingCode(countryCallingCode)
+    }
 
     fun signIn(phoneNumber: String, password: String) = scope.launch {
         signInResponse.postValue(NetworkResult.Loading())
@@ -76,15 +79,11 @@ class AuthViewModel @Inject constructor(
         dataStoreRepository.saveSalary(salary)
     }
 
-    fun getToken() = scope.launch {
-        dataStoreRepository.tokenFlow.collect { value ->
-            token.postValue(value)
-        }
-    }
-
     fun getSalary() = scope.launch {
         dataStoreRepository.salaryFlow.collect { value ->
             salary.postValue(value)
         }
     }
+
+    fun clearSettings() = scope.launch { dataStoreRepository.clearSettings() }
 }

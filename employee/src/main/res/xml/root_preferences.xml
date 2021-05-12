@@ -6,6 +6,7 @@
         app:entries="@array/language_entries"
         app:entryValues="@array/entry_values"
         app:key="language"
+        android:enabled="false"
         app:title="@string/language" />
 
 </PreferenceScreen>

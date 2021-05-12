@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.collect
 import kz.aura.merp.employee.data.DataStoreRepository
 import kz.aura.merp.employee.data.repository.financeRepository.FinanceRepository
 import kz.aura.merp.employee.model.*
+import kz.aura.merp.employee.util.CountryCode
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.receiveErrorMessage
 import kz.aura.merp.employee.util.saveData
@@ -46,6 +47,13 @@ class FinanceViewModel @Inject constructor(
     val scheduledCallsResponse: MutableLiveData<NetworkResult<ArrayList<ScheduledCall>>> = MutableLiveData()
     val callsResponse: MutableLiveData<NetworkResult<ArrayList<Call>>> = MutableLiveData()
     val staffUsername: MutableLiveData<String> = MutableLiveData()
+    val countryCode: MutableLiveData<CountryCode> = MutableLiveData()
+
+    fun getCountryCode() = scope.launch {
+        dataStoreRepository.countryCodeFlow.collect { value ->
+            countryCode.postValue(value)
+        }
+    }
 
     fun fetchPlans() = scope.launch {
         plansResponse.postValue(NetworkResult.Loading())

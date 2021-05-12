@@ -1,32 +1,25 @@
 package kz.aura.merp.employee.ui.fragment.finance
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Html
-import android.text.InputType
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
+import android.view.*
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PlanAdapter
-import kz.aura.merp.employee.model.BusinessProcessStatus
-import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.databinding.FragmentMonthlyPlanBinding
-import kz.aura.merp.employee.databinding.PlanFilterBottomSheetBinding
+import kz.aura.merp.employee.model.Plan
+import kz.aura.merp.employee.ui.activity.SettingsActivity
 import kz.aura.merp.employee.ui.dialog.PlanFilterDialogFragment
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.declareErrorByStatus
@@ -34,6 +27,11 @@ import kz.aura.merp.employee.util.verifyAvailableNetwork
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
+import org.joda.time.DateTime
+import org.joda.time.DateTimeComparator
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
+import org.joda.time.format.DateTimeParser
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -46,6 +44,7 @@ class MonthlyPlanFragment : Fragment() {
     private val plansAdapter: PlanAdapter by lazy { PlanAdapter() }
     private var _binding: FragmentMonthlyPlanBinding? = null
     private val binding get() = _binding!!
+    private var nextTime: Date? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +58,8 @@ class MonthlyPlanFragment : Fragment() {
         _binding = FragmentMonthlyPlanBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.mSharedViewModel = mSharedViewModel
+
+        setHasOptionsMenu(true)
 
         // Setup RecyclerView
         setupRecyclerView()
@@ -77,6 +78,10 @@ class MonthlyPlanFragment : Fragment() {
             val dialog = PlanFilterDialogFragment()
             dialog.show(childFragmentManager, "PlanFilterBottomSheetDialog")
         }
+        binding.clearFilter.setOnClickListener {
+            mFilterViewModel.clearFilter()
+        }
+        binding.explanationAboutColors.setOnClickListener(::explainAboutColors)
 
         observeLiveData()
 
@@ -93,6 +98,8 @@ class MonthlyPlanFragment : Fragment() {
             val token = task.result
             println(token)
         }
+
+        setMinuteForUpdate()
 
         return binding.root
     }
@@ -130,7 +137,8 @@ class MonthlyPlanFragment : Fragment() {
 
     private fun changeTextsFilter(selectedSortFilter: Int, selectedStatusFilter: Int, query: String, selectedSearchBy: Int) {
         val filterSortParams = arrayListOf(
-            getString(R.string.date),
+            getString(R.string.paymentDate),
+            getString(R.string.contract_date),
             getString(R.string.fullName)
         )
         binding.sort = filterSortParams[selectedSortFilter]
@@ -146,6 +154,8 @@ class MonthlyPlanFragment : Fragment() {
     private fun filterPlans(query: String = "", selectedSearchBy: Int = 0, selectedStatusFilter: Int = 0, selectedSortFilter: Int = 0, problematic: Boolean = false) {
         changeTextsFilter(selectedSortFilter, selectedStatusFilter, query, selectedSearchBy)
         val filteredPlans = arrayListOf<Plan>().apply { addAll(mFinanceViewModel.plansResponse.value!!.data!!) }
+
+        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
 
         // Filter by search
         when (selectedSearchBy) {
@@ -189,8 +199,7 @@ class MonthlyPlanFragment : Fragment() {
                 filteredPlans.addAll(filterByStatus)
             }
             2 -> {
-                val filterByStatus =
-                    filteredPlans.filter { it.planBusinessProcessId == 2L && it.planResultId == null }
+                val filterByStatus = filteredPlans.filter { it.planBusinessProcessId == 2L && it.planResultId == null }
                 filteredPlans.clear()
                 filteredPlans.addAll(filterByStatus)
             }
@@ -198,8 +207,9 @@ class MonthlyPlanFragment : Fragment() {
 
         // Sort by selected parameter
         when (selectedSortFilter) {
-            0 -> filteredPlans.sortByDescending { it.contractDate }
-            1 -> filteredPlans.sortByDescending { it.customerLastname + " " + it.customerFirstname + " " + it.customerMiddlename }
+            0 -> filteredPlans.sortBy { dtf.parseLocalDate(it.nextPaymentDate) }
+            1 -> filteredPlans.sortBy { dtf.parseLocalDate(it.contractDate) }
+            2 -> filteredPlans.sortBy { it.customerLastname + " " + it.customerFirstname + " " + it.customerMiddlename }
         }
 
         // Filter problematic plans
@@ -216,6 +226,7 @@ class MonthlyPlanFragment : Fragment() {
 
         binding.quantityOfList = filteredPlans.size
         binding.allOverdueDays.text = Html.fromHtml(allOverdueDays)
+        binding.problematic.isVisible = problematic
     }
 
     override fun onResume() {
@@ -227,6 +238,40 @@ class MonthlyPlanFragment : Fragment() {
                 filterPlans()
             }
             removeData()
+        }
+    }
+
+    private fun explainAboutColors(view: View) {
+        MaterialAlertDialogBuilder(requireActivity())
+            .setView(R.layout.explanation_about_colors)
+            .setTitle(resources.getString(R.string.explanation_about_colors))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+                // Respond to neutral button press
+            }
+            .show()
+    }
+
+    private fun setMinuteForUpdate() {
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.add(Calendar.MINUTE, 3)
+        nextTime = calendar.time
+    }
+
+    private fun updatePlans() {
+        if (nextTime!!.before(Calendar.getInstance().time)) {
+            plansAdapter.clear()
+            mFinanceViewModel.fetchPlans()
+            setMinuteForUpdate()
+        } else {
+            val diff: Long = nextTime!!.time - Calendar.getInstance().time.time
+            val diffMinutes = diff / (60 * 1000)
+            val diffSeconds = diff / 1000
+
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.left)+" $diffMinutes min. $diffSeconds sec.",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -247,6 +292,22 @@ class MonthlyPlanFragment : Fragment() {
         } else {
             null
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.update_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_settings -> {
+                val intent = Intent(requireContext(), SettingsActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.update -> updatePlans()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun removeData() {

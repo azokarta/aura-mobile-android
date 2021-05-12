@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:fillViewport="true"
-    tools:context=".ui.activity.AuthorizationActivity">
+    tools:context=".ui.activity.AuthorizationActivity"
+    xmlns:mask="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,59 +20,72 @@
             android:layout_marginTop="16dp"
             android:onClick="signIn"
             android:text="@string/signIn"
-            app:layout_constraintEnd_toEndOf="@+id/password"
-            app:layout_constraintStart_toStartOf="@+id/password"
-            app:layout_constraintTop_toBottomOf="@+id/password" />
+            app:layout_constraintEnd_toEndOf="@+id/passwordField"
+            app:layout_constraintStart_toStartOf="@+id/passwordField"
+            app:layout_constraintTop_toBottomOf="@+id/passwordField" />
 
-        <EditText
-            android:id="@+id/phoneNumber"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="56dp"
-            android:background="@color/white"
-            android:ems="10"
-            android:hint="@string/phoneNumber"
-            android:inputType="phone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/ccp"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
-
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@color/white"
-            android:drawableStart="@drawable/ic_baseline_lock_24"
-            android:drawableLeft="@drawable/ic_baseline_lock_24"
-            android:drawablePadding="10dp"
-            android:ems="10"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            app:drawableTint="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/ccp"
-            app:layout_constraintTop_toBottomOf="@+id/phoneNumber" />
-
-        <com.hbb20.CountryCodePicker
-            android:id="@+id/ccp"
-            android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            app:ccp_autoDetectLanguage="true"
-            app:ccp_defaultNameCode="KZ"
-            app:layout_constraintBottom_toBottomOf="@+id/phoneNumber"
-            app:layout_constraintEnd_toStartOf="@+id/phoneNumber"
-            app:layout_constraintHorizontal_bias="0.5"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/countryCallingCodeField"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="60dp"
+            android:hint="@string/country_calling_code"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/phoneNumber">
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
-        </com.hbb20.CountryCodePicker>
+            <AutoCompleteTextView
+                android:id="@+id/countryCallingCodeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phoneNumberField"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/phoneNumber"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/countryCallingCodeField"
+            app:layout_constraintTop_toTopOf="@+id/countryCallingCodeField">
+
+            <br.com.sapereaude.maskedEditText.MaskedEditText
+                android:id="@+id/phoneNumberText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:typeface="monospace"
+                app:keep_hint="true"
+                app:layout_constraintTop_toBottomOf="@+id/descriptionField"
+                mask:allowed_chars="1234567890"
+                mask:mask="+7(###)###-##-##"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordField"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/password"
+            app:layout_constraintEnd_toEndOf="@+id/phoneNumberField"
+            app:layout_constraintStart_toStartOf="@+id/countryCallingCodeField"
+            app:layout_constraintTop_toBottomOf="@+id/phoneNumberField">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"

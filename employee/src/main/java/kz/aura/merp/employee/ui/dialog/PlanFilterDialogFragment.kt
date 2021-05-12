@@ -39,6 +39,7 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
     private var selectedStatusFilter: Int = 0
     private var query: String = ""
     private var problematic: Boolean = false
+    private var businessProcessStatuses: ArrayList<BusinessProcessStatus> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,15 +48,32 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
     ): View {
         _binding = PlanFilterBottomSheetBinding.inflate(inflater, container, false)
 
+        selectedSearchBy = mFilterViewModel.filterParams.value?.selectedSearchBy ?: 0
+        selectedSortFilter = mFilterViewModel.filterParams.value?.selectedSortFilter ?: 0
+        selectedStatusFilter = mFilterViewModel.filterParams.value?.selectedStatusFilter ?: 0
+        query = mFilterViewModel.filterParams.value?.query ?: ""
+        problematic = mFilterViewModel.filterParams.value?.problematic ?: false
+
         filterSortParams = arrayListOf(
-            getString(R.string.date),
+            getString(R.string.payment_date),
+            getString(R.string.contract_date),
             getString(R.string.fullName)
+        )
+        businessProcessStatuses.add(
+            BusinessProcessStatus(
+                0,
+                getString(R.string._new),
+                "",
+                "",
+                "",
+                ""
+            )
         )
 
         // Initialize search params
         searchParams = listOf(getString(R.string.cn), getString(R.string.fullName))
         val adapter = ArrayAdapter(requireContext(), R.layout.list_item, searchParams)
-        binding.searchByEditText.setText(searchParams[0])
+        binding.searchByEditText.setText(searchParams[selectedSearchBy])
         binding.searchByEditText.setAdapter(adapter)
 
         for ((idx, value) in filterSortParams.withIndex()) {
@@ -87,15 +105,12 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
             }
         }
 
-        setupFilterParams()
-
         setupObservers()
 
         return binding.root
     }
 
     private fun setupFilterParams() {
-        binding.searchByEditText.setText(searchParams[selectedSearchBy])
         binding.search.editText?.setText(query)
         binding.problematic.isChecked = problematic
         binding.statusesChipGroup.check(selectedStatusFilter)
@@ -118,17 +133,7 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
         mFinanceViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    val businessProcessStatuses = res.data!!
-                    businessProcessStatuses.add(
-                        BusinessProcessStatus(
-                            0,
-                            getString(R.string._new),
-                            "",
-                            "",
-                            "",
-                            ""
-                        )
-                    )
+                    businessProcessStatuses.addAll(res.data!!)
                     for (process in businessProcessStatuses) {
                         binding.statusesChipGroup.addView(
                             createChip(
@@ -137,6 +142,8 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
                             )
                         )
                     }
+
+                    setupFilterParams()
                 }
                 is NetworkResult.Loading -> {
                 }

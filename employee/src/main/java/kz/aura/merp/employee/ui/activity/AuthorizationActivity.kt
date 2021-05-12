@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +24,7 @@ class AuthorizationActivity : AppCompatActivity() {
     private val mAuthViewModel: AuthViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
     private lateinit var permissions: Permissions
+    private var countryCallingCode: String = CountryCode.values()[0].phoneCode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +32,10 @@ class AuthorizationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Turn off screenshot
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
 
         permissions = Permissions(this, this)
 
@@ -41,8 +47,20 @@ class AuthorizationActivity : AppCompatActivity() {
 
         observeLiveData()
 
-        // Phone number formatter
-        binding.ccp.registerCarrierNumberEditText(binding.phoneNumber)
+        val countryCodes = CountryCode.values().map { "${it.name} (${it.phoneCode})" }
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.list_item,
+            countryCodes)
+        binding.countryCallingCodeText.setText(countryCodes[0])
+        (binding.countryCallingCodeField.editText as? AutoCompleteTextView)?.setAdapter(
+            adapter
+        )
+
+        binding.countryCallingCodeText.setOnItemClickListener { _, _, i, _ ->
+            countryCallingCode = CountryCode.values()[i].phoneCode
+            binding.phoneNumberText.mask = CountryCode.values()[i].format
+        }
     }
 
     private fun observeLiveData() {
@@ -66,7 +84,7 @@ class AuthorizationActivity : AppCompatActivity() {
             }
         })
         mAuthViewModel.userInfoResponse.observe(this, { res ->
-            when(res) {
+            when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
                     if (definePosition(res.data!!) == null) {
@@ -75,7 +93,8 @@ class AuthorizationActivity : AppCompatActivity() {
                         mAuthViewModel.saveSalary(defineCorrectSalary(res.data)!!)
                         // Open PassCode activity for saving code
                         val intent = Intent(this, PassCodeActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                         intent.putExtra("passCodeStatus", PassCodeStatus.CREATE)
                         startActivity(intent)
                     }
@@ -92,13 +111,10 @@ class AuthorizationActivity : AppCompatActivity() {
     }
 
     fun signIn(view: View) {
-        if (binding.ccp.isValidFullNumber) {
-            val phoneNumber = binding.ccp.fullNumberWithPlus
-            val password = binding.password.text.toString()
-            mAuthViewModel.signIn(phoneNumber, password)
-        } else {
-            Toast.makeText(this, getString(R.string.enterValidPhoneNumber), Toast.LENGTH_LONG).show()
-        }
+        val phoneNumber = binding.phoneNumberText.rawText
+        val password = binding.passwordText.text.toString()
+        mAuthViewModel.saveCountryCallingCode(countryCallingCode)
+        mAuthViewModel.signIn(countryCallingCode + phoneNumber, password)
     }
 
     override fun onRequestPermissionsResult(
@@ -109,7 +125,11 @@ class AuthorizationActivity : AppCompatActivity() {
         when (requestCode) {
             Permissions.CAMERA_PERMISSION_REQUEST_CODE -> {
                 if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
-                    Toast.makeText(this, getString(R.string.haveNotAllowedAccessToTheCamera), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.haveNotAllowedAccessToTheCamera),
+                        Toast.LENGTH_LONG
+                    ).show()
                     this.permissions.requestCameraPermission()
                 } else {
                     this.permissions.requestGpsPermission()
@@ -117,7 +137,11 @@ class AuthorizationActivity : AppCompatActivity() {
             }
             Permissions.LOCATION_PERMISSION_REQUEST_CODE -> {
                 if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
-                    Toast.makeText(this, getString(R.string.haveNotAllowedAccessToTheLocation), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.haveNotAllowedAccessToTheLocation),
+                        Toast.LENGTH_LONG
+                    ).show()
                     this.permissions.requestGpsPermission()
                 }
             }

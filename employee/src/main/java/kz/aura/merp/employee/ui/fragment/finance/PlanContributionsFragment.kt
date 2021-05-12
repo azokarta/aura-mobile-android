@@ -58,14 +58,6 @@ class PlanContributionsFragment : Fragment() {
 
         setupObservers()
 
-        binding.addContribution.setOnClickListener {
-            val intent = Intent(requireContext(), AddContributionActivity::class.java)
-            intent.putExtra("contractId", plan.contractId!!)
-            intent.putExtra("clientPhoneNumbers", plan.customerPhoneNumbers!!.toTypedArray())
-            intent.putExtra("businessProcessId", plan.planBusinessProcessId)
-            startActivityForResult(intent, 1);
-        }
-
         mFinanceViewModel.fetchPlanContributions(plan.contractId!!)
 
         // If network is disconnected and user clicks restart, get data again
@@ -129,21 +121,6 @@ class PlanContributionsFragment : Fragment() {
             declareErrorByStatus(res.message, res.status, requireContext())
         }
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                val contributions = data?.getParcelableArrayListExtra<Contribution>("contributions")!!.toCollection(ArrayList<Contribution>())
-                showLoadingOrNoData(false, contributions.isNullOrEmpty())
-                contributionsAdapter.setData(contributions)
-                Snackbar.make(binding.addContribution, R.string.successfullySaved, Snackbar.LENGTH_SHORT)
-                    .show()
-            }
-        }
-    }
-
-
 
     companion object {
         private const val ARG_PARAM1 = "plan"
