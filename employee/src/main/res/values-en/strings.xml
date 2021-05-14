@@ -151,4 +151,7 @@
     <string name="overdue_days">Overdue days</string>
     <string name="deadline_did_not_come">Deadline did not come</string>
     <string name="explanation_about_colors">Explanation about colors</string>
+    <string name="change_result">Change result</string>
+    <string name="daily_plan">Daily plan</string>
+    <string name="add_to_daily_plan">Add to daily plan</string>
 </resources>

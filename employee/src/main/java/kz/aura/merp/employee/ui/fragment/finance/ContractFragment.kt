@@ -18,7 +18,7 @@ import kz.aura.merp.employee.adapter.PhoneNumbersAdapter
 import kz.aura.merp.employee.adapter.StepsAdapter
 import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.databinding.FragmentContractBinding
-import kz.aura.merp.employee.ui.activity.AddContributionActivity
+import kz.aura.merp.employee.ui.activity.ChangeResultActivity
 import kz.aura.merp.employee.ui.activity.IncomingActivity
 import kz.aura.merp.employee.ui.activity.OutgoingActivity
 import kz.aura.merp.employee.util.NetworkResult
@@ -60,8 +60,8 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
         initPhoneNumbers()
 
         binding.addContribution.setOnClickListener {
-            val intent = Intent(requireContext(), AddContributionActivity::class.java)
-            intent.putExtra("contractId", plan.contractId!!)
+            val intent = Intent(requireContext(), ChangeResultActivity::class.java)
+            intent.putExtra("contractId", plan.contractId)
             intent.putExtra("clientPhoneNumbers", plan.customerPhoneNumbers!!.toTypedArray())
             intent.putExtra("businessProcessId", plan.planBusinessProcessId)
             startActivityForResult(intent, contributionRequestCode);
@@ -134,8 +134,8 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
         builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
             progressDialog.showLoading()
             getCurrentLocation { latitude, longitude ->
-                mFinanceViewModel.updateBusinessProcessStep(
-                    plan.contractId!!,
+                mFinanceViewModel.updateBusinessProcess(
+                    plan.contractId,
                     ChangeBusinessProcess(businessProcessStatus.id, latitude, longitude)
                 )
             }
@@ -177,23 +177,23 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 callRequestCode -> {
-                    val calls = data?.getParcelableArrayListExtra<Call>("calls")!!
-                        .toCollection(ArrayList<Call>())
-                    mFinanceViewModel.callsResponse.postValue(NetworkResult.Success(calls))
+                    mFinanceViewModel.fetchLastMonthCallsByContractId(plan.contractId)
+                    showSnackbar(binding.phoneNumbers)
                 }
                 contributionRequestCode -> {
                     val contributions = data?.getParcelableArrayListExtra<Contribution>("contributions")!!.toCollection(ArrayList<Contribution>())
                     mFinanceViewModel.contributionsResponse.postValue(NetworkResult.Success(contributions))
-                    Snackbar.make(
-                        binding.addContribution,
-                        R.string.successfullySaved,
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .show()
+                    showSnackbar(binding.addContribution)
                 }
             }
         }
     }
+
+    private fun showSnackbar(view: View) = Snackbar.make(
+        view,
+        R.string.successfullySaved,
+        Snackbar.LENGTH_SHORT
+    ).show()
 
     override fun incoming(phoneNumber: String) {
         val intent = Intent(binding.root.context, IncomingActivity::class.java)

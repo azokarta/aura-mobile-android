@@ -79,7 +79,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -280,7 +279,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/allOverdueDays"
                     app:layout_constraintStart_toEndOf="@+id/allOverdueDays"
                     app:layout_constraintTop_toTopOf="@+id/allOverdueDays"
-                    app:srcCompat="@drawable/ic_baseline_help_outline_24" />
+                    android:src="@drawable/ic_baseline_help_outline_24" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

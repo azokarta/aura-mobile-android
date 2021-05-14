@@ -16,42 +16,79 @@ class FinanceRemoteDataSource @Inject constructor(
         interceptor.setHost(Link.FINANCE)
     }
 
+
+
+    // Month plan
     suspend fun fetchPlans(): Response<ResponseHelper<ArrayList<Plan>>> {
         return financeApi.fetchPlans()
-    }
-
-    suspend fun updateBusinessProcessStep(contractId: Long, businessProcess: ChangeBusinessProcess): Response<ResponseHelper<Plan>> {
-        return financeApi.updateBusinessProcessStep(contractId, businessProcess)
-    }
-
-    suspend fun fetchBusinessProcessStatuses(): Response<ResponseHelper<ArrayList<BusinessProcessStatus>>> {
-        return financeApi.fetchBusinessProcessStatuses()
     }
 
     suspend fun fetchPaymentSchedule(contractId: Long): Response<ResponseHelper<ArrayList<PaymentSchedule>>> {
         return financeApi.fetchPaymentSchedule(contractId)
     }
 
+
+
+    // Daily plan
+    suspend fun fetchDailyPlan(): Response<ResponseHelper<ArrayList<Plan>>> {
+        return financeApi.fetchDailyPlan()
+    }
+
+    suspend fun updateBusinessProcess(contractId: Long, businessProcess: ChangeBusinessProcess): Response<ResponseHelper<Plan>> {
+        return financeApi.updateBusinessProcessStatus(contractId, businessProcess)
+    }
+
+    suspend fun changeResult(contractId: Long?, plan: ChangePlanResult): Response<ResponseHelper<*>> {
+        return financeApi.changeResult(contractId, plan)
+    }
+
+
+
+    // Contributions
     suspend fun fetchContributions(): Response<ResponseHelper<ArrayList<Contribution>>> {
         return financeApi.fetchContributions()
     }
 
-    suspend fun fetchCalls(): Response<ResponseHelper<ArrayList<Call>>> {
-        return financeApi.fetchCalls()
+    suspend fun fetchContributionsByContractId(contractId: Long): Response<ResponseHelper<ArrayList<Contribution>>> {
+        return financeApi.fetchContributionsByContractId(contractId)
+    }
+
+
+
+    // Calls
+    suspend fun fetchLastMonthCalls(): Response<ResponseHelper<ArrayList<Call>>> {
+        return financeApi.fetchLastMonthCalls()
     }
 
     suspend fun fetchCallHistory(contractId: Long): Response<ResponseHelper<ArrayList<Call>>> {
         return financeApi.fetchCallHistory(contractId)
     }
 
-    suspend fun fetchCallsForMonth(contractId: Long): Response<ResponseHelper<ArrayList<Call>>> {
-        return financeApi.fetchCallsForMonth(contractId)
+    suspend fun fetchLastMonthCallsByContractId(contractId: Long): Response<ResponseHelper<ArrayList<Call>>> {
+        return financeApi.fetchLastMonthCallsByContractId(contractId)
     }
 
-    suspend fun assignCollectMoney(contractId: Long?, plan: ChangePlanResult): Response<ResponseHelper<ArrayList<Contribution>>> {
-        return financeApi.assignCollectMoney(contractId, plan)
+    suspend fun assignIncomingCall(contractId: Long, assignCall: AssignCall): Response<ResponseHelper<*>> {
+        return financeApi.assignIncomingCall(contractId, assignCall)
     }
 
+    suspend fun assignOutgoingCall(contractId: Long, assignCall: AssignCall): Response<ResponseHelper<*>> {
+        return financeApi.assignOutgoingCall(contractId, assignCall)
+    }
+
+
+
+    // Scheduled calls
+    suspend fun fetchLastMonthScheduledCalls(): Response<ResponseHelper<ArrayList<ScheduledCall>>> {
+        return financeApi.fetchLastMonthScheduledCalls()
+    }
+
+    suspend fun fetchScheduledCallsHistory(contractId: Long): Response<ResponseHelper<ArrayList<ScheduledCall>>> {
+        return financeApi.fetchScheduledCallsHistory(contractId)
+    }
+
+
+    // References
     suspend fun fetchBanks(): Response<ResponseHelper<ArrayList<Bank>>> {
         return financeApi.fetchBanks()
     }
@@ -60,12 +97,8 @@ class FinanceRemoteDataSource @Inject constructor(
         return financeApi.fetchPaymentMethods()
     }
 
-    suspend fun fetchPlanResults(): Response<ResponseHelper<ArrayList<PlanResult>>> {
-        return financeApi.fetchPlanResults()
-    }
-
-    suspend fun fetchPlanContributions(contractId: Long): Response<ResponseHelper<ArrayList<Contribution>>> {
-        return financeApi.fetchPlanContributions(contractId)
+    suspend fun fetchBusinessProcessStatuses(): Response<ResponseHelper<ArrayList<BusinessProcessStatus>>> {
+        return financeApi.fetchBusinessProcessStatuses()
     }
 
     suspend fun fetchCallDirections(): Response<ResponseHelper<ArrayList<CallDirection>>> {
@@ -76,15 +109,7 @@ class FinanceRemoteDataSource @Inject constructor(
         return financeApi.fetchCallStatuses()
     }
 
-    suspend fun assignCall(assignCall: AssignCall, contractId: Long): Response<ResponseHelper<ArrayList<Call>>> {
-        return financeApi.assignCall(assignCall, contractId)
-    }
-
-    suspend fun fetchScheduledCalls(): Response<ResponseHelper<ArrayList<ScheduledCall>>> {
-        return financeApi.fetchScheduledCalls()
-    }
-
-    suspend fun fetchScheduledCallsHistory(contractId: Long): Response<ResponseHelper<ArrayList<ScheduledCall>>> {
-        return financeApi.fetchScheduledCallsHistory(contractId)
+    suspend fun fetchPlanResults(): Response<ResponseHelper<ArrayList<PlanResult>>> {
+        return financeApi.fetchPlanResults()
     }
 }

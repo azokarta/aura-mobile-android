@@ -1,12 +1,7 @@
 package kz.aura.merp.employee.ui.activity
 
-import android.content.Context
-import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.*
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -47,6 +42,7 @@ class FinanceActivity : AppCompatActivity() {
 
         val fragments = arrayListOf(
             MonthlyPlanFragment(),
+            DailyPlanFragment(),
             ContributionsFragment(),
             CallsFragment(),
             ScheduledCallsFragment()
@@ -56,9 +52,10 @@ class FinanceActivity : AppCompatActivity() {
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> getString(R.string.monthlyPlan)
-                1 -> getString(R.string.сontributions)
-                2 -> getString(R.string.calls)
-                3 -> getString(R.string.scheduled_calls)
+                1 -> getString(R.string.daily_plan)
+                2 -> getString(R.string.сontributions)
+                3 -> getString(R.string.calls)
+                4 -> getString(R.string.scheduled_calls)
                 else -> null
             }
         }.attach()

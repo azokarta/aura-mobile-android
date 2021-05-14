@@ -108,13 +108,10 @@ class OutgoingActivity : AppCompatActivity() {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
                     val intent = Intent();
-                    intent.putExtra("calls", res.data)
                     setResult(RESULT_OK, intent);
                     finish();
                 }
-                is NetworkResult.Loading -> {
-                    progressDialog.showLoading()
-                }
+                is NetworkResult.Loading -> {}
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
                     declareErrorByStatus(res.message, res.status, this)
@@ -130,25 +127,28 @@ class OutgoingActivity : AppCompatActivity() {
 
 
     private fun save(view: View) {
+        hideKeyboard(this)
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
         val description = binding.descriptionText.text.toString()
-        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
+        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("HH:mm")
         val currentDate: String = dtf.print(DateTime.now())
 
         if (phoneNumber.isNotBlank() && callStatusId != 0L && typedPhoneNumber.length == countryCode.format.length) {
+            progressDialog.showLoading()
+
             SmartLocation.with(this).location().oneFix()
                 .start {
                     val assign = AssignCall(
-                        typedPhoneNumber,
-                        null,
-                        callDirectionId,
-                        currentDate,
-                        duration!!.toString(),
-                        description,
-                        it.longitude,
-                        it.latitude
+                        countryCode = countryCode.name,
+                        phoneNumber = typedPhoneNumber,
+                        callStatusId = callStatusId,
+                        callTime = currentDate,
+                        duration = duration!!.toString(),
+                        description = description,
+                        longitude = it.longitude,
+                        latitude = it.latitude
                     )
-                    mFinanceViewModel.assignCall(assign, contractId)
+                    mFinanceViewModel.assignOutgoingCall(assign, contractId)
                 }
         } else {
             showException(getString(R.string.fill_out_all_fields), this)

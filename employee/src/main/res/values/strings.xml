@@ -161,6 +161,9 @@
     <string name="overdue_days">Просроченные дни</string>
     <string name="deadline_did_not_come">Срок не пришел</string>
     <string name="explanation_about_colors">Объяснение о цветах</string>
+    <string name="change_result">Изменить результат</string>
+    <string name="daily_plan">Ежедневный план</string>
+    <string name="add_to_daily_plan">Добавить в ежедневный план</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>

@@ -153,7 +153,7 @@ class MonthlyPlanFragment : Fragment() {
 
     private fun filterPlans(query: String = "", selectedSearchBy: Int = 0, selectedStatusFilter: Int = 0, selectedSortFilter: Int = 0, problematic: Boolean = false) {
         changeTextsFilter(selectedSortFilter, selectedStatusFilter, query, selectedSearchBy)
-        val filteredPlans = arrayListOf<Plan>().apply { addAll(mFinanceViewModel.plansResponse.value!!.data!!) }
+        val filteredPlans = arrayListOf<Plan>().apply { addAll(mFinanceViewModel.plansResponse.value!!.data!!.take(75)) }
 
         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
 

@@ -1,6 +1,7 @@
 package kz.aura.merp.employee.model
 
 data class ResponseHelper <T> (
-    val success: Boolean,
-    val data: T
+    val data: T,
+    val status: String,
+    val message: String
 )

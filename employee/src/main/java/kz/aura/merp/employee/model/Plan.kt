@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Plan (
-    val contractId: Long? = null,
+    val contractId: Long,
     val contractNumber: Long? = null,
     val contractDate: String? = null,
     val contractCurrencyName: String? = null,

@@ -24,6 +24,15 @@ class BindingAdapters {
             }
         }
 
+        @BindingAdapter("android:showRecyclerView")
+        @JvmStatic
+        fun showRecyclerView(view: View, visibility: Boolean) {
+            when(visibility){
+                true -> view.isVisible = true
+                false -> view.isVisible = false
+            }
+        }
+
         @BindingAdapter("android:visibleFilter")
         @JvmStatic
         fun visibleFilter(view: View, dataIsEmpty: Boolean) {

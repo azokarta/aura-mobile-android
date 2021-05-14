@@ -9,7 +9,6 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -24,7 +23,6 @@ import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import java.util.*
 
 
 @AndroidEntryPoint
@@ -35,7 +33,6 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
     private lateinit var progressDialog: ProgressDialog
     private val mFinanceViewModel: FinanceViewModel by viewModels()
     private lateinit var phoneNumber: String
-    private var callDirectionId: Long = 2L
     private var contractId: Long = 0L
     private var selectedHour: Int? = null
     private var selectedMinute: Int? = null
@@ -77,7 +74,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
 
     private fun save(view: View) {
         val description = binding.descriptionText.text.toString()
-        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
+        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("HH:mm")
         val currentDate: String = dtf.print(DateTime.now())
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
 
@@ -87,16 +84,15 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
             SmartLocation.with(this).location().oneFix()
                 .start {
                     val assign = AssignCall(
-                        typedPhoneNumber,
-                        null,
-                        callDirectionId,
-                        currentDate,
-                        "PT${selectedHour}H${selectedMinute}M",
-                        description,
-                        it.longitude,
-                        it.latitude
+                        countryCode = countryCode.name,
+                        phoneNumber = typedPhoneNumber,
+                        callTime = currentDate,
+                        duration = "PT${selectedHour}H${selectedMinute}M",
+                        description = description,
+                        longitude = it.longitude,
+                        latitude = it.latitude
                     )
-                    mFinanceViewModel.assignCall(assign, contractId)
+                    mFinanceViewModel.assignIncomingCall(assign, contractId)
                 }
         } else {
             showException(getString(R.string.fill_out_all_fields), this)
@@ -121,7 +117,6 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
                     val intent = Intent();
-                    intent.putExtra("calls", res.data)
                     setResult(RESULT_OK, intent);
                     finish();
                 }

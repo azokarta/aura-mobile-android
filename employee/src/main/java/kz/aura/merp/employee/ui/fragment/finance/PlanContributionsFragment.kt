@@ -1,24 +1,17 @@
 package kz.aura.merp.employee.ui.fragment.finance
 
-import android.app.Activity.RESULT_OK
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import io.nlopez.smartlocation.SmartLocation
-import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.ContributionsAdapter
 import kz.aura.merp.employee.databinding.FragmentPlanContributionsBinding
 import kz.aura.merp.employee.model.*
-import kz.aura.merp.employee.ui.activity.AddContributionActivity
 import kz.aura.merp.employee.ui.dialog.*
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.ProgressDialog
@@ -58,12 +51,12 @@ class PlanContributionsFragment : Fragment() {
 
         setupObservers()
 
-        mFinanceViewModel.fetchPlanContributions(plan.contractId!!)
+        mFinanceViewModel.fetchContributionsByContractId(plan.contractId!!)
 
         // If network is disconnected and user clicks restart, get data again
         binding.networkDisconnected.restart.setOnClickListener {
             if (verifyAvailableNetwork(requireContext())) {
-                mFinanceViewModel.fetchPlanContributions(plan.contractId!!)
+                mFinanceViewModel.fetchContributionsByContractId(plan.contractId!!)
                 binding.progressBar.isVisible = true
                 binding.recyclerView.isVisible = true
                 binding.networkDisconnected.root.isVisible = false

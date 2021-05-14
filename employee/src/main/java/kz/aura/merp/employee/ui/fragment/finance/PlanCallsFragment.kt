@@ -27,13 +27,11 @@ class PlanCallsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
-    private lateinit var mSharedViewModel: SharedViewModel
     private val callsAdapter: CallsAdapter by lazy { CallsAdapter() }
     private var contractId: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mSharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         arguments?.let {
             contractId = it.getLong(ARG_PARAM1)
         }
@@ -45,14 +43,13 @@ class PlanCallsFragment : Fragment() {
     ): View {
         _binding = FragmentPlanCallsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.mSharedViewModel = mSharedViewModel
 
         setupRecyclerView()
 
         setupObservers()
 
         // Fetch calls
-        mFinanceViewModel.fetchCallsForMonth(contractId)
+        mFinanceViewModel.fetchLastMonthCallsByContractId(contractId)
 
         // If network is disconnected and user clicks restart, get data again
         binding.networkDisconnected.restart.setOnClickListener {
@@ -99,15 +96,15 @@ class PlanCallsFragment : Fragment() {
             when (res) {
                 is NetworkResult.Success -> {
                     enableToggleButton(true)
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     callsAdapter.setData(res.data!!)
                 }
                 is NetworkResult.Loading -> {
                     enableToggleButton(false)
-                    mSharedViewModel.showLoading()
+                    showLoadingOrNoData(true)
                 }
                 is NetworkResult.Error -> {
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     checkError(res)
                 }
             }
@@ -116,19 +113,29 @@ class PlanCallsFragment : Fragment() {
             when (res) {
                 is NetworkResult.Success -> {
                     enableToggleButton(true)
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     callsAdapter.setData(res.data!!)
                 }
                 is NetworkResult.Loading -> {
                     enableToggleButton(false)
-                    mSharedViewModel.showLoading()
+                    showLoadingOrNoData(true)
                 }
                 is NetworkResult.Error -> {
-                    mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
+                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
                     checkError(res)
                 }
             }
         })
+    }
+
+    private fun showLoadingOrNoData(visibility: Boolean, dataIsEmpty: Boolean = true) {
+        if (visibility) {
+            binding.emptyData = true
+            binding.dataReceived = false
+        } else {
+            binding.emptyData = dataIsEmpty
+            binding.dataReceived = true
+        }
     }
 
     private fun enableToggleButton(bool: Boolean) {

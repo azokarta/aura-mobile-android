@@ -1,13 +1,10 @@
 package kz.aura.merp.employee.ui.activity
 
-import android.R.attr.country
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,24 +13,19 @@ import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.databinding.ActivityAddContributionBinding
+import kz.aura.merp.employee.databinding.ActivityChangeResultBinding
 import kz.aura.merp.employee.model.ChangePlanResult
-import kz.aura.merp.employee.model.Contribution
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 
 @AndroidEntryPoint
-class AddContributionActivity : AppCompatActivity() {
+class ChangeResultActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAddContributionBinding
+    private lateinit var binding: ActivityChangeResultBinding
 
     private val mFinanceViewModel: FinanceViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
-    private val paymentField = "PAYMENT"
-    private val reasonDescriptionField = "REASON_DESCRIPTION"
-    private val amountField = "AMOUNT"
-    private val bankField = "BANK"
     private lateinit var clientPhoneNumbers: Array<String>
 
     private var contractId: Long? = null
@@ -44,14 +36,14 @@ class AddContributionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAddContributionBinding.inflate(layoutInflater)
+        binding = ActivityChangeResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.add_contribution)
+        supportActionBar?.title = getString(R.string.change_result)
 
         // Turn off screenshot
         window.setFlags(
@@ -126,22 +118,22 @@ class AddContributionActivity : AppCompatActivity() {
         val phoneNumber: String = binding.phoneNumberText.text.toString()
         val amount: String? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString()
 
-        SmartLocation.with(this).location().oneFix()
-            .start {
-                mFinanceViewModel.assignCollectMoney(
-                    contractId,
-                    ChangePlanResult(
-                        phoneNumber,
-                        resultId,
-                        reasonDescription,
-                        bankId,
-                        paymentMethodId,
-                        it.longitude,
-                        it.latitude,
-                        amount?.toInt()
-                    )
-                )
-            }
+//        SmartLocation.with(this).location().oneFix()
+//            .start {
+//                mFinanceViewModel.changeResult(
+//                    contractId,
+//                    ChangePlanResult(
+//                        phoneNumber,
+//                        resultId,
+//                        reasonDescription,
+//                        bankId,
+//                        paymentMethodId,
+//                        it.longitude,
+//                        it.latitude,
+//                        amount?.toInt()
+//                    )
+//                )
+//            }
 
     }
 
@@ -219,7 +211,7 @@ class AddContributionActivity : AppCompatActivity() {
                 }
             }
         })
-        mFinanceViewModel.assignCollectMoneyResponse.observe(this, { res ->
+        mFinanceViewModel.changeResultResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()

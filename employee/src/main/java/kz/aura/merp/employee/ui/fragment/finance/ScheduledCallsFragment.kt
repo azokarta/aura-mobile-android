@@ -42,12 +42,12 @@ class ScheduledCallsFragment : Fragment() {
         setupObservers()
 
         // Fetch contributions
-        mFinanceViewModel.fetchScheduledCalls()
+        mFinanceViewModel.fetchLastMonthScheduledCalls()
 
         // If network is disconnected and user clicks restart, get data again
         binding.networkDisconnected.restart.setOnClickListener {
             if (verifyAvailableNetwork(requireContext())) {
-                mFinanceViewModel.fetchContributions()
+                mFinanceViewModel.fetchLastMonthScheduledCalls()
                 binding.progressBar.isVisible = true
                 binding.recyclerView.isVisible = true
                 binding.networkDisconnected.root.isVisible = false
