@@ -28,17 +28,12 @@ class FinanceViewModel @Inject constructor(
 
     val plansResponse: MutableLiveData<NetworkResult<ArrayList<Plan>>> = MutableLiveData()
     val updatedPlanResponse: MutableLiveData<NetworkResult<Plan>> = MutableLiveData()
-    val businessProcessStatusesResponse: MutableLiveData<NetworkResult<ArrayList<BusinessProcessStatus>>> =
-        MutableLiveData()
-    val planResultsResponse: MutableLiveData<NetworkResult<ArrayList<PlanResult>>> =
-        MutableLiveData()
-    val paymentScheduleResponse: MutableLiveData<NetworkResult<ArrayList<PaymentSchedule>>> =
-        MutableLiveData()
+    val businessProcessStatusesResponse: MutableLiveData<NetworkResult<ArrayList<BusinessProcessStatus>>> = MutableLiveData()
+    val planResultsResponse: MutableLiveData<NetworkResult<ArrayList<PlanResult>>> = MutableLiveData()
+    val paymentScheduleResponse: MutableLiveData<NetworkResult<ArrayList<PaymentSchedule>>> = MutableLiveData()
     val banksResponse: MutableLiveData<NetworkResult<ArrayList<Bank>>> = MutableLiveData()
-    val paymentMethodsResponse: MutableLiveData<NetworkResult<ArrayList<PaymentMethod>>> =
-        MutableLiveData()
-    val contributionsResponse: MutableLiveData<NetworkResult<ArrayList<Contribution>>> =
-        MutableLiveData()
+    val paymentMethodsResponse: MutableLiveData<NetworkResult<ArrayList<PaymentMethod>>> = MutableLiveData()
+    val contributionsResponse: MutableLiveData<NetworkResult<ArrayList<Contribution>>> = MutableLiveData()
     val callsHistoryResponse: MutableLiveData<NetworkResult<ArrayList<Call>>> = MutableLiveData()
     val changeResultResponse: MutableLiveData<NetworkResult<Boolean>> = MutableLiveData()
     val callDirectionsResponse: MutableLiveData<NetworkResult<ArrayList<CallDirection>>> = MutableLiveData()

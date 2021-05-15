@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".ui.activity.DailyPlanActivity"></activity>
 
         <service android:name=".util.BackgroundService" />
         <service
@@ -43,7 +44,8 @@
             android:name=".ui.activity.IncomingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible" />
-        <activity android:name=".ui.activity.OutgoingActivity"
+        <activity
+            android:name=".ui.activity.OutgoingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity

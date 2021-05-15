@@ -30,7 +30,6 @@ class OutgoingActivity : AppCompatActivity() {
     private lateinit var progressDialog: ProgressDialog
     private val mFinanceViewModel: FinanceViewModel by viewModels()
     private lateinit var phoneNumber: String
-    private var callDirectionId: Long = 1L
     private var contractId: Long = 0L
     private var callStatusId: Long = 0L
     private var duration: Duration? = null

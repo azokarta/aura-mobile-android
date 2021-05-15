@@ -37,8 +37,8 @@ class PlanActivity : AppCompatActivity() {
         val fragments = arrayListOf(
             ContractFragment.newInstance(plan),
             PlanContributionsFragment.newInstance(plan),
-            PlanPaymentScheduleFragment.newInstance(plan.contractId!!, plan.contractCurrencyName!!),
-            PlanCallsFragment.newInstance(plan.contractId!!)
+            PlanPaymentScheduleFragment.newInstance(plan.contractId, plan.contractCurrencyName!!),
+            PlanCallsFragment.newInstance(plan.contractId)
         )
 
         binding.viewPager.adapter = PagerAdapter(this, fragments)

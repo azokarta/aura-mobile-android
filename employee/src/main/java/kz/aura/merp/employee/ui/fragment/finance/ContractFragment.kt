@@ -28,13 +28,12 @@ import kz.aura.merp.employee.view.OnSelectPhoneNumber
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 @AndroidEntryPoint
-class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListener, OnSelectPhoneNumber {
+class ContractFragment : Fragment(), OnSelectPhoneNumber {
 
     private var _binding: FragmentContractBinding? = null
     private val binding get() = _binding!!
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
     private lateinit var plan: Plan
-    private val stepsAdapter: StepsAdapter by lazy { StepsAdapter(this) }
     private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
     private lateinit var progressDialog: ProgressDialog
 
@@ -56,16 +55,7 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(requireContext())
 
-        initStepView()
         initPhoneNumbers()
-
-        binding.addContribution.setOnClickListener {
-            val intent = Intent(requireContext(), ChangeResultActivity::class.java)
-            intent.putExtra("contractId", plan.contractId)
-            intent.putExtra("clientPhoneNumbers", plan.customerPhoneNumbers!!.toTypedArray())
-            intent.putExtra("businessProcessId", plan.planBusinessProcessId)
-            startActivityForResult(intent, contributionRequestCode);
-        }
 
         // Observe MutableLiveData
         setObserve()
@@ -96,68 +86,11 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
                 }
             }
         })
-        mFinanceViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
-            when (res) {
-                is NetworkResult.Success -> {
-                    progressDialog.hideLoading()
-                    stepsAdapter.setData(res.data!!)
-                }
-                is NetworkResult.Loading -> progressDialog.showLoading()
-                is NetworkResult.Error -> {
-                    progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, requireContext())
-                }
-            }
-        })
-    }
-
-    private fun initStepView() {
-        binding.stepsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.stepsRecyclerView.adapter = stepsAdapter
-        binding.stepsRecyclerView.isNestedScrollingEnabled = false
-        plan.planBusinessProcessId?.let { stepsAdapter.setStep(it) }
-    }
-
-    override fun stepCompleted(businessProcessStatus: BusinessProcessStatus) {
-        confirmStepAlertDialog(businessProcessStatus)
-    }
-
-    private fun confirmStepAlertDialog(businessProcessStatus: BusinessProcessStatus) {
-        val builder = AlertDialog.Builder(requireContext())
-
-        builder.setTitle(getString(R.string.reallyWantToChangeStatusOfPlan))
-
-        builder.setNegativeButton(getString(R.string.no)) { dialog, _ ->
-            stepsAdapter.setStep(plan.planBusinessProcessId)
-            dialog.dismiss()
-        }
-        builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-            progressDialog.showLoading()
-            getCurrentLocation { latitude, longitude ->
-                mFinanceViewModel.updateBusinessProcess(
-                    plan.contractId,
-                    ChangeBusinessProcess(businessProcessStatus.id, latitude, longitude)
-                )
-            }
-        }
-        builder.setOnCancelListener {
-            stepsAdapter.setStep(plan.planBusinessProcessId)
-        }
-
-        builder.create().show()
-    }
-
-    private fun getCurrentLocation(callback: (latitude: Double, longitude: Double) -> Unit) {
-        SmartLocation.with(requireContext()).location().oneFix()
-            .start {
-                callback.invoke(it.latitude, it.longitude)
-            }
     }
 
     companion object {
         private const val ARG_PARAM1 = "plan"
         private const val callRequestCode = 1000
-        private const val contributionRequestCode = 2000
 
         @JvmStatic
         fun newInstance(plan: Plan) =
@@ -172,6 +105,7 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
         super.onDestroyView()
         _binding = null
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -179,11 +113,6 @@ class ContractFragment : Fragment(), StepsAdapter.Companion.CompletedStepListene
                 callRequestCode -> {
                     mFinanceViewModel.fetchLastMonthCallsByContractId(plan.contractId)
                     showSnackbar(binding.phoneNumbers)
-                }
-                contributionRequestCode -> {
-                    val contributions = data?.getParcelableArrayListExtra<Contribution>("contributions")!!.toCollection(ArrayList<Contribution>())
-                    mFinanceViewModel.contributionsResponse.postValue(NetworkResult.Success(contributions))
-                    showSnackbar(binding.addContribution)
                 }
             }
         }

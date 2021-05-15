@@ -118,22 +118,22 @@ class ChangeResultActivity : AppCompatActivity() {
         val phoneNumber: String = binding.phoneNumberText.text.toString()
         val amount: String? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString()
 
-//        SmartLocation.with(this).location().oneFix()
-//            .start {
-//                mFinanceViewModel.changeResult(
-//                    contractId,
-//                    ChangePlanResult(
-//                        phoneNumber,
-//                        resultId,
-//                        reasonDescription,
-//                        bankId,
-//                        paymentMethodId,
-//                        it.longitude,
-//                        it.latitude,
-//                        amount?.toInt()
-//                    )
-//                )
-//            }
+        SmartLocation.with(this).location().oneFix()
+            .start {
+                mFinanceViewModel.changeResult(
+                    contractId,
+                    ChangePlanResult(
+                        phoneNumber,
+                        resultId,
+                        reasonDescription,
+                        bankId,
+                        paymentMethodId,
+                        it.longitude,
+                        it.latitude,
+                        amount?.toInt()
+                    )
+                )
+            }
 
     }
 
