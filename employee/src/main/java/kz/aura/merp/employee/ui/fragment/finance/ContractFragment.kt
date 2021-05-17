@@ -58,7 +58,7 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber {
         initPhoneNumbers()
 
         // Observe MutableLiveData
-        setObserve()
+        setObservers()
 
         mFinanceViewModel.fetchBusinessProcessStatuses()
 
@@ -71,7 +71,7 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber {
         phoneNumbersAdapter.setData(plan.customerPhoneNumbers)
     }
 
-    private fun setObserve() {
+    private fun setObservers() {
         mFinanceViewModel.updatedPlanResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {

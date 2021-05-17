@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +22,9 @@ import kz.aura.merp.employee.databinding.FragmentMonthlyPlanBinding
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.ui.activity.SettingsActivity
 import kz.aura.merp.employee.ui.dialog.PlanFilterDialogFragment
+import kz.aura.merp.employee.ui.dialog.TimePickerFragment
 import kz.aura.merp.employee.util.NetworkResult
+import kz.aura.merp.employee.util.ProgressDialog
 import kz.aura.merp.employee.util.declareErrorByStatus
 import kz.aura.merp.employee.util.verifyAvailableNetwork
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
@@ -36,15 +39,17 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class MonthlyPlanFragment : Fragment() {
+class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerFragment.TimePickerListener {
 
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
     private val mFilterViewModel: PlanFilterViewModel by activityViewModels()
     private lateinit var mSharedViewModel: SharedViewModel
-    private val plansAdapter: PlanAdapter by lazy { PlanAdapter() }
+    private val plansAdapter: PlanAdapter by lazy { PlanAdapter(this) }
     private var _binding: FragmentMonthlyPlanBinding? = null
     private val binding get() = _binding!!
     private var nextTime: Date? = null
+    private lateinit var progressDialog: ProgressDialog
+    private var clickedContractId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +65,9 @@ class MonthlyPlanFragment : Fragment() {
         binding.mSharedViewModel = mSharedViewModel
 
         setHasOptionsMenu(true)
+
+        // Initialize Loading Dialog
+        progressDialog = ProgressDialog(requireContext())
 
         // Setup RecyclerView
         setupRecyclerView()
@@ -104,10 +112,22 @@ class MonthlyPlanFragment : Fragment() {
         return binding.root
     }
 
+    override fun sendToDailyPlan(contractId: Long) {
+        clickedContractId = contractId
+        val timePicker = TimePickerFragment(this)
+        timePicker.show(childFragmentManager)
+    }
+
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = plansAdapter
         binding.recyclerView.isNestedScrollingEnabled = false
+    }
+
+    override fun onPositiveButtonClick(hour: Int, minute: Int) {
+        clickedContractId?.let {
+            mFinanceViewModel.createDailyPlan(it, "$hour:$minute")
+        }
     }
 
     private fun observeLiveData() {
@@ -133,6 +153,20 @@ class MonthlyPlanFragment : Fragment() {
                 params.problematic
             )
         })
+        mFinanceViewModel.createDailyPlanResponse.observe(viewLifecycleOwner, { res ->
+            when (res) {
+                is NetworkResult.Success -> {
+                    progressDialog.hideLoading()
+                    showSnackbar(binding.recyclerView)
+                    mFinanceViewModel.fetchDailyPlan()
+                }
+                is NetworkResult.Loading -> progressDialog.showLoading()
+                is NetworkResult.Error -> {
+                    progressDialog.hideLoading()
+                    checkError(res)
+                }
+            }
+        })
     }
 
     private fun changeTextsFilter(selectedSortFilter: Int, selectedStatusFilter: Int, query: String, selectedSearchBy: Int) {
@@ -153,7 +187,7 @@ class MonthlyPlanFragment : Fragment() {
 
     private fun filterPlans(query: String = "", selectedSearchBy: Int = 0, selectedStatusFilter: Int = 0, selectedSortFilter: Int = 0, problematic: Boolean = false) {
         changeTextsFilter(selectedSortFilter, selectedStatusFilter, query, selectedSearchBy)
-        val filteredPlans = arrayListOf<Plan>().apply { addAll(mFinanceViewModel.plansResponse.value!!.data!!.take(75)) }
+        val filteredPlans = arrayListOf<Plan>().apply { addAll(mFinanceViewModel.plansResponse.value!!.data!!) }
 
         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
 
@@ -278,6 +312,7 @@ class MonthlyPlanFragment : Fragment() {
     private fun <T> checkError(res: NetworkResult.Error<T>) {
         if (!verifyAvailableNetwork(requireContext())) {
             binding.networkDisconnected.root.isVisible = true
+            binding.recyclerView.isVisible = false
         } else {
             declareErrorByStatus(res.message, res.status, requireContext())
         }
@@ -298,6 +333,12 @@ class MonthlyPlanFragment : Fragment() {
         inflater.inflate(R.menu.update_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
+
+    private fun showSnackbar(view: View) = Snackbar.make(
+        view,
+        R.string.successfullySaved,
+        Snackbar.LENGTH_SHORT
+    ).show()
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

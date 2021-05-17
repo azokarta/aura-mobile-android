@@ -16,8 +16,8 @@ interface FinanceApi {
     @POST("/month_plan/{contractId}/create_daily_plan")
     suspend fun createDailyPlan(
         @Path("contractId") contractId: Long,
-        @Query("planTime ") planTime: String
-    ): Response<ResponseHelper<Plan>>
+        @Query("planTime") planTime: String
+    ): Response<ResponseHelper<*>>
 
 
 

@@ -108,6 +108,7 @@ class CallsFragment : Fragment() {
     private fun <T> checkError(res: NetworkResult.Error<T>) {
         if (!verifyAvailableNetwork(requireContext())) {
             binding.networkDisconnected.root.isVisible = true
+            binding.recyclerView.isVisible = false
         } else {
             declareErrorByStatus(res.message, res.status, requireContext())
         }

@@ -198,9 +198,9 @@ fun declareErrorByStatus(message: String?, status: Int? = null, context: Context
                 clearPreviousAndOpenActivity(context, AuthorizationActivity())
             }
         }
-        400 -> showException(message, context, "Bad request")
-        500 -> showException(message, context, "Internal server error")
-        404 -> showException(message, context, "Not Found")
+        400 -> showException(message, context, context.getString(R.string.bad_request))
+        500 -> showException(message, context, context.getString(R.string.internal_server_error))
+        404 -> showException(message, context, context.getString(R.string.not_found))
         else -> showException(message, context)
     }
 }

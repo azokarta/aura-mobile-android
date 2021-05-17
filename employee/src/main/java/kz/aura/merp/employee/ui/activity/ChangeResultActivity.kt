@@ -2,6 +2,7 @@ package kz.aura.merp.employee.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -14,13 +15,19 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityChangeResultBinding
+import kz.aura.merp.employee.model.AssignCollectMoneyCommand
+import kz.aura.merp.employee.model.AssignScheduledCallCommand
 import kz.aura.merp.employee.model.ChangePlanResult
+import kz.aura.merp.employee.ui.dialog.DatePickerFragment
+import kz.aura.merp.employee.ui.dialog.TimePickerFragment
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 
 
 @AndroidEntryPoint
-class ChangeResultActivity : AppCompatActivity() {
+class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener {
 
     private lateinit var binding: ActivityChangeResultBinding
 
@@ -33,6 +40,9 @@ class ChangeResultActivity : AppCompatActivity() {
     private var paymentMethodId: Long? = null
     private var bankId: Long? = null
     private var businessProcessId: Long? = null
+    private var selectedHour: Int? = null
+    private var selectedMinute: Int? = null
+    private var countryCode: CountryCode = CountryCode.KZ
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,17 +71,19 @@ class ChangeResultActivity : AppCompatActivity() {
         setObservers()
 
         mFinanceViewModel.fetchPlanResults()
+        mFinanceViewModel.getCountryCode()
 
         setupAutocompleteText(clientPhoneNumbers.toList(), binding.phoneNumberField)
 
         binding.resultText.setOnItemClickListener { _, _, i, _ ->
             resultId = mFinanceViewModel.planResultsResponse.value!!.data!![i].id
             clearChilds(Field.RESULT)
-            when (i) {
-                0, 2, 3 -> {
+            when (resultId) {
+                1L, 4L -> {
                     visibleField(Field.REASON_DESCRIPTION)
                 }
-                1 -> {
+                3L -> visibleField(Field.RESCHEDULED)
+                2L -> {
                     visibleField(Field.PAYMENT)
                     fetchPaymentMethods()
                 }
@@ -81,12 +93,12 @@ class ChangeResultActivity : AppCompatActivity() {
         binding.paymentMethodText.setOnItemClickListener { _, _, i, _ ->
             paymentMethodId = mFinanceViewModel.paymentMethodsResponse.value!!.data!![i].id
             clearChilds(Field.PAYMENT)
-            when (i) {
-                0, 2 -> {
+            when (paymentMethodId) {
+                3L, 2L  -> {
                     visibleField(Field.BANK)
                     fetchBanks()
                 }
-                1, 3 -> {
+                1L, 4L -> {
                     visibleField(Field.AMOUNT)
                 }
             }
@@ -110,31 +122,67 @@ class ChangeResultActivity : AppCompatActivity() {
                 }
             }
         }
+        binding.selectTimeBtn.setOnClickListener(::showTimePicker)
+        binding.selectDateBtn.setOnClickListener(::showDatePicker)
     }
-
+    private fun showDatePicker(view: View) {
+        val datePicker = DatePickerFragment(this)
+        datePicker.show(supportFragmentManager)
+    }
     private fun save() {
         progressDialog.showLoading()
-        val reasonDescription: String? = if (binding.reasonDescriptionText.text.toString().isBlank()) null else binding.reasonDescriptionText.text.toString()
+        val reasonDescription: String = binding.reasonDescriptionText.text.toString()
         val phoneNumber: String = binding.phoneNumberText.text.toString()
-        val amount: String? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString()
+        val amount: Int? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString().toInt()
+        val dtf = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")
+        val scheduledDateTime = dtf.parseDateTime()
 
         SmartLocation.with(this).location().oneFix()
             .start {
-                mFinanceViewModel.changeResult(
-                    contractId,
-                    ChangePlanResult(
-                        phoneNumber,
-                        resultId,
-                        reasonDescription,
-                        bankId,
-                        paymentMethodId,
-                        it.longitude,
-                        it.latitude,
-                        amount?.toInt()
-                    )
-                )
+                when (resultId) {
+                    3L -> {
+                        mFinanceViewModel.changeResult(
+                            contractId,
+                            ChangePlanResult(
+                                resultId,
+                                reasonDescription,
+                                it.longitude,
+                                it.latitude,
+                                null,
+                                AssignScheduledCallCommand(phoneNumber, countryCode.name, it.longitude, it.latitude, scheduledDateTime, reasonDescription)
+                            )
+                        )
+                    }
+                    else -> {
+                        mFinanceViewModel.changeResult(
+                            contractId,
+                            ChangePlanResult(
+                                resultId,
+                                reasonDescription,
+                                it.longitude,
+                                it.latitude,
+                                AssignCollectMoneyCommand(phoneNumber, bankId, paymentMethodId, amount, countryCode.name, it.longitude, it.latitude)
+                            )
+                        )
+                    }
+
+                }
+
+
             }
 
+    }
+
+    private fun showTimePicker(view: View) {
+        val timePicker = TimePickerFragment(this, selectedHour, selectedMinute)
+        timePicker.show(supportFragmentManager)
+    }
+
+    override fun onPositiveButtonClick(hour: Int, minute: Int) {
+        selectedHour = hour
+        selectedMinute = minute
+        val time = "$hour:$minute"
+        binding.selectTimeBtn.text = time
     }
 
     private fun validation(): Boolean {
@@ -150,6 +198,8 @@ class ChangeResultActivity : AppCompatActivity() {
                 }
                 else -> false
             }
+        } else if (resultId == 3L) {
+            !(selectedHour == null && selectedMinute == null)
         } else resultId != null
     }
 
@@ -220,12 +270,16 @@ class ChangeResultActivity : AppCompatActivity() {
                     setResult(RESULT_OK, intent);
                     finish();
                 }
-                is NetworkResult.Loading -> {}
+                is NetworkResult.Loading -> {
+                }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
                     declareErrorByStatus(res.message, res.status, this)
                 }
             }
+        })
+        mFinanceViewModel.countryCode.observe(this, { countryCode ->
+            this.countryCode = countryCode
         })
     }
 
@@ -244,6 +298,15 @@ class ChangeResultActivity : AppCompatActivity() {
                 binding.amountField.isVisible = false
                 binding.bankField.isVisible = false
                 binding.phoneNumberField.isVisible = false
+                binding.selectTimeBtn.isVisible = false
+            }
+            Field.RESCHEDULED -> {
+                binding.selectTimeBtn.isVisible = true
+                binding.reasonDescriptionField.isVisible = true
+                binding.paymentMethodField.isVisible = false
+                binding.amountField.isVisible = false
+                binding.bankField.isVisible = false
+                binding.phoneNumberField.isVisible = false
             }
             Field.PAYMENT -> {
                 binding.paymentMethodField.isVisible = true
@@ -251,12 +314,14 @@ class ChangeResultActivity : AppCompatActivity() {
                 binding.bankField.isVisible = false
                 binding.reasonDescriptionField.isVisible = false
                 binding.phoneNumberField.isVisible = false
+                binding.selectTimeBtn.isVisible = false
             }
             Field.AMOUNT -> {
                 binding.amountField.isVisible = true
                 binding.paymentMethodField.isVisible = true
                 binding.reasonDescriptionField.isVisible = false
                 binding.phoneNumberField.isVisible = true
+                binding.selectTimeBtn.isVisible = false
                 binding.bankField.isVisible = !(paymentMethodId == 1L || paymentMethodId == 4L)
             }
             Field.BANK -> {
@@ -265,6 +330,7 @@ class ChangeResultActivity : AppCompatActivity() {
                 binding.reasonDescriptionField.isVisible = false
                 binding.amountField.isVisible = false
                 binding.phoneNumberField.isVisible = false
+                binding.selectTimeBtn.isVisible = false
             }
         }
     }
@@ -277,7 +343,10 @@ class ChangeResultActivity : AppCompatActivity() {
                 binding.amountText.setText("")
                 binding.phoneNumberText.setText("")
                 binding.reasonDescriptionText.setText("")
+                binding.selectTimeBtn.text = getString(R.string.date)
 
+                selectedHour = null
+                selectedMinute = null
                 paymentMethodId = null
                 bankId = null
             }
@@ -296,7 +365,7 @@ class ChangeResultActivity : AppCompatActivity() {
     }
 
     enum class Field {
-        REASON_DESCRIPTION, PAYMENT, AMOUNT, BANK, RESULT
+        REASON_DESCRIPTION, PAYMENT, AMOUNT, BANK, RESULT, RESCHEDULED
     }
 
     override fun onSupportNavigateUp(): Boolean {

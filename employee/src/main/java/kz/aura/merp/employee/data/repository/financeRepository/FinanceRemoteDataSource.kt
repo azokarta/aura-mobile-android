@@ -27,6 +27,10 @@ class FinanceRemoteDataSource @Inject constructor(
         return financeApi.fetchPaymentSchedule(contractId)
     }
 
+    suspend fun createDailyPlan(contractId: Long, planTime: String): Response<ResponseHelper<*>> {
+        return financeApi.createDailyPlan(contractId, planTime)
+    }
+
 
 
     // Daily plan

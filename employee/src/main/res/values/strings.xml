@@ -164,6 +164,10 @@
     <string name="change_result">Изменить результат</string>
     <string name="daily_plan">Ежедневный план</string>
     <string name="add_to_daily_plan">Добавить в ежедневный план</string>
+    <string name="bad_request">Плохой запрос</string>
+    <string name="internal_server_error">Внутренняя ошибка сервера</string>
+    <string name="not_found">Не найдено</string>
+    <string name="select_date">Выберите дату</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>

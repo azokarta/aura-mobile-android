@@ -154,4 +154,8 @@
     <string name="change_result">Change result</string>
     <string name="daily_plan">Daily plan</string>
     <string name="add_to_daily_plan">Add to daily plan</string>
+    <string name="bad_request">Bad request</string>
+    <string name="internal_server_error">Internal server error</string>
+    <string name="not_found">Not Found</string>
+    <string name="select_date">Select a date</string>
 </resources>

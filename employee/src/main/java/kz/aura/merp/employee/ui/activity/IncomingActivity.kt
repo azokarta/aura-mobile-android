@@ -63,13 +63,13 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
 
         setupObservers()
 
+        mFinanceViewModel.getCountryCode()
+
         binding.save.setOnClickListener(::save)
 
         binding.selectTimeBtn.setOnClickListener {
             showTimePicker()
         }
-
-        binding.phoneNumberText.setText(phoneNumber)
     }
 
     private fun save(view: View) {
@@ -130,6 +130,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
         mFinanceViewModel.countryCode.observe(this, { countryCode ->
             this.countryCode = countryCode
             binding.phoneNumberText.mask = countryCode.format
+            binding.phoneNumberText.setText(phoneNumber)
         })
     }
 

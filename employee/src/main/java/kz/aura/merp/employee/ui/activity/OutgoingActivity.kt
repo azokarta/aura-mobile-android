@@ -44,6 +44,7 @@ class OutgoingActivity : AppCompatActivity() {
 
         contractId = intent.getLongExtra("contractId", 0L)
         phoneNumber = intent.getStringExtra("phoneNumber")!!
+        println(phoneNumber)
 
         // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -67,8 +68,6 @@ class OutgoingActivity : AppCompatActivity() {
         binding.callStatusText.setOnItemClickListener { _, _, i, _ ->
             callStatusId = mFinanceViewModel.callStatusesResponse.value!!.data!![i].id
         }
-
-        binding.phoneNumberText.setText(phoneNumber)
 
         setupObservers()
 
@@ -121,6 +120,7 @@ class OutgoingActivity : AppCompatActivity() {
         mFinanceViewModel.countryCode.observe(this, { countryCode ->
             this.countryCode = countryCode
             binding.phoneNumberText.mask = countryCode.format
+            binding.phoneNumberText.setText(phoneNumber)
         })
     }
 

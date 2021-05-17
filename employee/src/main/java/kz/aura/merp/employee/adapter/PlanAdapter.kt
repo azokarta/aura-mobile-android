@@ -11,9 +11,12 @@ import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.databinding.PlanRowBinding
 import kz.aura.merp.employee.util.MobDiffUtil
 
-class PlanAdapter : RecyclerView.Adapter<PlanAdapter.FinanceViewHolder>() {
-
+class PlanAdapter(private val onClickListener: OnClickListener? = null) : RecyclerView.Adapter<PlanAdapter.FinanceViewHolder>() {
     var dataList = mutableListOf<Plan>()
+
+    interface OnClickListener {
+        fun sendToDailyPlan(contractId: Long) {}
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinanceViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -41,7 +44,7 @@ class PlanAdapter : RecyclerView.Adapter<PlanAdapter.FinanceViewHolder>() {
 
     override fun getItemCount(): Int = dataList.size
 
-    class FinanceViewHolder(private val binding: PlanRowBinding) :
+    inner class FinanceViewHolder(private val binding: PlanRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(plan: Plan) {
             val textColor: Int = when {
@@ -60,6 +63,10 @@ class PlanAdapter : RecyclerView.Adapter<PlanAdapter.FinanceViewHolder>() {
             binding.paymentOverdueDays.setTextColor(textColor)
             binding.executePendingBindings()
             displayPaymentMethodIcons(plan)
+
+            binding.toDailyPlan.setOnClickListener {
+                onClickListener?.sendToDailyPlan(plan.contractId)
+            }
         }
 
         private fun displayPaymentMethodIcons(plan: Plan) {

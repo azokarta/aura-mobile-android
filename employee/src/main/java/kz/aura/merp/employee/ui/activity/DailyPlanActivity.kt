@@ -9,8 +9,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
+import kz.aura.merp.employee.adapter.PhoneNumbersAdapter
 import kz.aura.merp.employee.adapter.StepsAdapter
 import kz.aura.merp.employee.databinding.ActivityDailyPlanBinding
 import kz.aura.merp.employee.model.BusinessProcessStatus
@@ -20,9 +22,11 @@ import kz.aura.merp.employee.ui.fragment.finance.ContractFragment
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.ProgressDialog
 import kz.aura.merp.employee.util.declareErrorByStatus
+import kz.aura.merp.employee.view.OnSelectPhoneNumber
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
-class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepListener {
+@AndroidEntryPoint
+class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepListener, OnSelectPhoneNumber {
 
     private lateinit var binding: ActivityDailyPlanBinding
 
@@ -30,6 +34,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     private val stepsAdapter: StepsAdapter by lazy { StepsAdapter(this) }
     private val mFinanceViewModel: FinanceViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
+    private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,13 +57,26 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
 
         initStepView()
 
-        binding.addContribution.setOnClickListener {
+        initPhoneNumbers()
+
+        // Observe MutableLiveData
+        setupObservers()
+
+        mFinanceViewModel.fetchBusinessProcessStatuses()
+
+        binding.changeResult.setOnClickListener {
             val intent = Intent(this, ChangeResultActivity::class.java)
             intent.putExtra("contractId", plan.contractId)
-            intent.putExtra("clientPhoneNumbers", plan.customerPhoneNumbers!!.toTypedArray())
+            intent.putExtra("clientPhoneNumbers", plan.customerPhoneNumbers.toTypedArray())
             intent.putExtra("businessProcessId", plan.planBusinessProcessId)
             startActivityForResult(intent, changeResultRequestCode);
         }
+    }
+
+    private fun initPhoneNumbers() {
+        binding.phoneNumbers.layoutManager = LinearLayoutManager(this)
+        binding.phoneNumbers.adapter = phoneNumbersAdapter
+        phoneNumbersAdapter.setData(plan.customerPhoneNumbers)
     }
 
     private fun setupObservers() {
@@ -141,5 +159,20 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
 
     companion object {
         const val changeResultRequestCode = 2000
+        private const val callRequestCode = 1000
+    }
+
+    override fun incoming(phoneNumber: String) {
+        val intent = Intent(binding.root.context, IncomingActivity::class.java)
+        intent.putExtra("phoneNumber", phoneNumber)
+        intent.putExtra("contractId", plan.contractId)
+        startActivityForResult(intent, callRequestCode);
+    }
+
+    override fun outgoing(phoneNumber: String) {
+        val intent = Intent(binding.root.context, OutgoingActivity::class.java)
+        intent.putExtra("phoneNumber", phoneNumber)
+        intent.putExtra("contractId", plan.contractId)
+        startActivityForResult(intent, callRequestCode);
     }
 }

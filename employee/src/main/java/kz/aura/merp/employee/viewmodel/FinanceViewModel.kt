@@ -44,6 +44,7 @@ class FinanceViewModel @Inject constructor(
     val staffUsername: MutableLiveData<String> = MutableLiveData()
     val countryCode: MutableLiveData<CountryCode> = MutableLiveData()
     val dailyPlanResponse: MutableLiveData<NetworkResult<ArrayList<Plan>>> = MutableLiveData()
+    val createDailyPlanResponse: MutableLiveData<NetworkResult<Boolean>> = MutableLiveData()
 
     fun getCountryCode() = scope.launch {
         dataStoreRepository.countryCodeFlow.collect { value ->
@@ -68,6 +69,26 @@ class FinanceViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             plansResponse.postValue(NetworkResult.Error(e.message))
+        }
+    }
+
+    fun createDailyPlan(contractId: Long, planTime: String) = scope.launch {
+        createDailyPlanResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.createDailyPlan(contractId, planTime)
+
+            if (response.isSuccessful) {
+                createDailyPlanResponse.postValue(NetworkResult.Success(true))
+            } else {
+                createDailyPlanResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            createDailyPlanResponse.postValue(NetworkResult.Error(e.message))
         }
     }
 
@@ -246,6 +267,7 @@ class FinanceViewModel @Inject constructor(
 
     fun changeResult(contractId: Long?, plan: ChangePlanResult) = scope.launch {
         changeResultResponse.postValue(NetworkResult.Loading())
+        println("Contract: $contractId, Plan: $plan")
         try {
             val response = financeRepository.remote.changeResult(contractId, plan)
 

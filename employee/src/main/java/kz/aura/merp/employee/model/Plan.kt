@@ -20,7 +20,7 @@ data class Plan (
     val customerFirstname: String? = null,
     val customerMiddlename: String? = null,
     val customerLastname: String? = null,
-    val customerPhoneNumbers: List<String?>? = null,
+    val customerPhoneNumbers: List<String>,
     val customerAddressId: Long? = null,
     val customerAddress: String? = null,
     val planLongitude: Double? = null,
