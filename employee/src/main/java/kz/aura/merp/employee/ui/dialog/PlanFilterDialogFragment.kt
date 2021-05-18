@@ -133,6 +133,7 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
         mFinanceViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
+                    println("RES: ${res.data}")
                     businessProcessStatuses.addAll(res.data!!)
                     for (process in businessProcessStatuses) {
                         binding.statusesChipGroup.addView(

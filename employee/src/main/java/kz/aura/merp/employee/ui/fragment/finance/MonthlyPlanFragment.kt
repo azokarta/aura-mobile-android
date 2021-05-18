@@ -32,6 +32,7 @@ import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 import org.joda.time.DateTime
 import org.joda.time.DateTimeComparator
+import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.DateTimeParser
@@ -47,7 +48,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
     private val plansAdapter: PlanAdapter by lazy { PlanAdapter(this) }
     private var _binding: FragmentMonthlyPlanBinding? = null
     private val binding get() = _binding!!
-    private var nextTime: Date? = null
+    private var updateTime: DateTime? = null
     private lateinit var progressDialog: ProgressDialog
     private var clickedContractId: Long? = null
 
@@ -64,8 +65,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         binding.lifecycleOwner = this
         binding.mSharedViewModel = mSharedViewModel
 
-        setHasOptionsMenu(true)
-
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(requireContext())
 
@@ -76,8 +75,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         binding.networkDisconnected.restart.setOnClickListener {
             if (verifyAvailableNetwork(requireContext())) {
                 mFinanceViewModel.fetchPlans() // fetch clients
-                binding.progressBar.isVisible = true
-                binding.recyclerView.isVisible = true
                 binding.networkDisconnected.root.isVisible = false
             }
         }
@@ -93,8 +90,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
 
         observeLiveData()
 
-        mFinanceViewModel.fetchPlans()
-        mFinanceViewModel.fetchBusinessProcessStatuses()
+        callRequests()
 
         // Receive token of FCM
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
@@ -109,7 +105,20 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
 
         setMinuteForUpdate()
 
+        binding.swiperefresh.setOnRefreshListener {
+            updatePlans()
+        }
+
         return binding.root
+    }
+
+    private fun callRequests() {
+        val plans = mFinanceViewModel.plansResponse.value?.data
+        val businessProcesses = mFinanceViewModel.plansResponse.value?.data
+        when {
+            plans.isNullOrEmpty() -> mFinanceViewModel.fetchPlans()
+            businessProcesses.isNullOrEmpty() -> mFinanceViewModel.fetchBusinessProcessStatuses()
+        }
     }
 
     override fun sendToDailyPlan(contractId: Long) {
@@ -124,7 +133,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         binding.recyclerView.isNestedScrollingEnabled = false
     }
 
-    override fun onPositiveButtonClick(hour: Int, minute: Int) {
+    override fun selectedTime(hour: Int, minute: Int) {
         clickedContractId?.let {
             mFinanceViewModel.createDailyPlan(it, "$hour:$minute")
         }
@@ -137,7 +146,9 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
                     mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
                     filterPlans()
                 }
-                is NetworkResult.Loading -> mSharedViewModel.showLoading()
+                is NetworkResult.Loading -> {
+                    mSharedViewModel.showLoading()
+                }
                 is NetworkResult.Error -> {
                     mSharedViewModel.hideLoading(res.data.isNullOrEmpty())
                     checkError(res)
@@ -156,9 +167,12 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         mFinanceViewModel.createDailyPlanResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    progressDialog.hideLoading()
-                    showSnackbar(binding.recyclerView)
-                    mFinanceViewModel.fetchDailyPlan()
+                    if (res.data == true) {
+                        mFinanceViewModel.createDailyPlanResponse.value = NetworkResult.Success(false)
+                        progressDialog.hideLoading()
+                        showSnackbar(binding.recyclerView)
+                        mFinanceViewModel.fetchDailyPlan()
+                    }
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
@@ -210,8 +224,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
                         ) >= 0
                     }
                 }
-                val filterByFullName =
-                    filteredPlans.filter { candidate -> conditions.all { it(candidate) } }
+                val filterByFullName = filteredPlans.filter { candidate -> conditions.all { it(candidate) } }
 
                 filteredPlans.clear()
                 filteredPlans.addAll(filterByFullName)
@@ -221,14 +234,12 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         // Filter by business process status
         when (selectedStatusFilter) {
             0 -> {
-                val filterByStatus =
-                    filteredPlans.filter { it.planBusinessProcessId == null && it.planResultId == null }
+                val filterByStatus = filteredPlans.filter { it.planBusinessProcessId == null && it.planResultId == null }
                 filteredPlans.clear()
                 filteredPlans.addAll(filterByStatus)
             }
             1 -> {
-                val filterByStatus =
-                    filteredPlans.filter { it.planBusinessProcessId == 1L && it.planResultId == null }
+                val filterByStatus = filteredPlans.filter { it.planBusinessProcessId == 1L && it.planResultId == null }
                 filteredPlans.clear()
                 filteredPlans.addAll(filterByStatus)
             }
@@ -279,31 +290,27 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         MaterialAlertDialogBuilder(requireActivity())
             .setView(R.layout.explanation_about_colors)
             .setTitle(resources.getString(R.string.explanation_about_colors))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
-                // Respond to neutral button press
-            }
             .show()
     }
 
     private fun setMinuteForUpdate() {
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.add(Calendar.MINUTE, 3)
-        nextTime = calendar.time
+        updateTime = DateTime.now().plusMinutes(3)
     }
 
     private fun updatePlans() {
-        if (nextTime!!.before(Calendar.getInstance().time)) {
-            plansAdapter.clear()
+        if (updateTime!!.isBeforeNow) {
             mFinanceViewModel.fetchPlans()
             setMinuteForUpdate()
         } else {
-            val diff: Long = nextTime!!.time - Calendar.getInstance().time.time
-            val diffMinutes = diff / (60 * 1000)
-            val diffSeconds = diff / 1000
-
+            binding.swiperefresh.isRefreshing = false
+            val currentTime = DateTime.now()
+            val leftTime = updateTime!!.minusMinutes(currentTime.minuteOfHour).minusSeconds(currentTime.secondOfMinute)
+            println(leftTime)
+//            println("UpdateTime: 1) Minute: ${updateTime!!.minuteOfHour} 2) Second: ${updateTime!!.secondOfMinute}")
+//            println("leftTime: 1) Minute: ${leftTime.minuteOfHour} 2) Second: ${leftTime.secondOfMinute}")
             Toast.makeText(
                 requireContext(),
-                getString(R.string.left)+" $diffMinutes min. $diffSeconds sec.",
+                getString(R.string.left)+" ${leftTime.minuteOfHour} min. ${leftTime.secondOfMinute} sec.",
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -329,27 +336,11 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.update_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
     private fun showSnackbar(view: View) = Snackbar.make(
         view,
         R.string.successfullySaved,
         Snackbar.LENGTH_SHORT
     ).show()
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_settings -> {
-                val intent = Intent(requireContext(), SettingsActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.update -> updatePlans()
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     private fun removeData() {
         val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())

@@ -4,6 +4,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class BindingAdapters {
 
@@ -30,6 +31,15 @@ class BindingAdapters {
             when(visibility){
                 true -> view.isVisible = true
                 false -> view.isVisible = false
+            }
+        }
+
+        @BindingAdapter("android:swipeRefreshByData")
+        @JvmStatic
+        fun showRefreshIndicatorByData(view: SwipeRefreshLayout, dataReceived: Boolean) {
+            when(dataReceived){
+                true -> view.isRefreshing = false
+                false -> view.isRefreshing = true
             }
         }
 

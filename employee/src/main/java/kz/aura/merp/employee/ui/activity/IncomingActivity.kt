@@ -104,7 +104,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
         timePicker.show(supportFragmentManager)
     }
 
-    override fun onPositiveButtonClick(hour: Int, minute: Int) {
+    override fun selectedTime(hour: Int, minute: Int) {
         selectedHour = hour
         selectedMinute = minute
         val time = "$hour:$minute"

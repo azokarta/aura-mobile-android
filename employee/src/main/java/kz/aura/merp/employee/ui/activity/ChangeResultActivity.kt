@@ -27,7 +27,7 @@ import org.joda.time.format.DateTimeFormat
 
 
 @AndroidEntryPoint
-class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener {
+class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener, DatePickerFragment.DatePickerListener {
 
     private lateinit var binding: ActivityChangeResultBinding
 
@@ -43,6 +43,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
     private var selectedHour: Int? = null
     private var selectedMinute: Int? = null
     private var countryCode: CountryCode = CountryCode.KZ
+    private var scheduledDate: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,9 +80,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
             resultId = mFinanceViewModel.planResultsResponse.value!!.data!![i].id
             clearChilds(Field.RESULT)
             when (resultId) {
-                1L, 4L -> {
-                    visibleField(Field.REASON_DESCRIPTION)
-                }
+                1L, 4L -> visibleField(Field.REASON_DESCRIPTION)
                 3L -> visibleField(Field.RESCHEDULED)
                 2L -> {
                     visibleField(Field.PAYMENT)
@@ -125,17 +124,18 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
         binding.selectTimeBtn.setOnClickListener(::showTimePicker)
         binding.selectDateBtn.setOnClickListener(::showDatePicker)
     }
+
     private fun showDatePicker(view: View) {
-        val datePicker = DatePickerFragment(this)
+        val datePicker = DatePickerFragment(this, this)
         datePicker.show(supportFragmentManager)
     }
+
     private fun save() {
         progressDialog.showLoading()
         val reasonDescription: String = binding.reasonDescriptionText.text.toString()
         val phoneNumber: String = binding.phoneNumberText.text.toString()
         val amount: Int? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString().toInt()
-        val dtf = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")
-        val scheduledDateTime = dtf.parseDateTime()
+        val scheduledDateTime = "$scheduledDate $selectedHour:$selectedMinute"
 
         SmartLocation.with(this).location().oneFix()
             .start {
@@ -178,11 +178,16 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
         timePicker.show(supportFragmentManager)
     }
 
-    override fun onPositiveButtonClick(hour: Int, minute: Int) {
+    override fun selectedTime(hour: Int, minute: Int) {
         selectedHour = hour
         selectedMinute = minute
         val time = "$hour:$minute"
         binding.selectTimeBtn.text = time
+    }
+
+    override fun selectedDate(date: String, header: String) {
+        scheduledDate = date
+        binding.selectDateBtn.text = header
     }
 
     private fun validation(): Boolean {
@@ -199,7 +204,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 else -> false
             }
         } else if (resultId == 3L) {
-            !(selectedHour == null && selectedMinute == null)
+            !(selectedHour == null && selectedMinute == null && scheduledDate == null)
         } else resultId != null
     }
 
@@ -299,9 +304,11 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 binding.bankField.isVisible = false
                 binding.phoneNumberField.isVisible = false
                 binding.selectTimeBtn.isVisible = false
+                binding.selectDateBtn.isVisible = false
             }
             Field.RESCHEDULED -> {
                 binding.selectTimeBtn.isVisible = true
+                binding.selectDateBtn.isVisible = true
                 binding.reasonDescriptionField.isVisible = true
                 binding.paymentMethodField.isVisible = false
                 binding.amountField.isVisible = false
@@ -315,6 +322,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 binding.reasonDescriptionField.isVisible = false
                 binding.phoneNumberField.isVisible = false
                 binding.selectTimeBtn.isVisible = false
+                binding.selectDateBtn.isVisible = false
             }
             Field.AMOUNT -> {
                 binding.amountField.isVisible = true
@@ -322,6 +330,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 binding.reasonDescriptionField.isVisible = false
                 binding.phoneNumberField.isVisible = true
                 binding.selectTimeBtn.isVisible = false
+                binding.selectDateBtn.isVisible = false
                 binding.bankField.isVisible = !(paymentMethodId == 1L || paymentMethodId == 4L)
             }
             Field.BANK -> {
@@ -331,6 +340,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 binding.amountField.isVisible = false
                 binding.phoneNumberField.isVisible = false
                 binding.selectTimeBtn.isVisible = false
+                binding.selectDateBtn.isVisible = false
             }
         }
     }
@@ -343,9 +353,11 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 binding.amountText.setText("")
                 binding.phoneNumberText.setText("")
                 binding.reasonDescriptionText.setText("")
-                binding.selectTimeBtn.text = getString(R.string.date)
+                binding.selectDateBtn.text = getString(R.string.date)
+                binding.selectTimeBtn.text = getString(R.string.time)
 
                 selectedHour = null
+                scheduledDate = null
                 selectedMinute = null
                 paymentMethodId = null
                 bankId = null

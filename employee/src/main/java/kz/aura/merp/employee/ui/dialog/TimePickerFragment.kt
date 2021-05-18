@@ -8,14 +8,16 @@ import java.util.*
 class TimePickerFragment(
     private val timePickerListener: TimePickerListener,
     private val hour: Int? = null,
-    private val minute: Int? = null) {
+    private val minute: Int? = null,
+    private val title: String? = null
+    ) {
 
     private var _picker: MaterialTimePicker? = null
     private val picker get() = _picker!!
 
     interface TimePickerListener {
-        fun onPositiveButtonClick(hour: Int, minute: Int) {}
-        fun onNegativeButtonClick() {}
+        fun selectedTime(hour: Int, minute: Int) {}
+        fun onCancelTime() {}
     }
 
     init {
@@ -27,15 +29,15 @@ class TimePickerFragment(
             .setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(this.hour ?: hour)
             .setMinute(this.minute ?: minute)
-            .setTitleText("Select Appointment time")
+            .setTitleText(title)
             .build()
 
         picker.addOnCancelListener {
-            timePickerListener.onNegativeButtonClick()
+            timePickerListener.onCancelTime()
         }
 
         picker.addOnPositiveButtonClickListener {
-            timePickerListener.onPositiveButtonClick(picker.hour, picker.minute)
+            timePickerListener.selectedTime(picker.hour, picker.minute)
         }
     }
 

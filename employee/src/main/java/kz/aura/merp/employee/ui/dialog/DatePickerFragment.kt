@@ -4,15 +4,20 @@ import android.content.Context
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import kz.aura.merp.employee.R
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
+import java.util.*
 
 class DatePickerFragment(
     val context: Context,
-    val datePickerListener: DatePickerListener? = null,
+    private val datePickerListener: DatePickerListener? = null,
     val title: String? = null
 ) {
 
     interface DatePickerListener {
-        fun selectedDate()
+        fun selectedDate(date: String, header: String) {}
+        fun onCancelDate() {}
     }
 
     private var _picker: MaterialDatePicker<Long>? = null
@@ -23,11 +28,15 @@ class DatePickerFragment(
                     .setTitleText(title ?: context.getString(R.string.select_date))
                     .build()
 
-        picker.addOnPositiveButtonClickListener {
+        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
+        val currentDate = DateTime.now()
 
+        picker.addOnPositiveButtonClickListener {
+            val selectedDate = dtf.print(currentDate.withMillis(it))
+            datePickerListener?.selectedDate(selectedDate, picker.headerText)
         }
         picker.addOnCancelListener {
-            // Respond to cancel button click.
+            datePickerListener?.onCancelDate()
         }
     }
 

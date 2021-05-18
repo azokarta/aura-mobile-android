@@ -174,7 +174,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/date"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/resultField"
         app:layout_constraintTop_toBottomOf="@+id/reasonDescriptionField" />
 
@@ -185,7 +185,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/time"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/selectDateBtn"
         app:layout_constraintTop_toBottomOf="@+id/selectDateBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
