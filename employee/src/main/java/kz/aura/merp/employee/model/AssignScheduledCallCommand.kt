@@ -6,5 +6,5 @@ data class AssignScheduledCallCommand (
     val longitude: Double,
     val latitude: Double,
     val scheduledDateTime: String,
-    val description: String
+    val description: String? = null
 )

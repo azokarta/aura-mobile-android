@@ -32,16 +32,21 @@ class DailyPlanFragment : Fragment() {
         _binding = FragmentDailyPlanBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        setHasOptionsMenu(true)
-
         // Setup RecyclerView
         setupRecyclerView()
 
         setupObservers()
 
-        mFinanceViewModel.fetchDailyPlan()
+        callRequests()
 
         return binding.root
+    }
+
+    private fun callRequests() {
+        val dailyPlan = mFinanceViewModel.dailyPlanResponse.value?.data
+        if (dailyPlan.isNullOrEmpty()) {
+            mFinanceViewModel.fetchDailyPlan()
+        }
     }
 
     private fun setupObservers() {
@@ -83,21 +88,6 @@ class DailyPlanFragment : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = plansAdapter
         binding.recyclerView.isNestedScrollingEnabled = false
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_settings -> {
-                val intent = Intent(requireContext(), SettingsActivity::class.java)
-                startActivity(intent)
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

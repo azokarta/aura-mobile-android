@@ -168,6 +168,8 @@
     <string name="internal_server_error">Внутренняя ошибка сервера</string>
     <string name="not_found">Не найдено</string>
     <string name="select_date">Выберите дату</string>
+    <string name="upcoming">Предстоящие</string>
+    <string name="current">Текущие</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>

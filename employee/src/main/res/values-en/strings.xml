@@ -158,4 +158,6 @@
     <string name="internal_server_error">Internal server error</string>
     <string name="not_found">Not Found</string>
     <string name="select_date">Select a date</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="current">Current</string>
 </resources>

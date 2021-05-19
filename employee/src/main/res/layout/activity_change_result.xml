@@ -72,7 +72,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resultField">
+        app:layout_constraintTop_toBottomOf="@+id/reasonDescriptionField">
 
         <AutoCompleteTextView
             android:id="@+id/paymentMethodText"
@@ -176,7 +176,7 @@
         android:text="@string/date"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/resultField"
-        app:layout_constraintTop_toBottomOf="@+id/reasonDescriptionField" />
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberField" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/selectTimeBtn"

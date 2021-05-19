@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
@@ -132,7 +133,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
 
     private fun save() {
         progressDialog.showLoading()
-        val reasonDescription: String = binding.reasonDescriptionText.text.toString()
+        val reasonDescription: String? = if (binding.reasonDescriptionText.text.toString().isBlank()) null else binding.reasonDescriptionText.text.toString()
         val phoneNumber: String = binding.phoneNumberText.text.toString()
         val amount: Int? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString().toInt()
         val scheduledDateTime = "$scheduledDate $selectedHour:$selectedMinute"
@@ -153,7 +154,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                             )
                         )
                     }
-                    else -> {
+                    2L -> {
                         mFinanceViewModel.changeResult(
                             contractId,
                             ChangePlanResult(
@@ -162,6 +163,17 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                                 it.longitude,
                                 it.latitude,
                                 AssignCollectMoneyCommand(phoneNumber, bankId, paymentMethodId, amount, countryCode.name, it.longitude, it.latitude)
+                            )
+                        )
+                    }
+                    else -> {
+                        mFinanceViewModel.changeResult(
+                            contractId,
+                            ChangePlanResult(
+                                resultId,
+                                reasonDescription,
+                                it.longitude,
+                                it.latitude
                             )
                         )
                     }
@@ -193,8 +205,9 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
     private fun validation(): Boolean {
         val phoneNumber: String = binding.phoneNumberText.text.toString()
         val amount: String = binding.amountText.text.toString()
-        return if (resultId == 2L) {
-            when (paymentMethodId) {
+        val reasonDescription: String = binding.reasonDescriptionText.text.toString()
+        return when (resultId) {
+            2L -> when (paymentMethodId) {
                 3L, 2L -> {
                     !(bankId == null || amount.isBlank() || phoneNumber.isBlank())
                 }
@@ -203,9 +216,9 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 }
                 else -> false
             }
-        } else if (resultId == 3L) {
-            !(selectedHour == null && selectedMinute == null && scheduledDate == null)
-        } else resultId != null
+            3L -> !(selectedHour == null && selectedMinute == null && scheduledDate == null && phoneNumber.isBlank())
+            else -> resultId != null && reasonDescription.isNotBlank()
+        }
     }
 
     private fun fetchPaymentMethods() {
@@ -270,10 +283,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    val intent = Intent();
-                    intent.putExtra("contributions", res.data)
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    showSnackbar(binding.save)
                 }
                 is NetworkResult.Loading -> {
                 }
@@ -313,7 +323,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 binding.paymentMethodField.isVisible = false
                 binding.amountField.isVisible = false
                 binding.bankField.isVisible = false
-                binding.phoneNumberField.isVisible = false
+                binding.phoneNumberField.isVisible = true
             }
             Field.PAYMENT -> {
                 binding.paymentMethodField.isVisible = true
@@ -344,6 +354,12 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
             }
         }
     }
+
+    private fun showSnackbar(view: View) = Snackbar.make(
+        view,
+        R.string.successfullySaved,
+        Snackbar.LENGTH_SHORT
+    ).show()
 
     private fun clearChilds(parent: Field) {
         when (parent) {

@@ -34,14 +34,11 @@ class ContributionsFragment : Fragment() {
         _binding = FragmentContributionsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        setHasOptionsMenu(true)
-
         setupRecyclerView()
 
         setupObservers()
 
-        // Fetch contributions
-        mFinanceViewModel.fetchContributions()
+        callRequests()
 
         // If network is disconnected and user clicks restart, get data again
         binding.networkDisconnected.restart.setOnClickListener {
@@ -54,6 +51,13 @@ class ContributionsFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun callRequests() {
+        val contributions = mFinanceViewModel.contributionsResponse.value?.data
+        if (contributions.isNullOrEmpty()) {
+            mFinanceViewModel.fetchContributions()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -95,21 +99,6 @@ class ContributionsFragment : Fragment() {
         } else {
             declareErrorByStatus(res.message, res.status, requireContext())
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_settings -> {
-                val intent = Intent(requireContext(), SettingsActivity::class.java)
-                startActivity(intent)
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {

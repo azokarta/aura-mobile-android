@@ -31,7 +31,7 @@ class SplashActivity : AppCompatActivity() {
         mAuthViewModel.salary.observe(this, { salary ->
             binding.logo.alpha = 0f
             binding.logo.animate().setDuration(1500).alpha(1f).withEndAction {
-                if (getToken(this)?.isNotBlank() == true && salary != null) {
+                if (!getToken(this).isNullOrBlank() && salary != null) {
                     val intent = Intent(this, PassCodeActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     intent.putExtra("passCodeStatus", PassCodeStatus.VERIFY)

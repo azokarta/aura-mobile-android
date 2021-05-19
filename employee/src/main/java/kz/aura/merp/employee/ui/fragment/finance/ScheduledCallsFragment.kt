@@ -35,14 +35,11 @@ class ScheduledCallsFragment : Fragment() {
         _binding = FragmentScheduledCallsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        setHasOptionsMenu(true)
-
         setupRecyclerView()
 
         setupObservers()
 
-        // Fetch contributions
-        mFinanceViewModel.fetchLastMonthScheduledCalls()
+        callRequests()
 
         // If network is disconnected and user clicks restart, get data again
         binding.networkDisconnected.restart.setOnClickListener {
@@ -55,6 +52,13 @@ class ScheduledCallsFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun callRequests() {
+        val scheduledCalls = mFinanceViewModel.scheduledCallsResponse.value?.data
+        if (scheduledCalls.isNullOrEmpty()) {
+            mFinanceViewModel.fetchLastMonthScheduledCalls()
+        }
     }
 
     override fun onDestroyView() {
@@ -103,20 +107,5 @@ class ScheduledCallsFragment : Fragment() {
                 }
             }
         })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_settings -> {
-                val intent = Intent(requireContext(), SettingsActivity::class.java)
-                startActivity(intent)
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 }

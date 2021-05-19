@@ -1,4 +1,4 @@
-package kz.aura.merp.employee.data.database
+package kz.aura.merp.employee.data.database.converter
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

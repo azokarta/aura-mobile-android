@@ -1,17 +1,16 @@
 package kz.aura.merp.employee.data
 
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadType
-import androidx.paging.PagingState
-import androidx.paging.RemoteMediator
-import kz.aura.merp.employee.data.database.PlansDatabase
-import kz.aura.merp.employee.data.database.entities.PlansEntity
-import kz.aura.merp.employee.data.network.FinanceApi
-
-//@OptIn(ExperimentalPagingApi::class)
+//import androidx.paging.ExperimentalPagingApi
+//import androidx.paging.LoadType
+//import androidx.paging.PagingState
+//import androidx.paging.RemoteMediator
+//import kz.aura.merp.employee.data.database.AppDatabase
+//import kz.aura.merp.employee.data.database.entities.PlansEntity
+//import kz.aura.merp.employee.data.network.FinanceApi
+//
+//@ExperimentalPagingApi
 //class ExampleRemoteMediator(
-//    private val query: String,
-//    private val database: PlansDatabase,
+//    private val database: AppDatabase,
 //    private val financeApi: FinanceApi,
 //) : RemoteMediator<Int, PlansEntity>() {
 //    val plansDao = database.plansDao()

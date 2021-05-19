@@ -115,9 +115,12 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
     private fun callRequests() {
         val plans = mFinanceViewModel.plansResponse.value?.data
         val businessProcesses = mFinanceViewModel.plansResponse.value?.data
-        when {
-            plans.isNullOrEmpty() -> mFinanceViewModel.fetchPlans()
-            businessProcesses.isNullOrEmpty() -> mFinanceViewModel.fetchBusinessProcessStatuses()
+
+        if (plans.isNullOrEmpty()) {
+            mFinanceViewModel.fetchPlans()
+        }
+        if (businessProcesses.isNullOrEmpty()) {
+            mFinanceViewModel.fetchBusinessProcessStatuses()
         }
     }
 
@@ -177,7 +180,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-                    checkError(res)
+                    declareErrorByStatus(res.message, res.status, requireContext())
                 }
             }
         })
