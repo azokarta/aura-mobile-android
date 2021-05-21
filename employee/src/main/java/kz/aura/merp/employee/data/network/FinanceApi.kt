@@ -10,6 +10,11 @@ interface FinanceApi {
     @GET("/month_plan")
     suspend fun fetchPlans(): Response<ResponseHelper<ArrayList<Plan>>>
 
+    @GET("/month_plan/{contractId}")
+    suspend fun fetchPlan(
+        @Path("contractId") contractId: Long
+    ): Response<ResponseHelper<Plan>>
+
     @GET("/month_plan/{contractId}/payments")
     suspend fun fetchPaymentSchedule(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<PaymentSchedule>>>
 
@@ -29,7 +34,7 @@ interface FinanceApi {
     suspend fun updateBusinessProcessStatus(
         @Path("contractId") contractId: Long,
         @Body businessProcess: ChangeBusinessProcess
-    ): Response<ResponseHelper<Plan>>
+    ): Response<ResponseHelper<*>>
 
     @POST("/daily_plan/{contractId}/change_result")
     suspend fun changeResult(

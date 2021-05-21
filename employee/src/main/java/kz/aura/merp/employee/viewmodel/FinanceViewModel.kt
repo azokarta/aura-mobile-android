@@ -45,10 +45,32 @@ class FinanceViewModel @Inject constructor(
     val countryCode: MutableLiveData<CountryCode> = MutableLiveData()
     val dailyPlanResponse: MutableLiveData<NetworkResult<ArrayList<Plan>>> = MutableLiveData()
     val createDailyPlanResponse: MutableLiveData<NetworkResult<Boolean>> = MutableLiveData()
+    val changeBusinessProcessStatusResponse: MutableLiveData<NetworkResult<Boolean>> = MutableLiveData()
+    val planResponse: MutableLiveData<NetworkResult<Plan>> = MutableLiveData()
 
     fun getCountryCode() = scope.launch {
         dataStoreRepository.countryCodeFlow.collect { value ->
             countryCode.postValue(value)
+        }
+    }
+
+    fun fetchPlan(contractId: Long) = scope.launch {
+        planResponse.postValue(NetworkResult.Loading())
+        try {
+            val response = financeRepository.remote.fetchPlan(contractId)
+
+            if (response.isSuccessful) {
+                planResponse.postValue(NetworkResult.Success(response.body()!!.data))
+            } else {
+                planResponse.postValue(
+                    NetworkResult.Error(
+                        receiveErrorMessage(response.errorBody()!!),
+                        response.code()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            planResponse.postValue(NetworkResult.Error(e.message))
         }
     }
 
@@ -93,16 +115,14 @@ class FinanceViewModel @Inject constructor(
     }
 
     fun updateBusinessProcess(contractId: Long, businessProcess: ChangeBusinessProcess) = scope.launch {
-            updatedPlanResponse.postValue(NetworkResult.Loading())
+        changeBusinessProcessStatusResponse.postValue(NetworkResult.Loading())
             try {
-                val response =
-                    financeRepository.remote.updateBusinessProcess(contractId, businessProcess)
+                val response = financeRepository.remote.updateBusinessProcess(contractId, businessProcess)
 
                 if (response.isSuccessful) {
-                    updatedPlanResponse.postValue(NetworkResult.Success(response.body()!!.data))
-                    saveData(response.body()!!.data, getApplication())
+                    changeBusinessProcessStatusResponse.postValue(NetworkResult.Success(true))
                 } else {
-                    updatedPlanResponse.postValue(
+                    changeBusinessProcessStatusResponse.postValue(
                         NetworkResult.Error(
                             receiveErrorMessage(response.errorBody()!!),
                             response.code()
@@ -110,18 +130,9 @@ class FinanceViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                updatedPlanResponse.postValue(NetworkResult.Error(e.message))
+                changeBusinessProcessStatusResponse.postValue(NetworkResult.Error(e.message))
             }
         }
-
-    fun changeData(plan: Plan): Boolean {
-        return if (plansResponse.value?.data?.isNotEmpty() == true) {
-            val foundData = plansResponse.value?.data!!.find { it.contractId == plan.contractId }
-            val idx = plansResponse.value?.data!!.indexOf(foundData)
-            plansResponse.value?.data!![idx] = plan
-            true
-        } else false
-    }
 
     fun fetchBusinessProcessStatuses() = scope.launch {
         businessProcessStatusesResponse.postValue(NetworkResult.Loading())

@@ -120,7 +120,8 @@ class OutgoingActivity : AppCompatActivity() {
         mFinanceViewModel.countryCode.observe(this, { countryCode ->
             this.countryCode = countryCode
             binding.phoneNumberText.mask = countryCode.format
-            binding.phoneNumberText.setText(phoneNumber)
+            val phoneWithoutCountryCode = removeCountryCodeFromPhone(phoneNumber)
+            binding.phoneNumberText.setText(phoneWithoutCountryCode)
         })
     }
 
@@ -152,6 +153,17 @@ class OutgoingActivity : AppCompatActivity() {
         } else {
             showException(getString(R.string.fill_out_all_fields), this)
         }
+    }
+
+    private fun removeCountryCodeFromPhone(phone: String): String {
+        if (countryCode == CountryCode.KZ) {
+            return when (phone.first()) {
+                '8' -> phone.removePrefix("8")
+                '+' -> phone.removePrefix("+7")
+                else -> phone
+            }
+        }
+        return phone
     }
 
     override fun onSupportNavigateUp(): Boolean {

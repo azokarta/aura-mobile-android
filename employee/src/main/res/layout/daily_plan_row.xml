@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:sendPlanToDailyPlan="@{plan}">
+        android:sendContractIdToDailyPlan="@{plan.contractId}">
         <TextView
             android:id="@+id/fullName"
             android:layout_width="wrap_content"

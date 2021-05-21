@@ -277,18 +277,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         binding.problematic.isVisible = problematic
     }
 
-    override fun onResume() {
-        super.onResume()
-        val data = getData()
-        if (data != null) {
-            val changed = mFinanceViewModel.changeData(data)
-            if (changed) {
-                filterPlans()
-            }
-            removeData()
-        }
-    }
-
     private fun explainAboutColors(view: View) {
         MaterialAlertDialogBuilder(requireActivity())
             .setView(R.layout.explanation_about_colors)

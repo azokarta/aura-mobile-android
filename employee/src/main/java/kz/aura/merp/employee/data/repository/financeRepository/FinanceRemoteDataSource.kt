@@ -23,6 +23,10 @@ class FinanceRemoteDataSource @Inject constructor(
         return financeApi.fetchPlans()
     }
 
+    suspend fun fetchPlan(contractId: Long): Response<ResponseHelper<Plan>> {
+        return financeApi.fetchPlan(contractId)
+    }
+
     suspend fun fetchPaymentSchedule(contractId: Long): Response<ResponseHelper<ArrayList<PaymentSchedule>>> {
         return financeApi.fetchPaymentSchedule(contractId)
     }
@@ -38,7 +42,7 @@ class FinanceRemoteDataSource @Inject constructor(
         return financeApi.fetchDailyPlan()
     }
 
-    suspend fun updateBusinessProcess(contractId: Long, businessProcess: ChangeBusinessProcess): Response<ResponseHelper<Plan>> {
+    suspend fun updateBusinessProcess(contractId: Long, businessProcess: ChangeBusinessProcess): Response<ResponseHelper<*>> {
         return financeApi.updateBusinessProcessStatus(contractId, businessProcess)
     }
 

@@ -122,8 +122,7 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
         chip.text = title
         chip.id = id
         chip.setChipBackgroundColorResource(R.color.gray)
-        chip.checkedIcon =
-            ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_check_24)
+        chip.checkedIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_check_24)
         chip.isCheckable = true
         chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         return chip
@@ -133,7 +132,6 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
         mFinanceViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    println("RES: ${res.data}")
                     businessProcessStatuses.addAll(res.data!!)
                     for (process in businessProcessStatuses) {
                         binding.statusesChipGroup.addView(
@@ -146,10 +144,8 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
 
                     setupFilterParams()
                 }
-                is NetworkResult.Loading -> {
-                }
-                is NetworkResult.Error -> {
-                }
+                is NetworkResult.Loading -> { }
+                is NetworkResult.Error -> { }
             }
         })
     }

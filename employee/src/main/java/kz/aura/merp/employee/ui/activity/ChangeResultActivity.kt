@@ -206,6 +206,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
         val phoneNumber: String = binding.phoneNumberText.text.toString()
         val amount: String = binding.amountText.text.toString()
         val reasonDescription: String = binding.reasonDescriptionText.text.toString()
+
         return when (resultId) {
             2L -> when (paymentMethodId) {
                 3L, 2L -> {
@@ -216,8 +217,8 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 }
                 else -> false
             }
-            3L -> !(selectedHour == null && selectedMinute == null && scheduledDate == null && phoneNumber.isBlank())
-            else -> resultId != null && reasonDescription.isNotBlank()
+            3L -> !(selectedHour == null || selectedMinute == null || scheduledDate == null || phoneNumber.isBlank())
+            else -> !(resultId == null || reasonDescription.isBlank())
         }
     }
 

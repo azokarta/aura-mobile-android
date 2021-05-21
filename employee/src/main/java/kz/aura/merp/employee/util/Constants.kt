@@ -33,4 +33,6 @@ object Constants {
     // ROOM Database
     const val DATABASE_NAME = "wemob_database"
     const val PLANS_TABLE = "plans_table"
+    const val CONTRIBUTIONS_TABLE = "contributions_table"
+    const val CALLS_TABLE = "calls_table"
 }

@@ -30,17 +30,18 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
 
     private lateinit var binding: ActivityDailyPlanBinding
 
-    private lateinit var plan: Plan
+    private var contractId: Long? = null
     private val stepsAdapter: StepsAdapter by lazy { StepsAdapter(this) }
     private val mFinanceViewModel: FinanceViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
     private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
+    private var plan: Plan? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        plan = intent.getParcelableExtra("plan")!!
+        contractId = intent.getLongExtra("contractId", 0L)
         binding = ActivityDailyPlanBinding.inflate(layoutInflater)
-        binding.plan = plan
+        binding.lifecycleOwner = this
         setContentView(binding.root)
 
         // Toolbar
@@ -55,37 +56,47 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
-        initStepView()
-
         initPhoneNumbers()
+        initStepView()
 
         // Observe MutableLiveData
         setupObservers()
 
+        contractId?.let { mFinanceViewModel.fetchPlan(it) }
         mFinanceViewModel.fetchBusinessProcessStatuses()
 
         binding.changeResult.setOnClickListener {
-            val intent = Intent(this, ChangeResultActivity::class.java)
-            intent.putExtra("contractId", plan.contractId)
-            intent.putExtra("clientPhoneNumbers", plan.customerPhoneNumbers.toTypedArray())
-            intent.putExtra("businessProcessId", plan.planBusinessProcessId)
-            startActivityForResult(intent, changeResultRequestCode);
+            plan?.let {
+                val intent = Intent(this, ChangeResultActivity::class.java)
+                intent.putExtra("contractId", it.contractId)
+                intent.putExtra("clientPhoneNumbers", it.customerPhoneNumbers.toTypedArray())
+                intent.putExtra("businessProcessId", it.planBusinessProcessId)
+                startActivityForResult(intent, changeResultRequestCode)
+            }
         }
     }
 
     private fun initPhoneNumbers() {
         binding.phoneNumbers.layoutManager = LinearLayoutManager(this)
         binding.phoneNumbers.adapter = phoneNumbersAdapter
-        phoneNumbersAdapter.setData(plan.customerPhoneNumbers)
+        binding.phoneNumbers.isNestedScrollingEnabled = false
     }
 
     private fun setupObservers() {
-        mFinanceViewModel.updatedPlanResponse.observe(this, { res ->
+        mFinanceViewModel.businessProcessStatusesResponse.observe(this, { res ->
+            when (res) {
+                is NetworkResult.Success -> {
+                    stepsAdapter.setData(res.data!!)
+                }
+                is NetworkResult.Loading -> {}
+                is NetworkResult.Error -> declareErrorByStatus(res.message, res.status, this)
+            }
+        })
+        mFinanceViewModel.changeBusinessProcessStatusResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    this.plan = res.data!!
-                    binding.plan = plan
+                    contractId?.let { mFinanceViewModel.fetchPlan(it) }
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
@@ -94,11 +105,14 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 }
             }
         })
-        mFinanceViewModel.businessProcessStatusesResponse.observe(this, { res ->
+        mFinanceViewModel.planResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    stepsAdapter.setData(res.data!!)
+                    plan = res.data
+                    binding.plan = res.data
+                    plan?.planBusinessProcessId?.let { stepsAdapter.setStep(it) }
+                    phoneNumbersAdapter.setData(plan?.customerPhoneNumbers)
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
@@ -113,7 +127,6 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         binding.stepsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.stepsRecyclerView.adapter = stepsAdapter
         binding.stepsRecyclerView.isNestedScrollingEnabled = false
-        plan.planBusinessProcessId?.let { stepsAdapter.setStep(it) }
     }
 
     override fun stepCompleted(businessProcessStatus: BusinessProcessStatus) {
@@ -126,20 +139,20 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         builder.setTitle(getString(R.string.reallyWantToChangeStatusOfPlan))
 
         builder.setNegativeButton(getString(R.string.no)) { dialog, _ ->
-            stepsAdapter.setStep(plan.planBusinessProcessId)
+            stepsAdapter.setStep(plan!!.planBusinessProcessId)
             dialog.dismiss()
         }
         builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
             progressDialog.showLoading()
             getCurrentLocation { latitude, longitude ->
                 mFinanceViewModel.updateBusinessProcess(
-                    plan.contractId,
+                    plan!!.contractId,
                     ChangeBusinessProcess(businessProcessStatus.id, latitude, longitude)
                 )
             }
         }
         builder.setOnCancelListener {
-            stepsAdapter.setStep(plan.planBusinessProcessId)
+            stepsAdapter.setStep(plan!!.planBusinessProcessId)
         }
 
         builder.create().show()
@@ -165,14 +178,14 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     override fun incoming(phoneNumber: String) {
         val intent = Intent(binding.root.context, IncomingActivity::class.java)
         intent.putExtra("phoneNumber", phoneNumber)
-        intent.putExtra("contractId", plan.contractId)
+        intent.putExtra("contractId", plan!!.contractId)
         startActivityForResult(intent, callRequestCode);
     }
 
     override fun outgoing(phoneNumber: String) {
         val intent = Intent(binding.root.context, OutgoingActivity::class.java)
         intent.putExtra("phoneNumber", phoneNumber)
-        intent.putExtra("contractId", plan.contractId)
+        intent.putExtra("contractId", plan!!.contractId)
         startActivityForResult(intent, callRequestCode);
     }
 }
