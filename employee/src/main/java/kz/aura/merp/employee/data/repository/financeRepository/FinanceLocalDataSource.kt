@@ -13,4 +13,8 @@ class FinanceLocalDataSource @Inject constructor(
         return plansDao.readPlans()
     }
 
+    suspend fun insertAll(plans: List<PlansEntity>) {
+        plansDao.insertAll(plans)
+    }
+
 }

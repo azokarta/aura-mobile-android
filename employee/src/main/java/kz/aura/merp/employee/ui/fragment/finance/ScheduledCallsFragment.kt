@@ -6,6 +6,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
@@ -25,15 +26,18 @@ class ScheduledCallsFragment : Fragment() {
     private var _binding: FragmentScheduledCallsBinding? = null
     private val binding get() = _binding!!
 
-    private val mFinanceViewModel: FinanceViewModel by activityViewModels()
+    private lateinit var mFinanceViewModel: FinanceViewModel
     private val scheduledCallsAdapter: ScheduledCallsAdapter by lazy { ScheduledCallsAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        mFinanceViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
+
         _binding = FragmentScheduledCallsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+        val root: View = binding.root
 
         setupRecyclerView()
 
@@ -51,7 +55,7 @@ class ScheduledCallsFragment : Fragment() {
             }
         }
 
-        return binding.root
+        return root
     }
 
     private fun callRequests() {

@@ -12,6 +12,8 @@
     <item name="colorControlNormal">@color/colorPrimary</item>
   </style>
 
+  <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
   <style name="CustomChipStyle" parent="Widget.MaterialComponents.Chip.Filter">
     <item name="chipBackgroundColor">@color/gray</item>
     <item name="android:textColor">@color/black</item>

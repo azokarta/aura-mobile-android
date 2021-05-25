@@ -1,6 +1,5 @@
 package kz.aura.merp.employee.ui.fragment.finance
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.*
@@ -20,7 +19,6 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PlanAdapter
 import kz.aura.merp.employee.databinding.FragmentMonthlyPlanBinding
 import kz.aura.merp.employee.model.Plan
-import kz.aura.merp.employee.ui.activity.SettingsActivity
 import kz.aura.merp.employee.ui.dialog.PlanFilterDialogFragment
 import kz.aura.merp.employee.ui.dialog.TimePickerFragment
 import kz.aura.merp.employee.util.NetworkResult
@@ -31,11 +29,8 @@ import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 import org.joda.time.DateTime
-import org.joda.time.DateTimeComparator
-import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import org.joda.time.format.DateTimeParser
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -116,12 +111,8 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         val plans = mFinanceViewModel.plansResponse.value?.data
         val businessProcesses = mFinanceViewModel.plansResponse.value?.data
 
-        if (plans.isNullOrEmpty()) {
-            mFinanceViewModel.fetchPlans()
-        }
-        if (businessProcesses.isNullOrEmpty()) {
-            mFinanceViewModel.fetchBusinessProcessStatuses()
-        }
+        mFinanceViewModel.fetchPlans()
+        mFinanceViewModel.fetchBusinessProcessStatuses()
     }
 
     override fun sendToDailyPlan(contractId: Long) {
@@ -133,8 +124,27 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = plansAdapter
-        binding.recyclerView.isNestedScrollingEnabled = false
+//        binding.recyclerView.isNestedScrollingEnabled = false
+
     }
+
+//    private fun onScrolledToBottom() {
+//        if (songMainList.size() < songAllList.size()) {
+//            val x: Int
+//            val y: Int
+//            if (songAllList.size() - songMainList.size() >= 50) {
+//                x = songMainList.size()
+//                y = x + 50
+//            } else {
+//                x = songMainList.size()
+//                y = x + songAllList.size() - songMainList.size()
+//            }
+//            for (i in x until y) {
+//                songMainList.add(songAllList.get(i))
+//            }
+//            songsAdapter.notifyDataSetChanged()
+//        }
+//    }
 
     override fun selectedTime(hour: Int, minute: Int) {
         clickedContractId?.let {

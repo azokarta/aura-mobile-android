@@ -6,11 +6,16 @@ import android.view.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.tabs.TabLayoutMediator
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityFinanceBinding
-import kz.aura.merp.employee.ui.fragment.finance.*
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
@@ -19,19 +24,31 @@ class FinanceActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFinanceBinding
     private val mFinanceViewModel: FinanceViewModel by viewModels()
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LanguageHelper.updateLanguage(this)
-
-        // Data binding
         binding = ActivityFinanceBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.finAgent)
+
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val navController = findNavController(R.id.nav_host_fragment)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.nav_monthly_plan,
+            R.id.nav_daily_plan,
+            R.id.nav_contributions,
+            R.id.nav_calls,
+            R.id.nav_scheduled_calls
+        ), drawerLayout)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
 
         // Turn off screenshot
         window.setFlags(
@@ -40,26 +57,6 @@ class FinanceActivity : AppCompatActivity() {
         )
 
         Permissions(this, this).enableLocation()
-
-        val fragments = arrayListOf(
-            MonthlyPlanFragment(),
-            DailyPlanFragment(),
-            ContributionsFragment(),
-            CallsFragment(),
-            ScheduledCallsFragment()
-        )
-
-        binding.viewPager.adapter = PagerAdapter(this, fragments)
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> getString(R.string.monthlyPlan)
-                1 -> getString(R.string.daily_plan)
-                2 -> getString(R.string.сontributions)
-                3 -> getString(R.string.calls)
-                4 -> getString(R.string.scheduled_calls)
-                else -> null
-            }
-        }.attach()
 
         mFinanceViewModel.staffUsername.observe(this, { username -> supportActionBar?.subtitle = username })
 
@@ -87,5 +84,10 @@ class FinanceActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }

@@ -139,7 +139,6 @@
     <string name="contract">Договор</string>
     <string name="сontribution_history">История взноса</string>
     <string name="сontribution">Взнос</string>
-    <string name="сontributions">Взносы</string>
     <string name="amount_of_contribution">Сумма взноса</string>
     <string name="add_contribution">Добавить взнос</string>
     <string name="select_phone_number">Выберите телефон номер</string>
@@ -192,4 +191,5 @@
 
     <string name="hello_first_fragment" translatable="false">Hello first fragment</string>
     <string name="hello_second_fragment" translatable="false">Hello second fragment. Arg: %1$s</string>
+    <string name="contributions">Взносы</string>
 </resources>
