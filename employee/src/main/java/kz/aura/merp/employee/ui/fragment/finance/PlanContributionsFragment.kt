@@ -7,33 +7,37 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.adapter.ContributionsAdapter
 import kz.aura.merp.employee.databinding.FragmentPlanContributionsBinding
 import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.ui.dialog.*
-import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.util.ProgressDialog
-import kz.aura.merp.employee.util.declareErrorByStatus
-import kz.aura.merp.employee.util.verifyAvailableNetwork
+import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class PlanContributionsFragment : Fragment() {
+class PlanContributionsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var _binding: FragmentPlanContributionsBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var plan: Plan
+    private var contractId: Long? = null
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
+    private lateinit var sharedViewModel: SharedViewModel
     private lateinit var progressDialog: ProgressDialog
     private val contributionsAdapter: ContributionsAdapter by lazy { ContributionsAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            plan = it.getParcelable(ARG_PARAM1)!!
+            contractId = it.getLong("contractId")
         }
     }
 
@@ -41,8 +45,11 @@ class PlanContributionsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+
         _binding = FragmentPlanContributionsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+        binding.sharedViewModel = sharedViewModel
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(requireContext())
@@ -51,19 +58,15 @@ class PlanContributionsFragment : Fragment() {
 
         setupObservers()
 
-        mFinanceViewModel.fetchContributionsByContractId(plan.contractId!!)
+        callRequests()
 
-        // If network is disconnected and user clicks restart, get data again
-        binding.networkDisconnected.restart.setOnClickListener {
-            if (verifyAvailableNetwork(requireContext())) {
-                mFinanceViewModel.fetchContributionsByContractId(plan.contractId!!)
-                binding.progressBar.isVisible = true
-                binding.recyclerView.isVisible = true
-                binding.networkDisconnected.root.isVisible = false
-            }
-        }
+        binding.swipeRefresh.setOnRefreshListener(this)
 
         return binding.root
+    }
+
+    private fun callRequests() {
+        mFinanceViewModel.fetchContributionsByContractId(contractId!!)
     }
 
     private fun setupRecyclerView() {
@@ -73,63 +76,25 @@ class PlanContributionsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        mFinanceViewModel.updatedPlanResponse.observe(viewLifecycleOwner, { res ->
-            when (res) {
-                is NetworkResult.Success -> {
-                    plan = res.data!!
-                }
-                is NetworkResult.Loading -> {}
-                is NetworkResult.Error -> {}
-            }
-        })
         mFinanceViewModel.contributionsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
+                    sharedViewModel.setResponse(res)
                     contributionsAdapter.setData(res.data!!)
                 }
-                is NetworkResult.Loading -> showLoadingOrNoData(true)
-                is NetworkResult.Error -> {
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
-                    checkError(res)
-                }
+                is NetworkResult.Loading -> sharedViewModel.setResponse(res)
+                is NetworkResult.Error -> sharedViewModel.setResponse(res)
             }
         })
-    }
-
-    private fun showLoadingOrNoData(visibility: Boolean, dataIsEmpty: Boolean = true) {
-        if (visibility) {
-            binding.emptyData = true
-            binding.dataReceived = false
-        } else {
-            binding.emptyData = dataIsEmpty
-            binding.dataReceived = true
-        }
-    }
-
-    private fun <T> checkError(res: NetworkResult.Error<T>) {
-        if (!verifyAvailableNetwork(requireContext())) {
-            binding.networkDisconnected.root.isVisible = true
-            binding.recyclerView.isVisible = false
-        } else {
-            declareErrorByStatus(res.message, res.status, requireContext())
-        }
-    }
-
-    companion object {
-        private const val ARG_PARAM1 = "plan"
-
-        @JvmStatic
-        fun newInstance(plan: Plan) =
-            PlanContributionsFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(ARG_PARAM1, plan)
-                }
-            }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onRefresh() {
+        sharedViewModel.setLoadingType(LoadingType.SWIPE_REFRESH)
+        callRequests()
     }
 }

@@ -98,7 +98,7 @@ class MasterActivity : AppCompatActivity() {
                 is NetworkResult.Loading -> mSharedViewModel.showLoading()
                 is NetworkResult.Error -> {
                     mSharedViewModel.hideLoading(res.data!!.isEmpty())
-                    declareErrorByStatus(res.message, res.status, this)
+//                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })

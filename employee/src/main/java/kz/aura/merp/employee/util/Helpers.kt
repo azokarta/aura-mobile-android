@@ -8,15 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.preference.PreferenceManager
-import kz.aura.merp.employee.R
-import kz.aura.merp.employee.model.Error
-import kz.aura.merp.employee.model.Salary
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ErrorDialogBinding
-import kz.aura.merp.employee.ui.activity.*
+import kz.aura.merp.employee.model.Error
+import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.ui.activity.AuthorizationActivity
+import kz.aura.merp.employee.ui.activity.DealerActivity
+import kz.aura.merp.employee.ui.activity.FinanceActivity
+import kz.aura.merp.employee.ui.activity.MasterActivity
 import kz.aura.merp.employee.util.Constants.SELECTED_SERVER
 import kz.aura.merp.employee.util.Constants.WE_MOB_DEV_AUTH
 import kz.aura.merp.employee.util.Constants.WE_MOB_DEV_CRM
@@ -37,6 +40,7 @@ import kz.aura.merp.employee.util.Constants.crmPositions
 import kz.aura.merp.employee.util.Constants.financePositions
 import kz.aura.merp.employee.util.Constants.servicePositions
 import okhttp3.ResponseBody
+
 
 fun getToken(context: Context): String? {
     val pref = PreferenceManager.getDefaultSharedPreferences(context)
@@ -173,6 +177,12 @@ fun <T> saveDataByKey(context: Context, data: T, key: String) {
 }
 
 fun verifyAvailableNetwork(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkInfo = connectivityManager.activeNetworkInfo
+    return networkInfo != null && networkInfo.isConnected
+}
+
+fun isInternetAvailable(context: Context): Boolean {
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val networkInfo = connectivityManager.activeNetworkInfo
     return networkInfo != null && networkInfo.isConnected

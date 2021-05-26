@@ -23,7 +23,7 @@ class PaymentScheduleAdapter : RecyclerView.Adapter<PaymentScheduleAdapter.Payme
         holder.bind(dataList[position], currency)
     }
 
-    fun setData(paymentSchedule: ArrayList<PaymentSchedule>, currency: String) {
+    fun setData(paymentSchedule: List<PaymentSchedule>, currency: String) {
         this.currency = currency
         val paymentScheduleDiffUtil = MobDiffUtil(dataList, paymentSchedule)
         val paymentScheduleDiffResult = DiffUtil.calculateDiff(paymentScheduleDiffUtil)

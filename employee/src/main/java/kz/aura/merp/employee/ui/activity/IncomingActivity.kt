@@ -134,7 +134,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
                 is NetworkResult.Loading -> {}
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, this)
+//                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })

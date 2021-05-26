@@ -24,16 +24,20 @@ import kz.aura.merp.employee.viewmodel.SharedViewModel
 class PlanCallsFragment : Fragment() {
 
     private var _binding: FragmentPlanCallsBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
     private val binding get() = _binding!!
 
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
+    private lateinit var sharedViewModel: SharedViewModel
     private val callsAdapter: CallsAdapter by lazy { CallsAdapter() }
-    private var contractId: Long = 0L
+    private var contractId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            contractId = it.getLong(ARG_PARAM1)
+            contractId = it.getLong("contractId")
         }
     }
 
@@ -41,25 +45,18 @@ class PlanCallsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+
         _binding = FragmentPlanCallsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+        binding.sharedViewModel = sharedViewModel
+        val root: View = binding.root
 
         setupRecyclerView()
 
         setupObservers()
 
-        // Fetch calls
-        mFinanceViewModel.fetchLastMonthCallsByContractId(contractId)
-
-        // If network is disconnected and user clicks restart, get data again
-        binding.networkDisconnected.restart.setOnClickListener {
-            if (verifyAvailableNetwork(requireContext())) {
-                mFinanceViewModel.fetchCallHistory(contractId)
-                binding.progressBar.isVisible = true
-                binding.recyclerView.isVisible = true
-                binding.networkDisconnected.root.isVisible = false
-            }
-        }
+        callRequests()
 
         binding.toggleButton.addOnButtonCheckedListener { _, checkedId, isChecked ->
             val callsHistory = mFinanceViewModel.callsHistoryResponse.value
@@ -73,7 +70,7 @@ class PlanCallsFragment : Fragment() {
                     }
                     binding.callsHistoryBtn.id -> {
                         if (callsHistory == null) {
-                            mFinanceViewModel.fetchCallHistory(contractId)
+                            mFinanceViewModel.fetchCallHistory(contractId!!)
                         } else {
                             callsAdapter.setData(mFinanceViewModel.callsHistoryResponse.value!!.data!!)
                         }
@@ -82,7 +79,11 @@ class PlanCallsFragment : Fragment() {
             }
         }
 
-        return binding.root
+        return root
+    }
+
+    private fun callRequests() {
+        mFinanceViewModel.fetchLastMonthCallsByContractId(contractId!!)
     }
 
     private fun setupRecyclerView() {
@@ -95,76 +96,27 @@ class PlanCallsFragment : Fragment() {
         mFinanceViewModel.callsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    enableToggleButton(true)
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
+                    sharedViewModel.setResponse(res)
                     callsAdapter.setData(res.data!!)
                 }
-                is NetworkResult.Loading -> {
-                    enableToggleButton(false)
-                    showLoadingOrNoData(true)
-                }
-                is NetworkResult.Error -> {
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
-                    checkError(res)
-                }
+                is NetworkResult.Loading -> sharedViewModel.setResponse(res)
+                is NetworkResult.Error -> sharedViewModel.setResponse(res)
             }
         })
         mFinanceViewModel.callsHistoryResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    enableToggleButton(true)
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
+                    sharedViewModel.setResponse(res)
                     callsAdapter.setData(res.data!!)
                 }
-                is NetworkResult.Loading -> {
-                    enableToggleButton(false)
-                    showLoadingOrNoData(true)
-                }
-                is NetworkResult.Error -> {
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
-                    checkError(res)
-                }
+                is NetworkResult.Loading -> sharedViewModel.setResponse(res)
+                is NetworkResult.Error -> sharedViewModel.setResponse(res)
             }
         })
-    }
-
-    private fun showLoadingOrNoData(visibility: Boolean, dataIsEmpty: Boolean = true) {
-        if (visibility) {
-            binding.emptyData = true
-            binding.dataReceived = false
-        } else {
-            binding.emptyData = dataIsEmpty
-            binding.dataReceived = true
-        }
-    }
-
-    private fun enableToggleButton(bool: Boolean) {
-        binding.toggleButton.isVisible = bool
-    }
-
-    private fun <T> checkError(res: NetworkResult.Error<T>) {
-        if (!verifyAvailableNetwork(requireContext())) {
-            binding.networkDisconnected.root.isVisible = true
-            binding.recyclerView.isVisible = false
-        } else {
-            declareErrorByStatus(res.message, res.status, requireContext())
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val ARG_PARAM1 = "contractId"
-
-        @JvmStatic
-        fun newInstance(contractId: Long) =
-            PlanCallsFragment().apply {
-                arguments = Bundle().apply {
-                    putLong(ARG_PARAM1, contractId)
-                }
-            }
     }
 }

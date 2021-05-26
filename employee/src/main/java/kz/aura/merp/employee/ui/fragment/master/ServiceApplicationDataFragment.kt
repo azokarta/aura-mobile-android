@@ -65,7 +65,7 @@ class ServiceApplicationDataFragment : Fragment() {
                 }
                 is NetworkResult.Loading -> {}
                 is NetworkResult.Error -> {
-                    declareErrorByStatus(res.message, res.status, requireContext())
+//                    declareErrorByStatus(res.message, res.status, requireContext())
                 }
             }
         })

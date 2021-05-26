@@ -9,7 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
@@ -21,36 +23,46 @@ import kz.aura.merp.employee.databinding.FragmentContractBinding
 import kz.aura.merp.employee.ui.activity.ChangeResultActivity
 import kz.aura.merp.employee.ui.activity.IncomingActivity
 import kz.aura.merp.employee.ui.activity.OutgoingActivity
+import kz.aura.merp.employee.util.LoadingType
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.ProgressDialog
 import kz.aura.merp.employee.util.declareErrorByStatus
 import kz.aura.merp.employee.view.OnSelectPhoneNumber
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class ContractFragment : Fragment(), OnSelectPhoneNumber {
+class ContractFragment : Fragment(), OnSelectPhoneNumber, SwipeRefreshLayout.OnRefreshListener {
 
     private var _binding: FragmentContractBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
     private val binding get() = _binding!!
+
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
-    private lateinit var plan: Plan
+    private lateinit var sharedViewModel: SharedViewModel
+    private var contractId: Long? = null
+    private var plan: Plan? = null
     private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
     private lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            plan = it.getParcelable(ARG_PARAM1)!!
+            contractId = it.getLong("contractId")
         }
     }
 
-    override fun onCreateView(
+    override fun onCreateView (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+
         _binding = FragmentContractBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.plan = plan
+        binding.sharedViewModel = sharedViewModel
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(requireContext())
@@ -60,7 +72,9 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber {
         // Observe MutableLiveData
         setObservers()
 
-        mFinanceViewModel.fetchBusinessProcessStatuses()
+        callRequest()
+
+        binding.swipeRefresh.setOnRefreshListener(this)
 
         return binding.root
     }
@@ -68,37 +82,37 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber {
     private fun initPhoneNumbers() {
         binding.phoneNumbers.layoutManager = LinearLayoutManager(requireContext())
         binding.phoneNumbers.adapter = phoneNumbersAdapter
-        phoneNumbersAdapter.setData(plan.customerPhoneNumbers)
+        binding.phoneNumbers.isNestedScrollingEnabled = false
+    }
+
+    private fun callRequest() {
+        mFinanceViewModel.fetchPlan(contractId!!)
+        mFinanceViewModel.fetchBusinessProcessStatuses()
     }
 
     private fun setObservers() {
-        mFinanceViewModel.updatedPlanResponse.observe(viewLifecycleOwner, { res ->
+        mFinanceViewModel.planResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    progressDialog.hideLoading()
-                    this.plan = res.data!!
+                    sharedViewModel.setResponse(res)
+                    this.plan = res.data
                     binding.plan = plan
+
+                    // Set phone numbers
+                    phoneNumbersAdapter.setData(plan!!.customerPhoneNumbers)
                 }
-                is NetworkResult.Loading -> progressDialog.showLoading()
+                is NetworkResult.Loading -> {
+                    sharedViewModel.setResponse(res)
+                }
                 is NetworkResult.Error -> {
-                    progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, requireContext())
+                    sharedViewModel.setResponse(res)
                 }
             }
         })
     }
 
     companion object {
-        private const val ARG_PARAM1 = "plan"
         private const val callRequestCode = 1000
-
-        @JvmStatic
-        fun newInstance(plan: Plan) =
-            ContractFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(ARG_PARAM1, plan)
-                }
-            }
     }
 
     override fun onDestroyView() {
@@ -111,7 +125,7 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 callRequestCode -> {
-                    mFinanceViewModel.fetchLastMonthCallsByContractId(plan.contractId)
+                    mFinanceViewModel.fetchLastMonthCallsByContractId(contractId!!)
                     showSnackbar(binding.phoneNumbers)
                 }
             }
@@ -127,14 +141,19 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber {
     override fun incoming(phoneNumber: String) {
         val intent = Intent(binding.root.context, IncomingActivity::class.java)
         intent.putExtra("phoneNumber", phoneNumber)
-        intent.putExtra("contractId", plan.contractId)
+        intent.putExtra("contractId", contractId)
         startActivityForResult(intent, callRequestCode);
     }
 
     override fun outgoing(phoneNumber: String) {
         val intent = Intent(binding.root.context, OutgoingActivity::class.java)
         intent.putExtra("phoneNumber", phoneNumber)
-        intent.putExtra("contractId", plan.contractId)
+        intent.putExtra("contractId", contractId)
         startActivityForResult(intent, callRequestCode);
+    }
+
+    override fun onRefresh() {
+        sharedViewModel.setLoadingType(LoadingType.SWIPE_REFRESH)
+        callRequest()
     }
 }

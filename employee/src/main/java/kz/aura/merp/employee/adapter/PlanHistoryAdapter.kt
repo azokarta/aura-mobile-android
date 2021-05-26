@@ -24,7 +24,7 @@ class PlanHistoryAdapter : RecyclerView.Adapter<PlanHistoryAdapter.PlanHistoryVi
         holder.bind(dataList[position])
     }
 
-    fun setData(history: ArrayList<PlanHistoryItem>) {
+    fun setData(history: List<PlanHistoryItem>) {
         val historyDiffUtil = MobDiffUtil(dataList, history)
         val historyDiffResult = DiffUtil.calculateDiff(historyDiffUtil)
         this.dataList.clear()

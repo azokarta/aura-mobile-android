@@ -124,27 +124,8 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = plansAdapter
-//        binding.recyclerView.isNestedScrollingEnabled = false
-
+        binding.recyclerView.isNestedScrollingEnabled = false
     }
-
-//    private fun onScrolledToBottom() {
-//        if (songMainList.size() < songAllList.size()) {
-//            val x: Int
-//            val y: Int
-//            if (songAllList.size() - songMainList.size() >= 50) {
-//                x = songMainList.size()
-//                y = x + 50
-//            } else {
-//                x = songMainList.size()
-//                y = x + songAllList.size() - songMainList.size()
-//            }
-//            for (i in x until y) {
-//                songMainList.add(songAllList.get(i))
-//            }
-//            songsAdapter.notifyDataSetChanged()
-//        }
-//    }
 
     override fun selectedTime(hour: Int, minute: Int) {
         clickedContractId?.let {
@@ -180,17 +161,17 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         mFinanceViewModel.createDailyPlanResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    if (res.data == true) {
-                        mFinanceViewModel.createDailyPlanResponse.value = NetworkResult.Success(false)
-                        progressDialog.hideLoading()
-                        showSnackbar(binding.recyclerView)
-                        mFinanceViewModel.fetchDailyPlan()
-                    }
+//                    if (res.data == true) {
+//                        mFinanceViewModel.createDailyPlanResponse.value = NetworkResult.Success(false)
+//                        progressDialog.hideLoading()
+//                        showSnackbar(binding.recyclerView)
+//                        mFinanceViewModel.fetchDailyPlan()
+//                    }
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, requireContext())
+//                    declareErrorByStatus(res.message, res.status, requireContext())
                 }
             }
         })
@@ -306,9 +287,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
             binding.swiperefresh.isRefreshing = false
             val currentTime = DateTime.now()
             val leftTime = updateTime!!.minusMinutes(currentTime.minuteOfHour).minusSeconds(currentTime.secondOfMinute)
-            println(leftTime)
-//            println("UpdateTime: 1) Minute: ${updateTime!!.minuteOfHour} 2) Second: ${updateTime!!.secondOfMinute}")
-//            println("leftTime: 1) Minute: ${leftTime.minuteOfHour} 2) Second: ${leftTime.secondOfMinute}")
             Toast.makeText(
                 requireContext(),
                 getString(R.string.left)+" ${leftTime.minuteOfHour} min. ${leftTime.secondOfMinute} sec.",
@@ -322,18 +300,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
             binding.networkDisconnected.root.isVisible = true
             binding.recyclerView.isVisible = false
         } else {
-            declareErrorByStatus(res.message, res.status, requireContext())
-        }
-    }
-
-    private fun getData(): Plan? {
-        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val client = pref.getString("data", "")
-        return if (client != "") {
-            val obj = Gson().fromJson(client, Plan::class.java)
-            if (obj.contractId != 0L) obj else null
-        } else {
-            null
+//            declareErrorByStatus(res.message, res.status, requireContext())
         }
     }
 
@@ -342,13 +309,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener, TimePickerF
         R.string.successfullySaved,
         Snackbar.LENGTH_SHORT
     ).show()
-
-    private fun removeData() {
-        val pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val editor = pref.edit()
-        editor.remove("data")
-        editor.apply()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -5,6 +5,8 @@ import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import kz.aura.merp.employee.util.LoadingType
+import kz.aura.merp.employee.util.NetworkResult
 
 class BindingAdapters {
 
@@ -50,6 +52,43 @@ class BindingAdapters {
                 true -> view.isVisible = false
                 false -> view.isVisible = true
             }
+        }
+
+
+        // -----------------------------------------------------------
+        @JvmStatic
+        @BindingAdapter("android:response", "android:loadingType", requireAll = true)
+        fun showLoading(view: View, res: NetworkResult<*>?, loadingType: LoadingType) {
+            view.isVisible = res is NetworkResult.Loading<*> && loadingType == LoadingType.PROGRESS_BAR
+        }
+
+        @JvmStatic
+        @BindingAdapter("android:showDataByResponse")
+        fun showDataByResponse(view: View, res: NetworkResult<*>?) {
+            view.isVisible = res?.data != null
+        }
+
+        @JvmStatic
+        @BindingAdapter("android:showError")
+        fun showError(view: View, res: NetworkResult<*>?) {
+            view.isVisible = res is NetworkResult.Error
+        }
+
+        @JvmStatic
+        @BindingAdapter("android:noData")
+        fun noData(view: View, res: NetworkResult<*>?) {
+            if (res is NetworkResult.Success) {
+                view.isVisible = when (res.data) {
+                    is List<*> -> res.data.isNullOrEmpty()
+                    else -> res.data == null
+                }
+            }
+        }
+
+        @JvmStatic
+        @BindingAdapter("android:response", "android:loadingType")
+        fun refreshIndicator(view: SwipeRefreshLayout, res: NetworkResult<*>?, loadingType: LoadingType) {
+            view.isRefreshing = res is NetworkResult.Loading && loadingType == LoadingType.SWIPE_REFRESH
         }
 
     }

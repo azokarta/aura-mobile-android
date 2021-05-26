@@ -246,7 +246,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, this)
+//                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })
@@ -261,7 +261,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, this)
+//                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })
@@ -276,7 +276,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, this)
+//                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })
@@ -290,7 +290,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, this)
+//                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })

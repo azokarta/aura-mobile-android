@@ -29,7 +29,7 @@ class PlanAdapter(private val onClickListener: OnClickListener? = null) : Recycl
         holder.bind(plan)
     }
 
-    fun setData(plans: ArrayList<Plan>) {
+    fun setData(plans: List<Plan>) {
         val clientDiffUtil = MobDiffUtil(dataList, plans)
         val clientDiffResult = DiffUtil.calculateDiff(clientDiffUtil)
         this.dataList.clear()

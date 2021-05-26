@@ -89,7 +89,9 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                     stepsAdapter.setData(res.data!!)
                 }
                 is NetworkResult.Loading -> {}
-                is NetworkResult.Error -> declareErrorByStatus(res.message, res.status, this)
+                is NetworkResult.Error -> {
+//                    declareErrorByStatus(res.message, res.status, this)
+                }
             }
         })
         mFinanceViewModel.changeBusinessProcessStatusResponse.observe(this, { res ->
@@ -101,7 +103,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, this)
+//                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })
@@ -117,7 +119,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-                    declareErrorByStatus(res.message, res.status, this)
+//                    declareErrorByStatus(res.message, res.status, this)
                 }
             }
         })

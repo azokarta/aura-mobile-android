@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.adapter.PaymentScheduleAdapter
 import kz.aura.merp.employee.databinding.FragmentPlanPaymentScheduleBinding
+import kz.aura.merp.employee.util.LoadingType
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.util.declareErrorByStatus
 import kz.aura.merp.employee.util.verifyAvailableNetwork
@@ -18,10 +21,15 @@ import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class PlanPaymentScheduleFragment : Fragment() {
+class PlanPaymentScheduleFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var _binding: FragmentPlanPaymentScheduleBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var sharedViewModel: SharedViewModel
     private val mFinanceViewModel: FinanceViewModel by activityViewModels()
     private val paymentScheduleAdapter: PaymentScheduleAdapter by lazy { PaymentScheduleAdapter() }
     private var contractId: Long = 0
@@ -30,8 +38,7 @@ class PlanPaymentScheduleFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            contractId = it.getLong(ARG_PARAM1)
-            currency = it.getString(ARG_PARAM2)!!
+            contractId = it.getLong("contractId")
         }
     }
 
@@ -39,38 +46,52 @@ class PlanPaymentScheduleFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+
         _binding = FragmentPlanPaymentScheduleBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+        binding.sharedViewModel = sharedViewModel
 
         setupRecyclerView()
 
-        mFinanceViewModel.paymentScheduleResponse.observe(viewLifecycleOwner, { res ->
+        setupObservers()
+
+        callRequests()
+
+        return binding.root
+    }
+
+    private fun callRequests() {
+        mFinanceViewModel.fetchPaymentSchedule(contractId)
+    }
+
+    private fun setupObservers() {
+        mFinanceViewModel.planResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
-                    paymentScheduleAdapter.setData(res.data!!, currency)
+                    sharedViewModel.setResponse(res)
+                    currency = res.data!!.contractCurrencyName
                 }
-                is NetworkResult.Loading -> showLoadingOrNoData(true)
+                is NetworkResult.Loading -> {
+                    sharedViewModel.setResponse(res)
+                }
                 is NetworkResult.Error -> {
-                    showLoadingOrNoData(false, res.data.isNullOrEmpty())
-                    checkError(res)
+                    sharedViewModel.setResponse(res)
                 }
             }
         })
-
-        mFinanceViewModel.fetchPaymentSchedule(contractId)
-
-        // If network is disconnected and user clicks restart, get data again
-        binding.networkDisconnected.restart.setOnClickListener {
-            if (verifyAvailableNetwork(requireContext())) {
-                mFinanceViewModel.fetchPaymentSchedule(contractId)
-                binding.progressBar.isVisible = true
-                binding.recyclerView.isVisible = true
-                binding.networkDisconnected.root.isVisible = false
+        mFinanceViewModel.paymentScheduleResponse.observe(viewLifecycleOwner, { res ->
+            when (res) {
+                is NetworkResult.Success -> {
+                    sharedViewModel.setResponse(res)
+                    paymentScheduleAdapter.setData(res.data!!, currency)
+                }
+                is NetworkResult.Loading -> sharedViewModel.setResponse(res)
+                is NetworkResult.Error -> {
+                    sharedViewModel.setResponse(res)
+                }
             }
-        }
-
-        return binding.root
+        })
     }
 
     private fun setupRecyclerView() {
@@ -79,41 +100,13 @@ class PlanPaymentScheduleFragment : Fragment() {
         binding.recyclerView.isNestedScrollingEnabled = false
     }
 
-    private fun showLoadingOrNoData(visibility: Boolean, dataIsEmpty: Boolean = true) {
-        if (visibility) {
-            binding.emptyData = true
-            binding.dataReceived = false
-        } else {
-            binding.emptyData = dataIsEmpty
-            binding.dataReceived = true
-        }
-    }
-
-    private fun <T> checkError(res: NetworkResult.Error<T>) {
-        if (!verifyAvailableNetwork(requireContext())) {
-            binding.networkDisconnected.root.isVisible = true
-            binding.recyclerView.isVisible = false
-        } else {
-            declareErrorByStatus(res.message, res.status, requireContext())
-        }
-    }
-
-    companion object {
-        private const val ARG_PARAM1 = "contractId"
-        private const val ARG_PARAM2 = "currency"
-
-        @JvmStatic
-        fun newInstance(contractId: Long, currency: String) =
-            PlanPaymentScheduleFragment().apply {
-                arguments = Bundle().apply {
-                    putLong(ARG_PARAM1, contractId)
-                    putString(ARG_PARAM2, currency)
-                }
-            }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onRefresh() {
+        sharedViewModel.setLoadingType(LoadingType.SWIPE_REFRESH)
+        callRequests()
     }
 }

@@ -27,7 +27,7 @@ class ScheduledCallsAdapter : RecyclerView.Adapter<ScheduledCallsAdapter.Schedul
 
     override fun getItemCount(): Int = dataList.size
 
-    fun setData(calls: ArrayList<ScheduledCall>) {
+    fun setData(calls: List<ScheduledCall>) {
         val callsDiffUtil = MobDiffUtil(dataList, calls)
         val callsDiffResult = DiffUtil.calculateDiff(callsDiffUtil)
         this.dataList.clear()

@@ -23,7 +23,7 @@ class ServiceApplicationAdapter : RecyclerView.Adapter<ServiceApplicationAdapter
         holder.bind(serviceApplication)
     }
 
-    fun setData(serviceApplications: ArrayList<ServiceApplication>) {
+    fun setData(serviceApplications: List<ServiceApplication>) {
         val serviceApplicationDiffUtil = MobDiffUtil(dataList, serviceApplications)
         val serviceApplicationDiffResult = DiffUtil.calculateDiff(serviceApplicationDiffUtil)
         this.dataList.clear()

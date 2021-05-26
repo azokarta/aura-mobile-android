@@ -25,7 +25,7 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
         holder.bind(position)
     }
 
-    fun setData(steps: ArrayList<BusinessProcessStatus>) {
+    fun setData(steps: List<BusinessProcessStatus>) {
         val stepDiffUtil = MobDiffUtil(dataList, steps)
         val stepDiffResult = DiffUtil.calculateDiff(stepDiffUtil)
         this.dataList.clear()

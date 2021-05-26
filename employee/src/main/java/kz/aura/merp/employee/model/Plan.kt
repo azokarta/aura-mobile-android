@@ -8,7 +8,7 @@ data class Plan (
     val contractId: Long,
     val contractNumber: Long? = null,
     val contractDate: String? = null,
-    val contractCurrencyName: String? = null,
+    val contractCurrencyName: String,
     val price: Double? = null,
     val totalPaid: Double? = null,
     val contractStatusName: String? = null,

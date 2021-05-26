@@ -8,7 +8,7 @@ interface FinanceApi {
 
     // Month plan
     @GET("/month_plan")
-    suspend fun fetchPlans(): Response<ResponseHelper<ArrayList<Plan>>>
+    suspend fun fetchPlans(): Response<ResponseHelper<List<Plan>>>
 
     @GET("/month_plan/{contractId}")
     suspend fun fetchPlan(
@@ -16,92 +16,92 @@ interface FinanceApi {
     ): Response<ResponseHelper<Plan>>
 
     @GET("/month_plan/{contractId}/payments")
-    suspend fun fetchPaymentSchedule(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<PaymentSchedule>>>
+    suspend fun fetchPaymentSchedule(@Path("contractId") contractId: Long): Response<ResponseHelper<List<PaymentSchedule>>>
 
     @POST("/month_plan/{contractId}/create_daily_plan")
     suspend fun createDailyPlan(
         @Path("contractId") contractId: Long,
         @Query("planTime") planTime: String
-    ): Response<ResponseHelper<*>>
+    ): Response<ResponseHelper<Nothing>>
 
 
 
     // Daily plan
     @GET("/daily_plan")
-    suspend fun fetchDailyPlan(): Response<ResponseHelper<ArrayList<Plan>>>
+    suspend fun fetchDailyPlan(): Response<ResponseHelper<List<Plan>>>
 
     @POST("/daily_plan/{contractId}/change_business_process_status")
     suspend fun updateBusinessProcessStatus(
         @Path("contractId") contractId: Long,
         @Body businessProcess: ChangeBusinessProcess
-    ): Response<ResponseHelper<*>>
+    ): Response<ResponseHelper<Nothing>>
 
     @POST("/daily_plan/{contractId}/change_result")
     suspend fun changeResult(
         @Path("contractId") contractId: Long?,
         @Body plan: ChangePlanResult
-    ): Response<ResponseHelper<*>>
+    ): Response<ResponseHelper<Nothing>>
 
 
 
     // Calls
     @GET("/calls")
-    suspend fun fetchLastMonthCalls(): Response<ResponseHelper<ArrayList<Call>>>
+    suspend fun fetchLastMonthCalls(): Response<ResponseHelper<List<Call>>>
 
     @GET("/calls/{contractId}/history")
-    suspend fun fetchCallHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<Call>>>
+    suspend fun fetchCallHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<List<Call>>>
 
     @GET("/calls/{contractId}")
-    suspend fun fetchLastMonthCallsByContractId(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<Call>>>
+    suspend fun fetchLastMonthCallsByContractId(@Path("contractId") contractId: Long): Response<ResponseHelper<List<Call>>>
 
     @POST("/calls/{contractId}/assign_incoming_call")
     suspend fun assignIncomingCall(
         @Path("contractId") contractId: Long,
         @Body assignCall: AssignCall
-    ): Response<ResponseHelper<*>>
+    ): Response<ResponseHelper<Nothing>>
 
     @POST("/calls/{contractId}/assign_outgoing_call")
     suspend fun assignOutgoingCall(
         @Path("contractId") contractId: Long,
         @Body assignCall: AssignCall
-    ): Response<ResponseHelper<*>>
+    ): Response<ResponseHelper<Nothing>>
 
 
     // Contributions
     @GET("/collect_moneys")
-    suspend fun fetchContributions(): Response<ResponseHelper<ArrayList<Contribution>>>
+    suspend fun fetchContributions(): Response<ResponseHelper<List<Contribution>>>
 
     @GET("/collect_moneys/{contractId}")
-    suspend fun fetchContributionsByContractId(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<Contribution>>>
+    suspend fun fetchContributionsByContractId(@Path("contractId") contractId: Long): Response<ResponseHelper<List<Contribution>>>
 
 
 
     // Scheduled calls
     @GET("/scheduled_calls")
-    suspend fun fetchLastMonthScheduledCalls(): Response<ResponseHelper<ArrayList<ScheduledCall>>>
+    suspend fun fetchLastMonthScheduledCalls(): Response<ResponseHelper<List<ScheduledCall>>>
 
     @GET("/scheduled_calls/{contractId}/history")
-    suspend fun fetchScheduledCallsHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<ArrayList<ScheduledCall>>>
+    suspend fun fetchScheduledCallsHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<List<ScheduledCall>>>
 
 
 
     // References
     @GET("/references/call_directions")
-    suspend fun fetchCallDirections(): Response<ResponseHelper<ArrayList<CallDirection>>>
+    suspend fun fetchCallDirections(): Response<ResponseHelper<List<CallDirection>>>
 
     @GET("/references/call_statuses")
-    suspend fun fetchCallStatuses(): Response<ResponseHelper<ArrayList<CallStatus>>>
+    suspend fun fetchCallStatuses(): Response<ResponseHelper<List<CallStatus>>>
 
     @GET("/references/business_process_statuses")
-    suspend fun fetchBusinessProcessStatuses(): Response<ResponseHelper<ArrayList<BusinessProcessStatus>>>
+    suspend fun fetchBusinessProcessStatuses(): Response<ResponseHelper<List<BusinessProcessStatus>>>
 
     @GET("/references/collect_money_results")
-    suspend fun fetchPlanResults(): Response<ResponseHelper<ArrayList<PlanResult>>>
+    suspend fun fetchPlanResults(): Response<ResponseHelper<List<PlanResult>>>
 
     @GET("/references/banks")
-    suspend fun fetchBanks(): Response<ResponseHelper<ArrayList<Bank>>>
+    suspend fun fetchBanks(): Response<ResponseHelper<List<Bank>>>
 
     @GET("/references/payment_methods")
-    suspend fun fetchPaymentMethods(): Response<ResponseHelper<ArrayList<PaymentMethod>>>
+    suspend fun fetchPaymentMethods(): Response<ResponseHelper<List<PaymentMethod>>>
 
 }

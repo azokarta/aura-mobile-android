@@ -29,7 +29,7 @@ class ContributionsAdapter : RecyclerView.Adapter<ContributionsAdapter.Contribut
 
     override fun getItemCount(): Int = dataList.size
 
-    fun setData(contributions: ArrayList<Contribution>) {
+    fun setData(contributions: List<Contribution>) {
         val contributionsDiffUtil = MobDiffUtil(dataList, contributions)
         val contributionsDiffResult = DiffUtil.calculateDiff(contributionsDiffUtil)
         this.dataList.clear()

@@ -19,7 +19,7 @@ class FinanceRemoteDataSource @Inject constructor(
 
 
     // Month plan
-    suspend fun fetchPlans(): Response<ResponseHelper<ArrayList<Plan>>> {
+    suspend fun fetchPlans(): Response<ResponseHelper<List<Plan>>> {
         return financeApi.fetchPlans()
     }
 
@@ -27,97 +27,97 @@ class FinanceRemoteDataSource @Inject constructor(
         return financeApi.fetchPlan(contractId)
     }
 
-    suspend fun fetchPaymentSchedule(contractId: Long): Response<ResponseHelper<ArrayList<PaymentSchedule>>> {
+    suspend fun fetchPaymentSchedule(contractId: Long): Response<ResponseHelper<List<PaymentSchedule>>> {
         return financeApi.fetchPaymentSchedule(contractId)
     }
 
-    suspend fun createDailyPlan(contractId: Long, planTime: String): Response<ResponseHelper<*>> {
+    suspend fun createDailyPlan(contractId: Long, planTime: String): Response<ResponseHelper<Nothing>> {
         return financeApi.createDailyPlan(contractId, planTime)
     }
 
 
 
     // Daily plan
-    suspend fun fetchDailyPlan(): Response<ResponseHelper<ArrayList<Plan>>> {
+    suspend fun fetchDailyPlan(): Response<ResponseHelper<List<Plan>>> {
         return financeApi.fetchDailyPlan()
     }
 
-    suspend fun updateBusinessProcess(contractId: Long, businessProcess: ChangeBusinessProcess): Response<ResponseHelper<*>> {
+    suspend fun updateBusinessProcess(contractId: Long, businessProcess: ChangeBusinessProcess): Response<ResponseHelper<Nothing>> {
         return financeApi.updateBusinessProcessStatus(contractId, businessProcess)
     }
 
-    suspend fun changeResult(contractId: Long?, plan: ChangePlanResult): Response<ResponseHelper<*>> {
+    suspend fun changeResult(contractId: Long?, plan: ChangePlanResult): Response<ResponseHelper<Nothing>> {
         return financeApi.changeResult(contractId, plan)
     }
 
 
 
     // Contributions
-    suspend fun fetchContributions(): Response<ResponseHelper<ArrayList<Contribution>>> {
+    suspend fun fetchContributions(): Response<ResponseHelper<List<Contribution>>> {
         return financeApi.fetchContributions()
     }
 
-    suspend fun fetchContributionsByContractId(contractId: Long): Response<ResponseHelper<ArrayList<Contribution>>> {
+    suspend fun fetchContributionsByContractId(contractId: Long): Response<ResponseHelper<List<Contribution>>> {
         return financeApi.fetchContributionsByContractId(contractId)
     }
 
 
 
     // Calls
-    suspend fun fetchLastMonthCalls(): Response<ResponseHelper<ArrayList<Call>>> {
+    suspend fun fetchLastMonthCalls(): Response<ResponseHelper<List<Call>>> {
         return financeApi.fetchLastMonthCalls()
     }
 
-    suspend fun fetchCallHistory(contractId: Long): Response<ResponseHelper<ArrayList<Call>>> {
+    suspend fun fetchCallHistory(contractId: Long): Response<ResponseHelper<List<Call>>> {
         return financeApi.fetchCallHistory(contractId)
     }
 
-    suspend fun fetchLastMonthCallsByContractId(contractId: Long): Response<ResponseHelper<ArrayList<Call>>> {
+    suspend fun fetchLastMonthCallsByContractId(contractId: Long): Response<ResponseHelper<List<Call>>> {
         return financeApi.fetchLastMonthCallsByContractId(contractId)
     }
 
-    suspend fun assignIncomingCall(contractId: Long, assignCall: AssignCall): Response<ResponseHelper<*>> {
+    suspend fun assignIncomingCall(contractId: Long, assignCall: AssignCall): Response<ResponseHelper<Nothing>> {
         return financeApi.assignIncomingCall(contractId, assignCall)
     }
 
-    suspend fun assignOutgoingCall(contractId: Long, assignCall: AssignCall): Response<ResponseHelper<*>> {
+    suspend fun assignOutgoingCall(contractId: Long, assignCall: AssignCall): Response<ResponseHelper<Nothing>> {
         return financeApi.assignOutgoingCall(contractId, assignCall)
     }
 
 
 
     // Scheduled calls
-    suspend fun fetchLastMonthScheduledCalls(): Response<ResponseHelper<ArrayList<ScheduledCall>>> {
+    suspend fun fetchLastMonthScheduledCalls(): Response<ResponseHelper<List<ScheduledCall>>> {
         return financeApi.fetchLastMonthScheduledCalls()
     }
 
-    suspend fun fetchScheduledCallsHistory(contractId: Long): Response<ResponseHelper<ArrayList<ScheduledCall>>> {
+    suspend fun fetchScheduledCallsHistory(contractId: Long): Response<ResponseHelper<List<ScheduledCall>>> {
         return financeApi.fetchScheduledCallsHistory(contractId)
     }
 
 
     // References
-    suspend fun fetchBanks(): Response<ResponseHelper<ArrayList<Bank>>> {
+    suspend fun fetchBanks(): Response<ResponseHelper<List<Bank>>> {
         return financeApi.fetchBanks()
     }
 
-    suspend fun fetchPaymentMethods(): Response<ResponseHelper<ArrayList<PaymentMethod>>> {
+    suspend fun fetchPaymentMethods(): Response<ResponseHelper<List<PaymentMethod>>> {
         return financeApi.fetchPaymentMethods()
     }
 
-    suspend fun fetchBusinessProcessStatuses(): Response<ResponseHelper<ArrayList<BusinessProcessStatus>>> {
+    suspend fun fetchBusinessProcessStatuses(): Response<ResponseHelper<List<BusinessProcessStatus>>> {
         return financeApi.fetchBusinessProcessStatuses()
     }
 
-    suspend fun fetchCallDirections(): Response<ResponseHelper<ArrayList<CallDirection>>> {
+    suspend fun fetchCallDirections(): Response<ResponseHelper<List<CallDirection>>> {
         return financeApi.fetchCallDirections()
     }
 
-    suspend fun fetchCallStatuses(): Response<ResponseHelper<ArrayList<CallStatus>>> {
+    suspend fun fetchCallStatuses(): Response<ResponseHelper<List<CallStatus>>> {
         return financeApi.fetchCallStatuses()
     }
 
-    suspend fun fetchPlanResults(): Response<ResponseHelper<ArrayList<PlanResult>>> {
+    suspend fun fetchPlanResults(): Response<ResponseHelper<List<PlanResult>>> {
         return financeApi.fetchPlanResults()
     }
 }

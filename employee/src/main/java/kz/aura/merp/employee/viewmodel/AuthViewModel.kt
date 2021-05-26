@@ -44,12 +44,12 @@ class AuthViewModel @Inject constructor(
             if (response.isSuccessful) {
                 signInResponse.postValue(NetworkResult.Success(response.body()!!))
             } else {
-                signInResponse.postValue(
-                    NetworkResult.Error(
-                        receiveErrorMessage(response.errorBody()!!),
-                        response.code()
-                    )
-                )
+//                signInResponse.postValue(
+//                    NetworkResult.Error(
+//                        receiveErrorMessage(response.errorBody()!!),
+//                        response.code()
+//                    )
+//                )
             }
         } catch (e: Exception) {
             signInResponse.postValue(NetworkResult.Error(e.message))
@@ -63,12 +63,12 @@ class AuthViewModel @Inject constructor(
             if (response.isSuccessful) {
                 userInfoResponse.postValue(NetworkResult.Success(response.body()!!.data))
             } else {
-                userInfoResponse.postValue(
-                    NetworkResult.Error(
-                        receiveErrorMessage(response.errorBody()!!),
-                        response.code()
-                    )
-                )
+//                userInfoResponse.postValue(
+//                    NetworkResult.Error(
+//                        receiveErrorMessage(response.errorBody()!!),
+//                        response.code()
+//                    )
+//                )
             }
         } catch (e: Exception) {
             userInfoResponse.postValue(NetworkResult.Error(e.message))

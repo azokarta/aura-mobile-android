@@ -9,15 +9,17 @@ import kz.aura.merp.employee.ui.activity.DailyPlanActivity
 
 class FinanceBinding {
     companion object {
-        @BindingAdapter("android:sendPlanToPlanActivity")
+
+        @BindingAdapter("android:sendContractIdToPlanActivity")
         @JvmStatic
-        fun sendPlanToPlanActivity(view: View, plan: Plan) {
+        fun sendContractIdToPlanActivity(view: View, contractId: Long) {
             view.setOnClickListener {
                 val intent = Intent(view.context, PlanActivity::class.java)
-                intent.putExtra("plan", plan)
+                intent.putExtra("contractId", contractId)
                 view.context.startActivity(intent)
             }
         }
+
         @BindingAdapter("android:sendContractIdToDailyPlan")
         @JvmStatic
         fun sendContractIdToDailyPlan(view: View, contractId: Long) {
@@ -27,5 +29,6 @@ class FinanceBinding {
                 view.context.startActivity(intent)
             }
         }
+
     }
 }

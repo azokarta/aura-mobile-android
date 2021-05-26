@@ -80,7 +80,7 @@ class DailyPlanFragment : Fragment() {
             binding.networkDisconnected.root.isVisible = true
             binding.recyclerView.isVisible = false
         } else {
-            declareErrorByStatus(res.message, res.status, requireContext())
+//            declareErrorByStatus(res.message, res.status, requireContext())
         }
     }
 

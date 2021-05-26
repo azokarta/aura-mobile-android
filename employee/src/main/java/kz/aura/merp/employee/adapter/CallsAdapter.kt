@@ -28,7 +28,7 @@ class CallsAdapter : RecyclerView.Adapter<CallsAdapter.CallsViewHolder>() {
 
     override fun getItemCount(): Int = dataList.size
 
-    fun setData(calls: ArrayList<Call>) {
+    fun setData(calls: List<Call>) {
         val callsDiffUtil = MobDiffUtil(dataList, calls)
         val callsDiffResult = DiffUtil.calculateDiff(callsDiffUtil)
         this.dataList.clear()
