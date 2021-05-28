@@ -1,14 +1,17 @@
 package kz.aura.merp.employee.ui.activity
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
@@ -18,21 +21,20 @@ import kz.aura.merp.employee.databinding.ActivityDailyPlanBinding
 import kz.aura.merp.employee.model.BusinessProcessStatus
 import kz.aura.merp.employee.model.ChangeBusinessProcess
 import kz.aura.merp.employee.model.Plan
-import kz.aura.merp.employee.ui.fragment.finance.ContractFragment
-import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.util.ProgressDialog
-import kz.aura.merp.employee.util.declareErrorByStatus
+import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.OnSelectPhoneNumber
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepListener, OnSelectPhoneNumber {
+class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepListener, OnSelectPhoneNumber, SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var binding: ActivityDailyPlanBinding
 
     private var contractId: Long? = null
     private val stepsAdapter: StepsAdapter by lazy { StepsAdapter(this) }
     private val mFinanceViewModel: FinanceViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
     private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
     private var plan: Plan? = null
@@ -42,6 +44,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         contractId = intent.getLongExtra("contractId", 0L)
         binding = ActivityDailyPlanBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
+        binding.sharedViewModel = sharedViewModel
         setContentView(binding.root)
 
         // Toolbar
@@ -56,23 +59,28 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
+        binding.swipeRefresh.setOnRefreshListener(this)
+
         initPhoneNumbers()
         initStepView()
 
         // Observe MutableLiveData
         setupObservers()
 
-        contractId?.let { mFinanceViewModel.fetchPlan(it) }
-        mFinanceViewModel.fetchBusinessProcessStatuses()
-
         binding.changeResult.setOnClickListener {
-            plan?.let {
-                val intent = Intent(this, ChangeResultActivity::class.java)
-                intent.putExtra("contractId", it.contractId)
-                intent.putExtra("clientPhoneNumbers", it.customerPhoneNumbers.toTypedArray())
-                intent.putExtra("businessProcessId", it.planBusinessProcessId)
-                startActivityForResult(intent, changeResultRequestCode)
-            }
+            goToChangeResult()
+        }
+
+        callRequests()
+    }
+
+    private fun goToChangeResult() {
+        plan?.let {
+            val intent = Intent(this, ChangeResultActivity::class.java)
+            intent.putExtra("contractId", it.contractId)
+            intent.putExtra("clientPhoneNumbers", it.customerPhoneNumbers.toTypedArray())
+            intent.putExtra("businessProcessId", it.planBusinessProcessId)
+            startActivityForResult(intent, changeResultRequestCode)
         }
     }
 
@@ -80,6 +88,11 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         binding.phoneNumbers.layoutManager = LinearLayoutManager(this)
         binding.phoneNumbers.adapter = phoneNumbersAdapter
         binding.phoneNumbers.isNestedScrollingEnabled = false
+    }
+
+    private fun callRequests() {
+        contractId?.let { mFinanceViewModel.fetchPlan(it) }
+        mFinanceViewModel.fetchBusinessProcessStatuses()
     }
 
     private fun setupObservers() {
@@ -90,7 +103,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 }
                 is NetworkResult.Loading -> {}
                 is NetworkResult.Error -> {
-//                    declareErrorByStatus(res.message, res.status, this)
+                    showException(res.message, this)
                 }
             }
         })
@@ -103,23 +116,23 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this)
+                    showException(res.message, this)
                 }
             }
         })
         mFinanceViewModel.planResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    progressDialog.hideLoading()
+                    sharedViewModel.setResponse(res)
                     plan = res.data
                     binding.plan = res.data
                     plan?.planBusinessProcessId?.let { stepsAdapter.setStep(it) }
                     phoneNumbersAdapter.setData(plan?.customerPhoneNumbers)
                 }
-                is NetworkResult.Loading -> progressDialog.showLoading()
+                is NetworkResult.Loading -> sharedViewModel.setResponse(res)
                 is NetworkResult.Error -> {
-                    progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this)
+                    sharedViewModel.setResponse(res)
+                    showException(res.message, this)
                 }
             }
         })
@@ -177,6 +190,26 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         private const val callRequestCode = 1000
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                callRequestCode -> {
+                    showSnackbar(binding.phoneNumbers)
+                }
+                changeResultRequestCode -> {
+                    showSnackbar(binding.changeResult)
+                }
+            }
+        }
+    }
+
+    private fun showSnackbar(view: View) = Snackbar.make(
+        view,
+        R.string.successfullySaved,
+        Snackbar.LENGTH_SHORT
+    ).show()
+
     override fun incoming(phoneNumber: String) {
         val intent = Intent(binding.root.context, IncomingActivity::class.java)
         intent.putExtra("phoneNumber", phoneNumber)
@@ -189,5 +222,10 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         intent.putExtra("phoneNumber", phoneNumber)
         intent.putExtra("contractId", plan!!.contractId)
         startActivityForResult(intent, callRequestCode);
+    }
+
+    override fun onRefresh() {
+        sharedViewModel.setLoadingType(LoadingType.SWIPE_REFRESH)
+        callRequests()
     }
 }

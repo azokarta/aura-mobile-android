@@ -26,6 +26,8 @@ class PlanFilterViewModel @Inject constructor(
     }
 
     fun clearFilter() {
-        filterParams.postValue(PlanFilter("", 0,0, 0, false))
+        filterParams.postValue(getDefault())
     }
+
+    fun getDefault() = PlanFilter("", 0,0, 0, false)
 }

@@ -6,7 +6,6 @@
     android:layout_height="?attr/actionBarSize"
     android:background="@color/white"
     android:theme="@style/ToolbarTheme"
-    app:layout_scrollFlags="scroll|snap"
     app:subtitleTextColor="@color/black"
     app:title="Aura employee"
     app:titleTextColor="@color/black" />

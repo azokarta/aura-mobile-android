@@ -131,10 +131,10 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
                     setResult(RESULT_OK, intent);
                     finish();
                 }
-                is NetworkResult.Loading -> {}
+                is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this)
+                    showException(res.message, this)
                 }
             }
         })
@@ -149,21 +149,5 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            val v = currentFocus
-            if (v is EditText) {
-                val outRect = Rect()
-                v.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    v.clearFocus()
-                    val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event)
     }
 }

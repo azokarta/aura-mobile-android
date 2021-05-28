@@ -51,12 +51,6 @@ class Permissions(val context: Context, val activity: Activity) {
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(request)
         val result = LocationServices.getSettingsClient(activity).checkLocationSettings(builder.build())
-        result.addOnSuccessListener {
-            // All location settings are satisfied. The client can initialize
-            // location requests here.
-            // ...
-            println("ENABLED")
-        }
 
         result.addOnFailureListener { exception ->
             if (exception is ResolvableApiException){

@@ -28,7 +28,7 @@ class OutgoingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityOutgoingBinding
 
     private lateinit var progressDialog: ProgressDialog
-    private val mFinanceViewModel: FinanceViewModel by viewModels()
+    private val financeViewModel: FinanceViewModel by viewModels()
     private lateinit var phoneNumber: String
     private var contractId: Long = 0L
     private var callStatusId: Long = 0L
@@ -44,7 +44,6 @@ class OutgoingActivity : AppCompatActivity() {
 
         contractId = intent.getLongExtra("contractId", 0L)
         phoneNumber = intent.getStringExtra("phoneNumber")!!
-        println(phoneNumber)
 
         // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -61,24 +60,24 @@ class OutgoingActivity : AppCompatActivity() {
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
-        startedTime = DateTime.now()
-
         binding.save.setOnClickListener(::save)
 
         binding.callStatusText.setOnItemClickListener { _, _, i, _ ->
-            callStatusId = mFinanceViewModel.callStatusesResponse.value!!.data!![i].id
+            callStatusId = financeViewModel.callStatusesResponse.value!!.data!![i].id
         }
 
         setupObservers()
 
-        mFinanceViewModel.fetchCallStatuses()
-        mFinanceViewModel.getCountryCode()
+        financeViewModel.fetchCallStatuses()
+        financeViewModel.getCountryCode()
 
+
+        startedTime = DateTime.now()
         dialPhoneNumber(phoneNumber)
     }
 
     private fun setupObservers() {
-        mFinanceViewModel.callStatusesResponse.observe(this, { res ->
+        financeViewModel.callStatusesResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
@@ -97,11 +96,11 @@ class OutgoingActivity : AppCompatActivity() {
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this)
+                    showException(res.message, this)
                 }
             }
         })
-        mFinanceViewModel.assignCallResponse.observe(this, { res ->
+        financeViewModel.assignCallResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
@@ -112,12 +111,12 @@ class OutgoingActivity : AppCompatActivity() {
                 is NetworkResult.Loading -> {}
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this)
+                    showException(res.message, this)
                 }
             }
         })
 
-        mFinanceViewModel.countryCode.observe(this, { countryCode ->
+        financeViewModel.countryCode.observe(this, { countryCode ->
             this.countryCode = countryCode
             binding.phoneNumberText.mask = countryCode.format
             val phoneWithoutCountryCode = removeCountryCodeFromPhone(phoneNumber)
@@ -148,7 +147,7 @@ class OutgoingActivity : AppCompatActivity() {
                         longitude = it.longitude,
                         latitude = it.latitude
                     )
-                    mFinanceViewModel.assignOutgoingCall(assign, contractId)
+                    financeViewModel.assignOutgoingCall(assign, contractId)
                 }
         } else {
             showException(getString(R.string.fill_out_all_fields), this)
@@ -182,7 +181,12 @@ class OutgoingActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == this.requestCode) {
             val endTime = DateTime.now()
-            duration = Duration(startedTime, endTime)
+            val callingMinutes = endTime!!.minusMinutes(startedTime!!.minuteOfHour).minuteOfHour
+            duration = if (callingMinutes < 10) {
+                Duration(startedTime, startedTime!!.plusMinutes(10))
+            } else {
+                Duration(startedTime, endTime)
+            }
         }
     }
 }

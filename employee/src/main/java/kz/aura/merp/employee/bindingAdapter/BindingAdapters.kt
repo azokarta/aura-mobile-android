@@ -65,7 +65,7 @@ class BindingAdapters {
         @JvmStatic
         @BindingAdapter("android:showDataByResponse")
         fun showDataByResponse(view: View, res: NetworkResult<*>?) {
-            view.isVisible = res?.data != null
+            view.isVisible = res is NetworkResult.Success
         }
 
         @JvmStatic
@@ -77,16 +77,16 @@ class BindingAdapters {
         @JvmStatic
         @BindingAdapter("android:noData")
         fun noData(view: View, res: NetworkResult<*>?) {
-            if (res is NetworkResult.Success) {
-                view.isVisible = when (res.data) {
+            view.isVisible = if (res is NetworkResult.Success) {
+                when (res.data) {
                     is List<*> -> res.data.isNullOrEmpty()
                     else -> res.data == null
                 }
-            }
+            } else false
         }
 
         @JvmStatic
-        @BindingAdapter("android:response", "android:loadingType")
+        @BindingAdapter("android:response", "android:loadingType", requireAll = true)
         fun refreshIndicator(view: SwipeRefreshLayout, res: NetworkResult<*>?, loadingType: LoadingType) {
             view.isRefreshing = res is NetworkResult.Loading && loadingType == LoadingType.SWIPE_REFRESH
         }

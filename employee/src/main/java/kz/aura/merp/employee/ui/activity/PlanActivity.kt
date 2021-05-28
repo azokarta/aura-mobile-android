@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
@@ -53,7 +55,6 @@ class PlanActivity : AppCompatActivity() {
                 1 -> getString(R.string.contributions)
                 2 -> getString(R.string.paymentSchedule)
                 3 -> getString(R.string.calls)
-                4 -> getString(R.string.scheduled_calls)
                 else -> null
             }
         }.attach()

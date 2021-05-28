@@ -6,15 +6,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.adapter.ScheduledCallsAdapter
 import kz.aura.merp.employee.databinding.FragmentScheduledCallsBinding
+import kz.aura.merp.employee.util.LoadingType
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class ScheduledCallsFragment : Fragment() {
+class ScheduledCallsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var _binding: FragmentScheduledCallsBinding? = null
 
@@ -22,8 +24,8 @@ class ScheduledCallsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val mFinanceViewModel: FinanceViewModel by activityViewModels()
     private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var financeViewModel: FinanceViewModel
     private val scheduledCallsAdapter: ScheduledCallsAdapter by lazy { ScheduledCallsAdapter() }
 
     override fun onCreateView(
@@ -31,10 +33,14 @@ class ScheduledCallsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
 
         _binding = FragmentScheduledCallsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+        binding.sharedViewModel = sharedViewModel
         val root: View = binding.root
+
+        binding.swipeRefresh.setOnRefreshListener(this)
 
         setupRecyclerView()
 
@@ -46,7 +52,7 @@ class ScheduledCallsFragment : Fragment() {
     }
 
     private fun callRequests() {
-        mFinanceViewModel.fetchLastMonthScheduledCalls()
+        financeViewModel.fetchLastMonthScheduledCalls()
     }
 
     override fun onDestroyView() {
@@ -57,11 +63,10 @@ class ScheduledCallsFragment : Fragment() {
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = scheduledCallsAdapter
-        binding.recyclerView.isNestedScrollingEnabled = false
     }
 
     private fun setupObservers() {
-        mFinanceViewModel.scheduledCallsResponse.observe(viewLifecycleOwner, { res ->
+        financeViewModel.scheduledCallsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
@@ -71,5 +76,10 @@ class ScheduledCallsFragment : Fragment() {
                 is NetworkResult.Error -> sharedViewModel.setResponse(res)
             }
         })
+    }
+
+    override fun onRefresh() {
+        sharedViewModel.setLoadingType(LoadingType.SWIPE_REFRESH)
+        callRequests()
     }
 }

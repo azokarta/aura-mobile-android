@@ -17,7 +17,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/phoneNumber"
@@ -41,10 +42,7 @@
                 android:src="@{call.callDirectionId == 1 ? @drawable/ic_baseline_phone_forwarded_24 : @drawable/ic_baseline_phone_callback_24}"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp" />
+                android:layout_alignParentStart="true" />
 
             <ImageView
                 android:id="@+id/imageView16"
@@ -115,8 +113,7 @@
                 android:layout_below="@id/callDirection"
                 android:layout_alignStart="@+id/callDirection"
                 android:layout_alignLeft="@+id/callDirection"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginTop="16dp"/>
 
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>

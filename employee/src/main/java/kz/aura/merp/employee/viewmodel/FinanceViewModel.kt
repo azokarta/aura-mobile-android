@@ -97,7 +97,7 @@ class FinanceViewModel @Inject constructor(
                 plansResponse.postValue(NetworkResult.Error(e.message))
             }
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            plansResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -116,7 +116,7 @@ class FinanceViewModel @Inject constructor(
                 createDailyPlanResponse.postValue(NetworkResult.Error(e.message))
             }
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            createDailyPlanResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -137,7 +137,7 @@ class FinanceViewModel @Inject constructor(
                     changeBusinessProcessStatusResponse.postValue(NetworkResult.Error(e.message))
                 }
             } else {
-                planResponse.postValue(internetIsNotConnected())
+                changeBusinessProcessStatusResponse.postValue(internetIsNotConnected())
             }
         }
 
@@ -156,7 +156,7 @@ class FinanceViewModel @Inject constructor(
                 businessProcessStatusesResponse.postValue(NetworkResult.Error(e.message))
             }
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            businessProcessStatusesResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -176,7 +176,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            dailyPlanResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -196,7 +196,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            paymentScheduleResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -216,7 +216,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            contributionsResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -236,7 +236,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            callsResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -256,7 +256,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            callsHistoryResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -276,7 +276,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            callsResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -296,7 +296,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            changeResultResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -316,7 +316,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            banksResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -336,7 +336,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            paymentMethodsResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -356,7 +356,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            planResultsResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -376,7 +376,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            contributionsResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -396,7 +396,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            callDirectionsResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -416,7 +416,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            callStatusesResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -435,7 +435,7 @@ class FinanceViewModel @Inject constructor(
                 assignCallResponse.postValue(NetworkResult.Error(e.message))
             }
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            assignCallResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -455,7 +455,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            assignCallResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -475,7 +475,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            scheduledCallsResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -495,7 +495,7 @@ class FinanceViewModel @Inject constructor(
             }
 
         } else {
-            planResponse.postValue(internetIsNotConnected())
+            scheduledCallsResponse.postValue(internetIsNotConnected())
         }
     }
 

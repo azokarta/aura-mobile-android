@@ -4,35 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="sharedViewModel"
             type="kz.aura.merp.employee.viewmodel.SharedViewModel" />
     </data>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:loadingType="@{sharedViewModel.loadingType}"
-        android:response="@{sharedViewModel.response}"
-        tools:context=".ui.fragment.finance.PlanPaymentScheduleFragment">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:context=".ui.fragment.finance.PlanPaymentScheduleFragment">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:showDataByResponse="@{sharedViewModel.response}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ProgressBar
                 android:id="@+id/progressBar2"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:response="@{sharedViewModel.response}"
                 android:loadingType="@{sharedViewModel.loadingType}"
+                android:response="@{sharedViewModel.response}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -82,14 +81,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:noData="@{sharedViewModel.response}"
                 android:text="@string/noData"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:visibility="invisible"
-                android:noData="@{sharedViewModel.response}"
                 app:layout_constraintEnd_toEndOf="@+id/imageView18"
                 app:layout_constraintStart_toStartOf="@+id/imageView18"
                 app:layout_constraintTop_toBottomOf="@+id/imageView18" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

@@ -32,7 +32,7 @@ import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class ContractFragment : Fragment(), OnSelectPhoneNumber, SwipeRefreshLayout.OnRefreshListener {
+class ContractFragment : Fragment(), OnSelectPhoneNumber {
 
     private var _binding: FragmentContractBinding? = null
 
@@ -40,8 +40,8 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber, SwipeRefreshLayout.OnR
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val mFinanceViewModel: FinanceViewModel by activityViewModels()
     private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var financeViewModel: FinanceViewModel
     private var contractId: Long? = null
     private var plan: Plan? = null
     private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
@@ -59,10 +59,12 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber, SwipeRefreshLayout.OnR
         savedInstanceState: Bundle?
     ): View {
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
 
         _binding = FragmentContractBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.sharedViewModel = sharedViewModel
+        val root: View = binding.root
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(requireContext())
@@ -74,9 +76,7 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber, SwipeRefreshLayout.OnR
 
         callRequest()
 
-        binding.swipeRefresh.setOnRefreshListener(this)
-
-        return binding.root
+        return root
     }
 
     private fun initPhoneNumbers() {
@@ -86,12 +86,12 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber, SwipeRefreshLayout.OnR
     }
 
     private fun callRequest() {
-        mFinanceViewModel.fetchPlan(contractId!!)
-        mFinanceViewModel.fetchBusinessProcessStatuses()
+        financeViewModel.fetchPlan(contractId!!)
+        financeViewModel.fetchBusinessProcessStatuses()
     }
 
     private fun setObservers() {
-        mFinanceViewModel.planResponse.observe(viewLifecycleOwner, { res ->
+        financeViewModel.planResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
@@ -125,7 +125,6 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber, SwipeRefreshLayout.OnR
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 callRequestCode -> {
-                    mFinanceViewModel.fetchLastMonthCallsByContractId(contractId!!)
                     showSnackbar(binding.phoneNumbers)
                 }
             }
@@ -150,10 +149,5 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber, SwipeRefreshLayout.OnR
         intent.putExtra("phoneNumber", phoneNumber)
         intent.putExtra("contractId", contractId)
         startActivityForResult(intent, callRequestCode);
-    }
-
-    override fun onRefresh() {
-        sharedViewModel.setLoadingType(LoadingType.SWIPE_REFRESH)
-        callRequest()
     }
 }

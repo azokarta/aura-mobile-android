@@ -20,7 +20,7 @@ import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class PlanContributionsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class PlanContributionsFragment : Fragment() {
 
     private var _binding: FragmentPlanContributionsBinding? = null
 
@@ -29,8 +29,8 @@ class PlanContributionsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListen
     private val binding get() = _binding!!
 
     private var contractId: Long? = null
-    private val mFinanceViewModel: FinanceViewModel by activityViewModels()
     private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var financeViewModel: FinanceViewModel
     private lateinit var progressDialog: ProgressDialog
     private val contributionsAdapter: ContributionsAdapter by lazy { ContributionsAdapter() }
 
@@ -46,10 +46,12 @@ class PlanContributionsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListen
         savedInstanceState: Bundle?
     ): View {
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
 
         _binding = FragmentPlanContributionsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.sharedViewModel = sharedViewModel
+        val root: View = binding.root
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(requireContext())
@@ -60,23 +62,20 @@ class PlanContributionsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListen
 
         callRequests()
 
-        binding.swipeRefresh.setOnRefreshListener(this)
-
-        return binding.root
+        return root
     }
 
     private fun callRequests() {
-        mFinanceViewModel.fetchContributionsByContractId(contractId!!)
+        financeViewModel.fetchContributionsByContractId(contractId!!)
     }
 
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = contributionsAdapter
-        binding.recyclerView.isNestedScrollingEnabled = false
     }
 
     private fun setupObservers() {
-        mFinanceViewModel.contributionsResponse.observe(viewLifecycleOwner, { res ->
+        financeViewModel.contributionsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
@@ -91,10 +90,5 @@ class PlanContributionsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListen
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onRefresh() {
-        sharedViewModel.setLoadingType(LoadingType.SWIPE_REFRESH)
-        callRequests()
     }
 }

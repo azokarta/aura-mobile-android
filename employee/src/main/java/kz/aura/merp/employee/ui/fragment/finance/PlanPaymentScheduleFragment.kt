@@ -21,7 +21,7 @@ import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class PlanPaymentScheduleFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class PlanPaymentScheduleFragment : Fragment() {
 
     private var _binding: FragmentPlanPaymentScheduleBinding? = null
 
@@ -30,7 +30,7 @@ class PlanPaymentScheduleFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
     private val binding get() = _binding!!
 
     private lateinit var sharedViewModel: SharedViewModel
-    private val mFinanceViewModel: FinanceViewModel by activityViewModels()
+    private lateinit var financeViewModel: FinanceViewModel
     private val paymentScheduleAdapter: PaymentScheduleAdapter by lazy { PaymentScheduleAdapter() }
     private var contractId: Long = 0
     private var currency: String = ""
@@ -47,10 +47,12 @@ class PlanPaymentScheduleFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
         savedInstanceState: Bundle?
     ): View {
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
 
         _binding = FragmentPlanPaymentScheduleBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.sharedViewModel = sharedViewModel
+        val root: View = binding.root
 
         setupRecyclerView()
 
@@ -58,38 +60,31 @@ class PlanPaymentScheduleFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
 
         callRequests()
 
-        return binding.root
+        return root
     }
 
     private fun callRequests() {
-        mFinanceViewModel.fetchPaymentSchedule(contractId)
+        financeViewModel.fetchPaymentSchedule(contractId)
     }
 
     private fun setupObservers() {
-        mFinanceViewModel.planResponse.observe(viewLifecycleOwner, { res ->
-            when (res) {
-                is NetworkResult.Success -> {
-                    sharedViewModel.setResponse(res)
-                    currency = res.data!!.contractCurrencyName
-                }
-                is NetworkResult.Loading -> {
-                    sharedViewModel.setResponse(res)
-                }
-                is NetworkResult.Error -> {
-                    sharedViewModel.setResponse(res)
-                }
-            }
-        })
-        mFinanceViewModel.paymentScheduleResponse.observe(viewLifecycleOwner, { res ->
+        financeViewModel.paymentScheduleResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
                     paymentScheduleAdapter.setData(res.data!!, currency)
                 }
                 is NetworkResult.Loading -> sharedViewModel.setResponse(res)
-                is NetworkResult.Error -> {
-                    sharedViewModel.setResponse(res)
+                is NetworkResult.Error -> sharedViewModel.setResponse(res)
+            }
+        })
+        financeViewModel.planResponse.observe(viewLifecycleOwner, { res ->
+            when (res) {
+                is NetworkResult.Success -> {
+                    currency = res.data!!.contractCurrencyName
                 }
+                is NetworkResult.Loading -> {}
+                is NetworkResult.Error -> sharedViewModel.setResponse(res)
             }
         })
     }
@@ -97,16 +92,10 @@ class PlanPaymentScheduleFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = paymentScheduleAdapter
-        binding.recyclerView.isNestedScrollingEnabled = false
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onRefresh() {
-        sharedViewModel.setLoadingType(LoadingType.SWIPE_REFRESH)
-        callRequests()
     }
 }

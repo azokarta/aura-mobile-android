@@ -284,7 +284,9 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    showSnackbar(binding.save)
+                    val intent = Intent();
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
                 is NetworkResult.Loading -> {
                 }
