@@ -33,7 +33,6 @@ class FinanceActivity : AppCompatActivity() {
         setContentView(binding.root)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.finAgent)
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -56,9 +55,9 @@ class FinanceActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE
         )
 
-        Permissions(this, this).enableLocation()
+        mFinanceViewModel.staffUsername.observe(this, {
 
-        mFinanceViewModel.staffUsername.observe(this, { username -> supportActionBar?.subtitle = username })
+        })
 
         mFinanceViewModel.getStaffUsername()
 

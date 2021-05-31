@@ -160,4 +160,5 @@
     <string name="upcoming">Upcoming</string>
     <string name="current">Current</string>
     <string name="contributions">Contributions</string>
+    <string name="enable_location">Please, enable geolocation on the device</string>
 </resources>

@@ -76,14 +76,14 @@ class DealerActivity : AppCompatActivity() {
         })
 
         // If network is disconnected and user clicks restart, get data again
-        findViewById<Button>(R.id.restart).setOnClickListener {
-            if (verifyAvailableNetwork(this)) {
-                mDealerViewModel.fetchAll(dealerId!!) // fetch demo list
-                binding.progressBar.visibility = View.VISIBLE
-                binding.recyclerView.visibility = View.VISIBLE
-                findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.GONE
-            }
-        }
+//        findViewById<Button>(R.id.restart).setOnClickListener {
+//            if (verifyAvailableNetwork(this)) {
+//                mDealerViewModel.fetchAll(dealerId!!) // fetch demo list
+//                binding.progressBar.visibility = View.VISIBLE
+//                binding.recyclerView.visibility = View.VISIBLE
+//                findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.GONE
+//            }
+//        }
 
         // Fetch demoList
         mDealerViewModel.fetchAll(dealerId!!)

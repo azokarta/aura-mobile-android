@@ -158,7 +158,6 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
             dialog.dismiss()
         }
         builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-            progressDialog.showLoading()
             getCurrentLocation { latitude, longitude ->
                 mFinanceViewModel.updateBusinessProcess(
                     plan!!.contractId,
@@ -174,11 +173,19 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     }
 
     private fun getCurrentLocation(callback: (latitude: Double, longitude: Double) -> Unit) {
-        SmartLocation.with(this).location().oneFix()
-            .start {
-                callback.invoke(it.latitude, it.longitude)
-            }
+        if (isLocationServiceEnabled()) {
+            progressDialog.showLoading()
+            SmartLocation.with(this).location().oneFix()
+                .start {
+                    callback.invoke(it.latitude, it.longitude)
+                }
+        } else {
+            showException(getString(R.string.enable_location), this)
+        }
     }
+
+    private fun isLocationServiceEnabled(): Boolean =
+        SmartLocation.with(this).location().state().locationServicesEnabled()
 
     override fun onSupportNavigateUp(): Boolean {
         finish()

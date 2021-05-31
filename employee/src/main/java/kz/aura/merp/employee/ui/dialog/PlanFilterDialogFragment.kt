@@ -1,18 +1,12 @@
 package kz.aura.merp.employee.ui.dialog
 
-import android.content.Context
-import android.graphics.Rect
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -24,14 +18,16 @@ import kz.aura.merp.employee.model.BusinessProcessStatus
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
+import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
 class PlanFilterDialogFragment : BottomSheetDialogFragment() {
 
     private var _binding: PlanFilterBottomSheetBinding? = null
     private val binding get() = _binding!!
-    private val mFinanceViewModel: FinanceViewModel by activityViewModels()
-    private val mFilterViewModel: PlanFilterViewModel by activityViewModels()
+    private lateinit var financeViewModel: FinanceViewModel
+    private val filterViewModel: PlanFilterViewModel by activityViewModels()
+    private lateinit var sharedViewModel: SharedViewModel
     private lateinit var filterSortParams: ArrayList<String>
     private lateinit var searchParams: List<String>
     private var selectedSearchBy: Int = 0
@@ -46,13 +42,19 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = PlanFilterBottomSheetBinding.inflate(inflater, container, false)
+        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
+        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
 
-        selectedSearchBy = mFilterViewModel.filterParams.value?.selectedSearchBy ?: 0
-        selectedSortFilter = mFilterViewModel.filterParams.value?.selectedSortFilter ?: 0
-        selectedStatusFilter = mFilterViewModel.filterParams.value?.selectedStatusFilter ?: 0
-        query = mFilterViewModel.filterParams.value?.query ?: ""
-        problematic = mFilterViewModel.filterParams.value?.problematic ?: false
+        _binding = PlanFilterBottomSheetBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.sharedViewModel = sharedViewModel
+        val root: View = binding.root
+
+        selectedSearchBy = filterViewModel.filterParams.value?.selectedSearchBy ?: 0
+        selectedSortFilter = filterViewModel.filterParams.value?.selectedSortFilter ?: 0
+        selectedStatusFilter = filterViewModel.filterParams.value?.selectedStatusFilter ?: 0
+        query = filterViewModel.filterParams.value?.query ?: ""
+        problematic = filterViewModel.filterParams.value?.problematic ?: false
 
         filterSortParams = arrayListOf(
             getString(R.string.payment_date),
@@ -85,7 +87,7 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
             val query = binding.search.editText?.text.toString()
             val selectedSortFilter = binding.sortChipGroup.checkedChipId
             val selectedStatusFilter = binding.statusesChipGroup.checkedChipId
-            mFilterViewModel.apply(
+            filterViewModel.apply(
                 query,
                 selectedSortFilter,
                 selectedStatusFilter,
@@ -107,7 +109,13 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
 
         setupObservers()
 
-        return binding.root
+        callRequests()
+
+        return root
+    }
+
+    private fun callRequests() {
+        financeViewModel.fetchBusinessProcessStatuses()
     }
 
     private fun setupFilterParams() {
@@ -129,9 +137,10 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupObservers() {
-        mFinanceViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
+        financeViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
+                    sharedViewModel.setResponse(res)
                     businessProcessStatuses.addAll(res.data!!)
                     for (process in businessProcessStatuses) {
                         binding.statusesChipGroup.addView(
@@ -144,8 +153,8 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
 
                     setupFilterParams()
                 }
-                is NetworkResult.Loading -> { }
-                is NetworkResult.Error -> { }
+                is NetworkResult.Loading -> sharedViewModel.setResponse(res)
+                is NetworkResult.Error -> sharedViewModel.setResponse(res)
             }
         })
     }

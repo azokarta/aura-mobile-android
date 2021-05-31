@@ -133,26 +133,33 @@ class OutgoingActivity : AppCompatActivity() {
         val currentDate: String = dtf.print(DateTime.now())
 
         if (phoneNumber.isNotBlank() && callStatusId != 0L && typedPhoneNumber.length == countryCode.format.length) {
-            progressDialog.showLoading()
 
-            SmartLocation.with(this).location().oneFix()
-                .start {
-                    val assign = AssignCall(
-                        countryCode = countryCode.name,
-                        phoneNumber = typedPhoneNumber,
-                        callStatusId = callStatusId,
-                        callTime = currentDate,
-                        duration = duration!!.toString(),
-                        description = description,
-                        longitude = it.longitude,
-                        latitude = it.latitude
-                    )
-                    financeViewModel.assignOutgoingCall(assign, contractId)
-                }
+            if (isLocationServiceEnabled()) {
+                progressDialog.showLoading()
+                SmartLocation.with(this).location().oneFix()
+                    .start {
+                        val assign = AssignCall(
+                            countryCode = countryCode.name,
+                            phoneNumber = typedPhoneNumber,
+                            callStatusId = callStatusId,
+                            callTime = currentDate,
+                            duration = duration!!.toString(),
+                            description = description,
+                            longitude = it.longitude,
+                            latitude = it.latitude
+                        )
+                        financeViewModel.assignOutgoingCall(assign, contractId)
+                    }
+            } else {
+                showException(getString(R.string.enable_location), this)
+            }
         } else {
             showException(getString(R.string.fill_out_all_fields), this)
         }
     }
+
+    private fun isLocationServiceEnabled(): Boolean =
+        SmartLocation.with(this).location().state().locationServicesEnabled()
 
     private fun removeCountryCodeFromPhone(phone: String): String {
         if (countryCode == CountryCode.KZ) {

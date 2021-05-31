@@ -160,4 +160,5 @@
     <string name="upcoming">Предстоящие</string>
     <string name="current">Текущие</string>
     <string name="contributions">Взносы</string>
+    <string name="enable_location">Пожалуйста, включите на устройстве геолокацию</string>
 </resources>

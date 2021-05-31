@@ -1,14 +1,9 @@
 package kz.aura.merp.employee.ui.activity
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -23,7 +18,6 @@ import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-
 
 @AndroidEntryPoint
 class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener {
@@ -79,25 +73,33 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
 
         if (typedPhoneNumber.isNotBlank() && selectedHour != null && selectedMinute != null && typedPhoneNumber.length == countryCode.format.length) {
-            progressDialog.showLoading()
 
-            SmartLocation.with(this).location().oneFix()
-                .start {
-                    val assign = AssignCall(
-                        countryCode = countryCode.name,
-                        phoneNumber = typedPhoneNumber,
-                        callTime = currentDate,
-                        duration = "PT${selectedHour}H${selectedMinute}M",
-                        description = description,
-                        longitude = it.longitude,
-                        latitude = it.latitude
-                    )
-                    mFinanceViewModel.assignIncomingCall(assign, contractId)
-                }
+            if (isLocationServiceEnabled()) {
+                progressDialog.showLoading()
+                SmartLocation.with(this).location().oneFix()
+                    .start {
+                        val assign = AssignCall(
+                            countryCode = countryCode.name,
+                            phoneNumber = typedPhoneNumber,
+                            callTime = currentDate,
+                            duration = "PT${selectedHour}H${selectedMinute}M",
+                            description = description,
+                            longitude = it.longitude,
+                            latitude = it.latitude
+                        )
+                        mFinanceViewModel.assignIncomingCall(assign, contractId)
+                    }
+            } else {
+                showException(getString(R.string.enable_location), this)
+            }
+
         } else {
             showException(getString(R.string.fill_out_all_fields), this)
         }
     }
+
+    private fun isLocationServiceEnabled(): Boolean =
+        SmartLocation.with(this).location().state().locationServicesEnabled()
 
     private fun removeCountryCodeFromPhone(phone: String): String {
         if (countryCode == CountryCode.KZ) {

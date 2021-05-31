@@ -77,18 +77,6 @@
                 app:layout_constraintStart_toEndOf="@+id/address"
                 app:layout_constraintTop_toTopOf="@+id/address" />
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="5dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                android:background="@{serviceApplication.applicationUrgencyLevel == true ? @drawable/red_vertical_divider : @drawable/vertical_divider}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>

@@ -70,15 +70,6 @@ class MasterActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(applicationContext)
         binding.recyclerView.adapter = serviceApplicationAdapter
 
-        // If network is disconnected and user clicks restart, then get data again
-        findViewById<Button>(R.id.restart).setOnClickListener {
-            if (verifyAvailableNetwork(this)) {
-                mMasterViewModel.fetchServiceApplications() // fetch serviceApplications
-                binding.progressBar.visibility = View.VISIBLE
-                binding.recyclerView.visibility = View.VISIBLE
-                findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.GONE
-            }
-        }
 
         observeLiveData()
 

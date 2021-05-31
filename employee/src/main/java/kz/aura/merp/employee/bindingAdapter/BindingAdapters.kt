@@ -91,6 +91,13 @@ class BindingAdapters {
             view.isRefreshing = res is NetworkResult.Loading && loadingType == LoadingType.SWIPE_REFRESH
         }
 
+        @JvmStatic
+        @BindingAdapter("android:enableByResponse")
+        fun enableByResponse(view: View, res: NetworkResult<*>?) {
+            println(res)
+            view.isEnabled = res is NetworkResult.Success
+        }
+
     }
 
 }

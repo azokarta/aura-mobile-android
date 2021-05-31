@@ -132,58 +132,78 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
     }
 
     private fun save() {
-        progressDialog.showLoading()
         val reasonDescription: String? = if (binding.reasonDescriptionText.text.toString().isBlank()) null else binding.reasonDescriptionText.text.toString()
         val phoneNumber: String = binding.phoneNumberText.text.toString()
         val amount: Int? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString().toInt()
         val scheduledDateTime = "$scheduledDate $selectedHour:$selectedMinute"
 
-        SmartLocation.with(this).location().oneFix()
-            .start {
-                when (resultId) {
-                    3L -> {
-                        mFinanceViewModel.changeResult(
-                            contractId,
-                            ChangePlanResult(
-                                resultId,
-                                reasonDescription,
-                                it.longitude,
-                                it.latitude,
-                                null,
-                                AssignScheduledCallCommand(phoneNumber, countryCode.name, it.longitude, it.latitude, scheduledDateTime, reasonDescription)
+        if (isLocationServiceEnabled()) {
+            progressDialog.showLoading()
+            SmartLocation.with(this).location().oneFix()
+                .start {
+                    when (resultId) {
+                        3L -> {
+                            mFinanceViewModel.changeResult(
+                                contractId,
+                                ChangePlanResult(
+                                    resultId,
+                                    reasonDescription,
+                                    it.longitude,
+                                    it.latitude,
+                                    null,
+                                    AssignScheduledCallCommand(
+                                        phoneNumber,
+                                        countryCode.name,
+                                        it.longitude,
+                                        it.latitude,
+                                        scheduledDateTime,
+                                        reasonDescription
+                                    )
+                                )
                             )
-                        )
-                    }
-                    2L -> {
-                        mFinanceViewModel.changeResult(
-                            contractId,
-                            ChangePlanResult(
-                                resultId,
-                                reasonDescription,
-                                it.longitude,
-                                it.latitude,
-                                AssignCollectMoneyCommand(phoneNumber, bankId, paymentMethodId, amount, countryCode.name, it.longitude, it.latitude)
+                        }
+                        2L -> {
+                            mFinanceViewModel.changeResult(
+                                contractId,
+                                ChangePlanResult(
+                                    resultId,
+                                    reasonDescription,
+                                    it.longitude,
+                                    it.latitude,
+                                    AssignCollectMoneyCommand(
+                                        phoneNumber,
+                                        bankId,
+                                        paymentMethodId,
+                                        amount,
+                                        countryCode.name,
+                                        it.longitude,
+                                        it.latitude
+                                    )
+                                )
                             )
-                        )
-                    }
-                    else -> {
-                        mFinanceViewModel.changeResult(
-                            contractId,
-                            ChangePlanResult(
-                                resultId,
-                                reasonDescription,
-                                it.longitude,
-                                it.latitude
+                        }
+                        else -> {
+                            mFinanceViewModel.changeResult(
+                                contractId,
+                                ChangePlanResult(
+                                    resultId,
+                                    reasonDescription,
+                                    it.longitude,
+                                    it.latitude
+                                )
                             )
-                        )
-                    }
+                        }
 
+                    }
                 }
-
-
-            }
+        } else {
+            showException(getString(R.string.enable_location), this)
+        }
 
     }
+
+    private fun isLocationServiceEnabled(): Boolean =
+        SmartLocation.with(this).location().state().locationServicesEnabled()
 
     private fun showTimePicker(view: View) {
         val timePicker = TimePickerFragment(this, selectedHour, selectedMinute)
@@ -246,7 +266,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this)
+                    showException(res.message, this)
                 }
             }
         })
@@ -261,7 +281,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this)
+                    showException(res.message, this)
                 }
             }
         })
@@ -276,7 +296,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this)
+                    showException(res.message, this)
                 }
             }
         })
@@ -292,7 +312,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this)
+                    showException(res.message, this)
                 }
             }
         })
@@ -357,12 +377,6 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
             }
         }
     }
-
-    private fun showSnackbar(view: View) = Snackbar.make(
-        view,
-        R.string.successfullySaved,
-        Snackbar.LENGTH_SHORT
-    ).show()
 
     private fun clearChilds(parent: Field) {
         when (parent) {
