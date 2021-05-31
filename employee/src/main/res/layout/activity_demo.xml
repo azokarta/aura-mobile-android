@@ -21,12 +21,12 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/demoData" />
+            android:text="@string/demo_data" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/businessProcesses" />
+            android:text="@string/business_processes" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"

@@ -169,7 +169,7 @@ fun <T> saveDataByKey(context: Context, data: T, key: String) {
         is Float -> editor.putFloat(key, data)
         is Boolean -> editor.putBoolean(key, data)
         else -> {
-            Toast.makeText(context, context.getString(R.string.unknownError), Toast.LENGTH_SHORT)
+            Toast.makeText(context, context.getString(R.string.unknown_error), Toast.LENGTH_SHORT)
                 .show()
         }
     }
@@ -196,15 +196,15 @@ fun receiveErrorMessage(errorBody: ResponseBody): String? {
 fun declareErrorByStatus(message: String?, status: Int? = null, context: Context, activity: Activity? = null) {
     val hasInternetConnection = verifyAvailableNetwork(context)
     if (!hasInternetConnection) {
-        showException(context.getString(R.string.networkDisconnected), context)
+        showException(context.getString(R.string.network_disconnected), context)
         return
     }
     when (status) {
         401 -> {
             if (activity != null && activity is AuthorizationActivity) {
-                showToast(context, context.getString(R.string.wrongLoginOrPassword))
+                showToast(context, context.getString(R.string.wrong_login_or_password))
             } else {
-                showToast(context, context.getString(R.string.wrongLoginOrPassword))
+                showToast(context, context.getString(R.string.wrong_login_or_password))
                 clearPreviousAndOpenActivity(context, AuthorizationActivity())
             }
         }

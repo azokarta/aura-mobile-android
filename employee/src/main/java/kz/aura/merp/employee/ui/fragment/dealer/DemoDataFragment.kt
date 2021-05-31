@@ -52,7 +52,7 @@ class DemoDataFragment : Fragment() {
             binding.demo = data
             binding.executePendingBindings()
 //            demo!!.crmPhoneDtoList?.let { demoDataPhoneNumbersAdapter.setData(it) }
-            Snackbar.make(binding.root, getString(R.string.successfullySaved), Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.root, getString(R.string.successfully_saved), Snackbar.LENGTH_LONG).show()
         })
 
         binding.mapBtn.setOnClickListener {

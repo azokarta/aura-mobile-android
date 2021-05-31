@@ -56,7 +56,7 @@ class DemoRecommendationFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.save -> {
-                showToast(requireContext(), getString(R.string.recommendationsSaved))
+                showToast(requireContext(), getString(R.string.recommendations_saved))
             }
         }
         return super.onOptionsItemSelected(item)

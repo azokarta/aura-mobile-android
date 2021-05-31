@@ -175,13 +175,13 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
             when (demo!!.ocrDemoStatus) {
                 "CONFIRMED" -> {
                     binding.demoStatus.visibility = View.VISIBLE
-                    binding.demoStatus.text = getString(R.string.userConfirmed)
+//                    binding.demoStatus.text = getString(R.string.userConfirmed)
                     binding.receiveCustomerConfirmation.visibility = View.GONE
                     hideSmsForm()
                 }
                 "SENT_SMS" -> {
                     binding.demoStatus.visibility = View.VISIBLE
-                    binding.demoStatus.text = getString(R.string.smsSent)
+//                    binding.demoStatus.text = getString(R.string.smsSent)
                     hideSmsForm()
                     binding.receiveCustomerConfirmation.visibility = View.VISIBLE
                 }

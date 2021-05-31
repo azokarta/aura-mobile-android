@@ -506,7 +506,7 @@ class FinanceViewModel @Inject constructor(
     }
 
     private fun <T> internetIsNotConnected(): NetworkResult<T> = NetworkResult.Error(
-        receiveMessage(R.string.networkDisconnected),
+        receiveMessage(R.string.network_disconnected),
         ErrorStatus.INTERNET_IS_NOT_AVAILABLE
     )
 

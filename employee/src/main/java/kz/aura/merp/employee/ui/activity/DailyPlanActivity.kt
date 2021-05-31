@@ -151,7 +151,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     private fun confirmStepAlertDialog(businessProcessStatus: BusinessProcessStatus) {
         val builder = AlertDialog.Builder(this)
 
-        builder.setTitle(getString(R.string.reallyWantToChangeStatusOfPlan))
+        builder.setTitle(getString(R.string.really_want_to_change_status_of_plan))
 
         builder.setNegativeButton(getString(R.string.no)) { dialog, _ ->
             stepsAdapter.setStep(plan!!.planBusinessProcessId)
@@ -213,7 +213,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
 
     private fun showSnackbar(view: View) = Snackbar.make(
         view,
-        R.string.successfullySaved,
+        R.string.successfully_saved,
         Snackbar.LENGTH_SHORT
     ).show()
 

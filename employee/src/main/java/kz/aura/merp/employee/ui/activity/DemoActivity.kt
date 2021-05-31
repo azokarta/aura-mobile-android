@@ -40,8 +40,8 @@ class DemoActivity : AppCompatActivity() {
         val titles = ArrayList<String>()
         val fragments = ArrayList<Fragment>()
 
-        titles.add(getString(R.string.demoData))
-        titles.add(getString(R.string.businessProcesses))
+        titles.add(getString(R.string.demo_data))
+        titles.add(getString(R.string.business_processes))
         titles.add(getString(R.string.recommendation))
 
         fragments.add(DemoDataFragment.newInstance(demo))

@@ -40,7 +40,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:src="@drawable/ic_baseline_phone_callback_24"
-            android:tint="@color/colorPrimary" />
+            app:tint="@color/colorPrimary" />
 
         <ImageButton
             android:id="@+id/outgoingBtn"
@@ -53,6 +53,6 @@
             android:layout_toStartOf="@+id/incomingBtn"
             android:layout_toLeftOf="@+id/incomingBtn"
             android:src="@drawable/ic_baseline_phone_forwarded_24"
-            android:tint="@color/colorPrimary" />
+            app:tint="@color/colorPrimary" />
     </RelativeLayout>
 </layout>

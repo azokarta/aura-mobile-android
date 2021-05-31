@@ -53,7 +53,7 @@ class PlanActivity : AppCompatActivity() {
             tab.text = when (position) {
                 0 -> getString(R.string.contract)
                 1 -> getString(R.string.contributions)
-                2 -> getString(R.string.paymentSchedule)
+                2 -> getString(R.string.payment_schedule)
                 3 -> getString(R.string.calls)
                 else -> null
             }

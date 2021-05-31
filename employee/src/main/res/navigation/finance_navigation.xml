@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/nav_monthly_plan"
         android:name="kz.aura.merp.employee.ui.fragment.finance.MonthlyPlanFragment"
-        android:label="@string/monthlyPlan" />
+        android:label="@string/monthly_plan" />
     <fragment
         android:id="@+id/nav_daily_plan"
         android:name="kz.aura.merp.employee.ui.fragment.finance.DailyPlanFragment"

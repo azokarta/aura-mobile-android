@@ -98,7 +98,7 @@ class MasterActivity : AppCompatActivity() {
     private fun setupFilterResources() {
         filterSortParams = arrayListOf(
             getString(R.string.date),
-            getString(R.string.fullName)
+            getString(R.string.fullname)
         )
     }
 
@@ -140,7 +140,7 @@ class MasterActivity : AppCompatActivity() {
         }
 
         // Initialize search params
-        val items = listOf(getString(R.string.cn), getString(R.string.fullName), getString(R.string.serialNumber))
+        val items = listOf(getString(R.string.cn), getString(R.string.fullname), getString(R.string.serial_number))
         val adapter = ArrayAdapter(this, R.layout.list_item, items)
         bottomSheetBinding.searchByEditText.setText(items[0])
         bottomSheetBinding.searchByEditText.setAdapter(adapter)
@@ -169,8 +169,8 @@ class MasterActivity : AppCompatActivity() {
 //        binding.status = businessProcessStatuses.find { it.id == selectedStatusFilter.toLong() }?.name
         binding.searchBySn = when (selectedSearchBy) {
             0 -> if (searchQuery.isNotBlank()) "${getString(R.string.cn)} = $searchQuery" else ""
-            1 -> if (searchQuery.isNotBlank()) "${getString(R.string.fullName)} = $searchQuery" else ""
-            2 -> if (searchQuery.isNotBlank()) "${getString(R.string.serialNumber)} = $searchQuery" else ""
+            1 -> if (searchQuery.isNotBlank()) "${getString(R.string.fullname)} = $searchQuery" else ""
+            2 -> if (searchQuery.isNotBlank()) "${getString(R.string.serial_number)} = $searchQuery" else ""
             else -> ""
         }
         binding.executePendingBindings()
@@ -268,7 +268,7 @@ class MasterActivity : AppCompatActivity() {
     private fun checkError(error: Any) {
         binding.progressBar.visibility = View.INVISIBLE // hide progress bar
         if (!verifyAvailableNetwork(this)) {
-            findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.VISIBLE
+//            findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.VISIBLE
             binding.recyclerView.visibility = View.INVISIBLE
             binding.filterLayout.visibility = View.GONE
         } else {

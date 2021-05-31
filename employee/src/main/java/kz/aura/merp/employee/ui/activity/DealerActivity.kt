@@ -103,7 +103,7 @@ class DealerActivity : AppCompatActivity() {
     private fun checkError(error: Any) {
         binding.progressBar.visibility = View.INVISIBLE // hide progress bar
         if (!verifyAvailableNetwork(this)) {
-            findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.VISIBLE
+//            findViewById<ConstraintLayout>(R.id.networkDisconnected).visibility = View.VISIBLE
             binding.recyclerView.visibility = View.INVISIBLE
         } else {
 //            exceptionHandler(error, this) // Show error

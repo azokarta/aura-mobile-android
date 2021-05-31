@@ -149,7 +149,7 @@ class MapActivity : AppCompatActivity(), OnLocationUpdatedListener, Session.Rout
         }
     }
 
-    private fun showUnknownError() = Toast.makeText(this, getString(R.string.unknownError), Toast.LENGTH_LONG).show()
+    private fun showUnknownError() = Toast.makeText(this, getString(R.string.unknown_error), Toast.LENGTH_LONG).show()
 
     override fun onMasstransitRoutesError(p0: com.yandex.runtime.Error) = showUnknownError()
 

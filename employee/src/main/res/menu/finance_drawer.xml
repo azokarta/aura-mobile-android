@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_monthly_plan"
-            android:title="@string/monthlyPlan" />
+            android:title="@string/monthly_plan" />
         <item
             android:id="@+id/nav_daily_plan"
             android:title="@string/daily_plan" />

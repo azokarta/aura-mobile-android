@@ -47,7 +47,7 @@ class PassCodeActivity : AppCompatActivity() {
         setListenersOfNumbers()
 
         if (passCodeStatus == PassCodeStatus.VERIFY) {
-            changeText(getString(R.string.passCodeSignInTitle),getString(R.string.passCodeSignSubTitle))
+//            changeText(getString(R.string.passCodeSignInTitle),getString(R.string.passCodeSignSubTitle))
         }
 
 
@@ -157,7 +157,7 @@ class PassCodeActivity : AppCompatActivity() {
                         firstCreatedCode.addAll(code)
                         code.clear()
                         paintLinesToBlack()
-                        changeText( getString(R.string.passCodeTitle),getString(R.string.passCodeReEnter))
+//                        changeText( getString(R.string.passCodeTitle),getString(R.string.passCodeReEnter))
                     } else if (firstCreatedCode == code) {
                         savePassCode()
                         val position = definePosition(arrayListOf(salary!!))!!
@@ -176,7 +176,7 @@ class PassCodeActivity : AppCompatActivity() {
                         val position = definePosition(arrayListOf(salary!!))!!
                         openActivityByPosition(this, position)
                     } else {
-                        changeText(getString(R.string.passCodeReEnter),getString(R.string.passCodeWrong))
+//                        changeText(getString(R.string.passCodeReEnter),getString(R.string.passCodeWrong))
                         paintLinesToBlack()
                         code.clear()
                     }

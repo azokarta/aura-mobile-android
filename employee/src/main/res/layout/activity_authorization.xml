@@ -18,8 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="55dp"
             android:layout_marginTop="16dp"
-            android:onClick="signIn"
-            android:text="@string/signIn"
+            android:text="@string/sign_in"
             app:layout_constraintEnd_toEndOf="@+id/passwordField"
             app:layout_constraintStart_toStartOf="@+id/passwordField"
             app:layout_constraintTop_toBottomOf="@+id/passwordField" />
@@ -32,7 +31,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="60dp"
-            android:clickable="true"
             android:hint="@string/country_calling_code"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
@@ -52,7 +50,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:hint="@string/phoneNumber"
+            android:hint="@string/phone_number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/countryCallingCodeField"
             app:layout_constraintTop_toTopOf="@+id/countryCallingCodeField">

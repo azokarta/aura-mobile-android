@@ -153,15 +153,15 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
 
     private fun changeTextsFilter(filterParams: PlanFilter) {
         val filterSortParams = arrayListOf(
-            getString(R.string.paymentDate),
+            getString(R.string.payment_date),
             getString(R.string.contract_date),
-            getString(R.string.fullName)
+            getString(R.string.fullname)
         )
         binding.sort = filterSortParams[filterParams.selectedSortFilter]
         binding.status = financeViewModel.businessProcessStatusesResponse.value?.data?.find { it.id == filterParams.selectedStatusFilter.toLong() }?.name
         binding.searchBySn = when (filterParams.selectedSearchBy) {
             0 -> if (filterParams.query.isNotBlank()) "${getString(R.string.cn)} = ${filterParams.query}" else ""
-            1 -> if (filterParams.query.isNotBlank()) "${getString(R.string.fullName)} = ${filterParams.query}" else ""
+            1 -> if (filterParams.query.isNotBlank()) "${getString(R.string.fullname)} = ${filterParams.query}" else ""
             else -> ""
         }
         binding.problematic.isVisible = filterParams.problematic
@@ -238,7 +238,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
 
     private fun showSnackbar(view: View) = Snackbar.make(
         view,
-        R.string.successfullySaved,
+        R.string.successfully_saved,
         Snackbar.LENGTH_SHORT
     ).show()
 

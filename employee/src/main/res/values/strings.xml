@@ -3,43 +3,43 @@
     <string name="language">Язык</string>
     <string name="ru">Русский</string>
     <string name="en">Англиский</string>
-    <string name="signIn">Войти</string>
-    <string name="signOut">Выйти</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_out">Выйти</string>
     <string name="settings">Настройки</string>
     <string name="welcome">Добро пожаловать!</string>
-    <string name="fullName">ФИО</string>
+    <string name="fullname">ФИО</string>
     <string name="address">Адрес</string>
-    <string name="phoneNumber">Телефон номер</string>
+    <string name="phone_number">Телефон номер</string>
     <string name="phones">Телефоны</string>
     <string name="dealer">Дилер</string>
-    <string name="taxiExpense">Расход на такси</string>
+    <string name="taxi_expense">Расход на такси</string>
     <string name="map">Карта</string>
     <string name="save">Сохранить</string>
     <string name="demo">Демо</string>
-    <string name="demoData">Демо данные</string>
-    <string name="businessProcesses">Бизнес процессы</string>
+    <string name="demo_data">Демо данные</string>
+    <string name="business_processes">Бизнес процессы</string>
     <string name="cause">Причина</string>
-    <string name="demoResult">Результат демо</string>
-    <string name="contractType">Тип договора</string>
-    <string name="priceList">Прайс лист</string>
-    <string name="noData">Нет данных</string>
+    <string name="demo_result">Результат демо</string>
+    <string name="contract_type">Тип договора</string>
+    <string name="price_list">Прайс лист</string>
+    <string name="no_data">Нет данных</string>
     <string name="master">Мастер</string>
-    <string name="serviceAddress">Адрес сервиса</string>
+    <string name="service_address">Адрес сервиса</string>
     <string name="service">Сервис</string>
     <string name="result">Результат</string>
-    <string name="listOfApplications">Список заявок</string>
-    <string name="finAgent">Финансовый агент</string>
+    <string name="list_of_applications">Список заявок</string>
+    <string name="fin_agent">Финансовый агент</string>
     <string name="info">Инфо</string>
     <string name="plan">План</string>
     <string name="search">Поиск</string>
     <string name="close">Закрыть</string>
     <string name="restart">Перезагрузить</string>
-    <string name="sendSms">Отправить смс</string>
-    <string name="smsSent">Смс отправлено</string>
-    <string name="userConfirmed">Пользователь подтвердил</string>
-    <string name="receiveCustomerConfirmation">Получить подтверждению клиента</string>
-    <string name="successfullySaved">Успешно сохранен</string>
-    <string name="notSaved">Не сохранен</string>
+    <string name="send_sms">Отправить смс</string>
+    <string name="sms_sent">Смс отправлено</string>
+    <string name="user_confirmed">Пользователь подтвердил</string>
+    <string name="receive_customer_confirmation">Получить подтверждению клиента</string>
+    <string name="successfully_saved">Успешно сохранен</string>
+    <string name="not_saved">Не сохранен</string>
     <string name="completed">Завершен</string>
     <string name="_1" translatable="false">1</string>
     <string name="_2" translatable="false">2</string>
@@ -51,70 +51,64 @@
     <string name="_8" translatable="false">8</string>
     <string name="_9" translatable="false">9</string>
     <string name="_0" translatable="false">0</string>
-    <string name="passCodeTitle"> Код быстрого доступа </string>
-    <string name="passCodeSubTitle"> Придумайте код для быстрого доступа к приложению </string>
-    <string name="passCodeSignInTitle"> Здравствуйте </string>
-    <string name="passCodeReEnter"> Введите код повторно </string>
-    <string name="passCodeSignSubTitle"> Введите код для быстрого доступа к приложению </string>
-    <string name="passCodeWrong"> Код неправильно, введите повторно </string>
-    <string name="pointA">Точка А</string>
-    <string name="pointB">Точка B</string>
-    <string name="unknownError">Произошла ошибка повторите попытку позже</string>
+    <string name="point_a">Точка А</string>
+    <string name="point_b">Точка B</string>
+    <string name="unknown_error">Произошла ошибка повторите попытку позже</string>
     <string name="recommendation">Рекомендация</string>
-    <string name="recommendationsSaved">Рекомендации сохранены</string>
+    <string name="recommendations_saved">Рекомендации сохранены</string>
     <string name="remove">Удалить</string>
-    <string name="demoSuccessfullySaved">Демо успешно обновлен</string>
+    <string name="demo_successfully_saved">Демо успешно обновлен</string>
     <string name="password">Пароль</string>
     <string name="statuses">Статусы</string>
     <string name="leaving">Выезжаю</string>
-    <string name="gotToTheAddress">Доехал до адреса</string>
+    <string name="got_to_the_address">Доехал до адреса</string>
     <string name="quantity">Количество</string>
     <string name="all">Все</string>
     <string name="filters">Фильтры</string>
     <string name="_new">Новый</string>
-    <string name="sortByProperties">Сортировка по свойствам</string>
+    <string name="sort_by_properties">Сортировка по свойствам</string>
     <string name="date">Дата</string>
     <string name="name">Имя</string>
     <string name="status">Статус</string>
     <string name="price">Сумма</string>
     <string name="cn">CN</string>
     <string name="sort">Сортировка</string>
-    <string name="searchBy">Поиск по</string>
-    <string name="monthlyPlan">Ежемесячный план</string>
-    <string name="expiredDays">Просроченные дни</string>
+    <string name="search_by">Поиск по</string>
+    <string name="monthly_plan">Ежемесячный план</string>
+    <string name="expired_days">Просроченные дни</string>
     <string name="apply">Применить</string>
     <string name="cancel">Отмена</string>
     <string name="unfinished">Незавершенные</string>
-    <string name="enterValidPhoneNumber">Введите действующий номер телефона</string>
-    <string name="haveNotAllowedAccessToTheCamera">Вы не разрешили доступ к камеру</string>
-    <string name="haveNotAllowedAccessToTheLocation">Вы не разрешили доступ к местоположению</string>
-    <string name="networkDisconnected">Интернет-соединение не подключен</string>
+    <string name="enter_valid_phone_number">Введите действующий номер телефона</string>
+    <string name="have_not_allowed_access_to_the_camera">Вы не разрешили доступ к камеру</string>
+    <string name="have_not_allowed_access_to_the_location">Вы не разрешили доступ к местоположению</string>
+    <string name="network_disconnected">Интернет-соединение не подключен</string>
     <string name="note">Примечание</string>
-    <string name="serviceProcessStarted">Сервис процесс начался</string>
-    <string name="serviceProcessFinished">Сервис процесс закончился</string>
-    <string name="reallyWantToChangeStatusOfPlan">Вы точно хотите изменить статус плана ?</string>
+    <string name="service_process_started">Сервис процесс начался</string>
+    <string name="service_process_finished">Сервис процесс закончился</string>
+    <string name="really_want_to_change_status_of_plan">Вы точно хотите изменить статус плана ?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
-    <string name="contractDate">Дата договора</string>
-    <string name="paymentDate">Дата оплаты</string>
+    <string name="contract_date">Дата договора</string>
+    <string name="payment_date">Дата оплаты</string>
     <string name="show">Показать</string>
     <string name="hide">Скрыть</string>
     <string name="paid">Оплачено</string>
-    <string name="showPaymentSchedule">Показать график платежей</string>
-    <string name="hidePaymentSchedule">Скрыть график платежей</string>
-    <string name="firstPayment">Первоначальный платеж</string>
-    <string name="paymentMethod">Способ оплаты</string>
+    <string name="show_payment_schedule">Показать график платежей</string>
+    <string name="hide_payment_schedule">Скрыть график платежей</string>
+    <string name="first_payment">Первоначальный платеж</string>
+    <string name="payment_method">Способ оплаты</string>
     <string name="server">Сервер</string>
-    <string name="theAmountOfTheDeal">Сумма договора</string>
-    <string name="theAmountToPay">Сумма к оплате</string>
-    <string name="wrongPosition">Неправильный должность</string>
-    <string name="userDoesNotExist">Такой пользователь не существует</string>
-    <string name="wrongLoginOrPassword">Неверный логин или пароль</string>
+    <string name="the_amount_of_the_deal">Сумма договора</string>
+    <string name="the_amount_to_pay">Сумма к оплате</string>
+    <string name="wrong_position">Неправильный должность</string>
+    <string name="user_does_not_exist">Такой пользователь не существует</string>
+    <string name="wrong_login_or_password">Неверный логин или пароль</string>
     <string name="problematic">Проблемные</string>
-    <string name="contractStatus">Статус договора</string>
+    <string name="contract_status">Статус договора</string>
     <string name="remainder">Остаток</string>
-    <string name="serialNumber">Серийный номер</string>
-    <string name="myApplications">Мои заявки</string>
+    <string name="serial_number">Серийный номер</string>
+    <string name="my_applications">Мои заявки</string>
     <string name="application_number">Номер заявки</string>
     <string name="application_date">Дата заявки</string>
     <string name="fullname_of_client">Фио клиента</string>
@@ -129,7 +123,7 @@
     <string name="operator_by_plan">Оператор по плану</string>
     <string name="loading">Загрузка…</string>
     <string name="history">История</string>
-    <string name="paymentSchedule">График платежей</string>
+    <string name="payment_schedule">График платежей</string>
     <string name="error">Ошибка</string>
     <string name="update">Обновить</string>
     <string name="left">Осталось</string>
@@ -155,8 +149,6 @@
     <string name="have_not_marked_the_status">Вы не отметили статус: Выезжаю и Доехал до адреса</string>
     <string name="fill_out_all_fields">Пожалуйста, заполните все поля</string>
     <string name="country_calling_code">Телефонный код страны</string>
-    <string name="contract_date">Дата контракта</string>
-    <string name="payment_date">Дата оплаты</string>
     <string name="overdue_days">Просроченные дни</string>
     <string name="deadline_did_not_come">Срок не пришел</string>
     <string name="explanation_about_colors">Объяснение о цветах</string>
@@ -170,27 +162,13 @@
     <string name="upcoming">Предстоящие</string>
     <string name="current">Текущие</string>
     <string name="enable_location">Пожалуйста, включите на устройстве геолокацию</string>
-
+    <string name="contributions">Взносы</string>
     <string-array name="language_entries">
         <item>@string/ru</item>
         <item>@string/en</item>
     </string-array>
-
     <string-array name="entry_values">
         <item>ru</item>
         <item>en</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-    <string name="title_activity_main2" translatable="false">MainActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label" translatable="false">First Fragment</string>
-    <string name="second_fragment_label" translatable="false">Second Fragment</string>
-    <string name="next" translatable="false">Next</string>
-    <string name="previous" translatable="false">Previous</string>
-
-    <string name="hello_first_fragment" translatable="false">Hello first fragment</string>
-    <string name="hello_second_fragment" translatable="false">Hello second fragment. Arg: %1$s</string>
-    <string name="contributions">Взносы</string>
 </resources>

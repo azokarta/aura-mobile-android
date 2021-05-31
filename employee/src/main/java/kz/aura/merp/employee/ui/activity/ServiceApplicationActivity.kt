@@ -39,7 +39,7 @@ class ServiceApplicationActivity : AppCompatActivity() {
         val fragments = ArrayList<Fragment>()
 
         titles.add(getString(R.string.service))
-        titles.add(getString(R.string.businessProcesses))
+        titles.add(getString(R.string.business_processes))
 
         fragments.add(ServiceApplicationDataFragment.newInstance(serviceApplication))
         fragments.add(ServiceApplicationBusinessFragment.newInstance(serviceApplication))

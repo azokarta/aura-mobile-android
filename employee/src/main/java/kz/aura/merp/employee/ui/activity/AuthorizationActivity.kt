@@ -61,6 +61,8 @@ class AuthorizationActivity : AppCompatActivity() {
             countryCallingCode = CountryCode.values()[i].phoneCode
             binding.phoneNumberText.mask = CountryCode.values()[i].format
         }
+
+        binding.signInBtn.setOnClickListener(::signIn)
     }
 
     private fun observeLiveData() {
@@ -88,7 +90,7 @@ class AuthorizationActivity : AppCompatActivity() {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
                     if (definePosition(res.data!!) == null) {
-                        showException(getString(R.string.wrongPosition), this)
+                        showException(getString(R.string.wrong_position), this)
                     } else {
                         mAuthViewModel.saveSalary(defineCorrectSalary(res.data)!!)
                         // Open PassCode activity for saving code
@@ -123,23 +125,11 @@ class AuthorizationActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            Permissions.CAMERA_PERMISSION_REQUEST_CODE -> {
-                if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.haveNotAllowedAccessToTheCamera),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    this.permissions.requestCameraPermission()
-                } else {
-                    this.permissions.requestGpsPermission()
-                }
-            }
             Permissions.LOCATION_PERMISSION_REQUEST_CODE -> {
                 if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
                     Toast.makeText(
                         this,
-                        getString(R.string.haveNotAllowedAccessToTheLocation),
+                        getString(R.string.have_not_allowed_access_to_the_location),
                         Toast.LENGTH_LONG
                     ).show()
                     this.permissions.requestGpsPermission()

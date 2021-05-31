@@ -59,7 +59,7 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
         filterSortParams = arrayListOf(
             getString(R.string.payment_date),
             getString(R.string.contract_date),
-            getString(R.string.fullName)
+            getString(R.string.fullname)
         )
         businessProcessStatuses.add(
             BusinessProcessStatus(
@@ -73,7 +73,7 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
         )
 
         // Initialize search params
-        searchParams = listOf(getString(R.string.cn), getString(R.string.fullName))
+        searchParams = listOf(getString(R.string.cn), getString(R.string.fullname))
         val adapter = ArrayAdapter(requireContext(), R.layout.list_item, searchParams)
         binding.searchByEditText.setText(searchParams[selectedSearchBy])
         binding.searchByEditText.setAdapter(adapter)

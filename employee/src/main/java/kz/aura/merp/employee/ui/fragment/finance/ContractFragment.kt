@@ -133,7 +133,7 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber {
 
     private fun showSnackbar(view: View) = Snackbar.make(
         view,
-        R.string.successfullySaved,
+        R.string.successfully_saved,
         Snackbar.LENGTH_SHORT
     ).show()
 

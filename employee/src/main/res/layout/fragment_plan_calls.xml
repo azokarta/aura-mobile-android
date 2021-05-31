@@ -114,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:noData="@{sharedViewModel.response}"
-                android:text="@string/noData"
+                android:text="@string/no_data"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:visibility="invisible"
