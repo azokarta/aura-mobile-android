@@ -1,54 +1,55 @@
-package kz.aura.merp.employee.ui.activity
+package kz.aura.merp.employee.ui.fragment
 
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.viewmodel.AuthViewModel
-import kz.aura.merp.employee.databinding.ActivityAuthorizationBinding
+import kz.aura.merp.employee.databinding.FragmentAuthBinding
+import kz.aura.merp.employee.ui.activity.PassCodeActivity
 import kz.aura.merp.employee.util.*
+import kz.aura.merp.employee.viewmodel.AuthViewModel
 
 @AndroidEntryPoint
-class AuthorizationActivity : AppCompatActivity() {
+class AuthFragment : Fragment() {
 
-    private lateinit var binding: ActivityAuthorizationBinding
-    private val mAuthViewModel: AuthViewModel by viewModels()
+    private var _binding: FragmentAuthBinding? = null
+    private val binding get() = _binding!!
+    private var countryCallingCode: String = CountryCode.values()[0].phoneCode
     private lateinit var progressDialog: ProgressDialog
     private lateinit var permissions: Permissions
-    private var countryCallingCode: String = CountryCode.values()[0].phoneCode
+    private lateinit var authViewModel: AuthViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityAuthorizationBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
-        // Turn off screenshot
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
+        _binding = FragmentAuthBinding.inflate(layoutInflater, container, false)
+        val root: View = binding.root
 
-        permissions = Permissions(this, this)
+        permissions = Permissions(requireContext(), requireActivity())
 
         // Request gps permission
         permissions.requestGpsPermission()
 
         // Initialize Loading Dialog
-        progressDialog = ProgressDialog(this)
+        progressDialog = ProgressDialog(requireContext())
 
         observeLiveData()
 
         val countryCodes = CountryCode.values().map { "${it.name} (${it.phoneCode})" }
         val adapter = ArrayAdapter(
-            this,
+            requireContext(),
             R.layout.list_item,
             countryCodes)
         binding.countryCallingCodeText.setText(countryCodes[0])
@@ -62,18 +63,20 @@ class AuthorizationActivity : AppCompatActivity() {
         }
 
         binding.signInBtn.setOnClickListener(::signIn)
+
+        return root
     }
 
     private fun observeLiveData() {
-        mAuthViewModel.signInResponse.observe(this, { res ->
+        authViewModel.signInResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     // Hide loading
                     progressDialog.hideLoading()
                     // Save token
-                    saveToken(this, res.data!!.accessToken)
+                    saveToken(requireContext(), res.data!!.accessToken)
                     // Get info about user
-                    mAuthViewModel.getUserInfo()
+                    authViewModel.getUserInfo()
                 }
                 is NetworkResult.Loading -> {
                     progressDialog.showLoading()
@@ -84,18 +87,17 @@ class AuthorizationActivity : AppCompatActivity() {
                 }
             }
         })
-        mAuthViewModel.userInfoResponse.observe(this, { res ->
+        authViewModel.userInfoResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
                     if (definePosition(res.data!!) == null) {
-                        showException(getString(R.string.wrong_position), this)
+                        showException(getString(R.string.wrong_position), requireContext())
                     } else {
-                        mAuthViewModel.saveSalary(defineCorrectSalary(res.data)!!)
+                        authViewModel.saveSalary(defineCorrectSalary(res.data)!!)
                         // Open PassCode activity for saving code
-                        val intent = Intent(this, PassCodeActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        val intent = Intent(requireContext(), PassCodeActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                         intent.putExtra("passCodeStatus", PasscodeStatus.CREATE)
                         startActivity(intent)
                     }
@@ -114,8 +116,8 @@ class AuthorizationActivity : AppCompatActivity() {
     fun signIn(view: View) {
         val phoneNumber = binding.phoneNumberText.rawText
         val password = binding.passwordText.text.toString()
-        mAuthViewModel.saveCountryCallingCode(countryCallingCode)
-        mAuthViewModel.signIn(countryCallingCode + phoneNumber, password)
+        authViewModel.saveCountryCallingCode(countryCallingCode)
+        authViewModel.signIn(countryCallingCode + phoneNumber, password)
     }
 
     override fun onRequestPermissionsResult(
@@ -127,7 +129,7 @@ class AuthorizationActivity : AppCompatActivity() {
             Permissions.LOCATION_PERMISSION_REQUEST_CODE -> {
                 if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
                     Toast.makeText(
-                        this,
+                        requireContext(),
                         getString(R.string.have_not_allowed_access_to_the_location),
                         Toast.LENGTH_LONG
                     ).show()
@@ -138,5 +140,8 @@ class AuthorizationActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

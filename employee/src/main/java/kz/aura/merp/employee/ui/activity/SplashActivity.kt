@@ -11,7 +11,6 @@ import kz.aura.merp.employee.util.LanguageHelper.updateLanguage
 import kz.aura.merp.employee.databinding.ActivitySplashBinding
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.AuthViewModel
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
@@ -34,7 +33,7 @@ class SplashActivity : AppCompatActivity() {
                 if (!getToken(this).isNullOrBlank() && salary != null) {
                     val intent = Intent(this, PassCodeActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    intent.putExtra("passCodeStatus", PassCodeStatus.VERIFY)
+                    intent.putExtra("passCodeStatus", PasscodeStatus.VERIFY)
                     startActivity(intent)
                 } else {
                     clearPreviousAndOpenActivity(this, AuthorizationActivity())

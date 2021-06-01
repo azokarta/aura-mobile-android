@@ -68,8 +68,6 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
 
     private fun save(view: View) {
         val description = binding.descriptionText.text.toString()
-        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("HH:mm")
-        val currentDate: String = dtf.print(DateTime.now())
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
 
         if (typedPhoneNumber.isNotBlank() && selectedHour != null && selectedMinute != null && typedPhoneNumber.length == countryCode.format.length) {
@@ -81,8 +79,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
                         val assign = AssignCall(
                             countryCode = countryCode.name,
                             phoneNumber = typedPhoneNumber,
-                            callTime = currentDate,
-                            duration = "PT${selectedHour}H${selectedMinute}M",
+                            callTime = "$selectedHour:$selectedMinute",
                             description = description,
                             longitude = it.longitude,
                             latitude = it.latitude

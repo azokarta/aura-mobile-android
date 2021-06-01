@@ -78,7 +78,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
 
         observeLiveData()
 
-        callRequests()
+//        callRequests()
 
         setMinuteForUpdate()
 
@@ -125,6 +125,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
         financeViewModel.plansResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
+                    println("SSSSSSSSSS")
                     sharedViewModel.setResponse(res)
                     filterPlans()
                 }

@@ -14,7 +14,7 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityPassCodeBinding
 import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.util.openActivityByPosition
-import kz.aura.merp.employee.util.PassCodeStatus
+import kz.aura.merp.employee.util.PasscodeStatus
 import kz.aura.merp.employee.util.definePosition
 import kz.aura.merp.employee.viewmodel.AuthViewModel
 
@@ -25,7 +25,7 @@ class PassCodeActivity : AppCompatActivity() {
 
     private val mAuthViewModel: AuthViewModel by viewModels()
     private val code = arrayListOf<Int>()
-    private lateinit var passCodeStatus: PassCodeStatus
+    private lateinit var passcodeStatus: PasscodeStatus
     private val firstCreatedCode = arrayListOf<Int>()
     private var salary: Salary? = null
 
@@ -42,11 +42,11 @@ class PassCodeActivity : AppCompatActivity() {
         // Turn off screenshot
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
-        passCodeStatus = intent.getSerializableExtra("passCodeStatus") as PassCodeStatus
+        passcodeStatus = intent.getSerializableExtra("passCodeStatus") as PasscodeStatus
 
         setListenersOfNumbers()
 
-        if (passCodeStatus == PassCodeStatus.VERIFY) {
+        if (passcodeStatus == PasscodeStatus.VERIFY) {
 //            changeText(getString(R.string.passCodeSignInTitle),getString(R.string.passCodeSignSubTitle))
         }
 
@@ -151,8 +151,8 @@ class PassCodeActivity : AppCompatActivity() {
         code.add(num)
 
         if (code.size == 4) {
-            when (passCodeStatus) {
-                PassCodeStatus.CREATE -> {
+            when (passcodeStatus) {
+                PasscodeStatus.CREATE -> {
                     if (firstCreatedCode.isEmpty()) {
                         firstCreatedCode.addAll(code)
                         code.clear()
@@ -168,7 +168,7 @@ class PassCodeActivity : AppCompatActivity() {
                     }
                 }
 
-                PassCodeStatus.VERIFY -> {
+                PasscodeStatus.VERIFY -> {
                    // changeText(getString(R.string.passCodeSignInTitle),getString(R.string.passCodeSubTitle))
                     val typedCode = code.joinToString(separator = "")
                     val userCode = receivePassCode()

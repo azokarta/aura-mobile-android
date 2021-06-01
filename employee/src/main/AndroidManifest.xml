@@ -26,16 +26,15 @@
             </intent-filter>
         </service>
 
-        <!--Finance-->
+        <!-- Finance -->
         <activity android:name=".ui.activity.FinanceActivity" />
         <activity
             android:name=".ui.activity.ChangeResultActivity"
             android:parentActivityName=".ui.activity.DailyPlanActivity"
             android:windowSoftInputMode="adjustResize|stateVisible">
-                <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.activity.DailyPlanActivity"
-                />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.DailyPlanActivity" />
         </activity>
         <activity
             android:name=".ui.activity.IncomingActivity"
@@ -43,45 +42,38 @@
         <activity
             android:name=".ui.activity.OutgoingActivity"
             android:windowSoftInputMode="adjustResize|stateVisible" />
-        <activity android:name=".ui.activity.DailyPlanActivity"
+        <activity
+            android:name=".ui.activity.DailyPlanActivity"
             android:parentActivityName=".ui.activity.FinanceActivity">
-                <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.activity.FinanceActivity"
-                />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.FinanceActivity" />
         </activity>
-        <activity android:name=".ui.activity.PlanActivity"
+        <activity
+            android:name=".ui.activity.PlanActivity"
             android:parentActivityName=".ui.activity.FinanceActivity">
-                <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.activity.FinanceActivity"
-                />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.FinanceActivity" />
         </activity>
-        <!--   !!!     -->
+        <!-- !!! -->
+
+
+        <!-- Service -->
+        <activity android:name=".ui.activity.ServiceApplicationActivity" />
+        <activity android:name=".ui.activity.MasterActivity" />
+        <!-- !!! -->
 
 
 
-        <!--   Service    -->
-        <activity
-            android:name=".ui.activity.ServiceApplicationActivity" />
-
-        <activity
-            android:name=".ui.activity.MasterActivity" />
-        <!--   !!!     -->
+        <!-- CRM -->
+        <activity android:name=".ui.activity.DealerActivity" />
+        <activity android:name=".ui.activity.DemoActivity" />
+        <!-- !!! -->
 
 
 
-        <!--   CRM     -->
-        <activity
-            android:name=".ui.activity.DealerActivity" />
-        <activity
-            android:name=".ui.activity.DemoActivity" />
-        <!--   !!!     -->
-
-
-
-        <activity
-            android:name=".ui.activity.MapActivity" />
+        <activity android:name=".ui.activity.MapActivity" />
         <activity
             android:name=".ui.activity.SettingsActivity"
             android:configChanges="locale" />
@@ -90,8 +82,7 @@
             android:configChanges="locale"
             android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity android:name=".ui.activity.PassCodeActivity" />
-        <activity
-            android:name=".ui.activity.SplashActivity">
+        <activity android:name=".ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
