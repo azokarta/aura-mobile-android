@@ -38,7 +38,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
     TimePickerFragment.TimePickerListener, SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var financeViewModel: FinanceViewModel
-    private val filterViewModel: PlanFilterViewModel by activityViewModels()
+    private lateinit var filterViewModel: PlanFilterViewModel
     private lateinit var sharedViewModel: SharedViewModel
     private val plansAdapter: PlanAdapter by lazy { PlanAdapter(this) }
     private var _binding: FragmentMonthlyPlanBinding? = null
@@ -51,6 +51,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        filterViewModel = ViewModelProvider(requireActivity()).get(PlanFilterViewModel::class.java)
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
 
@@ -78,7 +79,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
 
         observeLiveData()
 
-//        callRequests()
+        callRequests()
 
         setMinuteForUpdate()
 
@@ -125,7 +126,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
         financeViewModel.plansResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    println("SSSSSSSSSS")
                     sharedViewModel.setResponse(res)
                     filterPlans()
                 }
