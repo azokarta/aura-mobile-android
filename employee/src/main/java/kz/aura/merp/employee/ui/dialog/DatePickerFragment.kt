@@ -12,11 +12,12 @@ import java.util.*
 class DatePickerFragment(
     val context: Context,
     private val datePickerListener: DatePickerListener? = null,
-    val title: String? = null
+    val title: String? = null,
+    val date: Long? = null
 ) {
 
     interface DatePickerListener {
-        fun selectedDate(date: String, header: String) {}
+        fun selectedDate(date: Long, header: String) {}
         fun onCancelDate() {}
     }
 
@@ -26,14 +27,12 @@ class DatePickerFragment(
     init {
         _picker = MaterialDatePicker.Builder.datePicker()
                     .setTitleText(title ?: context.getString(R.string.select_date))
+                    .setSelection(date)
                     .build()
 
-        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
-        val currentDate = DateTime.now()
 
         picker.addOnPositiveButtonClickListener {
-            val selectedDate = dtf.print(currentDate.withMillis(it))
-            datePickerListener?.selectedDate(selectedDate, picker.headerText)
+            datePickerListener?.selectedDate(it, picker.headerText)
         }
         picker.addOnCancelListener {
             datePickerListener?.onCancelDate()

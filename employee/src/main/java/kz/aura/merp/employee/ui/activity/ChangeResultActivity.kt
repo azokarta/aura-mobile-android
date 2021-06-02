@@ -25,6 +25,7 @@ import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 
 @AndroidEntryPoint
@@ -217,8 +218,10 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
         binding.selectTimeBtn.text = time
     }
 
-    override fun selectedDate(date: String, header: String) {
-        scheduledDate = date
+    override fun selectedDate(date: Long, header: String) {
+        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
+        val selectedDate = dtf.print(date)
+        scheduledDate = selectedDate
         binding.selectDateBtn.text = header
     }
 

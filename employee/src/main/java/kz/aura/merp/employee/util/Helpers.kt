@@ -40,16 +40,33 @@ import kz.aura.merp.employee.util.Constants.crmPositions
 import kz.aura.merp.employee.util.Constants.financePositions
 import kz.aura.merp.employee.util.Constants.servicePositions
 import okhttp3.ResponseBody
+import org.joda.time.DateTime
+import org.joda.time.LocalDate
+import org.joda.time.format.DateTimeFormat
 
 
 fun getToken(context: Context): String? {
     val pref = PreferenceManager.getDefaultSharedPreferences(context)
     return pref.getString("token", "")
 }
+
 fun saveToken(context: Context, token: String) = PreferenceManager.getDefaultSharedPreferences(context).apply {
     edit()
         .putString("token", token)
         .apply()
+}
+
+fun convertMillisToLocalDate(millis: Long): LocalDate {
+    val dtf = DateTimeFormat.forPattern("dd.MM.yyyy")
+    return dtf.parseLocalDate(dtf.print(millis))
+}
+
+fun collectDateTimeInsideStr(dateInMillis: Long, hour: Int, minute: Int): String {
+    val dtf = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")
+    val date = DateTime.now().withDate(convertMillisToLocalDate(dateInMillis))
+        .withHourOfDay(hour)
+        .withMinuteOfHour(minute)
+    return dtf.print(date)
 }
 
 fun saveStaff(context: Context, salary: Salary) {

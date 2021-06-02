@@ -15,6 +15,7 @@ import kz.aura.merp.employee.ui.dialog.DatePickerFragment
 import kz.aura.merp.employee.ui.dialog.TimePickerFragment
 import kz.aura.merp.employee.util.CountryCode
 import kz.aura.merp.employee.util.ProgressDialog
+import kz.aura.merp.employee.util.dateTimeFormat
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -30,7 +31,7 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
     private var countryCode: CountryCode = CountryCode.KZ
     private var selectedHour: Int? = null
     private var selectedMinute: Int? = null
-    private var scheduledDate: String? = null
+    private var scheduledDateInMillis: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +52,8 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
 
         setupObservers()
 
-        binding.scheduleDateBtn.setOnClickListener(::showDatePicker)
-        binding.scheduleTimeBtn.setOnClickListener(::showTimePicker)
+        binding.scheduleDateText.setOnClickListener(::showDatePicker)
+        binding.scheduleTimeText.setOnClickListener(::showTimePicker)
     }
 
     private fun showTimePicker(view: View) {
@@ -61,20 +62,20 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
     }
 
     private fun showDatePicker(view: View) {
-        val datePicker = DatePickerFragment(this, this)
+        val datePicker = DatePickerFragment(this, this, date = scheduledDateInMillis)
         datePicker.show(supportFragmentManager)
     }
 
-    override fun selectedDate(date: String, header: String) {
-        scheduledDate = date
-        binding.scheduleDateBtn.text = header
+    override fun selectedDate(date: Long, header: String) {
+        scheduledDateInMillis = date
+        binding.scheduleDateText.setText(header)
     }
 
     override fun selectedTime(hour: Int, minute: Int) {
        selectedHour = hour
        selectedMinute = minute
        val time = "$hour:$minute"
-       binding.scheduleTimeBtn.text = time
+       binding.scheduleTimeText.setText(time)
     }
 
     private fun setupObservers() {
@@ -85,16 +86,43 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
     }
 
     private fun save() {
-        val description = binding.descriptionText.text.toString()
-        val scheduledDateTime = "$scheduledDate $selectedHour:$selectedMinute"
-        val phoneNumber = binding.phoneNumberText.text.toString()
+        if (validation()) {
+            val description = binding.descriptionText.text.toString()
+            val phoneNumber = binding.phoneNumberText.text.toString()
 
-        if (phoneNumber.length == countryCode.format.length &&
-            !scheduledDate.isNullOrBlank() &&
-            selectedHour != null &&
-            selectedMinute != null) {
-
+            dateTimeFormat(scheduledDateInMillis!!, selectedHour!!, selectedMinute!!)
         }
+    }
+
+    private fun validation(): Boolean {
+        val phoneNumber = binding.phoneNumberText.text.toString()
+        var success = true
+
+        if (phoneNumber.length != countryCode.format.length) {
+            binding.phoneNumberField.isErrorEnabled = true
+            binding.phoneNumberField.error = getString(R.string.enter_valid_phone_number)
+            success = false
+        } else {
+            binding.phoneNumberField.isErrorEnabled = false
+        }
+
+        if (scheduledDateInMillis == null) {
+            binding.scheduleDateField.isErrorEnabled = true
+            binding.scheduleDateField.error = getString(R.string.error)
+            success = false
+        } else {
+            binding.scheduleDateField.isErrorEnabled = false
+        }
+
+        if (selectedHour == null || selectedMinute == null) {
+            binding.scheduleTimeField.isErrorEnabled = true
+            binding.scheduleTimeField.error = getString(R.string.error)
+            success = false
+        } else {
+            binding.scheduleTimeField.isErrorEnabled = false
+        }
+
+        return success
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
