@@ -83,6 +83,12 @@ interface FinanceApi {
     @GET("/scheduled_calls/{contractId}/history")
     suspend fun fetchScheduledCallsHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<List<ScheduledCall>>>
 
+    @POST("/scheduled_calls/{contractId}/assign_scheduled_call")
+    suspend fun assignScheduledCall(
+        @Path("contractId") contractId: Long,
+        @Body scheduledCall: AssignScheduledCallCommand
+    ): Response<ResponseHelper<Nothing>>
+
 
 
     // References

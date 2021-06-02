@@ -28,6 +28,11 @@
 
         <!-- Finance -->
         <activity android:name=".ui.activity.FinanceActivity" />
+        <activity android:name=".ui.activity.CreateScheduledCallActivity" android:parentActivityName=".ui.activity.FinanceActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.FinanceActivity" />
+        </activity>
         <activity
             android:name=".ui.activity.ChangeResultActivity"
             android:parentActivityName=".ui.activity.DailyPlanActivity"
@@ -65,12 +70,10 @@
         <!-- !!! -->
 
 
-
         <!-- CRM -->
         <activity android:name=".ui.activity.DealerActivity" />
         <activity android:name=".ui.activity.DemoActivity" />
         <!-- !!! -->
-
 
 
         <activity android:name=".ui.activity.MapActivity" />

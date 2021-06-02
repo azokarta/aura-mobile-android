@@ -1,5 +1,6 @@
 package kz.aura.merp.employee.ui.fragment.finance
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.adapter.ScheduledCallsAdapter
 import kz.aura.merp.employee.databinding.FragmentScheduledCallsBinding
+import kz.aura.merp.employee.ui.activity.CreateScheduledCallActivity
 import kz.aura.merp.employee.util.LoadingType
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
@@ -41,6 +43,7 @@ class ScheduledCallsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener 
         val root: View = binding.root
 
         binding.swipeRefresh.setOnRefreshListener(this)
+        binding.createScheduledCall.setOnClickListener(::openCreateScheduledCallScreen)
 
         setupRecyclerView()
 
@@ -49,6 +52,11 @@ class ScheduledCallsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener 
         callRequests()
 
         return root
+    }
+
+    private fun openCreateScheduledCallScreen(view: View) {
+        val intent = Intent(requireContext(), CreateScheduledCallActivity::class.java)
+        startActivity(intent)
     }
 
     private fun callRequests() {

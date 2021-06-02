@@ -19,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PlanAdapter
 import kz.aura.merp.employee.databinding.FragmentMonthlyPlanBinding
+import kz.aura.merp.employee.model.BusinessProcessStatus
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.model.PlanFilter
 import kz.aura.merp.employee.ui.dialog.PlanFilterDialogFragment
@@ -134,7 +135,12 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
             }
         })
         filterViewModel.filterParams.observe(viewLifecycleOwner, { params ->
-            filterPlans(params)
+            val plans = financeViewModel.plansResponse.value?.data
+            if (!plans.isNullOrEmpty()) {
+                filterPlans(params)
+            } else {
+                filterViewModel.clearFilter()
+            }
         })
         financeViewModel.createDailyPlanResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
@@ -153,13 +159,18 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
     }
 
     private fun changeTextsFilter(filterParams: PlanFilter) {
+        val selectedStatusFilter = filterParams.selectedStatusFilter.toLong()
         val filterSortParams = arrayListOf(
             getString(R.string.payment_date),
             getString(R.string.contract_date),
             getString(R.string.fullname)
         )
         binding.sort = filterSortParams[filterParams.selectedSortFilter]
-        binding.status = financeViewModel.businessProcessStatusesResponse.value?.data?.find { it.id == filterParams.selectedStatusFilter.toLong() }?.name
+        binding.status = if (selectedStatusFilter == 0L) {
+            getString(R.string._new)
+        } else {
+            financeViewModel.businessProcessStatusesResponse.value?.data?.find { it.id == selectedStatusFilter }?.name
+        }
         binding.searchBySn = when (filterParams.selectedSearchBy) {
             0 -> if (filterParams.query.isNotBlank()) "${getString(R.string.cn)} = ${filterParams.query}" else ""
             1 -> if (filterParams.query.isNotBlank()) "${getString(R.string.fullname)} = ${filterParams.query}" else ""

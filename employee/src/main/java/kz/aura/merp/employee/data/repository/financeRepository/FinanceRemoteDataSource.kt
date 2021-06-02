@@ -95,6 +95,10 @@ class FinanceRemoteDataSource @Inject constructor(
         return financeApi.fetchScheduledCallsHistory(contractId)
     }
 
+    suspend fun assignScheduledCall(contractId: Long, scheduledCall: AssignScheduledCallCommand): Response<ResponseHelper<Nothing>> {
+        return financeApi.assignScheduledCall(contractId, scheduledCall)
+    }
+
 
     // References
     suspend fun fetchBanks(): Response<ResponseHelper<List<Bank>>> {

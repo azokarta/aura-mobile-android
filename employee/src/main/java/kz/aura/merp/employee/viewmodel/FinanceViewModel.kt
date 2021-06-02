@@ -29,30 +29,24 @@ class FinanceViewModel @Inject constructor(
     val updatedPlanResponse: MutableLiveData<NetworkResult<Plan>> = MutableLiveData()
     val businessProcessStatusesResponse: MutableLiveData<NetworkResult<List<BusinessProcessStatus>>> = MutableLiveData()
     val planResultsResponse: MutableLiveData<NetworkResult<List<PlanResult>>> = MutableLiveData()
-    val paymentScheduleResponse: MutableLiveData<NetworkResult<List<PaymentSchedule>>> =
-        MutableLiveData()
+    val paymentScheduleResponse: MutableLiveData<NetworkResult<List<PaymentSchedule>>> = MutableLiveData()
     val banksResponse: MutableLiveData<NetworkResult<List<Bank>>> = MutableLiveData()
-    val paymentMethodsResponse: MutableLiveData<NetworkResult<List<PaymentMethod>>> =
-        MutableLiveData()
-    val contributionsResponse: MutableLiveData<NetworkResult<List<Contribution>>> =
-        MutableLiveData()
+    val paymentMethodsResponse: MutableLiveData<NetworkResult<List<PaymentMethod>>> = MutableLiveData()
+    val contributionsResponse: MutableLiveData<NetworkResult<List<Contribution>>> = MutableLiveData()
     val callsHistoryResponse: MutableLiveData<NetworkResult<List<Call>>> = MutableLiveData()
     val changeResultResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
-    val callDirectionsResponse: MutableLiveData<NetworkResult<List<CallDirection>>> =
-        MutableLiveData()
-    val callStatusesResponse: MutableLiveData<NetworkResult<List<CallStatus>>> =
-        MutableLiveData()
+    val callDirectionsResponse: MutableLiveData<NetworkResult<List<CallDirection>>> = MutableLiveData()
+    val callStatusesResponse: MutableLiveData<NetworkResult<List<CallStatus>>> = MutableLiveData()
     val assignCallResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
-    val scheduledCallsResponse: MutableLiveData<NetworkResult<List<ScheduledCall>>> =
-        MutableLiveData()
+    val scheduledCallsResponse: MutableLiveData<NetworkResult<List<ScheduledCall>>> = MutableLiveData()
     val callsResponse: MutableLiveData<NetworkResult<List<Call>>> = MutableLiveData()
     val staffUsername: MutableLiveData<String> = MutableLiveData()
     val countryCode: MutableLiveData<CountryCode> = MutableLiveData()
     val dailyPlanResponse: MutableLiveData<NetworkResult<List<Plan>>> = MutableLiveData()
     val createDailyPlanResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
-    val changeBusinessProcessStatusResponse: MutableLiveData<NetworkResult<Nothing>> =
-        MutableLiveData()
+    val changeBusinessProcessStatusResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
     val planResponse: MutableLiveData<NetworkResult<Plan>> = MutableLiveData()
+    val assignScheduledCallResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
     val receiveMessage = { str: Int ->
         getApplication<Application>().getString(str)
     }
@@ -496,6 +490,26 @@ class FinanceViewModel @Inject constructor(
 
         } else {
             scheduledCallsResponse.postValue(internetIsNotConnected())
+        }
+    }
+
+    fun assignScheduledCall(contractId: Long, scheduledCall: AssignScheduledCallCommand) = scope.launch {
+        assignScheduledCallResponse.postValue(NetworkResult.Loading())
+        if (isInternetAvailable(getApplication())) {
+            try {
+                val response = financeRepository.remote.assignScheduledCall(contractId, scheduledCall)
+
+                if (response.isSuccessful) {
+                    assignScheduledCallResponse.postValue(NetworkResult.Success())
+                } else {
+                    assignScheduledCallResponse.postValue(handleError(response))
+                }
+            } catch (e: Exception) {
+                assignScheduledCallResponse.postValue(NetworkResult.Error(e.message))
+            }
+
+        } else {
+            assignScheduledCallResponse.postValue(internetIsNotConnected())
         }
     }
 

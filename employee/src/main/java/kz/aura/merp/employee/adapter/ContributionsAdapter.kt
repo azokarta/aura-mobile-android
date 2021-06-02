@@ -58,41 +58,20 @@ class ContributionsAdapter : RecyclerView.Adapter<ContributionsAdapter.Contribut
             binding.paymentMethodImg.visibility = View.VISIBLE
             binding.bankImg.visibility = View.VISIBLE
 
-            when (contribution.resultId) {
+            when (paymentMethodId) {
                 1L -> {
-                    binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_help_outline_24)
+                    binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_money_24)
                     binding.bankImg.visibility = View.GONE
                 }
                 2L -> {
-                    when (paymentMethodId) {
-                        1L -> {
-                            binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_money_24)
-                            binding.bankImg.visibility = View.GONE
-                        }
-                        2L -> {
-                            binding.paymentMethodImg.setImageResource(R.drawable.ic_outline_change_circle_24)
-                            binding.bankImg.setImageResource(bankDrawable)
-                        }
-                        3L -> {
-                            binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_account_balance_24)
-                            binding.bankImg.setImageResource(bankDrawable)
-                        }
-                    }
+                    binding.paymentMethodImg.setImageResource(R.drawable.ic_outline_change_circle_24)
+                    binding.bankImg.setImageResource(bankDrawable)
                 }
                 3L -> {
-                    binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_date_range_24)
-                    binding.bankImg.visibility = View.GONE
-                }
-                4L -> {
-                    binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_close_24)
-                    binding.bankImg.visibility = View.GONE
-                }
-                else -> {
-                    binding.paymentMethodImg.visibility = View.GONE
-                    binding.bankImg.visibility = View.GONE
+                    binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_account_balance_24)
+                    binding.bankImg.setImageResource(bankDrawable)
                 }
             }
-
         }
     }
 }

@@ -63,51 +63,21 @@ class DailyPlanAdapter : RecyclerView.Adapter<DailyPlanAdapter.DailyPlanViewHold
         }
 
         private fun displayPaymentMethodIcons(plan: Plan) {
-            val paymentMethodId = plan.planPaymentMethodId
-            val bankDrawable = when (plan.planPaymentBankId) {
-                2L -> R.drawable.ic_forte_bank
-                4L -> R.drawable.ic_halyk_bank
-                5L -> R.drawable.ic_center_credit_bank
-                6L -> R.drawable.ic_atf_bank
-                7L -> R.drawable.ic_kaspi_bank
-                else -> R.drawable.ic_baseline_account_balance_24
-            }
-
-            binding.paymentMethodImg.visibility = View.VISIBLE
-            binding.bankImg.visibility = View.VISIBLE
-
             when (plan.planResultId) {
                 1L -> {
-                    binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_help_outline_24)
-                    binding.bankImg.visibility = View.GONE
+                    binding.resultImg.setImageResource(R.drawable.ic_baseline_help_outline_24)
                 }
                 2L -> {
-                    when (paymentMethodId) {
-                        1L -> {
-                            binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_money_24)
-                            binding.bankImg.visibility = View.GONE
-                        }
-                        2L -> {
-                            binding.paymentMethodImg.setImageResource(R.drawable.ic_outline_change_circle_24)
-                            binding.bankImg.setImageResource(bankDrawable)
-                        }
-                        3L -> {
-                            binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_account_balance_24)
-                            binding.bankImg.setImageResource(bankDrawable)
-                        }
-                    }
+                    binding.resultImg.setImageResource(R.drawable.ic_baseline_account_balance_wallet_24)
                 }
                 3L -> {
-                    binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_date_range_24)
-                    binding.bankImg.visibility = View.GONE
+                    binding.resultImg.setImageResource(R.drawable.ic_baseline_date_range_24)
                 }
                 4L -> {
-                    binding.paymentMethodImg.setImageResource(R.drawable.ic_baseline_close_24)
-                    binding.bankImg.visibility = View.GONE
+                    binding.resultImg.setImageResource(R.drawable.ic_baseline_close_24)
                 }
                 else -> {
-                    binding.paymentMethodImg.visibility = View.GONE
-                    binding.bankImg.visibility = View.GONE
+                    binding.resultImg.visibility = View.GONE
                 }
             }
 

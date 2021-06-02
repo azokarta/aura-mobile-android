@@ -83,26 +83,16 @@
             android:layout_toRightOf="@+id/contractNumberValue" />
 
         <ImageView
-            android:id="@+id/paymentMethodImg"
+            android:id="@+id/resultImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_account_balance_24"
+            android:src="@drawable/ic_baseline_account_balance_wallet_24"
+            android:layout_marginLeft="8dp"
             android:layout_alignTop="@+id/paymentOverdueDays"
             android:layout_alignBottom="@+id/paymentOverdueDays"
             android:layout_toEndOf="@+id/paymentOverdueDays"
-            android:layout_toRightOf="@+id/paymentOverdueDays" />
-
-        <ImageView
-            android:id="@+id/bankImg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/paymentMethodImg"
-            android:layout_alignBottom="@+id/paymentMethodImg"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:src="@drawable/ic_kaspi_bank"
-            android:layout_toEndOf="@+id/paymentMethodImg"
-            android:layout_toRightOf="@+id/paymentMethodImg" />
+            android:layout_toRightOf="@+id/paymentOverdueDays"
+            android:layout_marginStart="8dp" />
 
         <View
             android:id="@+id/divider2"

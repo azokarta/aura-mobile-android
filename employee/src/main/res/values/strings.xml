@@ -163,6 +163,9 @@
     <string name="current">Текущие</string>
     <string name="enable_location">Пожалуйста, включите на устройстве геолокацию</string>
     <string name="contributions">Взносы</string>
+    <string name="schedule_date">Назначить дату</string>
+    <string name="schedule_time">Назначить время</string>
+    <string name="schedule_call">Назначить звонок</string>
     <string-array name="language_entries">
         <item>@string/ru</item>
         <item>@string/en</item>
@@ -171,6 +174,4 @@
         <item>ru</item>
         <item>en</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

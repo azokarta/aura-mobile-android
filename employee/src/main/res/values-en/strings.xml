@@ -153,4 +153,7 @@
     <string name="current">Current</string>
     <string name="contributions">Contributions</string>
     <string name="enable_location">Please, enable geolocation on the device</string>
+    <string name="schedule_date">Schedule a date</string>
+    <string name="schedule_time">Schedule a time</string>
+    <string name="schedule_call">Schedule a call</string>
 </resources>
