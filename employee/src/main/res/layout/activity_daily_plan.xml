@@ -386,12 +386,56 @@
                     <Button
                         android:id="@+id/changeResult"
                         style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/change_result"
+                        android:enabled="@{plan.planResultId == null ? true : false}"
+                        app:icon="@drawable/ic_baseline_edit_24"
+                        app:layout_constraintEnd_toStartOf="@+id/createScheduleCall"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="@+id/textView18"
+                        app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+                    <Button
+                        android:id="@+id/createScheduleCall"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:text="@string/schedule_call"
+                        app:icon="@drawable/ic_baseline_call_24"
+                        app:layout_constraintEnd_toEndOf="@+id/stepsRecyclerView"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/changeResult"
+                        app:layout_constraintTop_toTopOf="@+id/changeResult" />
+
+                    <TextView
+                        android:id="@+id/textView18"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:text="@string/change_result"
+                        android:layout_marginTop="16dp"
+                        android:text="@{@string/result + `:`, default=`Result:`}"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@+id/stepsRecyclerView"
                         app:layout_constraintTop_toBottomOf="@+id/stepsRecyclerView" />
+
+                    <TextView
+                        android:id="@+id/textView57"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:text="@{plan.planResultName}"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView18"
+                        app:layout_constraintStart_toEndOf="@+id/textView18"
+                        app:layout_constraintTop_toTopOf="@+id/textView18" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

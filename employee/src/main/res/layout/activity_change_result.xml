@@ -149,7 +149,7 @@
             android:id="@+id/phoneNumberText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="phone" />
+            android:inputType="phone"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -167,25 +167,47 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/selectDateBtn"
-        style="?attr/materialButtonOutlinedStyle"
-        android:layout_width="200dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/scheduleDateField"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/date"
+        android:hint="@string/schedule_date"
         android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/resultField"
         app:layout_constraintStart_toStartOf="@+id/resultField"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumberField" />
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberField">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/selectTimeBtn"
-        style="?attr/materialButtonOutlinedStyle"
-        android:layout_width="200dp"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/scheduleDateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/scheduleTimeField"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/time"
+        android:hint="@string/schedule_time"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/selectDateBtn"
-        app:layout_constraintTop_toBottomOf="@+id/selectDateBtn" />
+        app:layout_constraintEnd_toEndOf="@+id/resultField"
+        app:layout_constraintStart_toStartOf="@+id/scheduleDateField"
+        app:layout_constraintTop_toBottomOf="@+id/scheduleDateField">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/scheduleTimeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

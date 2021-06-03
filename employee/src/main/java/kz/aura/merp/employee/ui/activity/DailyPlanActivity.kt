@@ -60,6 +60,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         progressDialog = ProgressDialog(this)
 
         binding.swipeRefresh.setOnRefreshListener(this)
+        binding.createScheduleCall.setOnClickListener(::openCreateScheduledCallScreen)
 
         initPhoneNumbers()
         initStepView()
@@ -72,6 +73,14 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         }
 
         callRequests()
+    }
+
+    private fun openCreateScheduledCallScreen(view: View) {
+        plan?.let {
+            val intent = Intent(this, CreateScheduledCallActivity::class.java)
+            intent.putExtra("contractId", it.contractId)
+            startActivityForResult(intent, createScheduledCallRequestCode)
+        }
     }
 
     private fun goToChangeResult() {
@@ -116,6 +125,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
+                    stepsAdapter.setStep(plan!!.planBusinessProcessId)
                     showException(res.message, this)
                 }
             }
@@ -181,6 +191,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 }
         } else {
             showException(getString(R.string.enable_location), this)
+            stepsAdapter.setStep(plan!!.planBusinessProcessId)
         }
     }
 
@@ -195,6 +206,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     companion object {
         const val changeResultRequestCode = 2000
         private const val callRequestCode = 1000
+        private const val createScheduledCallRequestCode = 3000
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -206,6 +218,10 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 }
                 changeResultRequestCode -> {
                     showSnackbar(binding.changeResult)
+                    contractId?.let { mFinanceViewModel.fetchPlan(it) }
+                }
+                createScheduledCallRequestCode -> {
+                    showSnackbar(binding.createScheduleCall)
                 }
             }
         }

@@ -13,17 +13,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.databinding.PlanFilterBottomSheetBinding
-import kz.aura.merp.employee.model.BusinessProcessStatus
-import kz.aura.merp.employee.util.NetworkResult
+import kz.aura.merp.employee.databinding.MonthlyPlanFilterBottomSheetBinding
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class PlanFilterDialogFragment : BottomSheetDialogFragment() {
+class MonthlyPlanFilterDialogFragment : BottomSheetDialogFragment() {
 
-    private var _binding: PlanFilterBottomSheetBinding? = null
+    private var _binding: MonthlyPlanFilterBottomSheetBinding? = null
     private val binding get() = _binding!!
     private lateinit var financeViewModel: FinanceViewModel
     private val filterViewModel: PlanFilterViewModel by activityViewModels()
@@ -32,10 +30,8 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
     private lateinit var searchParams: List<String>
     private var selectedSearchBy: Int = 0
     private var selectedSortFilter: Int = 0
-    private var selectedStatusFilter: Int = 0
     private var query: String = ""
     private var problematic: Boolean = false
-    private var businessProcessStatuses: ArrayList<BusinessProcessStatus> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,14 +41,12 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
         financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
 
-        _binding = PlanFilterBottomSheetBinding.inflate(inflater, container, false)
+        _binding = MonthlyPlanFilterBottomSheetBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.sharedViewModel = sharedViewModel
         val root: View = binding.root
 
         selectedSearchBy = filterViewModel.filterParams.value?.selectedSearchBy ?: 0
         selectedSortFilter = filterViewModel.filterParams.value?.selectedSortFilter ?: 0
-        selectedStatusFilter = filterViewModel.filterParams.value?.selectedStatusFilter ?: 0
         query = filterViewModel.filterParams.value?.query ?: ""
         problematic = filterViewModel.filterParams.value?.problematic ?: false
 
@@ -60,16 +54,6 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
             getString(R.string.payment_date),
             getString(R.string.contract_date),
             getString(R.string.fullname)
-        )
-        businessProcessStatuses.add(
-            BusinessProcessStatus(
-                0,
-                getString(R.string._new),
-                "",
-                "",
-                "",
-                ""
-            )
         )
 
         // Initialize search params
@@ -86,11 +70,10 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
         binding.apply.setOnClickListener {
             val query = binding.search.editText?.text.toString()
             val selectedSortFilter = binding.sortChipGroup.checkedChipId
-            val selectedStatusFilter = binding.statusesChipGroup.checkedChipId
             filterViewModel.apply(
                 query,
                 selectedSortFilter,
-                selectedStatusFilter,
+                0,
                 selectedSearchBy,
                 binding.problematic.isChecked
             )
@@ -107,21 +90,14 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
             }
         }
 
-        setupObservers()
-
-        callRequests()
+        setupFilterParams()
 
         return root
-    }
-
-    private fun callRequests() {
-        financeViewModel.fetchBusinessProcessStatuses()
     }
 
     private fun setupFilterParams() {
         binding.search.editText?.setText(query)
         binding.problematic.isChecked = problematic
-        binding.statusesChipGroup.check(selectedStatusFilter)
         binding.sortChipGroup.check(selectedSortFilter)
     }
 
@@ -134,29 +110,6 @@ class PlanFilterDialogFragment : BottomSheetDialogFragment() {
         chip.isCheckable = true
         chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         return chip
-    }
-
-    private fun setupObservers() {
-        financeViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
-            when (res) {
-                is NetworkResult.Success -> {
-                    sharedViewModel.setResponse(res)
-                    businessProcessStatuses.addAll(res.data!!)
-                    for (process in businessProcessStatuses) {
-                        binding.statusesChipGroup.addView(
-                            createChip(
-                                process.name,
-                                process.id.toInt()
-                            )
-                        )
-                    }
-
-                    setupFilterParams()
-                }
-                is NetworkResult.Loading -> sharedViewModel.setResponse(res)
-                is NetworkResult.Error -> sharedViewModel.setResponse(res)
-            }
-        })
     }
 
     override fun onDestroyView() {

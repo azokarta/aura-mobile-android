@@ -27,8 +27,8 @@
         </service>
 
         <!-- Finance -->
-        <activity android:name=".ui.activity.FinanceActivity" />
-        <activity android:name=".ui.activity.CreateScheduledCallActivity" android:parentActivityName=".ui.activity.FinanceActivity">
+        <activity android:name=".ui.activity.FinanceActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.CreateScheduledCallActivity" android:parentActivityName=".ui.activity.FinanceActivity" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.FinanceActivity" />
@@ -36,27 +36,32 @@
         <activity
             android:name=".ui.activity.ChangeResultActivity"
             android:parentActivityName=".ui.activity.DailyPlanActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible">
+            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.DailyPlanActivity" />
         </activity>
         <activity
             android:name=".ui.activity.IncomingActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible" />
+            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.OutgoingActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible" />
+            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.DailyPlanActivity"
-            android:parentActivityName=".ui.activity.FinanceActivity">
+            android:parentActivityName=".ui.activity.FinanceActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.FinanceActivity" />
         </activity>
         <activity
             android:name=".ui.activity.PlanActivity"
-            android:parentActivityName=".ui.activity.FinanceActivity">
+            android:parentActivityName=".ui.activity.FinanceActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.FinanceActivity" />
@@ -83,9 +88,12 @@
         <activity
             android:name=".ui.activity.AuthorizationActivity"
             android:configChanges="locale"
-            android:windowSoftInputMode="adjustResize|stateVisible" />
-        <activity android:name=".ui.activity.PassCodeActivity" />
-        <activity android:name=".ui.activity.SplashActivity">
+            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.PassCodeActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

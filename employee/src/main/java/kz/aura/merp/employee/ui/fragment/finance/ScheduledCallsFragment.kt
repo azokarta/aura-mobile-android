@@ -43,7 +43,6 @@ class ScheduledCallsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener 
         val root: View = binding.root
 
         binding.swipeRefresh.setOnRefreshListener(this)
-        binding.createScheduledCall.setOnClickListener(::openCreateScheduledCallScreen)
 
         setupRecyclerView()
 
@@ -52,11 +51,6 @@ class ScheduledCallsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener 
         callRequests()
 
         return root
-    }
-
-    private fun openCreateScheduledCallScreen(view: View) {
-        val intent = Intent(requireContext(), CreateScheduledCallActivity::class.java)
-        startActivity(intent)
     }
 
     private fun callRequests() {

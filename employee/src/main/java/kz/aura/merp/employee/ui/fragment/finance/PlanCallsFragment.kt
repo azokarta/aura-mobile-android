@@ -90,7 +90,7 @@ class PlanCallsFragment : Fragment() {
     }
 
     private fun callRequests() {
-        financeViewModel.fetchLastMonthCallsByContractId(contractId!!)
+        financeViewModel.fetchCallHistory(contractId!!)
     }
 
     private fun setupRecyclerView() {

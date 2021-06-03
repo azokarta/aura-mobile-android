@@ -61,12 +61,37 @@ fun convertMillisToLocalDate(millis: Long): LocalDate {
     return dtf.parseLocalDate(dtf.print(millis))
 }
 
+fun convertDateStrToLocalDate(date: String): LocalDate {
+    val dtf = DateTimeFormat.forPattern("dd.MM.yyyy")
+    return dtf.parseLocalDate(date)
+}
+
 fun collectDateTimeInsideStr(dateInMillis: Long, hour: Int, minute: Int): String {
     val dtf = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")
     val date = DateTime.now().withDate(convertMillisToLocalDate(dateInMillis))
         .withHourOfDay(hour)
         .withMinuteOfHour(minute)
     return dtf.print(date)
+}
+
+fun collectDateTimeInsideStr(dateInMillis: String, hour: Int, minute: Int): String {
+    val dtf = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")
+    val date = DateTime.now().withDate(convertDateStrToLocalDate(dateInMillis))
+        .withHourOfDay(hour)
+        .withMinuteOfHour(minute)
+    return dtf.print(date)
+}
+
+fun convertDateMillisToStr(millis: Long): String {
+    val dtf = DateTimeFormat.forPattern("dd.MM.yyyy")
+    return dtf.print(millis)
+}
+
+fun convertStrToDateMillis(date: String?): Long? {
+    val dtf = DateTimeFormat.forPattern("dd.MM.yyyy")
+    return if (date != null) {
+        dtf.parseMillis(date)
+    } else null
 }
 
 fun saveStaff(context: Context, salary: Salary) {

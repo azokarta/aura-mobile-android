@@ -34,7 +34,8 @@ data class Plan (
     val planPaymentMethodName: String? = null,
     val planPaymentBankId: Long? = null,
     val planPaymentBankName: String? = null,
-    val planCollectMoneyAmount: Int? = null
+    val planCollectMoneyAmount: Int? = null,
+    val planDateTime: String? = null
 ): Parcelable {
     fun getFullName() = "${customerLastname ?: ""} ${customerFirstname ?: ""} ${customerMiddlename ?: ""}"
 }

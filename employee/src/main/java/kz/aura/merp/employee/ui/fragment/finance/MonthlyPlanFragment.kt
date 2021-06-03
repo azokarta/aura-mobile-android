@@ -3,26 +3,20 @@ package kz.aura.merp.employee.ui.fragment.finance
 import android.os.Bundle
 import android.text.Html
 import android.view.*
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PlanAdapter
 import kz.aura.merp.employee.databinding.FragmentMonthlyPlanBinding
-import kz.aura.merp.employee.model.BusinessProcessStatus
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.model.PlanFilter
-import kz.aura.merp.employee.ui.dialog.PlanFilterDialogFragment
+import kz.aura.merp.employee.ui.dialog.MonthlyPlanFilterDialogFragment
 import kz.aura.merp.employee.ui.dialog.TimePickerFragment
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
@@ -70,7 +64,7 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
         binding.swipeRefresh.setOnRefreshListener(this)
 
         binding.filterList.setOnClickListener {
-            val dialog = PlanFilterDialogFragment()
+            val dialog = MonthlyPlanFilterDialogFragment()
             dialog.show(childFragmentManager, "PlanFilterBottomSheetDialog")
         }
         binding.clearFilter.setOnClickListener {
@@ -102,7 +96,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
 
     private fun callRequests() {
         financeViewModel.fetchPlans()
-        financeViewModel.fetchBusinessProcessStatuses()
     }
 
     override fun sendToDailyPlan(contractId: Long) {
@@ -159,18 +152,12 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
     }
 
     private fun changeTextsFilter(filterParams: PlanFilter) {
-        val selectedStatusFilter = filterParams.selectedStatusFilter.toLong()
         val filterSortParams = arrayListOf(
             getString(R.string.payment_date),
             getString(R.string.contract_date),
             getString(R.string.fullname)
         )
         binding.sort = filterSortParams[filterParams.selectedSortFilter]
-        binding.status = if (selectedStatusFilter == 0L) {
-            getString(R.string._new)
-        } else {
-            financeViewModel.businessProcessStatusesResponse.value?.data?.find { it.id == selectedStatusFilter }?.name
-        }
         binding.searchBySn = when (filterParams.selectedSearchBy) {
             0 -> if (filterParams.query.isNotBlank()) "${getString(R.string.cn)} = ${filterParams.query}" else ""
             1 -> if (filterParams.query.isNotBlank()) "${getString(R.string.fullname)} = ${filterParams.query}" else ""
@@ -205,14 +192,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
                 }
                 filteredPlans = filteredPlans.filter { candidate -> conditions.all { it(candidate) } }.toMutableList()
             }
-        }
-
-        // Filter by business process status
-        filteredPlans = when (filterParams.selectedStatusFilter) {
-            0 -> filteredPlans.filter { it.planBusinessProcessId == null && it.planResultId == null }.toMutableList()
-            1 -> filteredPlans.filter { it.planBusinessProcessId == 1L && it.planResultId == null }.toMutableList()
-            2 -> filteredPlans.filter { it.planBusinessProcessId == 2L && it.planResultId == null }.toMutableList()
-            else -> filteredPlans.filter { it.planBusinessProcessId == null && it.planResultId == null }.toMutableList()
         }
 
         // Sort by selected parameter

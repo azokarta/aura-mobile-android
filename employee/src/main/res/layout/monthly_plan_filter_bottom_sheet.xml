@@ -4,38 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
-            name="sharedViewModel"
-            type="kz.aura.merp.employee.viewmodel.SharedViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomSheetContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/textView19"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/statuses"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/search"
-            app:layout_constraintTop_toBottomOf="@+id/search" />
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/statusesChipGroup"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textView19"
-            app:layout_constraintTop_toBottomOf="@+id/textView19"
-            app:selectionRequired="true"
-            app:singleSelection="true" />
 
         <TextView
             android:id="@+id/textView24"
@@ -46,8 +20,8 @@
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/statusesChipGroup"
-            app:layout_constraintTop_toBottomOf="@+id/progressBar3" />
+            app:layout_constraintStart_toStartOf="@+id/search"
+            app:layout_constraintTop_toBottomOf="@+id/search" />
 
 
         <com.google.android.material.chip.ChipGroup
@@ -72,7 +46,6 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
-            android:enableByResponse="@{sharedViewModel.response}"
             android:ems="10"
             android:hint="@string/search_by"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +66,6 @@
             android:layout_marginTop="16dp"
             android:hint="@string/search"
             app:endIconMode="custom"
-            android:enableByResponse="@{sharedViewModel.response}"
             app:endIconDrawable="@drawable/ic_clear_black_24dp"
             app:layout_constraintEnd_toEndOf="@+id/searchBy"
             app:layout_constraintStart_toStartOf="@+id/searchBy"
@@ -111,7 +83,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:enableByResponse="@{sharedViewModel.response}"
             android:text="@string/apply"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/searchBy"
@@ -125,18 +96,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/problematic"
-            android:enableByResponse="@{sharedViewModel.response}"
             app:layout_constraintStart_toStartOf="@+id/sortChipGroup"
             app:layout_constraintTop_toBottomOf="@+id/sortChipGroup" />
 
-        <ProgressBar
-            android:id="@+id/progressBar3"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:loadingType="@{sharedViewModel.loadingType}"
-            android:response="@{sharedViewModel.response}"
-            app:layout_constraintStart_toStartOf="@+id/textView19"
-            app:layout_constraintTop_toBottomOf="@+id/statusesChipGroup" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

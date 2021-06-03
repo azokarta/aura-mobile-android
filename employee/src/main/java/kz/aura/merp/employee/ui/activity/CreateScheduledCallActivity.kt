@@ -1,5 +1,6 @@
 package kz.aura.merp.employee.ui.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -9,13 +10,13 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import dagger.hilt.android.AndroidEntryPoint
+import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityCreateScheduledCallBinding
+import kz.aura.merp.employee.model.AssignScheduledCallCommand
 import kz.aura.merp.employee.ui.dialog.DatePickerFragment
 import kz.aura.merp.employee.ui.dialog.TimePickerFragment
-import kz.aura.merp.employee.util.CountryCode
-import kz.aura.merp.employee.util.ProgressDialog
-import kz.aura.merp.employee.util.dateTimeFormat
+import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -31,7 +32,8 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
     private var countryCode: CountryCode = CountryCode.KZ
     private var selectedHour: Int? = null
     private var selectedMinute: Int? = null
-    private var scheduledDateInMillis: Long? = null
+    private var scheduledDate: String? = null
+    private var contractId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +48,8 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
 
         // Turn off screenshot
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+
+        contractId = intent.getLongExtra("contractId", 0L)
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
@@ -62,12 +66,12 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
     }
 
     private fun showDatePicker(view: View) {
-        val datePicker = DatePickerFragment(this, this, date = scheduledDateInMillis)
+        val datePicker = DatePickerFragment(this, this, date = convertStrToDateMillis(scheduledDate))
         datePicker.show(supportFragmentManager)
     }
 
     override fun selectedDate(date: Long, header: String) {
-        scheduledDateInMillis = date
+        scheduledDate = convertDateMillisToStr(date)
         binding.scheduleDateText.setText(header)
     }
 
@@ -79,6 +83,21 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
     }
 
     private fun setupObservers() {
+        financeViewModel.assignScheduledCallResponse.observe(this, { res ->
+            when (res) {
+                is NetworkResult.Success -> {
+                    progressDialog.hideLoading()
+                    val intent = Intent();
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+                is NetworkResult.Loading -> {}
+                is NetworkResult.Error -> {
+                    progressDialog.hideLoading()
+                    showException(res.message, this)
+                }
+            }
+        })
         financeViewModel.countryCode.observe(this, { countryCode ->
             this.countryCode = countryCode
             binding.phoneNumberText.mask = countryCode.format
@@ -89,10 +108,32 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
         if (validation()) {
             val description = binding.descriptionText.text.toString()
             val phoneNumber = binding.phoneNumberText.text.toString()
+            val scheduledDateTime = collectDateTimeInsideStr(scheduledDate!!, selectedHour!!, selectedMinute!!)
 
-            dateTimeFormat(scheduledDateInMillis!!, selectedHour!!, selectedMinute!!)
+            if (isLocationServiceEnabled()) {
+                progressDialog.showLoading()
+                SmartLocation.with(this).location().oneFix()
+                    .start {
+                        financeViewModel.assignScheduledCall(
+                            contractId!!,
+                            AssignScheduledCallCommand(
+                                phoneNumber,
+                                countryCode.name,
+                                it.longitude,
+                                it.latitude,
+                                scheduledDateTime,
+                                description
+                            )
+                        )
+                    }
+            } else {
+                showException(getString(R.string.enable_location), this)
+            }
         }
     }
+
+    private fun isLocationServiceEnabled(): Boolean =
+        SmartLocation.with(this).location().state().locationServicesEnabled()
 
     private fun validation(): Boolean {
         val phoneNumber = binding.phoneNumberText.text.toString()
@@ -106,7 +147,7 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
             binding.phoneNumberField.isErrorEnabled = false
         }
 
-        if (scheduledDateInMillis == null) {
+        if (scheduledDate == null) {
             binding.scheduleDateField.isErrorEnabled = true
             binding.scheduleDateField.error = getString(R.string.error)
             success = false

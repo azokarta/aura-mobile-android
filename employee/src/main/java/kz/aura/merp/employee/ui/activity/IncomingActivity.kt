@@ -61,7 +61,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
 
         binding.save.setOnClickListener(::save)
 
-        binding.selectTimeBtn.setOnClickListener {
+        binding.scheduleTimeText.setOnClickListener {
             showTimePicker()
         }
     }
@@ -70,8 +70,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
         val description = binding.descriptionText.text.toString()
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
 
-        if (typedPhoneNumber.isNotBlank() && selectedHour != null && selectedMinute != null && typedPhoneNumber.length == countryCode.format.length) {
-
+        if (validation()) {
             if (isLocationServiceEnabled()) {
                 progressDialog.showLoading()
                 SmartLocation.with(this).location().oneFix()
@@ -89,10 +88,26 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
             } else {
                 showException(getString(R.string.enable_location), this)
             }
-
-        } else {
-            showException(getString(R.string.fill_out_all_fields), this)
         }
+    }
+
+    private fun validation(): Boolean {
+        val typedPhoneNumber = binding.phoneNumberText.text.toString()
+        var success = true
+
+        if (typedPhoneNumber.isBlank() || typedPhoneNumber.length != countryCode.format.length) {
+            success = false
+            binding.phoneNumberField.isErrorEnabled = true
+            binding.phoneNumberField.error = getString(R.string.enter_valid_phone_number)
+        } else binding.phoneNumberField.isErrorEnabled = false
+
+        if (selectedHour == null || selectedMinute == null) {
+            success = false
+            binding.scheduleTimeField.isErrorEnabled = true
+            binding.scheduleTimeField.error = getString(R.string.error)
+        } else binding.scheduleTimeField.isErrorEnabled = false
+
+        return success
     }
 
     private fun isLocationServiceEnabled(): Boolean =
@@ -118,7 +133,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
         selectedHour = hour
         selectedMinute = minute
         val time = "$hour:$minute"
-        binding.selectTimeBtn.text = time
+        binding.scheduleTimeText.setText(time)
     }
 
     private fun setupObservers() {

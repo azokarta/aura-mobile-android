@@ -80,7 +80,7 @@ class AuthorizationActivity : AppCompatActivity() {
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this, this)
+                    showException(res.message, this)
                 }
             }
         })
@@ -105,7 +105,7 @@ class AuthorizationActivity : AppCompatActivity() {
                 }
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-//                    declareErrorByStatus(res.message, res.status, this, this)
+                    showException(res.message, this)
                 }
             }
         })

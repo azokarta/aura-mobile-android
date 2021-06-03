@@ -4,9 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <import type="android.view.View" />
-
         <variable
             name="sharedViewModel"
             type="kz.aura.merp.employee.viewmodel.SharedViewModel" />
@@ -14,10 +11,6 @@
         <variable
             name="quantityOfList"
             type="int" />
-
-        <variable
-            name="status"
-            type="String" />
 
         <variable
             name="sort"
@@ -93,6 +86,7 @@
                     android:showError="@{sharedViewModel.response}"
                     android:text="@{sharedViewModel.response.message}"
                     android:textColor="@color/black"
+                    android:gravity="center_horizontal"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/imageView17"
@@ -139,12 +133,14 @@
                         android:id="@+id/textView22"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@{@string/quantity + `: `}"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@{@string/quantity + `: `, default=`Количество:`}"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        app:layout_constraintStart_toStartOf="@+id/textView31"
-                        app:layout_constraintTop_toBottomOf="@+id/textView31" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
                         android:id="@+id/filterList"
@@ -160,51 +156,26 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView23"
+                        android:id="@+id/textView29"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="@{@string/status + `: `}"
+                        android:text="@{@string/sort + `: `, default=`Сортировка: `}"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="@+id/textView22"
                         app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
                     <TextView
-                        android:id="@+id/textView29"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@{@string/sort + `: `}"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        app:layout_constraintStart_toStartOf="@+id/textView23"
-                        app:layout_constraintTop_toBottomOf="@+id/textView23" />
-
-                    <TextView
                         android:id="@+id/textView30"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="@{@string/search_by + `: `}"
+                        android:text="@{@string/search_by + `: `, default=`Поиск по:`}"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="@+id/textView29"
                         app:layout_constraintTop_toBottomOf="@+id/textView29" />
-
-                    <TextView
-                        android:id="@+id/textView31"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:text="@string/monthly_plan"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/textView32"
@@ -212,25 +183,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginLeft="8dp"
-                        android:text="@{Integer.toString(quantityOfList)}"
+                        android:text="@{Integer.toString(quantityOfList), default=`241`}"
                         android:textColor="@color/black"
                         android:textStyle="italic"
                         app:layout_constraintBottom_toBottomOf="@+id/textView22"
                         app:layout_constraintStart_toEndOf="@+id/textView22"
                         app:layout_constraintTop_toTopOf="@+id/textView22" />
-
-                    <TextView
-                        android:id="@+id/textView33"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:text="@{status}"
-                        android:textColor="@color/black"
-                        android:textStyle="italic"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView23"
-                        app:layout_constraintStart_toEndOf="@+id/textView23"
-                        app:layout_constraintTop_toTopOf="@+id/textView23" />
 
                     <TextView
                         android:id="@+id/textView34"

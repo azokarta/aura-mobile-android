@@ -124,6 +124,24 @@ class OutgoingActivity : AppCompatActivity() {
         })
     }
 
+    private fun validation(): Boolean {
+        val typedPhoneNumber = binding.phoneNumberText.text.toString()
+        var success = true
+
+        if (phoneNumber.isBlank() || typedPhoneNumber.length != countryCode.format.length) {
+            success = false
+            binding.phoneNumberField.isErrorEnabled = true
+            binding.phoneNumberField.error = getString(R.string.enter_valid_phone_number)
+        } else binding.phoneNumberField.isErrorEnabled = false
+
+        if (callStatusId == 0L) {
+            success = false
+            binding.callStatusField.isErrorEnabled = true
+            binding.callStatusField.error = getString(R.string.error)
+        } else binding.callStatusField.isErrorEnabled = false
+
+        return success
+    }
 
     private fun save(view: View) {
         hideKeyboard(this)
@@ -132,8 +150,7 @@ class OutgoingActivity : AppCompatActivity() {
         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("HH:mm")
         val currentDate: String = dtf.print(DateTime.now())
 
-        if (phoneNumber.isNotBlank() && callStatusId != 0L && typedPhoneNumber.length == countryCode.format.length) {
-
+        if (validation()) {
             if (isLocationServiceEnabled()) {
                 progressDialog.showLoading()
                 SmartLocation.with(this).location().oneFix()
@@ -153,8 +170,6 @@ class OutgoingActivity : AppCompatActivity() {
             } else {
                 showException(getString(R.string.enable_location), this)
             }
-        } else {
-            showException(getString(R.string.fill_out_all_fields), this)
         }
     }
 
