@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -170,6 +173,16 @@ fun defineCorrectSalary(salaries: ArrayList<Salary>) = salaries.find {
         else -> {
             false
         }
+    }
+}
+
+fun vibrate(context: Context, millis: Long) {
+    val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        v!!.vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE))
+    } else {
+        //deprecated in API 26
+        v!!.vibrate(millis)
     }
 }
 

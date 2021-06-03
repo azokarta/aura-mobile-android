@@ -93,7 +93,7 @@ class AuthorizationActivity : AppCompatActivity() {
                     } else {
                         mAuthViewModel.saveSalary(defineCorrectSalary(res.data)!!)
                         // Open PassCode activity for saving code
-                        val intent = Intent(this, PassCodeActivity::class.java)
+                        val intent = Intent(this, VerifyPasscodeActivity::class.java)
                         intent.flags =
                             Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                         intent.putExtra("passCodeStatus", PasscodeStatus.CREATE)

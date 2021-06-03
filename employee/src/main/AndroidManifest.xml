@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:name=".Application"
@@ -90,7 +91,7 @@
             android:configChanges="locale"
             android:windowSoftInputMode="adjustResize|stateVisible"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.PassCodeActivity"
+        <activity android:name=".ui.activity.VerifyPasscodeActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.activity.SplashActivity"
             android:screenOrientation="portrait">

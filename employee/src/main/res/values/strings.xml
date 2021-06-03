@@ -166,6 +166,7 @@
     <string name="schedule_date">Назначить дату</string>
     <string name="schedule_time">Назначить время</string>
     <string name="schedule_call">Назначить звонок</string>
+    <string name="verifying_passcode">Проверка код доступа</string>
     <string-array name="language_entries">
         <item>@string/ru</item>
         <item>@string/en</item>
