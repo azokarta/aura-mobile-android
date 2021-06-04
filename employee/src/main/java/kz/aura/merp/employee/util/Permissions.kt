@@ -45,13 +45,23 @@ class Permissions(val context: Context, val activity: Activity) {
         }
     }
 
+    fun locationPermissionDenied(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_DENIED ||
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_DENIED
+    }
+
     fun enableLocation() {
         val request = LocationRequest().setFastestInterval(5000).setInterval(1000).setPriority(
             LocationRequest.PRIORITY_HIGH_ACCURACY)
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(request)
         val result = LocationServices.getSettingsClient(activity).checkLocationSettings(builder.build())
-
         result.addOnFailureListener { exception ->
             if (exception is ResolvableApiException){
                 // Location settings are not satisfied, but this can be fixed

@@ -46,6 +46,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
     private var selectedMinute: Int? = null
     private var countryCode: CountryCode = CountryCode.KZ
     private var scheduledDate: String? = null
+    private lateinit var permissions: Permissions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +64,8 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE
         )
+
+        permissions = Permissions(this, this)
 
         contractId = intent.getLongExtra("contractId", 0L)
         clientPhoneNumbers = intent.getStringArrayExtra("clientPhoneNumbers")!!
@@ -113,6 +116,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
 
         binding.save.setOnClickListener {
             hideKeyboard(this)
+            println("BusinessProcessId: $businessProcessId, PAYMENT: $paymentMethodId")
             if (paymentMethodId == 1L && businessProcessId != 2L) {
                 showException(getString(R.string.have_not_marked_the_status), this)
             } else {
@@ -121,6 +125,7 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
         }
         binding.scheduleTimeText.setOnClickListener(::showTimePicker)
         binding.scheduleDateText.setOnClickListener(::showDatePicker)
+        permissions.requestGpsPermission()
     }
 
     private fun showDatePicker(view: View) {
@@ -130,16 +135,12 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
 
     private fun save() {
         if (validation()) {
-            val reasonDescription: String? = if (binding.reasonDescriptionText.text.toString()
-                    .isBlank()
-            ) null else binding.reasonDescriptionText.text.toString()
+            val reasonDescription: String? = if (binding.reasonDescriptionText.text.toString().isBlank()) null else binding.reasonDescriptionText.text.toString()
             val phoneNumber: String = binding.phoneNumberText.text.toString()
-            val amount: Int? = if (binding.amountText.text.toString()
-                    .isBlank()
-            ) null else binding.amountText.text.toString().toInt()
+            val amount: Int? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString().toInt()
             val scheduledDateTime = "$scheduledDate $selectedHour:$selectedMinute"
 
-            if (isLocationServiceEnabled()) {
+            if (isLocationServicesEnabled( permissions)) {
                 progressDialog.showLoading()
                 SmartLocation.with(this).location().oneFix()
                     .start {
@@ -198,14 +199,9 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
 
                         }
                     }
-            } else {
-                showException(getString(R.string.enable_location), this)
             }
         }
     }
-
-    private fun isLocationServiceEnabled(): Boolean =
-        SmartLocation.with(this).location().state().locationServicesEnabled()
 
     private fun showTimePicker(view: View) {
         val timePicker = TimePickerFragment(this, selectedHour, selectedMinute)

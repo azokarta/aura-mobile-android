@@ -1,8 +1,10 @@
 package kz.aura.merp.employee.util
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.VibrationEffect
@@ -11,10 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
+import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ErrorDialogBinding
 import kz.aura.merp.employee.model.Error
@@ -53,10 +56,19 @@ fun getToken(context: Context): String? {
     return pref.getString("token", "")
 }
 
-fun saveToken(context: Context, token: String) = PreferenceManager.getDefaultSharedPreferences(context).apply {
-    edit()
-        .putString("token", token)
+fun removeToken(context: Context) {
+    PreferenceManager.getDefaultSharedPreferences(context)
+        .edit()
+        .remove("token")
         .apply()
+}
+
+fun saveToken(context: Context, token: String) {
+    PreferenceManager.getDefaultSharedPreferences(context).apply {
+        edit()
+            .putString("token", token)
+            .apply()
+    }
 }
 
 fun convertMillisToLocalDate(millis: Long): LocalDate {
@@ -165,13 +177,19 @@ fun hideKeyboardFrom(context: Context, view: View) {
 fun showToast(context: Context, message: String) =
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 
-fun defineCorrectSalary(salaries: ArrayList<Salary>) = salaries.find {
-    when (it.positionId) {
-        in crmPositions -> true
-        in financePositions -> true
-        in servicePositions -> true
-        else -> {
-            false
+fun defineCorrectSalary(salaries: ArrayList<Salary>?): Salary? {
+    if (salaries.isNullOrEmpty()) {
+        return null
+    }
+
+    return salaries.find {
+        when (it.positionId) {
+            in financePositions -> true
+            in servicePositions -> true
+            in crmPositions -> true
+            else -> {
+                false
+            }
         }
     }
 }
@@ -186,11 +204,12 @@ fun vibrate(context: Context, millis: Long) {
     }
 }
 
-fun definePosition(salaries: ArrayList<Salary>): StaffPosition? {
-    val foundSalary = defineCorrectSalary(salaries)
-
+fun definePosition(salary: Salary?): StaffPosition? {
+    if (salary == null) {
+        return null
+    }
     // Define position of employee and return constant
-    return when (foundSalary?.positionId) {
+    return when (salary.positionId) {
         in crmPositions -> StaffPosition.DEALER
         in financePositions -> StaffPosition.FIN_AGENT
         in servicePositions -> StaffPosition.MASTER
@@ -235,6 +254,23 @@ fun verifyAvailableNetwork(context: Context): Boolean {
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val networkInfo = connectivityManager.activeNetworkInfo
     return networkInfo != null && networkInfo.isConnected
+}
+
+fun isLocationServicesEnabled(permissions: Permissions): Boolean {
+    val locationServicesEnabled = SmartLocation.with(permissions.context).location().state().locationServicesEnabled()
+    val locationPermissionDenied = permissions.locationPermissionDenied()
+
+    if (locationPermissionDenied) {
+        showException(permissions.context.getString(R.string.have_not_allowed_access_to_the_location), permissions.context)
+        return false
+    }
+
+    if (!locationServicesEnabled) {
+        permissions.enableLocation()
+        return false
+    }
+
+    return true
 }
 
 fun isInternetAvailable(context: Context): Boolean {

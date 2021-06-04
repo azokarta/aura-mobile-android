@@ -36,6 +36,7 @@ class OutgoingActivity : AppCompatActivity() {
     private var startedTime: DateTime? = null
     private val requestCode = 1000
     private var countryCode: CountryCode = CountryCode.KZ
+    private lateinit var permissions: Permissions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +57,8 @@ class OutgoingActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE
         )
+
+        permissions = Permissions(this, this)
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
@@ -151,7 +154,7 @@ class OutgoingActivity : AppCompatActivity() {
         val currentDate: String = dtf.print(DateTime.now())
 
         if (validation()) {
-            if (isLocationServiceEnabled()) {
+            if (isLocationServicesEnabled(permissions)) {
                 progressDialog.showLoading()
                 SmartLocation.with(this).location().oneFix()
                     .start {
@@ -167,14 +170,9 @@ class OutgoingActivity : AppCompatActivity() {
                         )
                         financeViewModel.assignOutgoingCall(assign, contractId)
                     }
-            } else {
-                showException(getString(R.string.enable_location), this)
             }
         }
     }
-
-    private fun isLocationServiceEnabled(): Boolean =
-        SmartLocation.with(this).location().state().locationServicesEnabled()
 
     private fun removeCountryCodeFromPhone(phone: String): String {
         if (countryCode == CountryCode.KZ) {

@@ -1,5 +1,6 @@
 package kz.aura.merp.employee.ui.activity
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.WindowManager
@@ -75,18 +76,15 @@ class SettingsActivity : AppCompatActivity() {
             if (p1.equals("language")) {
                 val lang = p0?.getString(p1, "").toString()
                 LanguageHelper.updateLanguage(this.requireContext(), lang)
-                val position = definePosition(arrayListOf(mAuthViewModel.salary.value!!))!!
-                openActivityByPosition(requireContext(), position)
+//                val position = definePosition(arrayListOf(mAuthViewModel.salary.value!!))!!
+//                openActivityByPosition(requireContext(), position)
             }
         }
 
     }
 
     private fun signOut() {
-        PreferenceManager.getDefaultSharedPreferences(application)
-            .edit()
-            .remove("token")
-            .apply()
+        removeToken(this)
         mAuthViewModel.clearSettings()
         clearPreviousAndOpenActivity(this, AuthorizationActivity())
     }

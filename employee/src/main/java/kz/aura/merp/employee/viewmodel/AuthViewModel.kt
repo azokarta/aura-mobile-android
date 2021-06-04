@@ -11,12 +11,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.data.DataStoreRepository
 import kz.aura.merp.employee.model.AuthResponse
 import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.data.repository.authRepository.AuthRepository
+import kz.aura.merp.employee.model.ResponseHelper
+import kz.aura.merp.employee.util.ErrorStatus
 import kz.aura.merp.employee.util.NetworkResult
+import kz.aura.merp.employee.util.isInternetAvailable
 import kz.aura.merp.employee.util.receiveErrorMessage
+import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,8 +34,11 @@ class AuthViewModel @Inject constructor(
     private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.IO)
 
     val signInResponse: MutableLiveData<NetworkResult<AuthResponse>> = MutableLiveData()
-    val userInfoResponse: MutableLiveData<NetworkResult<ArrayList<Salary>>> = MutableLiveData()
+    val userInfoResponse: MutableLiveData<NetworkResult<ResponseHelper<ArrayList<Salary>>>> = MutableLiveData()
     val salary: MutableLiveData<Salary> = MutableLiveData()
+    val receiveMessage = { str: Int ->
+        getApplication<Application>().getString(str)
+    }
 
     fun saveCountryCallingCode(countryCallingCode: String) = scope.launch {
         dataStoreRepository.saveCountryCallingCode(countryCallingCode)
@@ -38,21 +46,20 @@ class AuthViewModel @Inject constructor(
 
     fun signIn(phoneNumber: String, password: String) = scope.launch {
         signInResponse.postValue(NetworkResult.Loading())
-        try {
-            val response = authRepository.remote.signin(phoneNumber, password)
+        if (isInternetAvailable(getApplication())) {
+            try {
+                val response = authRepository.remote.signin(phoneNumber, password)
 
-            if (response.isSuccessful) {
-                signInResponse.postValue(NetworkResult.Success(response.body()!!))
-            } else {
-//                signInResponse.postValue(
-//                    NetworkResult.Error(
-//                        receiveErrorMessage(response.errorBody()!!),
-//                        response.code()
-//                    )
-//                )
+                if (response.isSuccessful) {
+                    signInResponse.postValue(NetworkResult.Success(response.body()!!))
+                } else {
+                    signInResponse.postValue(handleError(response))
+                }
+            } catch (e: Exception) {
+                signInResponse.postValue(NetworkResult.Error(e.message))
             }
-        } catch (e: Exception) {
-            signInResponse.postValue(NetworkResult.Error(e.message))
+        } else {
+            signInResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -61,14 +68,9 @@ class AuthViewModel @Inject constructor(
             val response = authRepository.remote.getUserInfo()
 
             if (response.isSuccessful) {
-                userInfoResponse.postValue(NetworkResult.Success(response.body()!!.data))
+                userInfoResponse.postValue(NetworkResult.Success(response.body()!!))
             } else {
-//                userInfoResponse.postValue(
-//                    NetworkResult.Error(
-//                        receiveErrorMessage(response.errorBody()!!),
-//                        response.code()
-//                    )
-//                )
+                userInfoResponse.postValue(handleError(response))
             }
         } catch (e: Exception) {
             userInfoResponse.postValue(NetworkResult.Error(e.message))
@@ -86,4 +88,21 @@ class AuthViewModel @Inject constructor(
     }
 
     fun clearSettings() = scope.launch { dataStoreRepository.clearSettings() }
+
+    private fun <T> internetIsNotConnected(): NetworkResult<T> = NetworkResult.Error(
+        receiveMessage(R.string.network_disconnected),
+        ErrorStatus.INTERNET_IS_NOT_AVAILABLE
+    )
+
+    private fun <T> handleError(res: Response<T>): NetworkResult<T> {
+        val message = receiveErrorMessage(res.errorBody()!!)
+        return when (res.code()) {
+            401 -> NetworkResult.Error(message, ErrorStatus.FORBIDDEN)
+            400 -> NetworkResult.Error(message, ErrorStatus.BAD_REQUEST)
+            404 -> NetworkResult.Error(message, ErrorStatus.NOT_FOUND)
+            500 -> NetworkResult.Error(message, ErrorStatus.INTERNAL_SERVER_ERROR)
+            else -> NetworkResult.Error(message, null)
+        }
+    }
+
 }

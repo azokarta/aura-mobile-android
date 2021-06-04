@@ -35,7 +35,7 @@
         android:layout_height="match_parent"
         android:loadingType="@{sharedViewModel.loadingType}"
         android:response="@{sharedViewModel.response}"
-        tools:context=".ui.fragment.finance.DailyPlanFragment">
+        tools:context=".ui.fragment.finance.DailyPlansFragment">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -87,6 +87,7 @@
                     android:layout_height="wrap_content"
                     android:showError="@{sharedViewModel.response}"
                     android:text="@{sharedViewModel.response.message}"
+                    android:gravity="center"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"

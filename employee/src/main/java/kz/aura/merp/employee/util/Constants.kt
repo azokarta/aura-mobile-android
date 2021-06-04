@@ -23,7 +23,7 @@ object Constants {
 
 
     const val OCR_URL = "https://aurakz.idkit.co"
-    val SELECTED_SERVER = Server.DEV
+    val SELECTED_SERVER = Server.PROD
 
     val crmPositions = arrayListOf(4L, 3L, 10L, 105L)
     val financePositions = arrayListOf(9L)

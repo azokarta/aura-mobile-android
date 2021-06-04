@@ -42,7 +42,8 @@ class FinanceViewModel @Inject constructor(
     val callsResponse: MutableLiveData<NetworkResult<List<Call>>> = MutableLiveData()
     val staffUsername: MutableLiveData<String> = MutableLiveData()
     val countryCode: MutableLiveData<CountryCode> = MutableLiveData()
-    val dailyPlanResponse: MutableLiveData<NetworkResult<List<Plan>>> = MutableLiveData()
+    val dailyPlansResponse: MutableLiveData<NetworkResult<List<DailyPlan>>> = MutableLiveData()
+    val dailyPlanResponse: MutableLiveData<NetworkResult<DailyPlan>> = MutableLiveData()
     val createDailyPlanResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
     val changeBusinessProcessStatusResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
     val planResponse: MutableLiveData<NetworkResult<Plan>> = MutableLiveData()
@@ -154,11 +155,31 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchDailyPlan() = scope.launch {
+    fun fetchDailyPlans() = scope.launch {
+        dailyPlansResponse.postValue(NetworkResult.Loading())
+        if (isInternetAvailable(getApplication())) {
+            try {
+                val response = financeRepository.remote.fetchDailyPlans()
+
+                if (response.isSuccessful) {
+                    dailyPlansResponse.postValue(NetworkResult.Success(response.body()!!.data))
+                } else {
+                    dailyPlansResponse.postValue(handleError(response))
+                }
+            } catch (e: Exception) {
+                dailyPlansResponse.postValue(NetworkResult.Error(e.message))
+            }
+
+        } else {
+            dailyPlansResponse.postValue(internetIsNotConnected())
+        }
+    }
+
+    fun fetchDailyPlan(dailyPlanId: Long) = scope.launch {
         dailyPlanResponse.postValue(NetworkResult.Loading())
         if (isInternetAvailable(getApplication())) {
             try {
-                val response = financeRepository.remote.fetchDailyPlan()
+                val response = financeRepository.remote.fetchDailyPlan(dailyPlanId)
 
                 if (response.isSuccessful) {
                     dailyPlanResponse.postValue(NetworkResult.Success(response.body()!!.data))
@@ -515,7 +536,7 @@ class FinanceViewModel @Inject constructor(
 
     fun getStaffUsername() = scope.launch {
         dataStoreRepository.salaryFlow.collect { value ->
-            staffUsername.postValue(value.username!!)
+            staffUsername.postValue(value?.username!!)
         }
     }
 

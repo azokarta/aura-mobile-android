@@ -31,6 +31,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
     private var selectedHour: Int? = null
     private var selectedMinute: Int? = null
     private var countryCode: CountryCode = CountryCode.KZ
+    private lateinit var permissions: Permissions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,8 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
             WindowManager.LayoutParams.FLAG_SECURE
         )
 
+        permissions = Permissions(this, this)
+
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
@@ -71,7 +74,7 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
 
         if (validation()) {
-            if (isLocationServiceEnabled()) {
+            if (isLocationServicesEnabled(permissions)) {
                 progressDialog.showLoading()
                 SmartLocation.with(this).location().oneFix()
                     .start {
@@ -85,8 +88,6 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
                         )
                         mFinanceViewModel.assignIncomingCall(assign, contractId)
                     }
-            } else {
-                showException(getString(R.string.enable_location), this)
             }
         }
     }
@@ -109,9 +110,6 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
 
         return success
     }
-
-    private fun isLocationServiceEnabled(): Boolean =
-        SmartLocation.with(this).location().state().locationServicesEnabled()
 
     private fun removeCountryCodeFromPhone(phone: String): String {
         if (countryCode == CountryCode.KZ) {

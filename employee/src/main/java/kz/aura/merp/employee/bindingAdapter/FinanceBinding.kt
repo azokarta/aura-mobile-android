@@ -20,12 +20,12 @@ class FinanceBinding {
             }
         }
 
-        @BindingAdapter("android:sendContractIdToDailyPlan")
+        @BindingAdapter("android:sendDailyPlanIdToDailyPlan")
         @JvmStatic
-        fun sendContractIdToDailyPlan(view: View, contractId: Long) {
+        fun sendDailyPlanIdToDailyPlan(view: View, dailyPlanId: Long) {
             view.setOnClickListener {
                 val intent = Intent(view.context, DailyPlanActivity::class.java)
-                intent.putExtra("contractId", contractId)
+                intent.putExtra("dailyPlanId", dailyPlanId)
                 view.context.startActivity(intent)
             }
         }

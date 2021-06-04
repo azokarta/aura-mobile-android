@@ -20,6 +20,7 @@ import kz.aura.merp.employee.adapter.StepsAdapter
 import kz.aura.merp.employee.databinding.ActivityDailyPlanBinding
 import kz.aura.merp.employee.model.BusinessProcessStatus
 import kz.aura.merp.employee.model.ChangeBusinessProcess
+import kz.aura.merp.employee.model.DailyPlan
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.OnSelectPhoneNumber
@@ -31,17 +32,18 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
 
     private lateinit var binding: ActivityDailyPlanBinding
 
-    private var contractId: Long? = null
+    private var dailyPlanId: Long? = null
     private val stepsAdapter: StepsAdapter by lazy { StepsAdapter(this) }
     private val mFinanceViewModel: FinanceViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
     private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
-    private var plan: Plan? = null
+    private var plan: DailyPlan? = null
+    private lateinit var permissions: Permissions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        contractId = intent.getLongExtra("contractId", 0L)
+        dailyPlanId = intent.getLongExtra("dailyPlanId", 0L)
         binding = ActivityDailyPlanBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         binding.sharedViewModel = sharedViewModel
@@ -58,6 +60,8 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
+
+        permissions = Permissions(this, this)
 
         binding.swipeRefresh.setOnRefreshListener(this)
         binding.createScheduleCall.setOnClickListener(::openCreateScheduledCallScreen)
@@ -87,7 +91,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         plan?.let {
             val intent = Intent(this, ChangeResultActivity::class.java)
             intent.putExtra("contractId", it.contractId)
-            intent.putExtra("clientPhoneNumbers", it.customerPhoneNumbers.toTypedArray())
+            intent.putExtra("clientPhoneNumbers", it.customerPhoneNumbers?.toTypedArray())
             intent.putExtra("businessProcessId", it.planBusinessProcessId)
             startActivityForResult(intent, changeResultRequestCode)
         }
@@ -100,7 +104,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     }
 
     private fun callRequests() {
-        contractId?.let { mFinanceViewModel.fetchPlan(it) }
+        dailyPlanId?.let { mFinanceViewModel.fetchDailyPlan(it) }
         mFinanceViewModel.fetchBusinessProcessStatuses()
     }
 
@@ -120,7 +124,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    contractId?.let { mFinanceViewModel.fetchPlan(it) }
+                    dailyPlanId?.let { mFinanceViewModel.fetchDailyPlan(it) }
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
@@ -130,7 +134,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 }
             }
         })
-        mFinanceViewModel.planResponse.observe(this, { res ->
+        mFinanceViewModel.dailyPlanResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
@@ -183,20 +187,16 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     }
 
     private fun getCurrentLocation(callback: (latitude: Double, longitude: Double) -> Unit) {
-        if (isLocationServiceEnabled()) {
+        if (isLocationServicesEnabled(permissions)) {
             progressDialog.showLoading()
             SmartLocation.with(this).location().oneFix()
                 .start {
                     callback.invoke(it.latitude, it.longitude)
                 }
         } else {
-            showException(getString(R.string.enable_location), this)
             stepsAdapter.setStep(plan!!.planBusinessProcessId)
         }
     }
-
-    private fun isLocationServiceEnabled(): Boolean =
-        SmartLocation.with(this).location().state().locationServicesEnabled()
 
     override fun onSupportNavigateUp(): Boolean {
         finish()
@@ -218,7 +218,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 }
                 changeResultRequestCode -> {
                     showSnackbar(binding.changeResult)
-                    contractId?.let { mFinanceViewModel.fetchPlan(it) }
+                    dailyPlanId?.let { mFinanceViewModel.fetchDailyPlan(it) }
                 }
                 createScheduledCallRequestCode -> {
                     showSnackbar(binding.createScheduleCall)

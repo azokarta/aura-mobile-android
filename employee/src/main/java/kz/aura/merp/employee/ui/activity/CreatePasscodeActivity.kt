@@ -4,85 +4,52 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.databinding.ActivityVerifyPasscodeBinding
+import kz.aura.merp.employee.databinding.ActivityCreatePasscodeBinding
 import kz.aura.merp.employee.model.Salary
-import kz.aura.merp.employee.util.openActivityByPosition
-import kz.aura.merp.employee.util.definePosition
-import kz.aura.merp.employee.util.vibrate
+import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.AuthViewModel
 import kz.aura.merp.employee.viewmodel.PasscodeViewModel
 
 @AndroidEntryPoint
-class VerifyPasscodeActivity : AppCompatActivity() {
+class CreatePasscodeActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityVerifyPasscodeBinding
+    private lateinit var binding: ActivityCreatePasscodeBinding
 
     private val authViewModel: AuthViewModel by viewModels()
     private val passcodeViewModel: PasscodeViewModel by viewModels()
     private val code = arrayListOf<Int>()
     private var salary: Salary? = null
+    private val newCode = arrayListOf<Int>()
     private var savedPasscode: String? = null
-
-//    private lateinit var biometricPrompt: androidx.biometric.BiometricPrompt
-//    private lateinit var promptInfo: androidx.biometric.BiometricPrompt.PromptInfo
-//    private lateinit var biometricManager: androidx.biometric.BiometricManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityVerifyPasscodeBinding.inflate(layoutInflater)
+        binding = ActivityCreatePasscodeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = getString(R.string.create_passcode)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Turn off screenshot
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         setListenersOfNumbers()
-
-//        biometricManager = androidx.biometric.BiometricManager.from(this)
-//        val executor = ContextCompat.getMainExecutor(this)
-
-
-//        biometricPrompt = androidx.biometric.BiometricPrompt(this, executor,
-//            object : androidx.biometric.BiometricPrompt.AuthenticationCallback() {
-//                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-//                    super.onAuthenticationError(errorCode, errString)
-//                    notifyUser("$errString")
-//                }
-//
-//                override fun onAuthenticationSucceeded(result: androidx.biometric.BiometricPrompt.AuthenticationResult) {
-//                    super.onAuthenticationSucceeded(result)
-//                    goToHome()
-//                }
-//
-//                override fun onAuthenticationFailed() {
-//                    super.onAuthenticationFailed()
-//                    notifyUser("Auth Failed")
-//                }
-//            })
-//        promptInfo = androidx.biometric.BiometricPrompt.PromptInfo.Builder()
-//            .setTitle("Title")
-//            .setSubtitle("Sub Title")
-//            .setDescription("Description")
-//            .setNegativeButtonText("use email login")
-//            .build()
-//
-//            binding.fingerprint.setOnClickListener() {
-//            biometricPrompt.authenticate(promptInfo)
-//        }
 
         authViewModel.salary.observe(this, { salary ->
             this.salary = salary
         })
         passcodeViewModel.passcode.observe(this, { passcode ->
             savedPasscode = passcode
+            val staffPosition = definePosition(salary)
+            openActivityByPosition(this, staffPosition!!)
         })
 
         authViewModel.getSalary()
-        passcodeViewModel.getPasscode()
     }
 
     private fun setListenersOfNumbers() {
@@ -101,18 +68,32 @@ class VerifyPasscodeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        if (savedPasscode.isNullOrBlank()) {
+            removeToken(this)
+            authViewModel.clearSettings()
+        }
+        super.onDestroy()
+    }
+
     private fun addNumber(num: Int) {
         if (code.size < 4) {
             assignCodeText(num)
             code.add(num)
 
             if (code.size == 4) {
-                if (code.joinToString() == savedPasscode) {
-                    val staffPosition = definePosition(salary)
-                    openActivityByPosition(this, staffPosition!!)
+                if (newCode.isEmpty()) {
+                    binding.tryAgain.isVisible = true
+                    newCode.addAll(code)
+                    clearCode()
                 } else {
-                    vibrate(this, 500)
-                    showBackgroundError()
+                    if (newCode == code) {
+                        passcodeViewModel.savePasscode(newCode.joinToString())
+                        passcodeViewModel.getPasscode()
+                    } else {
+                        vibrate(this, 500)
+                        showBackgroundError()
+                    }
                 }
             }
         }
@@ -134,6 +115,14 @@ class VerifyPasscodeActivity : AppCompatActivity() {
         binding.codeContainer4.setBackgroundResource(R.drawable.passcode_error_background)
     }
 
+    private fun clearCode() {
+        code.clear()
+        binding.code1.text = ""
+        binding.code2.text = ""
+        binding.code3.text = ""
+        binding.code4.text = ""
+    }
+
     private fun removeLastNumber() {
         if (code.size != 0) {
             when (code.size) {
@@ -146,4 +135,8 @@ class VerifyPasscodeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
+    }
 }

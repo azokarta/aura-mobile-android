@@ -10,7 +10,7 @@
         android:label="@string/monthly_plan" />
     <fragment
         android:id="@+id/nav_daily_plan"
-        android:name="kz.aura.merp.employee.ui.fragment.finance.DailyPlanFragment"
+        android:name="kz.aura.merp.employee.ui.fragment.finance.DailyPlansFragment"
         android:label="@string/daily_plan" />
     <fragment
         android:id="@+id/nav_contributions"

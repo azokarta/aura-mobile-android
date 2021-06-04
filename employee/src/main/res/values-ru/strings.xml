@@ -157,4 +157,6 @@
     <string name="schedule_time">Назначить время</string>
     <string name="schedule_call">Назначить звонок</string>
     <string name="verifying_passcode">Проверка код доступа</string>
+    <string name="create_passcode">Создать код доступа</string>
+    <string name="try_again">Повторите еще раз</string>
 </resources>

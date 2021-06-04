@@ -8,12 +8,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.DailyPlanRowBinding
+import kz.aura.merp.employee.model.DailyPlan
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.util.MobDiffUtil
 
 class DailyPlanAdapter : RecyclerView.Adapter<DailyPlanAdapter.DailyPlanViewHolder>() {
 
-    var dataList = mutableListOf<Plan>()
+    var dataList = mutableListOf<DailyPlan>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyPlanViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -22,11 +23,11 @@ class DailyPlanAdapter : RecyclerView.Adapter<DailyPlanAdapter.DailyPlanViewHold
     }
 
     override fun onBindViewHolder(holder: DailyPlanViewHolder, position: Int) {
-        val plan: Plan = dataList[position]
+        val plan: DailyPlan = dataList[position]
         holder.bind(plan)
     }
 
-    fun setData(plans: List<Plan>) {
+    fun setData(plans: List<DailyPlan>) {
         val clientDiffUtil = MobDiffUtil(dataList, plans)
         val clientDiffResult = DiffUtil.calculateDiff(clientDiffUtil)
         this.dataList.clear()
@@ -43,7 +44,7 @@ class DailyPlanAdapter : RecyclerView.Adapter<DailyPlanAdapter.DailyPlanViewHold
 
     class DailyPlanViewHolder(private val binding: DailyPlanRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(plan: Plan) {
+        fun bind(plan: DailyPlan) {
             val textColor: Int = when {
                 plan.paymentOverDueDays!! > 0 -> ContextCompat.getColor(binding.root.context, R.color.red)
                 plan.paymentOverDueDays < 0 -> ContextCompat.getColor(binding.root.context, R.color.green)
@@ -62,7 +63,7 @@ class DailyPlanAdapter : RecyclerView.Adapter<DailyPlanAdapter.DailyPlanViewHold
             displayPaymentMethodIcons(plan)
         }
 
-        private fun displayPaymentMethodIcons(plan: Plan) {
+        private fun displayPaymentMethodIcons(plan: DailyPlan) {
             when (plan.planResultId) {
                 1L -> {
                     binding.resultImg.setImageResource(R.drawable.ic_baseline_help_outline_24)

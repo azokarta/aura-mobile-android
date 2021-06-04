@@ -9,7 +9,7 @@
 
         <variable
             name="plan"
-            type="kz.aura.merp.employee.model.Plan" />
+            type="kz.aura.merp.employee.model.DailyPlan" />
 
         <variable
             name="sharedViewModel"
@@ -417,7 +417,7 @@
                         android:id="@+id/textView18"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="24dp"
                         android:text="@{@string/result + `:`, default=`Result:`}"
                         android:textColor="@color/black"
                         android:textSize="18sp"

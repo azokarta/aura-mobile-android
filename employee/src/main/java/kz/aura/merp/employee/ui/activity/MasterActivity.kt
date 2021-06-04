@@ -64,7 +64,7 @@ class MasterActivity : AppCompatActivity() {
 
         setupFilterResources()
 
-        Permissions(this, this).enableLocation()
+//        Permissions(this, this).enableLocation()
 
         // Setup RecyclerView
         binding.recyclerView.layoutManager = LinearLayoutManager(applicationContext)

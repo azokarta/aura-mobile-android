@@ -38,7 +38,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
     private val plansAdapter: PlanAdapter by lazy { PlanAdapter(this) }
     private var _binding: FragmentMonthlyPlanBinding? = null
     private val binding get() = _binding!!
-    private var updateTime: DateTime? = null
     private lateinit var progressDialog: ProgressDialog
     private var clickedContractId: Long? = null
 
@@ -75,8 +74,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
         observeLiveData()
 
         callRequests()
-
-        setMinuteForUpdate()
 
         return root
     }
@@ -221,10 +218,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
             .setView(R.layout.explanation_about_colors)
             .setTitle(resources.getString(R.string.explanation_about_colors))
             .show()
-    }
-
-    private fun setMinuteForUpdate() {
-        updateTime = DateTime.now().plusMinutes(3)
     }
 
     private fun showSnackbar(view: View) = Snackbar.make(

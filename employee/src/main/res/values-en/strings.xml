@@ -157,4 +157,6 @@
     <string name="schedule_time">Schedule a time</string>
     <string name="schedule_call">Schedule a call</string>
     <string name="verifying_passcode">Verifying the passcode</string>
+    <string name="create_passcode">Create a passcode</string>
+    <string name="try_again">Try again</string>
 </resources>

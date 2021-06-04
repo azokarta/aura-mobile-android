@@ -12,7 +12,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.DailyPlanAdapter
-import kz.aura.merp.employee.databinding.FragmentDailyPlanBinding
+import kz.aura.merp.employee.databinding.FragmentDailyPlansBinding
+import kz.aura.merp.employee.model.DailyPlan
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.model.PlanFilter
 import kz.aura.merp.employee.ui.dialog.DailyPlanFilterDialogFragment
@@ -27,9 +28,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class DailyPlanFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
-    private var _binding: FragmentDailyPlanBinding? = null
+    private var _binding: FragmentDailyPlansBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -48,7 +49,7 @@ class DailyPlanFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
 
-        _binding = FragmentDailyPlanBinding.inflate(inflater, container, false)
+        _binding = FragmentDailyPlansBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.sharedViewModel = sharedViewModel
         val root: View = binding.root
@@ -73,12 +74,12 @@ class DailyPlanFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun callRequests() {
-        financeViewModel.fetchDailyPlan()
+        financeViewModel.fetchDailyPlans()
         financeViewModel.fetchBusinessProcessStatuses()
     }
 
     private fun setupObservers() {
-        financeViewModel.dailyPlanResponse.observe(viewLifecycleOwner, { res ->
+        financeViewModel.dailyPlansResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
@@ -89,7 +90,7 @@ class DailyPlanFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
         })
         filterViewModel.filterParams.observe(viewLifecycleOwner, { params ->
-            val plans = financeViewModel.dailyPlanResponse.value?.data
+            val plans = financeViewModel.dailyPlansResponse.value?.data
             if (!plans.isNullOrEmpty()) {
                 filterPlans(params)
             } else {
@@ -102,7 +103,7 @@ class DailyPlanFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         filterParams: PlanFilter = filterViewModel.getDefault()
     ) {
         changeTextsFilter(filterParams)
-        var filteredPlans = mutableListOf<Plan>().apply { addAll(financeViewModel.dailyPlanResponse.value!!.data!!) }
+        var filteredPlans = mutableListOf<DailyPlan>().apply { addAll(financeViewModel.dailyPlansResponse.value!!.data!!) }
 
         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
 
@@ -112,7 +113,7 @@ class DailyPlanFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 filteredPlans = filteredPlans.filter { it.contractNumber.toString().indexOf(filterParams.query) >= 0 }.toMutableList()
             }
             1 -> {
-                val conditions = ArrayList<(Plan) -> Boolean>()
+                val conditions = ArrayList<(DailyPlan) -> Boolean>()
                 filterParams.query.toLowerCase(Locale.ROOT).split(" ").map {
                     conditions.add { plan ->
                         (plan.customerLastname + " " + plan.customerFirstname + " " + plan.customerMiddlename).toLowerCase(

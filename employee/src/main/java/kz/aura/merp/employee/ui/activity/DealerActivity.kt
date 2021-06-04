@@ -54,7 +54,7 @@ class DealerActivity : AppCompatActivity() {
         supportActionBar?.title = getString(R.string.dealer)
 //        supportActionBar?.subtitle = getStaff(this)?.username
 
-        Permissions(this, this).enableLocation()
+//        Permissions(this, this).enableLocation()
 
         // Get dealer id
 //        dealerId = getStaffId(this)

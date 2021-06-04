@@ -28,7 +28,12 @@ interface FinanceApi {
 
     // Daily plan
     @GET("/daily_plan")
-    suspend fun fetchDailyPlan(): Response<ResponseHelper<List<Plan>>>
+    suspend fun fetchDailyPlans(): Response<ResponseHelper<List<DailyPlan>>>
+
+    @GET("/daily_plan/{daily_plan_id}")
+    suspend fun fetchDailyPlan(
+        @Path("daily_plan_id") dailyPlanId: Long,
+    ): Response<ResponseHelper<DailyPlan>>
 
     @POST("/daily_plan/{contractId}/change_business_process_status")
     suspend fun updateBusinessProcessStatus(

@@ -7,13 +7,13 @@
 
         <variable
             name="plan"
-            type="kz.aura.merp.employee.model.Plan" />
+            type="kz.aura.merp.employee.model.DailyPlan" />
 
     </data>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:sendContractIdToDailyPlan="@{plan.contractId}">
+        android:sendDailyPlanIdToDailyPlan="@{plan.dailyPlanId}">
         <TextView
             android:id="@+id/fullName"
             android:layout_width="wrap_content"

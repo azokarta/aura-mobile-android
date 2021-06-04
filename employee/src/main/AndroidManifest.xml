@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".Application"
@@ -25,11 +25,14 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-
-        <!-- Finance -->
-        <activity android:name=".ui.activity.FinanceActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.CreateScheduledCallActivity" android:parentActivityName=".ui.activity.FinanceActivity" android:screenOrientation="portrait">
+        </service> <!-- Finance -->
+        <activity
+            android:name=".ui.activity.FinanceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.CreateScheduledCallActivity"
+            android:parentActivityName=".ui.activity.FinanceActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.FinanceActivity" />
@@ -37,20 +40,20 @@
         <activity
             android:name=".ui.activity.ChangeResultActivity"
             android:parentActivityName=".ui.activity.DailyPlanActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.DailyPlanActivity" />
         </activity>
         <activity
             android:name=".ui.activity.IncomingActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name=".ui.activity.OutgoingActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name=".ui.activity.DailyPlanActivity"
             android:parentActivityName=".ui.activity.FinanceActivity"
@@ -66,22 +69,22 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.FinanceActivity" />
-        </activity>
-        <!-- !!! -->
-
-
+        </activity> <!-- !!! -->
         <!-- Service -->
         <activity android:name=".ui.activity.ServiceApplicationActivity" />
-        <activity android:name=".ui.activity.MasterActivity" />
-        <!-- !!! -->
-
-
+        <activity android:name=".ui.activity.MasterActivity" /> <!-- !!! -->
         <!-- CRM -->
         <activity android:name=".ui.activity.DealerActivity" />
-        <activity android:name=".ui.activity.DemoActivity" />
-        <!-- !!! -->
+        <activity android:name=".ui.activity.DemoActivity" /> <!-- !!! -->
 
 
+
+        <activity android:name=".ui.activity.CreatePasscodeActivity"
+            android:screenOrientation="portrait" android:parentActivityName=".ui.activity.AuthorizationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.AuthorizationActivity" />
+        </activity>
         <activity android:name=".ui.activity.MapActivity" />
         <activity
             android:name=".ui.activity.SettingsActivity"
@@ -89,11 +92,13 @@
         <activity
             android:name=".ui.activity.AuthorizationActivity"
             android:configChanges="locale"
-            android:windowSoftInputMode="adjustResize|stateVisible"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.VerifyPasscodeActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.SplashActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
+        <activity
+            android:name=".ui.activity.VerifyPasscodeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

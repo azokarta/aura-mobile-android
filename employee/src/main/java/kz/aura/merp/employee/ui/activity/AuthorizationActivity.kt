@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.viewmodel.AuthViewModel
 import kz.aura.merp.employee.databinding.ActivityAuthorizationBinding
+import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.util.*
 
 @AndroidEntryPoint
@@ -75,10 +76,9 @@ class AuthorizationActivity : AppCompatActivity() {
                     // Get info about user
                     mAuthViewModel.getUserInfo()
                 }
-                is NetworkResult.Loading -> {
-                    progressDialog.showLoading()
-                }
+                is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
+                    println("MESSAGE: ${res.message}")
                     progressDialog.hideLoading()
                     showException(res.message, this)
                 }
@@ -88,21 +88,23 @@ class AuthorizationActivity : AppCompatActivity() {
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    if (definePosition(res.data!!) == null) {
-                        showException(getString(R.string.wrong_position), this)
+
+                    if (!res.data?.data.isNullOrEmpty()) {
+                        val salary: Salary? = defineCorrectSalary(res.data?.data)
+                        val position: StaffPosition? = definePosition(salary)
+
+                        if (position == null || salary == null) {
+                            showException(getString(R.string.wrong_position), this)
+                        } else {
+                            mAuthViewModel.saveSalary(salary)
+                            val intent = Intent(this, CreatePasscodeActivity::class.java)
+                            startActivity(intent)
+                        }
                     } else {
-                        mAuthViewModel.saveSalary(defineCorrectSalary(res.data)!!)
-                        // Open PassCode activity for saving code
-                        val intent = Intent(this, VerifyPasscodeActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        intent.putExtra("passCodeStatus", PasscodeStatus.CREATE)
-                        startActivity(intent)
+                        showException(getString(R.string.user_does_not_exist), this)
                     }
                 }
-                is NetworkResult.Loading -> {
-                    progressDialog.showLoading()
-                }
+                is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
                     showException(res.message, this)
@@ -111,7 +113,7 @@ class AuthorizationActivity : AppCompatActivity() {
         })
     }
 
-    fun signIn(view: View) {
+    private fun signIn(view: View) {
         val phoneNumber = binding.phoneNumberText.rawText
         val password = binding.passwordText.text.toString()
         mAuthViewModel.saveCountryCallingCode(countryCallingCode)

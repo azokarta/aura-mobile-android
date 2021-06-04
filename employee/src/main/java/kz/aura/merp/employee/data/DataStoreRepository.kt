@@ -40,7 +40,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
             preferences[PREFERENCES_TOKEN] ?: ""
         }
 
-    val salaryFlow: Flow<Salary> = dataStore.data
+    val salaryFlow: Flow<Salary?> = dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -51,7 +51,9 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         .map { preferences ->
             val positionId = preferences[PREFERENCES_POSITION_ID] ?: 0
             val username = preferences[PREFERENCES_USERNAME] ?: ""
-            Salary(positionId = positionId, username = username)
+            if (positionId != 0L && username.isNotBlank()) {
+                Salary(positionId = positionId, username = username)
+            } else null
         }
     val passCodeFlow: Flow<String> = dataStore.data
         .map { preferences ->
