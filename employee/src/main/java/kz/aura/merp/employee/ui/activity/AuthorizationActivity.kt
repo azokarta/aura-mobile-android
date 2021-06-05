@@ -78,9 +78,12 @@ class AuthorizationActivity : AppCompatActivity() {
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
-                    println("MESSAGE: ${res.message}")
                     progressDialog.hideLoading()
-                    showException(res.message, this)
+                    if (res.status == ErrorStatus.UNAUTHORIZED) {
+                        showException(getString(R.string.wrong_login_or_password), this)
+                    } else {
+                        showException(res.message, this)
+                    }
                 }
             }
         })
@@ -106,6 +109,7 @@ class AuthorizationActivity : AppCompatActivity() {
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
+                    println("MESSAGE: ${res.message}")
                     progressDialog.hideLoading()
                     showException(res.message, this)
                 }

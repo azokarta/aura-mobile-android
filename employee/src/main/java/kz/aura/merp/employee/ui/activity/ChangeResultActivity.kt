@@ -116,7 +116,6 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
 
         binding.save.setOnClickListener {
             hideKeyboard(this)
-            println("BusinessProcessId: $businessProcessId, PAYMENT: $paymentMethodId")
             if (paymentMethodId == 1L && businessProcessId != 2L) {
                 showException(getString(R.string.have_not_marked_the_status), this)
             } else {

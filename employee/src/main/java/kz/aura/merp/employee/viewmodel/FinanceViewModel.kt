@@ -548,7 +548,7 @@ class FinanceViewModel @Inject constructor(
     private fun <T> handleError(res: Response<ResponseHelper<T>>): NetworkResult<T> {
         val message = receiveErrorMessage(res.errorBody()!!)
         return when (res.code()) {
-            401 -> NetworkResult.Error(message, ErrorStatus.FORBIDDEN)
+            401 -> NetworkResult.Error(message, ErrorStatus.UNAUTHORIZED)
             400 -> NetworkResult.Error(message, ErrorStatus.BAD_REQUEST)
             404 -> NetworkResult.Error(message, ErrorStatus.NOT_FOUND)
             500 -> NetworkResult.Error(message, ErrorStatus.INTERNAL_SERVER_ERROR)
