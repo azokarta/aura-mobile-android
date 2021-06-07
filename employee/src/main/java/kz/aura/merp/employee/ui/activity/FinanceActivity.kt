@@ -2,10 +2,12 @@ package kz.aura.merp.employee.ui.activity
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -16,11 +18,12 @@ import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityFinanceBinding
+import kz.aura.merp.employee.ui.dialog.SignOutDialogFragment
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 @AndroidEntryPoint
-class FinanceActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class FinanceActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFinanceBinding
     private val mFinanceViewModel: FinanceViewModel by viewModels()
@@ -47,7 +50,9 @@ class FinanceActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
             R.id.nav_calls,
             R.id.nav_scheduled_calls,
             R.id.nav_profile,
-            R.id.nav_settings
+            R.id.nav_messages,
+            R.id.nav_settings,
+            R.id.nav_sign_out
         ), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
@@ -59,13 +64,17 @@ class FinanceActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         )
 
         mFinanceViewModel.salary.observe(this, { salary ->
-            (headerView.findViewById(R.id.username) as TextView).text = salary.username
-            (headerView.findViewById(R.id.phone) as TextView).text = salary.phoneNumber
+            (headerView.findViewById<TextView>(R.id.username)).text = salary.username
+            (headerView.findViewById<TextView>(R.id.phone)).text = salary.phoneNumber
         })
 
         mFinanceViewModel.getSalary()
 
-        navView.setNavigationItemSelectedListener(this)
+        navView.menu.findItem(R.id.nav_sign_out).setOnMenuItemClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            openSignOutDialog()
+            false
+        }
 
 //        Intent(this, BackgroundService::class.java).also { intent ->
 //            intent.putExtra("link", Link.FINANCE)
@@ -73,18 +82,13 @@ class FinanceActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 //        }
     }
 
+    private fun openSignOutDialog() {
+        val dialog = SignOutDialogFragment()
+        dialog.show(supportFragmentManager, "FinanceActivity")
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_sign_out -> {
-                println("SSS")
-            }
-        }
-
-        return true
     }
 }

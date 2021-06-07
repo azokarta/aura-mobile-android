@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/finance_navigation"
     app:startDestination="@id/nav_monthly_plan">
-
     <fragment
         android:id="@+id/nav_monthly_plan"
         android:name="kz.aura.merp.employee.ui.fragment.finance.MonthlyPlanFragment"

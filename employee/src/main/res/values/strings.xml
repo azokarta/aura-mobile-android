@@ -171,10 +171,14 @@
     <string name="try_again">Повторите еще раз</string>
     <string name="profile">Профиль</string>
     <string name="message">Сообщения</string>
+    <string name="account">Аккаунт</string>
 
 
     <!--  ERRORS  -->
     <string name="empty_field">Поле не должно быть пустым</string>
+
+    <!--  WARNINGS  -->
+    <string name="really_want_to_sign_out">Точно хотите выйти ?</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>

@@ -4,6 +4,7 @@ build
 classes/*
 .build/*
 *.js.map
+local.properties
 
 # Compiled source #
 ###################
