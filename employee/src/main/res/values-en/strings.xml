@@ -159,4 +159,9 @@
     <string name="verifying_passcode">Verifying the passcode</string>
     <string name="create_passcode">Create a passcode</string>
     <string name="try_again">Try again</string>
+    <string name="profile">Profile</string>
+    <string name="message">Message</string>
+
+    <!--  ERRORS  -->
+    <string name="empty_field">The field must not be empty</string>
 </resources>

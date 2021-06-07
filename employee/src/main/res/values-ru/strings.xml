@@ -159,4 +159,9 @@
     <string name="verifying_passcode">Проверка код доступа</string>
     <string name="create_passcode">Создать код доступа</string>
     <string name="try_again">Повторите еще раз</string>
+    <string name="profile">Профиль</string>
+    <string name="message">Сообщения</string>
+
+    <!--  ERRORS  -->
+    <string name="empty_field">Поле не должно быть пустым</string>
 </resources>

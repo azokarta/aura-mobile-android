@@ -40,7 +40,7 @@ class FinanceViewModel @Inject constructor(
     val assignCallResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
     val scheduledCallsResponse: MutableLiveData<NetworkResult<List<ScheduledCall>>> = MutableLiveData()
     val callsResponse: MutableLiveData<NetworkResult<List<Call>>> = MutableLiveData()
-    val staffUsername: MutableLiveData<String> = MutableLiveData()
+    val salary: MutableLiveData<Salary> = MutableLiveData()
     val countryCode: MutableLiveData<CountryCode> = MutableLiveData()
     val dailyPlansResponse: MutableLiveData<NetworkResult<List<DailyPlan>>> = MutableLiveData()
     val dailyPlanResponse: MutableLiveData<NetworkResult<DailyPlan>> = MutableLiveData()
@@ -534,9 +534,9 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun getStaffUsername() = scope.launch {
+    fun getSalary() = scope.launch {
         dataStoreRepository.salaryFlow.collect { value ->
-            staffUsername.postValue(value?.username!!)
+            salary.postValue(value)
         }
     }
 

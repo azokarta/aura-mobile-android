@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_COUNTRY_CALLING_CODE
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_PASS_CODE
+import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_PHONE
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_POSITION_ID
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_TOKEN
 import kz.aura.merp.employee.data.DataStoreRepository.PreferenceKeys.PREFERENCES_USERNAME
@@ -27,6 +28,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         val PREFERENCES_TOKEN = stringPreferencesKey("token")
         val PREFERENCES_POSITION_ID = longPreferencesKey("positionId")
         val PREFERENCES_USERNAME = stringPreferencesKey("username")
+        val PREFERENCES_PHONE = stringPreferencesKey("phone")
         val PREFERENCES_PASS_CODE = stringPreferencesKey("passcode")
         val PREFERENCES_COUNTRY_CALLING_CODE = stringPreferencesKey("countryCallingCode")
     }
@@ -51,8 +53,9 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         .map { preferences ->
             val positionId = preferences[PREFERENCES_POSITION_ID] ?: 0
             val username = preferences[PREFERENCES_USERNAME] ?: ""
+            val phone = preferences[PREFERENCES_PHONE] ?: ""
             if (positionId != 0L && username.isNotBlank()) {
-                Salary(positionId = positionId, username = username)
+                Salary(positionId = positionId, username = username, phoneNumber = phone)
             } else null
         }
     val passCodeFlow: Flow<String> = dataStore.data
@@ -80,7 +83,8 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
     suspend fun saveSalary(salary: Salary) {
         dataStore.edit { settings ->
             settings[PREFERENCES_POSITION_ID] = salary.positionId!!
-            settings[PREFERENCES_USERNAME] = salary.username!!
+            settings[PREFERENCES_USERNAME] = salary.username ?: ""
+            settings[PREFERENCES_PHONE] = salary.phoneNumber ?: ""
         }
     }
 

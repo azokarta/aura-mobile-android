@@ -118,6 +118,7 @@ class AuthorizationActivity : AppCompatActivity() {
     }
 
     private fun signIn(view: View) {
+        hideKeyboard(this)
         val phoneNumber = binding.phoneNumberText.rawText
         val password = binding.passwordText.text.toString()
         mAuthViewModel.saveCountryCallingCode(countryCallingCode)

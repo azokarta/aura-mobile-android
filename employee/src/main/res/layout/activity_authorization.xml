@@ -17,8 +17,9 @@
             android:id="@+id/sign_in_btn"
             android:layout_width="0dp"
             android:layout_height="55dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/sign_in"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/passwordField"
             app:layout_constraintStart_toStartOf="@+id/passwordField"
             app:layout_constraintTop_toBottomOf="@+id/passwordField" />
@@ -26,14 +27,19 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/countryCallingCodeField"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="60dp"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:hint="@string/country_calling_code"
+            app:layout_constraintBottom_toTopOf="@+id/phoneNumberField"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+            app:layout_constraintVertical_chainStyle="packed">
 
             <AutoCompleteTextView
                 android:id="@+id/countryCallingCodeText"
@@ -46,14 +52,12 @@
             android:id="@+id/phoneNumberField"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
             android:hint="@string/phone_number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/countryCallingCodeField"
-            app:layout_constraintTop_toTopOf="@+id/countryCallingCodeField">
+            app:layout_constraintBottom_toTopOf="@+id/passwordField"
+            app:layout_constraintEnd_toEndOf="@+id/countryCallingCodeField"
+            app:layout_constraintStart_toStartOf="@+id/countryCallingCodeField"
+            app:layout_constraintTop_toBottomOf="@+id/countryCallingCodeField">
 
             <br.com.sapereaude.maskedEditText.MaskedEditText
                 android:id="@+id/phoneNumberText"
@@ -64,7 +68,7 @@
                 app:keep_hint="true"
                 app:layout_constraintTop_toBottomOf="@+id/descriptionField"
                 mask:allowed_chars="1234567890"
-                mask:mask="+7(###)###-##-##"/>
+                mask:mask="+7(###)###-##-##" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,10 +76,11 @@
             android:id="@+id/passwordField"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:hint="@string/password"
+            app:layout_constraintBottom_toTopOf="@+id/sign_in_btn"
             app:layout_constraintEnd_toEndOf="@+id/phoneNumberField"
-            app:layout_constraintStart_toStartOf="@+id/countryCallingCodeField"
+            app:layout_constraintStart_toStartOf="@+id/phoneNumberField"
             app:layout_constraintTop_toBottomOf="@+id/phoneNumberField">
 
             <com.google.android.material.textfield.TextInputEditText

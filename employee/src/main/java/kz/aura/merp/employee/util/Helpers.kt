@@ -321,20 +321,3 @@ fun showException(message: String? = null, context: Context, title: String? = nu
         builder.dismiss()
     }
 }
-
-fun getReportsListFinance() : String {
-    return "<!doctype html>\n" +
-            "<html lang=\"en\">\n" +
-            "  <head>\n" +
-            "    <!-- Required meta tags -->\n" +
-            "    <meta charset=\"utf-8\">\n" +
-            "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
-            "\n" +
-            "    <title>Hello, world!</title>\n" +
-            "  </head>\n" +
-            "  <body>\n" +
-            "    <h1>Hello, world!</h1>\n" +
-            """   for(i in 1..20) 'a' """ +
-            "  </body>\n" +
-            "</html>"
-}

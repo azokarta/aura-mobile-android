@@ -1,23 +1,16 @@
 package kz.aura.merp.employee.ui.fragment.finance
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
-import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.CallsAdapter
 import kz.aura.merp.employee.databinding.FragmentCallsBinding
-import kz.aura.merp.employee.ui.activity.SettingsActivity
 import kz.aura.merp.employee.util.LoadingType
 import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.util.declareErrorByStatus
-import kz.aura.merp.employee.util.verifyAvailableNetwork
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 

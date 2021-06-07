@@ -1,8 +1,8 @@
 package kz.aura.merp.employee.ui.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -20,7 +20,7 @@ import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 @AndroidEntryPoint
-class FinanceActivity : AppCompatActivity() {
+class FinanceActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityFinanceBinding
     private val mFinanceViewModel: FinanceViewModel by viewModels()
@@ -37,6 +37,7 @@ class FinanceActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
+        val headerView = navView.getHeaderView(0)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(setOf(
@@ -44,7 +45,9 @@ class FinanceActivity : AppCompatActivity() {
             R.id.nav_daily_plan,
             R.id.nav_contributions,
             R.id.nav_calls,
-            R.id.nav_scheduled_calls
+            R.id.nav_scheduled_calls,
+            R.id.nav_profile,
+            R.id.nav_settings
         ), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
@@ -55,11 +58,14 @@ class FinanceActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE
         )
 
-        mFinanceViewModel.staffUsername.observe(this, {
-
+        mFinanceViewModel.salary.observe(this, { salary ->
+            (headerView.findViewById(R.id.username) as TextView).text = salary.username
+            (headerView.findViewById(R.id.phone) as TextView).text = salary.phoneNumber
         })
 
-        mFinanceViewModel.getStaffUsername()
+        mFinanceViewModel.getSalary()
+
+        navView.setNavigationItemSelectedListener(this)
 
 //        Intent(this, BackgroundService::class.java).also { intent ->
 //            intent.putExtra("link", Link.FINANCE)
@@ -67,26 +73,18 @@ class FinanceActivity : AppCompatActivity() {
 //        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val menuInflater = menuInflater
-        menuInflater.inflate(R.menu.menu, menu)
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_settings -> {
-                val intent = Intent(applicationContext, SettingsActivity::class.java)
-                startActivity(intent)
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_sign_out -> {
+                println("SSS")
+            }
+        }
+
+        return true
     }
 }

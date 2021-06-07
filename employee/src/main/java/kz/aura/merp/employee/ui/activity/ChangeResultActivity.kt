@@ -228,82 +228,74 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
         when (resultId) {
             2L -> {
                 if (paymentMethodId == null) {
-                    binding.paymentMethodField.isErrorEnabled = true
-                    binding.paymentMethodField.error = getString(R.string.error)
+                    fieldErrorEnabled(binding.paymentMethodField, true)
                     success = false
-                } else binding.paymentMethodField.isErrorEnabled = false
+                } else fieldErrorEnabled(binding.paymentMethodField, false)
                 when (paymentMethodId) {
                     3L, 2L -> {
                         if (bankId == null) {
-                            binding.bankField.isErrorEnabled = true
-                            binding.bankField.error = getString(R.string.error)
+                            fieldErrorEnabled(binding.bankField, true)
                             success = false
-                        } else binding.bankField.isErrorEnabled = false
+                        } else fieldErrorEnabled(binding.bankField, false)
 
                         if (amount.isBlank()) {
-                            binding.amountField.isErrorEnabled = true
-                            binding.amountField.error = getString(R.string.error)
+                            fieldErrorEnabled(binding.amountField, true)
                             success = false
-                        } else binding.amountField.isErrorEnabled = false
+                        } else fieldErrorEnabled(binding.amountField, false)
 
                         if (phoneNumber.isBlank()) {
-                            binding.phoneNumberField.isErrorEnabled = true
-                            binding.phoneNumberField.error =
-                                getString(R.string.enter_valid_phone_number)
+                            fieldErrorEnabled(binding.phoneNumberField, true)
                             success = false
-                        } else binding.phoneNumberField.isErrorEnabled = false
+                        } else fieldErrorEnabled(binding.phoneNumberField, false)
                     }
                     1L, 4L -> {
                         if (amount.isBlank()) {
-                            binding.amountField.isErrorEnabled = true
-                            binding.amountField.error = getString(R.string.error)
+                            fieldErrorEnabled(binding.amountField, true)
                             success = false
-                        } else binding.amountField.isErrorEnabled = false
+                        } else fieldErrorEnabled(binding.amountField, false)
 
                         if (phoneNumber.isBlank()) {
-                            binding.phoneNumberField.isErrorEnabled = true
-                            binding.phoneNumberField.error =
-                                getString(R.string.enter_valid_phone_number)
+                            fieldErrorEnabled(binding.phoneNumberField, true)
                             success = false
-                        } else binding.phoneNumberField.isErrorEnabled = false
+                        } else fieldErrorEnabled(binding.phoneNumberField, false)
                     }
                 }
             }
             3L -> {
                 if (selectedHour == null || selectedMinute == null) {
-                    binding.scheduleTimeField.isErrorEnabled = true
-                    binding.scheduleTimeField.error = getString(R.string.error)
+                    fieldErrorEnabled(binding.scheduleTimeField, true)
                     success = false
-                } else binding.scheduleTimeField.isErrorEnabled = false
+                } else fieldErrorEnabled(binding.scheduleTimeField, false)
 
                 if (scheduledDate == null) {
-                    binding.scheduleDateField.isErrorEnabled = true
-                    binding.scheduleDateField.error = getString(R.string.error)
+                    fieldErrorEnabled(binding.scheduleDateField, true)
                     success = false
-                } else binding.scheduleDateField.isErrorEnabled = false
+                } else fieldErrorEnabled(binding.scheduleDateField, false)
 
                 if (phoneNumber.isBlank()) {
-                    binding.phoneNumberField.isErrorEnabled = true
-                    binding.phoneNumberField.error = getString(R.string.enter_valid_phone_number)
+                    fieldErrorEnabled(binding.phoneNumberField, true)
                     success = false
-                } else binding.phoneNumberField.isErrorEnabled = false
+                } else fieldErrorEnabled(binding.phoneNumberField, false)
             }
             else -> {
                 if (reasonDescription.isBlank()) {
-                    binding.reasonDescriptionField.isErrorEnabled = true
-                    binding.reasonDescriptionField.error = getString(R.string.error)
+                    fieldErrorEnabled(binding.reasonDescriptionField, true)
                     success = false
-                } else binding.reasonDescriptionField.isErrorEnabled = false
+                } else fieldErrorEnabled(binding.reasonDescriptionField, false)
             }
         }
 
         if (resultId == null) {
-            binding.resultField.isErrorEnabled = true
-            binding.resultField.error = getString(R.string.error)
+            fieldErrorEnabled(binding.resultField, true)
             success = false
-        } else binding.resultField.isErrorEnabled = false
+        } else fieldErrorEnabled(binding.resultField, false)
 
         return success
+    }
+
+    private fun fieldErrorEnabled(field: TextInputLayout, enabled: Boolean) {
+        field.isErrorEnabled = true
+        field.error = getString(R.string.empty_field)
     }
 
     private fun fetchPaymentMethods() {

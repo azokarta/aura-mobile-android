@@ -169,6 +169,12 @@
     <string name="verifying_passcode">Проверка код доступа</string>
     <string name="create_passcode">Создать код доступа</string>
     <string name="try_again">Повторите еще раз</string>
+    <string name="profile">Профиль</string>
+    <string name="message">Сообщения</string>
+
+
+    <!--  ERRORS  -->
+    <string name="empty_field">Поле не должно быть пустым</string>
 
     <string-array name="language_entries">
         <item>@string/ru</item>
@@ -178,4 +184,6 @@
         <item>ru</item>
         <item>en</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
