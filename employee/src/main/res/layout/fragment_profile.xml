@@ -4,173 +4,180 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="salary"
             type="kz.aura.merp.employee.model.Salary" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.fragment.ProfileFragment">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
-            android:layout_height="250dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            app:cardCornerRadius="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="250dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                app:cardCornerRadius="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/textView61"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@{salary.username, default=`Will Smith`}"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/imageView19"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/textView104"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@{salary.positionName, default=`Android developer`}"
-                    app:layout_constraintStart_toStartOf="@+id/textView61"
-                    app:layout_constraintTop_toBottomOf="@+id/textView61" />
+                    <TextView
+                        android:id="@+id/textView61"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@{salary.username, default=`Will Smith`}"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@+id/imageView19"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/imageView19"
-                    android:layout_width="110dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView110"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:src="@drawable/primary_gradient" />
+                    <TextView
+                        android:id="@+id/textView104"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@{salary.positionName, default=`Android developer`}"
+                        app:layout_constraintStart_toStartOf="@+id/textView61"
+                        app:layout_constraintTop_toBottomOf="@+id/textView61" />
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    app:cardCornerRadius="12dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/imageView19"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView19">
+                    <ImageView
+                        android:id="@+id/imageView19"
+                        android:layout_width="110dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:avatar="@{``}"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView110"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/lightGray">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        app:cardCornerRadius="12dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/imageView19"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView19">
 
-                        <TextView
-                            android:id="@+id/textView105"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:text="@string/company"
-                            app:layout_constraintEnd_toStartOf="@+id/textView108"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/lightGray">
 
-                        <TextView
-                            android:id="@+id/textView107"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="@{salary.companyName, default=`Aura`}"
-                            android:textColor="@color/black"
-                            app:layout_constraintEnd_toEndOf="@+id/textView105"
-                            app:layout_constraintStart_toStartOf="@+id/textView105"
-                            app:layout_constraintTop_toBottomOf="@+id/textView105" />
+                            <TextView
+                                android:id="@+id/textView105"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="@string/company"
+                                app:layout_constraintEnd_toStartOf="@+id/textView108"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
-                            android:id="@+id/textView108"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/department"
-                            app:layout_constraintBottom_toBottomOf="@+id/textView105"
-                            app:layout_constraintEnd_toStartOf="@+id/textView109"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/textView105"
-                            app:layout_constraintTop_toTopOf="@+id/textView105" />
+                            <TextView
+                                android:id="@+id/textView107"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="@{salary.companyName, default=`Aura`}"
+                                android:textColor="@color/black"
+                                app:layout_constraintEnd_toEndOf="@+id/textView105"
+                                app:layout_constraintStart_toStartOf="@+id/textView105"
+                                app:layout_constraintTop_toBottomOf="@+id/textView105" />
 
-                        <TextView
-                            android:id="@+id/textView109"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/branch"
-                            app:layout_constraintBottom_toBottomOf="@+id/textView108"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/textView108"
-                            app:layout_constraintTop_toTopOf="@+id/textView108" />
+                            <TextView
+                                android:id="@+id/textView108"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/department"
+                                app:layout_constraintBottom_toBottomOf="@+id/textView105"
+                                app:layout_constraintEnd_toStartOf="@+id/textView109"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/textView105"
+                                app:layout_constraintTop_toTopOf="@+id/textView105" />
 
-                        <TextView
-                            android:id="@+id/textView112"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="@{salary.departmentName, default=`IT`}"
-                            android:textColor="@color/black"
-                            app:layout_constraintEnd_toEndOf="@+id/textView108"
-                            app:layout_constraintStart_toStartOf="@+id/textView108"
-                            app:layout_constraintTop_toBottomOf="@+id/textView108" />
+                            <TextView
+                                android:id="@+id/textView109"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/branch"
+                                app:layout_constraintBottom_toBottomOf="@+id/textView108"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/textView108"
+                                app:layout_constraintTop_toTopOf="@+id/textView108" />
 
-                        <TextView
-                            android:id="@+id/textView113"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="TextView"
-                            android:textColor="@color/black"
-                            app:layout_constraintEnd_toEndOf="@+id/textView109"
-                            app:layout_constraintStart_toStartOf="@+id/textView109"
-                            app:layout_constraintTop_toBottomOf="@+id/textView109" />
+                            <TextView
+                                android:id="@+id/textView112"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="@{salary.departmentName, default=`IT`}"
+                                android:textColor="@color/black"
+                                app:layout_constraintEnd_toEndOf="@+id/textView108"
+                                app:layout_constraintStart_toStartOf="@+id/textView108"
+                                app:layout_constraintTop_toBottomOf="@+id/textView108" />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.google.android.material.card.MaterialCardView>
+                            <TextView
+                                android:id="@+id/textView113"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="@{salary.branchName, default=`XXX`}"
+                                android:textColor="@color/black"
+                                app:layout_constraintEnd_toEndOf="@+id/textView109"
+                                app:layout_constraintStart_toStartOf="@+id/textView109"
+                                app:layout_constraintTop_toBottomOf="@+id/textView109" />
 
-                <TextView
-                    android:id="@+id/textView106"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@{salary.phoneNumber, default=`+7 (707) 707-70-70`}"
-                    android:textColor="@color/black"
-                    app:layout_constraintStart_toStartOf="@+id/textView104"
-                    app:layout_constraintTop_toBottomOf="@+id/textView104" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/textView110"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@{salary.countryName, default=`Kazakhstan`}"
-                    android:textColor="@color/black"
-                    app:layout_constraintStart_toStartOf="@+id/textView106"
-                    app:layout_constraintTop_toBottomOf="@+id/textView106" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/textView106"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@{salary.phoneNumber, default=`+7 (707) 707-70-70`}"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="@+id/textView104"
+                        app:layout_constraintTop_toBottomOf="@+id/textView104" />
+
+                    <TextView
+                        android:id="@+id/textView110"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@{salary.countryName, default=`Kazakhstan`}"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="@+id/textView106"
+                        app:layout_constraintTop_toBottomOf="@+id/textView106" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

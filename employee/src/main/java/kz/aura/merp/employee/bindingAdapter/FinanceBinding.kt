@@ -2,7 +2,10 @@ package kz.aura.merp.employee.bindingAdapter
 
 import android.content.Intent
 import android.view.View
+import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import com.squareup.picasso.Picasso
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.ui.activity.PlanActivity
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.ui.activity.DailyPlanActivity
@@ -27,6 +30,19 @@ class FinanceBinding {
                 val intent = Intent(view.context, DailyPlanActivity::class.java)
                 intent.putExtra("dailyPlanId", dailyPlanId)
                 view.context.startActivity(intent)
+            }
+        }
+
+        @BindingAdapter("android:avatar")
+        @JvmStatic
+        fun initProfileAvatar(imageView: ImageView, url: String) {
+            val default = "https://cityhope.cc/wp-content/uploads/2020/01/default-avatar.png"
+            if (url.isBlank()) {
+                Picasso.get()
+                    .load(default)
+                    .into(imageView)
+            } else {
+
             }
         }
 
