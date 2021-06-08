@@ -172,7 +172,9 @@
     <string name="profile">Профиль</string>
     <string name="message">Сообщения</string>
     <string name="account">Аккаунт</string>
-
+    <string name="company">Компания</string>
+    <string name="department">Отдел</string>
+    <string name="branch">Филиал</string>
 
     <!--  ERRORS  -->
     <string name="empty_field">Поле не должно быть пустым</string>

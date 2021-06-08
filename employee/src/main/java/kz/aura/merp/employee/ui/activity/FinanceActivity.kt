@@ -2,7 +2,6 @@ package kz.aura.merp.employee.ui.activity
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -51,8 +50,7 @@ class FinanceActivity : AppCompatActivity() {
             R.id.nav_scheduled_calls,
             R.id.nav_profile,
             R.id.nav_messages,
-            R.id.nav_settings,
-            R.id.nav_sign_out
+            R.id.nav_settings
         ), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
@@ -64,8 +62,8 @@ class FinanceActivity : AppCompatActivity() {
         )
 
         mFinanceViewModel.salary.observe(this, { salary ->
-            (headerView.findViewById<TextView>(R.id.username)).text = salary.username
-            (headerView.findViewById<TextView>(R.id.phone)).text = salary.phoneNumber
+            (headerView.findViewById<TextView>(R.id.username)).text = salary?.username
+            (headerView.findViewById<TextView>(R.id.phone)).text = salary?.phoneNumber
         })
 
         mFinanceViewModel.getSalary()

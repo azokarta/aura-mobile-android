@@ -536,6 +536,7 @@ class FinanceViewModel @Inject constructor(
 
     fun getSalary() = scope.launch {
         dataStoreRepository.salaryFlow.collect { value ->
+            println("SALARY")
             salary.postValue(value)
         }
     }

@@ -109,7 +109,6 @@ class AuthorizationActivity : AppCompatActivity() {
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
-                    println("MESSAGE: ${res.message}")
                     progressDialog.hideLoading()
                     showException(res.message, this)
                 }

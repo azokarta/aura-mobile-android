@@ -162,6 +162,9 @@
     <string name="profile">Profile</string>
     <string name="message">Message</string>
     <string name="account">Account</string>
+    <string name="company">Company</string>
+    <string name="department">Department</string>
+    <string name="branch">Branch</string>
 
     <!--  ERRORS  -->
     <string name="empty_field">The field must not be empty</string>
