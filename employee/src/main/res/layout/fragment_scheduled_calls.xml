@@ -25,7 +25,8 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:showDataByResponse="@{sharedViewModel.response}" />
+                android:response="@{sharedViewModel.response}"
+                android:loadingType="@{sharedViewModel.loadingType}" />
 
             <ProgressBar
                 android:id="@+id/progressBar2"

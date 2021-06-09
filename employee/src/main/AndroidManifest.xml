@@ -39,8 +39,8 @@
         </activity>
         <activity
             android:name=".ui.activity.ChangeResultActivity"
-            android:parentActivityName=".ui.activity.DailyPlanActivity"
             android:screenOrientation="portrait"
+            android:parentActivityName=".ui.activity.DailyPlanActivity"
             android:windowSoftInputMode="adjustResize|stateVisible">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

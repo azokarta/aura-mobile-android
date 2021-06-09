@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
-import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.FragmentProfileBinding
+import kz.aura.merp.employee.ui.dialog.UserAvatarActionsDialogFragment
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), UserAvatarActionsDialogFragment.UserAvatarActionsDialogListener {
 
     private var _binding: FragmentProfileBinding? = null
 
@@ -37,6 +37,32 @@ class ProfileFragment : Fragment() {
 
         financeViewModel.getSalary()
 
+        binding.avatar.setOnClickListener {
+            openAvatarActions()
+        }
+
         return root
+    }
+
+    private fun openAvatarActions() {
+        val dialog = UserAvatarActionsDialogFragment()
+        dialog.show(childFragmentManager, "ProfileFragment")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun selectOpenPhoto() {
+        println("OPEN")
+    }
+
+    override fun selectRemovePhoto() {
+        println("REMOVE")
+    }
+
+    override fun selectEditPhoto() {
+        println("EDIT")
     }
 }

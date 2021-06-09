@@ -175,6 +175,9 @@
     <string name="company">Компания</string>
     <string name="department">Отдел</string>
     <string name="branch">Филиал</string>
+    <string name="open_photo">Открыть фотографию</string>
+    <string name="edit_photo">Изменить фотографию</string>
+    <string name="remove_photo">Удалить фотографию</string>
 
     <!--  ERRORS  -->
     <string name="empty_field">Поле не должно быть пустым</string>
@@ -182,6 +185,7 @@
     <!--  WARNINGS  -->
     <string name="really_want_to_sign_out">Точно хотите выйти ?</string>
 
+    <!--  ARRAYS  -->
     <string-array name="language_entries">
         <item>@string/ru</item>
         <item>@string/en</item>
@@ -190,6 +194,9 @@
         <item>ru</item>
         <item>en</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="user_avatar_action_entries">
+        <item>@string/open_photo</item>
+        <item>@string/edit_photo</item>
+        <item>@string/remove_photo</item>
+    </string-array>
 </resources>

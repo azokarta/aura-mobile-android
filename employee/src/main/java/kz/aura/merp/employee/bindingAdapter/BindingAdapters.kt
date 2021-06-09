@@ -1,6 +1,7 @@
 package kz.aura.merp.employee.bindingAdapter
 
 import android.view.View
+import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
@@ -58,14 +59,14 @@ class BindingAdapters {
         // -----------------------------------------------------------
         @JvmStatic
         @BindingAdapter("android:response", "android:loadingType", requireAll = true)
-        fun showLoading(view: View, res: NetworkResult<*>?, loadingType: LoadingType) {
+        fun showLoading(view: ProgressBar, res: NetworkResult<*>?, loadingType: LoadingType) {
             view.isVisible = res is NetworkResult.Loading<*> && loadingType == LoadingType.PROGRESS_BAR
         }
 
         @JvmStatic
-        @BindingAdapter("android:showDataByResponse")
-        fun showDataByResponse(view: View, res: NetworkResult<*>?) {
-            view.isVisible = res is NetworkResult.Success
+        @BindingAdapter("android:response", "android:loadingType", requireAll = true)
+        fun showDataByResponse(view: View, res: NetworkResult<*>?, loadingType: LoadingType) {
+            view.isVisible = res is NetworkResult.Success || loadingType == LoadingType.SWIPE_REFRESH
         }
 
         @JvmStatic
@@ -94,7 +95,6 @@ class BindingAdapters {
         @JvmStatic
         @BindingAdapter("android:enableByResponse")
         fun enableByResponse(view: View, res: NetworkResult<*>?) {
-            println(res)
             view.isEnabled = res is NetworkResult.Success
         }
 
