@@ -57,12 +57,6 @@ class AuthorizationActivity : AppCompatActivity() {
             adapter
         )
 
-        // Hide keyboard when clicking the countryCallingCode text field
-        binding.countryCallingCodeText.keyListener = null
-        binding.countryCallingCodeField.editText?.setOnClickListener {
-            hideKeyboard(this)
-        }
-
         binding.countryCallingCodeText.setOnItemClickListener { _, _, i, _ ->
             countryCallingCode = CountryCode.values()[i].phoneCode
             binding.phoneNumberText.mask = CountryCode.values()[i].format

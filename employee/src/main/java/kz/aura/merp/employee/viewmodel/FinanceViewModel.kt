@@ -3,7 +3,8 @@ package kz.aura.merp.employee.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -48,6 +49,7 @@ class FinanceViewModel @Inject constructor(
     val changeBusinessProcessStatusResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
     val planResponse: MutableLiveData<NetworkResult<Plan>> = MutableLiveData()
     val assignScheduledCallResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
+    val messagesResponse: MutableLiveData<NetworkResult<List<Message>>> = MutableLiveData()
     val receiveMessage = { str: Int ->
         getApplication<Application>().getString(str)
     }
@@ -532,6 +534,22 @@ class FinanceViewModel @Inject constructor(
         } else {
             assignScheduledCallResponse.postValue(internetIsNotConnected())
         }
+    }
+
+    fun fetchMessages() {
+        println("SSS")
+        val db = Firebase.firestore
+        db.collection("users")
+            .get()
+            .addOnSuccessListener { result ->
+                for (doc in result) {
+                    println(doc.data)
+                }
+            }
+            .addOnFailureListener { exception ->
+                println(exception.message)
+                messagesResponse.postValue(NetworkResult.Error(exception.message))
+            }
     }
 
     fun getSalary() = scope.launch {
