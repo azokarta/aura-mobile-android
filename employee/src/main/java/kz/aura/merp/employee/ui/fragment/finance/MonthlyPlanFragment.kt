@@ -78,19 +78,6 @@ class MonthlyPlanFragment : Fragment(), PlanAdapter.OnClickListener,
         return root
     }
 
-    private fun getTokenFromFirebase() {
-        //        // Receive token of FCM
-//        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-//            if (!task.isSuccessful) {
-//                println("Fetching FCM registration token failed ${task.exception}")
-//            }
-//
-//            // Get new FCM registration token
-//            val token = task.result
-//            println(token)
-//        }
-    }
-
     private fun callRequests() {
         financeViewModel.fetchPlans()
     }

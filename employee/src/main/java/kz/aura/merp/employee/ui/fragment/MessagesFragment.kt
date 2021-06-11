@@ -51,20 +51,12 @@ class MessagesFragment : Fragment() {
 //            }
 //        })
 
-//        financeViewModel.fetchMessages()
+        financeViewModel.salary.observe(viewLifecycleOwner, { salary ->
+            println(salary)
+            salary.staffId?.let { financeViewModel.fetchMessages(it) }
+        })
 
-        val db = Firebase.firestore
-        db.collection("users")
-            .get()
-            .addOnSuccessListener { result ->
-                println("RES: ${result.isEmpty}")
-                for (doc in result) {
-                    println(doc.data)
-                }
-            }
-            .addOnFailureListener { exception ->
-                println(exception.message)
-            }
+        financeViewModel.getSalary()
 
         return root
     }

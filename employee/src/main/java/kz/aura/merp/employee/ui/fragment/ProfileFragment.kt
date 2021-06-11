@@ -37,9 +37,9 @@ class ProfileFragment : Fragment(), UserAvatarActionsDialogFragment.UserAvatarAc
 
         financeViewModel.getSalary()
 
-        binding.avatar.setOnClickListener {
-            openAvatarActions()
-        }
+//        binding.avatar.setOnClickListener {
+//            openAvatarActions()
+//        }
 
         return root
     }

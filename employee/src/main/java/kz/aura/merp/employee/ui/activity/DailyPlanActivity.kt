@@ -40,6 +40,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
     private var plan: DailyPlan? = null
     private lateinit var permissions: Permissions
+    private var modifiedResultOrStatus = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,6 +124,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         mFinanceViewModel.changeBusinessProcessStatusResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
+                    modifiedResultOrStatus = true
                     progressDialog.hideLoading()
                     dailyPlanId?.let { mFinanceViewModel.fetchDailyPlan(it) }
                 }
@@ -198,7 +200,20 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         }
     }
 
+    override fun onBackPressed() {
+        if (modifiedResultOrStatus) {
+            val intent = Intent();
+            setResult(RESULT_OK, intent)
+        }
+        finish();
+        super.onBackPressed()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
+        if (modifiedResultOrStatus) {
+            val intent = Intent();
+            setResult(RESULT_OK, intent)
+        }
         finish()
         return true
     }
@@ -217,6 +232,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                     showSnackbar(binding.phoneNumbers)
                 }
                 changeResultRequestCode -> {
+                    modifiedResultOrStatus = true
                     showSnackbar(binding.changeResult)
                     dailyPlanId?.let { mFinanceViewModel.fetchDailyPlan(it) }
                 }

@@ -536,25 +536,17 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchMessages() {
-        println("SSS")
+    fun fetchMessages(staffId: Long) {
         val db = Firebase.firestore
-        db.collection("users")
+        db.collection("users").document(staffId.toString())
             .get()
-            .addOnSuccessListener { result ->
-                for (doc in result) {
-                    println(doc.data)
-                }
-            }
-            .addOnFailureListener { exception ->
-                println(exception.message)
-                messagesResponse.postValue(NetworkResult.Error(exception.message))
+            .addOnSuccessListener { doc ->
+                println(doc.data)
             }
     }
 
     fun getSalary() = scope.launch {
         dataStoreRepository.salaryFlow.collect { value ->
-            println("SALARY")
             salary.postValue(value)
         }
     }

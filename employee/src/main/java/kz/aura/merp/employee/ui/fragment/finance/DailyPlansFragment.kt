@@ -1,8 +1,11 @@
 package kz.aura.merp.employee.ui.fragment.finance
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +19,7 @@ import kz.aura.merp.employee.databinding.FragmentDailyPlansBinding
 import kz.aura.merp.employee.model.DailyPlan
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.model.PlanFilter
+import kz.aura.merp.employee.ui.activity.DailyPlanActivity
 import kz.aura.merp.employee.ui.dialog.DailyPlanFilterDialogFragment
 import kz.aura.merp.employee.util.LoadingType
 import kz.aura.merp.employee.util.NetworkResult
@@ -28,7 +32,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, DailyPlanAdapter.DailyPlanListener {
 
     private var _binding: FragmentDailyPlansBinding? = null
 
@@ -39,7 +43,12 @@ class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var financeViewModel: FinanceViewModel
     private lateinit var filterViewModel: PlanFilterViewModel
     private lateinit var sharedViewModel: SharedViewModel
-    private val plansAdapter: DailyPlanAdapter by lazy { DailyPlanAdapter() }
+    private val plansAdapter: DailyPlanAdapter by lazy { DailyPlanAdapter(this) }
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            financeViewModel.fetchDailyPlans()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +80,12 @@ class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         callRequests()
 
         return root
+    }
+
+    override fun selectDailyPlan(id: Long) {
+        val intent = Intent(requireContext(), DailyPlanActivity::class.java)
+        intent.putExtra("dailyPlanId", id)
+        resultLauncher.launch(intent)
     }
 
     private fun callRequests() {

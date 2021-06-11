@@ -294,8 +294,10 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
     }
 
     private fun fieldErrorEnabled(field: TextInputLayout, enabled: Boolean) {
-        field.isErrorEnabled = true
-        field.error = getString(R.string.empty_field)
+        if (enabled) {
+            field.isErrorEnabled = true
+            field.error = getString(R.string.empty_field)
+        } else field.isErrorEnabled = false
     }
 
     private fun fetchPaymentMethods() {

@@ -10,6 +10,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.viewmodel.AuthViewModel
@@ -65,6 +66,19 @@ class AuthorizationActivity : AppCompatActivity() {
         binding.signInBtn.setOnClickListener(::signIn)
     }
 
+    private fun getTokenFromFirebase() {
+        // Receive token of FCM
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                println("Fetching FCM registration token failed ${task.exception}")
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+            println(token)
+        }
+    }
+
     private fun observeLiveData() {
         mAuthViewModel.signInResponse.observe(this, { res ->
             when (res) {
@@ -100,6 +114,7 @@ class AuthorizationActivity : AppCompatActivity() {
                             showException(getString(R.string.wrong_position), this)
                         } else {
                             mAuthViewModel.saveSalary(salary)
+                            getTokenFromFirebase()
                             val intent = Intent(this, CreatePasscodeActivity::class.java)
                             startActivity(intent)
                         }
