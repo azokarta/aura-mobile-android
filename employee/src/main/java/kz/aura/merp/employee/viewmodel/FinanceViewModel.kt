@@ -1,6 +1,7 @@
 package kz.aura.merp.employee.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.ktx.firestore
@@ -539,9 +540,19 @@ class FinanceViewModel @Inject constructor(
     fun fetchMessages(staffId: Long) {
         val db = Firebase.firestore
         db.collection("users").document(staffId.toString())
-            .get()
-            .addOnSuccessListener { doc ->
-                println(doc.data)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("Firestore", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    val messages = snapshot.toObject(FirestoreUserDocument::class.java)
+                    println("DOC: $messages")
+                    messagesResponse.postValue(NetworkResult.Success(messages?.messages))
+                } else {
+                    messagesResponse.postValue(NetworkResult.Success())
+                }
             }
     }
 

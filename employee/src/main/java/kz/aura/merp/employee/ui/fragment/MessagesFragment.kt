@@ -42,18 +42,18 @@ class MessagesFragment : Fragment() {
 
         setupRecyclerView()
 
-//        financeViewModel.messagesResponse.observe(viewLifecycleOwner, { res ->
-//            when (res) {
-//                is NetworkResult.Success -> {
-//                    messagesAdapter.setData(res.data!!)
-//                }
-//                else -> sharedViewModel.setResponse(res)
-//            }
-//        })
+        financeViewModel.messagesResponse.observe(viewLifecycleOwner, { res ->
+            when (res) {
+                is NetworkResult.Success -> {
+                    println("Observed: ${res.data}")
+                    messagesAdapter.setData(res.data!!)
+                }
+                else -> sharedViewModel.setResponse(res)
+            }
+        })
 
         financeViewModel.salary.observe(viewLifecycleOwner, { salary ->
-            println(salary)
-            salary.staffId?.let { financeViewModel.fetchMessages(it) }
+            salary?.staffId?.let { financeViewModel.fetchMessages(it) }
         })
 
         financeViewModel.getSalary()
