@@ -39,10 +39,10 @@ class AuthorizationActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE
         )
 
-        permissions = Permissions(this, this)
-
-        // Request gps permission
-        permissions.requestGpsPermission()
+//        permissions = Permissions(this, this)
+//
+//        // Request gps permission
+//        permissions.requestGpsPermission()
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
@@ -140,25 +140,25 @@ class AuthorizationActivity : AppCompatActivity() {
         mAuthViewModel.signIn(countryCallingCode + phoneNumber, password)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            Permissions.LOCATION_PERMISSION_REQUEST_CODE -> {
-                if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.have_not_allowed_access_to_the_location),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    this.permissions.requestGpsPermission()
-                }
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        when (requestCode) {
+//            Permissions.LOCATION_PERMISSION_REQUEST_CODE -> {
+//                if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
+//                    Toast.makeText(
+//                        this,
+//                        getString(R.string.have_not_allowed_access_to_the_location),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                    this.permissions.requestGpsPermission()
+//                }
+//            }
+//        }
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//    }
 
 
 }

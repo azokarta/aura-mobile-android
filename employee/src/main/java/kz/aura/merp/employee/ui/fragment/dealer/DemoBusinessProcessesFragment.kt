@@ -276,20 +276,23 @@ class DemoBusinessProcessesFragment : Fragment(), StepsAdapter.Companion.Complet
             }
     }
 
-    override fun stepCompleted(businessProcessStatus: BusinessProcessStatus) {
-        step+=1
-        val longitude = location.longitude.toString()
-        val latitude = location.latitude.toString()
-        val completed = TrackEmpProcess(null, longitude, latitude, step, null, demo!!.demoId)
-        mDealerViewModel.updateStepBusinessProcess(completed)
-        mReferenceViewModel.createStaffLocation(
-            StaffLocation(
-                dealerId!!,
-                maTbpId = bpId,
-                longitude = longitude,
-                latitude = latitude,
-                maTrackStepId = step
-            )
-        )
+//    override fun stepCompleted(businessProcessStatus: BusinessProcessStatus) {
+//        step+=1
+//        val longitude = location.longitude.toString()
+//        val latitude = location.latitude.toString()
+//        val completed = TrackEmpProcess(null, longitude, latitude, step, null, demo!!.demoId)
+//        mDealerViewModel.updateStepBusinessProcess(completed)
+//        mReferenceViewModel.createStaffLocation(
+//            StaffLocation(
+//                dealerId!!,
+//                maTbpId = bpId,
+//                longitude = longitude,
+//                latitude = latitude,
+//                maTrackStepId = step
+//            )
+//        )
+//    }
+
+    override fun stepCompleted(businessProcessStatus: BusinessProcessStatus, position: Int) {
     }
 }

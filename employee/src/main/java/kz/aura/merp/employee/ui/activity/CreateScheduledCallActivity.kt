@@ -3,8 +3,6 @@ package kz.aura.merp.employee.ui.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.viewModels
@@ -17,13 +15,11 @@ import kz.aura.merp.employee.model.AssignScheduledCallCommand
 import kz.aura.merp.employee.ui.dialog.DatePickerFragment
 import kz.aura.merp.employee.ui.dialog.TimePickerFragment
 import kz.aura.merp.employee.util.*
+import kz.aura.merp.employee.view.PermissionsListener
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener, DatePickerFragment.DatePickerListener {
+class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener, DatePickerFragment.DatePickerListener, PermissionsListener {
 
     private lateinit var binding: ActivityCreateScheduledCallBinding
 
@@ -34,6 +30,7 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
     private var selectedMinute: Int? = null
     private var scheduledDate: String? = null
     private var contractId: Long? = null
+    private lateinit var permissions: Permissions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,21 +48,25 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
 
         contractId = intent.getLongExtra("contractId", 0L)
 
+        permissions = Permissions(this, this, this)
+        permissions.setListener(this)
+
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
         setupObservers()
 
-        binding.scheduleDateText.setOnClickListener(::showDatePicker)
-        binding.scheduleTimeText.setOnClickListener(::showTimePicker)
+        binding.scheduleDateText.setOnClickListener { showDatePicker() }
+        binding.scheduleTimeText.setOnClickListener { showTimePicker() }
+        binding.save.setOnClickListener { save() }
     }
 
-    private fun showTimePicker(view: View) {
+    private fun showTimePicker() {
         val timePicker = TimePickerFragment(this, selectedHour, selectedMinute)
         timePicker.show(supportFragmentManager)
     }
 
-    private fun showDatePicker(view: View) {
+    private fun showDatePicker() {
         val datePicker = DatePickerFragment(this, this, date = convertStrToDateMillis(scheduledDate))
         datePicker.show(supportFragmentManager)
     }
@@ -106,29 +107,27 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
 
     private fun save() {
         if (validation()) {
+            if (!permissions.isLocationServicesEnabled()) return
+
             val description = binding.descriptionText.text.toString()
             val phoneNumber = binding.phoneNumberText.text.toString()
             val scheduledDateTime = collectDateTimeInsideStr(scheduledDate!!, selectedHour!!, selectedMinute!!)
 
-            if (isLocationServiceEnabled()) {
-                progressDialog.showLoading()
-                SmartLocation.with(this).location().oneFix()
-                    .start {
-                        financeViewModel.assignScheduledCall(
-                            contractId!!,
-                            AssignScheduledCallCommand(
-                                phoneNumber,
-                                countryCode.name,
-                                it.longitude,
-                                it.latitude,
-                                scheduledDateTime,
-                                description
-                            )
+            progressDialog.showLoading()
+            SmartLocation.with(this).location().oneFix()
+                .start {
+                    financeViewModel.assignScheduledCall(
+                        contractId!!,
+                        AssignScheduledCallCommand(
+                            phoneNumber,
+                            countryCode.name,
+                            it.longitude,
+                            it.latitude,
+                            scheduledDateTime,
+                            description
                         )
-                    }
-            } else {
-                showException(getString(R.string.enable_location), this)
-            }
+                    )
+                }
         }
     }
 
@@ -166,20 +165,22 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
         return success
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.save_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.save -> save()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    override fun sendResultOfRequestLocation(granted: Boolean) {
+        if (granted) {
+            permissions.enableLocation()
+        } else {
+            showException(getString(R.string.have_not_allowed_access_to_the_location), this)
+        }
+    }
+
+    override fun sendResultOfEnableLocation(granted: Boolean) {
+        if (granted) {
+            save()
+        }
     }
 }

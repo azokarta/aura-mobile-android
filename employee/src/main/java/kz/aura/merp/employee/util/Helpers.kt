@@ -257,18 +257,18 @@ fun verifyAvailableNetwork(context: Context): Boolean {
 }
 
 fun isLocationServicesEnabled(permissions: Permissions): Boolean {
-    val locationServicesEnabled = SmartLocation.with(permissions.context).location().state().locationServicesEnabled()
-    val locationPermissionDenied = permissions.locationPermissionDenied()
-
-    if (locationPermissionDenied) {
-        showException(permissions.context.getString(R.string.have_not_allowed_access_to_the_location), permissions.context)
-        return false
-    }
-
-    if (!locationServicesEnabled) {
-        permissions.enableLocation()
-        return false
-    }
+//    val locationServicesEnabled = SmartLocation.with(permissions.context).location().state().locationServicesEnabled()
+//    val locationPermissionDenied = permissions.locationPermissionDenied()
+//
+//    if (locationPermissionDenied) {
+//        showException(permissions.context.getString(R.string.have_not_allowed_access_to_the_location), permissions.context)
+//        return false
+//    }
+//
+//    if (!locationServicesEnabled) {
+//        permissions.enableLocation()
+//        return false
+//    }
 
     return true
 }

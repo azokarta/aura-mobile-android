@@ -33,7 +33,7 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
         stepDiffResult.dispatchUpdatesTo(this)
     }
 
-    fun setStep(step: Long?) {
+    fun setStep(step: Long) {
         this.step = step
         notifyDataSetChanged()
     }
@@ -42,7 +42,7 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
 
     companion object {
         interface CompletedStepListener {
-            fun stepCompleted(businessProcessStatus: BusinessProcessStatus)
+            fun stepCompleted(businessProcessStatus: BusinessProcessStatus, position: Int)
         }
     }
 
@@ -55,14 +55,10 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
 
             binding.root.setOnClickListener {
                 if (step == null && dataList[position].id == 1L) {
-                    this@StepsAdapter.step = dataList[position].id
-                    notifyDataSetChanged()
-                    completedStepListener.stepCompleted(dataList[position])
+                    completedStepListener.stepCompleted(dataList[position], position)
                 }
                 if (step != null && step!! < dataList[position].id) {
-                    this@StepsAdapter.step = dataList[position].id
-                    notifyDataSetChanged()
-                    completedStepListener.stepCompleted(dataList[position])
+                    completedStepListener.stepCompleted(dataList[position], position)
                 }
             }
         }
@@ -79,6 +75,7 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
                 binding.stepLine.setImageResource(R.drawable.step_line)
             }
             if (position == size - 1) {
+                println("Position: $position, Size: $size")
                 binding.stepLine.visibility = View.GONE
             }
         }

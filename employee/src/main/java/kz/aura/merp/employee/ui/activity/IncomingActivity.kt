@@ -14,13 +14,14 @@ import kz.aura.merp.employee.databinding.ActivityIncomingBinding
 import kz.aura.merp.employee.model.AssignCall
 import kz.aura.merp.employee.ui.dialog.TimePickerFragment
 import kz.aura.merp.employee.util.*
+import kz.aura.merp.employee.view.PermissionsListener
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener {
+class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener, PermissionsListener {
 
     private lateinit var binding: ActivityIncomingBinding
 
@@ -53,7 +54,8 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
             WindowManager.LayoutParams.FLAG_SECURE
         )
 
-        permissions = Permissions(this, this)
+        permissions = Permissions(this, this, this)
+        permissions.setListener(this)
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
@@ -62,33 +64,34 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
 
         mFinanceViewModel.getCountryCode()
 
-        binding.save.setOnClickListener(::save)
+        binding.save.setOnClickListener { save() }
 
         binding.scheduleTimeText.setOnClickListener {
             showTimePicker()
         }
     }
 
-    private fun save(view: View) {
+    private fun save() {
+        hideKeyboard(this)
         val description = binding.descriptionText.text.toString()
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
 
         if (validation()) {
-            if (isLocationServicesEnabled(permissions)) {
-                progressDialog.showLoading()
-                SmartLocation.with(this).location().oneFix()
-                    .start {
-                        val assign = AssignCall(
-                            countryCode = countryCode.name,
-                            phoneNumber = typedPhoneNumber,
-                            callTime = "$selectedHour:$selectedMinute",
-                            description = description,
-                            longitude = it.longitude,
-                            latitude = it.latitude
-                        )
-                        mFinanceViewModel.assignIncomingCall(assign, contractId)
-                    }
-            }
+            if (!permissions.isLocationServicesEnabled()) return
+
+            progressDialog.showLoading()
+            SmartLocation.with(this).location().oneFix()
+                .start {
+                    val assign = AssignCall(
+                        countryCode = countryCode.name,
+                        phoneNumber = typedPhoneNumber,
+                        callTime = "$selectedHour:$selectedMinute",
+                        description = description,
+                        longitude = it.longitude,
+                        latitude = it.latitude
+                    )
+                    mFinanceViewModel.assignIncomingCall(assign, contractId)
+                }
         }
     }
 
@@ -161,5 +164,19 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    override fun sendResultOfRequestLocation(granted: Boolean) {
+        if (granted) {
+            permissions.enableLocation()
+        } else {
+            showException(getString(R.string.have_not_allowed_access_to_the_location), this)
+        }
+    }
+
+    override fun sendResultOfEnableLocation(granted: Boolean) {
+        if (granted) {
+            save()
+        }
     }
 }

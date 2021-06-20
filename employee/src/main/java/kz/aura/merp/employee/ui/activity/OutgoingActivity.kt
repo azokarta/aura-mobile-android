@@ -16,6 +16,7 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityOutgoingBinding
 import kz.aura.merp.employee.model.AssignCall
 import kz.aura.merp.employee.util.*
+import kz.aura.merp.employee.view.PermissionsListener
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.Duration
@@ -23,7 +24,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class OutgoingActivity : AppCompatActivity() {
+class OutgoingActivity : AppCompatActivity(), PermissionsListener {
 
     private lateinit var binding: ActivityOutgoingBinding
 
@@ -58,12 +59,13 @@ class OutgoingActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE
         )
 
-        permissions = Permissions(this, this)
+        permissions = Permissions(this, this, this)
+        permissions.setListener(this)
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
-        binding.save.setOnClickListener(::save)
+        binding.save.setOnClickListener { save() }
 
         binding.callStatusText.setOnItemClickListener { _, _, i, _ ->
             callStatusId = financeViewModel.callStatusesResponse.value!!.data!![i].id
@@ -146,7 +148,7 @@ class OutgoingActivity : AppCompatActivity() {
         return success
     }
 
-    private fun save(view: View) {
+    private fun save() {
         hideKeyboard(this)
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
         val description = binding.descriptionText.text.toString()
@@ -154,23 +156,23 @@ class OutgoingActivity : AppCompatActivity() {
         val currentDate: String = dtf.print(DateTime.now())
 
         if (validation()) {
-            if (isLocationServicesEnabled(permissions)) {
-                progressDialog.showLoading()
-                SmartLocation.with(this).location().oneFix()
-                    .start {
-                        val assign = AssignCall(
-                            countryCode = countryCode.name,
-                            phoneNumber = typedPhoneNumber,
-                            callStatusId = callStatusId,
-                            callTime = currentDate,
-                            duration = duration!!.toString(),
-                            description = description,
-                            longitude = it.longitude,
-                            latitude = it.latitude
-                        )
-                        financeViewModel.assignOutgoingCall(assign, contractId)
-                    }
-            }
+            if (!permissions.isLocationServicesEnabled()) return
+
+            progressDialog.showLoading()
+            SmartLocation.with(this).location().oneFix()
+                .start {
+                    val assign = AssignCall(
+                        countryCode = countryCode.name,
+                        phoneNumber = typedPhoneNumber,
+                        callStatusId = callStatusId,
+                        callTime = currentDate,
+                        duration = duration!!.toString(),
+                        description = description,
+                        longitude = it.longitude,
+                        latitude = it.latitude
+                    )
+                    financeViewModel.assignOutgoingCall(assign, contractId)
+                }
         }
     }
 
@@ -207,6 +209,20 @@ class OutgoingActivity : AppCompatActivity() {
             } else {
                 Duration(startedTime, endTime)
             }
+        }
+    }
+
+    override fun sendResultOfRequestLocation(granted: Boolean) {
+        if (granted) {
+            permissions.enableLocation()
+        } else {
+            showException(getString(R.string.have_not_allowed_access_to_the_location), this)
+        }
+    }
+
+    override fun sendResultOfEnableLocation(granted: Boolean) {
+        if (granted) {
+            save()
         }
     }
 }

@@ -1,10 +1,11 @@
 package kz.aura.merp.employee.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.databinding.FragmentProfileBinding
@@ -19,7 +20,11 @@ class ProfileFragment : Fragment(), UserAvatarActionsDialogFragment.UserAvatarAc
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
     private lateinit var financeViewModel: FinanceViewModel
+    val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
+        binding.avatar.setImageURI(result)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,9 +42,9 @@ class ProfileFragment : Fragment(), UserAvatarActionsDialogFragment.UserAvatarAc
 
         financeViewModel.getSalary()
 
-//        binding.avatar.setOnClickListener {
-//            openAvatarActions()
-//        }
+        binding.avatar.setOnClickListener {
+            openAvatarActions()
+        }
 
         return root
     }
@@ -47,6 +52,7 @@ class ProfileFragment : Fragment(), UserAvatarActionsDialogFragment.UserAvatarAc
     private fun openAvatarActions() {
         val dialog = UserAvatarActionsDialogFragment()
         dialog.show(childFragmentManager, "ProfileFragment")
+        dialog.setListener(this)
     }
 
     override fun onDestroyView() {
@@ -63,6 +69,10 @@ class ProfileFragment : Fragment(), UserAvatarActionsDialogFragment.UserAvatarAc
     }
 
     override fun selectEditPhoto() {
-        println("EDIT")
+        getContent.launch("image/*")
+    }
+
+    private fun lgl(){
+
     }
 }

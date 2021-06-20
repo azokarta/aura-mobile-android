@@ -22,6 +22,7 @@ import kz.aura.merp.employee.model.ChangePlanResult
 import kz.aura.merp.employee.ui.dialog.DatePickerFragment
 import kz.aura.merp.employee.ui.dialog.TimePickerFragment
 import kz.aura.merp.employee.util.*
+import kz.aura.merp.employee.view.PermissionsListener
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -29,7 +30,7 @@ import org.joda.time.format.DateTimeFormatter
 
 
 @AndroidEntryPoint
-class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener, DatePickerFragment.DatePickerListener {
+class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener, DatePickerFragment.DatePickerListener, PermissionsListener {
 
     private lateinit var binding: ActivityChangeResultBinding
 
@@ -65,7 +66,8 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
             WindowManager.LayoutParams.FLAG_SECURE
         )
 
-        permissions = Permissions(this, this)
+        permissions = Permissions(this, this, this)
+        permissions.setListener(this)
 
         contractId = intent.getLongExtra("contractId", 0L)
         clientPhoneNumbers = intent.getStringArrayExtra("clientPhoneNumbers")!!
@@ -124,7 +126,6 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
         }
         binding.scheduleTimeText.setOnClickListener(::showTimePicker)
         binding.scheduleDateText.setOnClickListener(::showDatePicker)
-        permissions.requestGpsPermission()
     }
 
     private fun showDatePicker(view: View) {
@@ -134,71 +135,70 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
 
     private fun save() {
         if (validation()) {
+            if (!permissions.isLocationServicesEnabled()) return
+
             val reasonDescription: String? = if (binding.reasonDescriptionText.text.toString().isBlank()) null else binding.reasonDescriptionText.text.toString()
             val phoneNumber: String = binding.phoneNumberText.text.toString()
             val amount: Int? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString().toInt()
             val scheduledDateTime = "$scheduledDate $selectedHour:$selectedMinute"
 
-            if (isLocationServicesEnabled( permissions)) {
-                progressDialog.showLoading()
-                SmartLocation.with(this).location().oneFix()
-                    .start {
-                        when (resultId) {
-                            3L -> {
-                                mFinanceViewModel.changeResult(
-                                    contractId,
-                                    ChangePlanResult(
-                                        resultId,
-                                        reasonDescription,
+            progressDialog.showLoading()
+            SmartLocation.with(this).location().oneFix()
+                .start {
+                    when (resultId) {
+                        3L -> {
+                            mFinanceViewModel.changeResult(
+                                contractId,
+                                ChangePlanResult(
+                                    resultId,
+                                    reasonDescription,
+                                    it.longitude,
+                                    it.latitude,
+                                    null,
+                                    AssignScheduledCallCommand(
+                                        phoneNumber,
+                                        countryCode.name,
                                         it.longitude,
                                         it.latitude,
-                                        null,
-                                        AssignScheduledCallCommand(
-                                            phoneNumber,
-                                            countryCode.name,
-                                            it.longitude,
-                                            it.latitude,
-                                            scheduledDateTime,
-                                            reasonDescription
-                                        )
+                                        scheduledDateTime,
+                                        reasonDescription
                                     )
                                 )
-                            }
-                            2L -> {
-                                mFinanceViewModel.changeResult(
-                                    contractId,
-                                    ChangePlanResult(
-                                        resultId,
-                                        reasonDescription,
-                                        it.longitude,
-                                        it.latitude,
-                                        AssignCollectMoneyCommand(
-                                            phoneNumber,
-                                            bankId,
-                                            paymentMethodId,
-                                            amount,
-                                            countryCode.name,
-                                            it.longitude,
-                                            it.latitude
-                                        )
-                                    )
-                                )
-                            }
-                            else -> {
-                                mFinanceViewModel.changeResult(
-                                    contractId,
-                                    ChangePlanResult(
-                                        resultId,
-                                        reasonDescription,
+                            )
+                        }
+                        2L -> {
+                            mFinanceViewModel.changeResult(
+                                contractId,
+                                ChangePlanResult(
+                                    resultId,
+                                    reasonDescription,
+                                    it.longitude,
+                                    it.latitude,
+                                    AssignCollectMoneyCommand(
+                                        phoneNumber,
+                                        bankId,
+                                        paymentMethodId,
+                                        amount,
+                                        countryCode.name,
                                         it.longitude,
                                         it.latitude
                                     )
                                 )
-                            }
-
+                            )
+                        }
+                        else -> {
+                            mFinanceViewModel.changeResult(
+                                contractId,
+                                ChangePlanResult(
+                                    resultId,
+                                    reasonDescription,
+                                    it.longitude,
+                                    it.latitude
+                                )
+                            )
                         }
                     }
-            }
+                }
         }
     }
 
@@ -362,9 +362,9 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    val intent = Intent();
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    val intent = Intent()
+                    setResult(RESULT_OK, intent)
+                    finish()
                 }
                 is NetworkResult.Loading -> {
                 }
@@ -490,5 +490,19 @@ class ChangeResultActivity : AppCompatActivity(), TimePickerFragment.TimePickerL
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    override fun sendResultOfRequestLocation(granted: Boolean) {
+        if (granted) {
+            permissions.enableLocation()
+        } else {
+            showException(getString(R.string.have_not_allowed_access_to_the_location), this)
+        }
+    }
+
+    override fun sendResultOfEnableLocation(granted: Boolean) {
+        if (granted) {
+            save()
+        }
     }
 }

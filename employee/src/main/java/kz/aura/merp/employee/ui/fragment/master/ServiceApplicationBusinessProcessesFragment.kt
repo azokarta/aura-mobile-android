@@ -148,14 +148,14 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
         binding.stepsRecyclerView.isNestedScrollingEnabled = false
     }
 
-    override fun stepCompleted(businessProcessStatus: BusinessProcessStatus) {
-        step+=1
-        val longitude = location.longitude.toString()
-        val latitude = location.latitude.toString()
-//        val completed = TrackEmpProcess(null, longitude, latitude, step, null, serviceApplication!!.id)
-//        mMasterViewModel.updateStepBusinessProcess(completed)
-//        mReferenceViewModel.createStaffLocation(StaffLocation(masterId!!, maTbpId = bpId, longitude = longitude, latitude = latitude, maTrackStepId = step))
-    }
+//    override fun stepCompleted(businessProcessStatus: BusinessProcessStatus) {
+//        step+=1
+//        val longitude = location.longitude.toString()
+//        val latitude = location.latitude.toString()
+////        val completed = TrackEmpProcess(null, longitude, latitude, step, null, serviceApplication!!.id)
+////        mMasterViewModel.updateStepBusinessProcess(completed)
+////        mReferenceViewModel.createStaffLocation(StaffLocation(masterId!!, maTbpId = bpId, longitude = longitude, latitude = latitude, maTrackStepId = step))
+//    }
 
     companion object {
         @JvmStatic
@@ -165,5 +165,8 @@ class ServiceApplicationBusinessFragment : Fragment(), StepsAdapter.Companion.Co
                     putParcelable(ARG_PARAM1, serviceApplication)
                 }
             }
+    }
+
+    override fun stepCompleted(businessProcessStatus: BusinessProcessStatus, position: Int) {
     }
 }

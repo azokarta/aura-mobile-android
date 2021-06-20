@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kz.aura.merp.employee.util.LoadingType
 import kz.aura.merp.employee.util.NetworkResult

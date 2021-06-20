@@ -17,6 +17,8 @@ import kz.aura.merp.employee.databinding.FragmentMessagesBinding
 import kz.aura.merp.employee.util.NetworkResult
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class MessagesFragment : Fragment() {
@@ -38,6 +40,8 @@ class MessagesFragment : Fragment() {
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
 
         _binding = FragmentMessagesBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.sharedViewModel = sharedViewModel
         val root: View = binding.root
 
         setupRecyclerView()
@@ -45,8 +49,8 @@ class MessagesFragment : Fragment() {
         financeViewModel.messagesResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    println("Observed: ${res.data}")
-                    messagesAdapter.setData(res.data!!)
+                    sharedViewModel.setResponse(res)
+                    res.data?.let { messagesAdapter.setData(it) }
                 }
                 else -> sharedViewModel.setResponse(res)
             }

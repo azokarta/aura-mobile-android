@@ -6,6 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -14,8 +16,9 @@ import kz.aura.merp.employee.data.DataStoreRepository
 import kz.aura.merp.employee.data.repository.financeRepository.FinanceRepository
 import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.util.*
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 import retrofit2.Response
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -538,22 +541,37 @@ class FinanceViewModel @Inject constructor(
     }
 
     fun fetchMessages(staffId: Long) {
-        val db = Firebase.firestore
-        db.collection("users").document(staffId.toString())
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w("Firestore", "Listen failed.", e)
-                    return@addSnapshotListener
-                }
+        if (isInternetAvailable(getApplication())) {
+            val db = Firebase.firestore
+            db.collection("users").document(staffId.toString())
+                .addSnapshotListener { snapshot, e ->
+                    if (e != null) {
+                        Log.w("Firestore", "Listen failed.", e)
+                        return@addSnapshotListener
+                    }
 
-                if (snapshot != null && snapshot.exists()) {
-                    val messages = snapshot.toObject(FirestoreUserDocument::class.java)
-                    println("DOC: $messages")
-                    messagesResponse.postValue(NetworkResult.Success(messages?.messages))
-                } else {
-                    messagesResponse.postValue(NetworkResult.Success())
+                    if (snapshot != null && snapshot.exists()) {
+                        val gson = Gson()
+
+                        val messagesFromFirestore = snapshot.data?.get("messages")
+                        val json = gson.toJson(messagesFromFirestore)
+
+                        // Deserialization
+                        val type = object : TypeToken<List<Message>>() {}.type
+                        val messages = gson.fromJson<List<Message>>(json, type)
+
+                        // Sort by date
+                        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")
+                        val sortedMessages = messages.sortedBy { dtf.parseLocalDate(it.createdAt) }
+
+                        messagesResponse.postValue(NetworkResult.Success(sortedMessages))
+                    } else {
+                        messagesResponse.postValue(NetworkResult.Success())
+                    }
                 }
-            }
+        } else {
+            messagesResponse.postValue(internetIsNotConnected())
+        }
     }
 
     fun getSalary() = scope.launch {

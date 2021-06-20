@@ -17,7 +17,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messagesRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:response="@{sharedViewModel.response}"
+            android:loadingType="@{sharedViewModel.loadingType}" />
 
         <ImageView
             android:id="@+id/imageView17"

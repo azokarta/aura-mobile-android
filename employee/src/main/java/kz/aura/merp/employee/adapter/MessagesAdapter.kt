@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.databinding.MessageCardBinding
 import kz.aura.merp.employee.model.Message
 import kz.aura.merp.employee.util.MobDiffUtil
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.MessagesViewHolder>() {
     private val messages = mutableListOf<Message>()

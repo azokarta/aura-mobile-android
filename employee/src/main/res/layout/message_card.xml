@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         app:cardCornerRadius="12dp"
-        app:cardBackgroundColor="@color/lightBlue">
+        app:cardBackgroundColor="@color/lightGray">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{message.createdAt, default=`18.06.2020`}"
+                android:text="@{message.createdAt, default=`18.06.2020 15:05`}"
                 android:textColor="@color/black"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"

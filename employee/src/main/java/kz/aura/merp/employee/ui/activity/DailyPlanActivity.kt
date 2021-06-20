@@ -24,11 +24,12 @@ import kz.aura.merp.employee.model.DailyPlan
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.OnSelectPhoneNumber
+import kz.aura.merp.employee.view.PermissionsListener
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepListener, OnSelectPhoneNumber, SwipeRefreshLayout.OnRefreshListener {
+class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepListener, OnSelectPhoneNumber, SwipeRefreshLayout.OnRefreshListener, PermissionsListener {
 
     private lateinit var binding: ActivityDailyPlanBinding
 
@@ -41,6 +42,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     private var plan: DailyPlan? = null
     private lateinit var permissions: Permissions
     private var modifiedResultOrStatus = false
+    private var selectedStepId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +64,8 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
-        permissions = Permissions(this, this)
+        permissions = Permissions(this, this, this)
+        permissions.setListener(this)
 
         binding.swipeRefresh.setOnRefreshListener(this)
         binding.createScheduleCall.setOnClickListener(::openCreateScheduledCallScreen)
@@ -131,7 +134,6 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
                     progressDialog.hideLoading()
-                    stepsAdapter.setStep(plan!!.planBusinessProcessId)
                     showException(res.message, this)
                 }
             }
@@ -160,7 +162,7 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         binding.stepsRecyclerView.isNestedScrollingEnabled = false
     }
 
-    override fun stepCompleted(businessProcessStatus: BusinessProcessStatus) {
+    override fun stepCompleted(businessProcessStatus: BusinessProcessStatus, position: Int) {
         confirmStepAlertDialog(businessProcessStatus)
     }
 
@@ -170,34 +172,27 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         builder.setTitle(getString(R.string.really_want_to_change_status_of_plan))
 
         builder.setNegativeButton(getString(R.string.no)) { dialog, _ ->
-            stepsAdapter.setStep(plan!!.planBusinessProcessId)
             dialog.dismiss()
         }
         builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-            getCurrentLocation { latitude, longitude ->
-                mFinanceViewModel.updateBusinessProcess(
-                    plan!!.contractId,
-                    ChangeBusinessProcess(businessProcessStatus.id, latitude, longitude)
-                )
-            }
-        }
-        builder.setOnCancelListener {
-            stepsAdapter.setStep(plan!!.planBusinessProcessId)
+            selectedStepId = businessProcessStatus.id
+            updateBusinessProcess(businessProcessStatus.id)
         }
 
         builder.create().show()
     }
 
-    private fun getCurrentLocation(callback: (latitude: Double, longitude: Double) -> Unit) {
-        if (isLocationServicesEnabled(permissions)) {
-            progressDialog.showLoading()
-            SmartLocation.with(this).location().oneFix()
-                .start {
-                    callback.invoke(it.latitude, it.longitude)
-                }
-        } else {
-            stepsAdapter.setStep(plan!!.planBusinessProcessId)
-        }
+    private fun updateBusinessProcess(businessProcessStatusId: Long) {
+        if (!permissions.isLocationServicesEnabled()) return
+
+        progressDialog.showLoading()
+        SmartLocation.with(this).location().oneFix()
+            .start {
+                mFinanceViewModel.updateBusinessProcess(
+                    plan!!.contractId,
+                    ChangeBusinessProcess(businessProcessStatusId, it.latitude, it.longitude)
+                )
+            }
     }
 
     override fun onBackPressed() {
@@ -266,5 +261,19 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     override fun onRefresh() {
         sharedViewModel.setLoadingType(LoadingType.SWIPE_REFRESH)
         callRequests()
+    }
+
+    override fun sendResultOfRequestLocation(granted: Boolean) {
+        if (granted) {
+            permissions.enableLocation()
+        } else {
+            showException(getString(R.string.have_not_allowed_access_to_the_location), this)
+        }
+    }
+
+    override fun sendResultOfEnableLocation(granted: Boolean) {
+        if (granted) {
+            selectedStepId?.let { updateBusinessProcess(it) }
+        }
     }
 }
