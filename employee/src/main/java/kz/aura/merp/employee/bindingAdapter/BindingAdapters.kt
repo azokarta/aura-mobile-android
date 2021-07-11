@@ -27,33 +27,6 @@ class BindingAdapters {
             }
         }
 
-        @BindingAdapter("android:showRecyclerView")
-        @JvmStatic
-        fun showRecyclerView(view: View, visibility: Boolean) {
-            when(visibility){
-                true -> view.isVisible = true
-                false -> view.isVisible = false
-            }
-        }
-
-        @BindingAdapter("android:swipeRefreshByData")
-        @JvmStatic
-        fun showRefreshIndicatorByData(view: SwipeRefreshLayout, dataReceived: Boolean) {
-            when(dataReceived){
-                true -> view.isRefreshing = false
-                false -> view.isRefreshing = true
-            }
-        }
-
-        @BindingAdapter("android:visibleFilter")
-        @JvmStatic
-        fun visibleFilter(view: View, dataIsEmpty: Boolean) {
-            when (dataIsEmpty) {
-                true -> view.isVisible = false
-                false -> view.isVisible = true
-            }
-        }
-
 
         // -----------------------------------------------------------
         @JvmStatic
@@ -65,7 +38,15 @@ class BindingAdapters {
         @JvmStatic
         @BindingAdapter("android:response", "android:loadingType", requireAll = true)
         fun showDataByResponse(view: View, res: NetworkResult<*>?, loadingType: LoadingType) {
-            view.isVisible = res is NetworkResult.Success || loadingType == LoadingType.SWIPE_REFRESH
+            view.isVisible = when (res) {
+                is NetworkResult.Success -> {
+                    true
+                }
+                is NetworkResult.Loading -> {
+                    loadingType == LoadingType.SWIPE_REFRESH
+                }
+                else -> false
+            }
         }
 
         @JvmStatic

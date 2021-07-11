@@ -19,7 +19,7 @@ import kz.aura.merp.employee.view.PermissionsListener
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 @AndroidEntryPoint
-class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener, DatePickerFragment.DatePickerListener, PermissionsListener {
+class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePickerListener, DatePickerFragment.DatePickerListener, PermissionsListener {
 
     private lateinit var binding: ActivityCreateScheduledCallBinding
 
@@ -42,9 +42,6 @@ class CreateScheduledCallActivity : AppCompatActivity(), TimePickerFragment.Time
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.schedule_call)
-
-        // Turn off screenshot
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         contractId = intent.getLongExtra("contractId", 0L)
 

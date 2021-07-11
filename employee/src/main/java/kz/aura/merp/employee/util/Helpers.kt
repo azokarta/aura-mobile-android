@@ -3,10 +3,14 @@ package kz.aura.merp.employee.util
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.os.Build
+import android.os.LocaleList
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.LayoutInflater
@@ -16,6 +20,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.internal.ContextUtils
 import com.google.gson.Gson
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
@@ -49,6 +54,8 @@ import okhttp3.ResponseBody
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 fun getToken(context: Context): String? {
@@ -69,6 +76,39 @@ fun saveToken(context: Context, token: String) {
             .putString("token", token)
             .apply()
     }
+}
+
+fun getLanguage(context: Context): String {
+    val pref = PreferenceManager.getDefaultSharedPreferences(context)
+    return pref.getString("language", Language.RU.value)!!
+}
+
+fun saveLanguage(context: Context, language: String) {
+    PreferenceManager.getDefaultSharedPreferences(context).apply {
+        edit()
+            .putString("language", language)
+            .apply()
+    }
+}
+
+fun updateLocale(c: Context, language: String): ContextWrapper {
+    var context = c
+    val localeToSwitchTo = Locale(language)
+    val resources: Resources = context.resources
+    val configuration: Configuration = resources.configuration
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        val localeList = LocaleList(localeToSwitchTo)
+        LocaleList.setDefault(localeList)
+        configuration.setLocales(localeList)
+    } else {
+        configuration.locale = localeToSwitchTo
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+        context = context.createConfigurationContext(configuration)
+    } else {
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
+    return ContextWrapper(context)
 }
 
 fun convertMillisToLocalDate(millis: Long): LocalDate {

@@ -17,10 +17,7 @@ import kz.aura.merp.employee.model.AuthResponse
 import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.data.repository.authRepository.AuthRepository
 import kz.aura.merp.employee.model.ResponseHelper
-import kz.aura.merp.employee.util.ErrorStatus
-import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.util.isInternetAvailable
-import kz.aura.merp.employee.util.receiveErrorMessage
+import kz.aura.merp.employee.util.*
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -36,6 +33,7 @@ class AuthViewModel @Inject constructor(
     val signInResponse: MutableLiveData<NetworkResult<AuthResponse>> = MutableLiveData()
     val userInfoResponse: MutableLiveData<NetworkResult<ResponseHelper<ArrayList<Salary>>>> = MutableLiveData()
     val salary: MutableLiveData<Salary> = MutableLiveData()
+    val saveFcmTokenResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
     val receiveMessage = { str: Int ->
         getApplication<Application>().getString(str)
     }
@@ -64,16 +62,40 @@ class AuthViewModel @Inject constructor(
     }
 
     fun getUserInfo() = scope.launch {
-        try {
-            val response = authRepository.remote.getUserInfo()
+        userInfoResponse.postValue(NetworkResult.Loading())
+        if (isInternetAvailable(getApplication())) {
+            try {
+                val response = authRepository.remote.getUserInfo()
 
-            if (response.isSuccessful) {
-                userInfoResponse.postValue(NetworkResult.Success(response.body()!!))
-            } else {
-                userInfoResponse.postValue(handleError(response))
+                if (response.isSuccessful) {
+                    userInfoResponse.postValue(NetworkResult.Success(response.body()!!))
+                } else {
+                    userInfoResponse.postValue(handleError(response))
+                }
+            } catch (e: Exception) {
+                userInfoResponse.postValue(NetworkResult.Error(e.message))
             }
-        } catch (e: Exception) {
-            userInfoResponse.postValue(NetworkResult.Error(e.message))
+        } else {
+            userInfoResponse.postValue(internetIsNotConnected())
+        }
+    }
+
+    fun saveFcmToken(token: String) = scope.launch {
+        saveFcmTokenResponse.postValue(NetworkResult.Loading())
+        if (isInternetAvailable(getApplication())) {
+            try {
+                val response = authRepository.remote.saveFcmToken(token)
+
+                if (response.isSuccessful) {
+                    saveFcmTokenResponse.postValue(NetworkResult.Success())
+                } else {
+                    saveFcmTokenResponse.postValue(handleError(response))
+                }
+            } catch (e: Exception) {
+                saveFcmTokenResponse.postValue(NetworkResult.Error(e.message))
+            }
+        } else {
+            saveFcmTokenResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -94,7 +116,7 @@ class AuthViewModel @Inject constructor(
         ErrorStatus.INTERNET_IS_NOT_AVAILABLE
     )
 
-    private fun <T> handleError(res: Response<T>): NetworkResult<T> {
+    private fun <T, R> handleError(res: Response<T>): NetworkResult<R> {
         val message = receiveErrorMessage(res.errorBody()!!)
         return when (res.code()) {
             401 -> NetworkResult.Error(message, ErrorStatus.UNAUTHORIZED)

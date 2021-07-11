@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "346030887868",
-    "project_id": "aura-employee-f8175",
-    "storage_bucket": "aura-employee-f8175.appspot.com"
+    "project_number": "340103270991",
+    "project_id": "aura-employee-78e68",
+    "storage_bucket": "aura-employee-78e68.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:346030887868:android:9e2e90afad0551ca1fd1b9",
+        "mobilesdk_app_id": "1:340103270991:android:eb4a6f3ebf1b6ca54ed03a",
         "android_client_info": {
-          "package_name": "kz.aura.wemob"
+          "package_name": "kz.aura.merp.employee"
         }
       },
       "oauth_client": [
         {
-          "client_id": "346030887868-e2oaf4fsckk1ncnh41j9ajne560j412e.apps.googleusercontent.com",
+          "client_id": "340103270991-9236p7fv6b5ckkl1ja4qfsjro14pbo4v.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAYeSseOgk2xJQq4aUjjpYsnbJDCZ1ZJoA"
+          "current_key": "AIzaSyBwznIEBjQ3XSET3Dc0M0GwnD9Ck3yYvZk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "346030887868-e2oaf4fsckk1ncnh41j9ajne560j412e.apps.googleusercontent.com",
+              "client_id": "340103270991-9236p7fv6b5ckkl1ja4qfsjro14pbo4v.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

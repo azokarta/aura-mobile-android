@@ -1,9 +1,11 @@
 package kz.aura.merp.employee.ui.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ActivityVerifyPasscodeBinding
@@ -13,9 +15,10 @@ import kz.aura.merp.employee.util.definePosition
 import kz.aura.merp.employee.util.vibrate
 import kz.aura.merp.employee.viewmodel.AuthViewModel
 import kz.aura.merp.employee.viewmodel.PasscodeViewModel
+import java.util.concurrent.Executor
 
 @AndroidEntryPoint
-class VerifyPasscodeActivity : AppCompatActivity() {
+class VerifyPasscodeActivity : BaseActivity() {
 
     private lateinit var binding: ActivityVerifyPasscodeBinding
 
@@ -25,54 +28,49 @@ class VerifyPasscodeActivity : AppCompatActivity() {
     private var salary: Salary? = null
     private var savedPasscode: String? = null
 
-//    private lateinit var biometricPrompt: androidx.biometric.BiometricPrompt
-//    private lateinit var promptInfo: androidx.biometric.BiometricPrompt.PromptInfo
-//    private lateinit var biometricManager: androidx.biometric.BiometricManager
+    private lateinit var executor: Executor
+    private lateinit var biometricPrompt: BiometricPrompt
+    private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityVerifyPasscodeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Turn off screenshot
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
-
         setListenersOfNumbers()
 
-//        biometricManager = androidx.biometric.BiometricManager.from(this)
-//        val executor = ContextCompat.getMainExecutor(this)
+        executor = ContextCompat.getMainExecutor(this)
+        biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                    when (errorCode) {
+                        BiometricPrompt.ERROR_CANCELED -> {}
+                        BiometricPrompt.ERROR_USER_CANCELED -> {}
+                        BiometricPrompt.ERROR_NEGATIVE_BUTTON -> {}
+                        else -> Toast.makeText(applicationContext, errString, Toast.LENGTH_SHORT).show()
+                    }
+                }
 
+                override fun onAuthenticationSucceeded(
+                    result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    definePositionAndOpenActivity()
+                }
+            })
 
-//        biometricPrompt = androidx.biometric.BiometricPrompt(this, executor,
-//            object : androidx.biometric.BiometricPrompt.AuthenticationCallback() {
-//                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-//                    super.onAuthenticationError(errorCode, errString)
-//                    notifyUser("$errString")
-//                }
-//
-//                override fun onAuthenticationSucceeded(result: androidx.biometric.BiometricPrompt.AuthenticationResult) {
-//                    super.onAuthenticationSucceeded(result)
-//                    goToHome()
-//                }
-//
-//                override fun onAuthenticationFailed() {
-//                    super.onAuthenticationFailed()
-//                    notifyUser("Auth Failed")
-//                }
-//            })
-//        promptInfo = androidx.biometric.BiometricPrompt.PromptInfo.Builder()
-//            .setTitle("Title")
-//            .setSubtitle("Sub Title")
-//            .setDescription("Description")
-//            .setNegativeButtonText("use email login")
-//            .build()
-//
-//            binding.fingerprint.setOnClickListener() {
-//            biometricPrompt.authenticate(promptInfo)
-//        }
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle(getString(R.string.wemob_authentication))
+            .setSubtitle(getString(R.string.wemob_using_biometric_authentication))
+            .setNegativeButtonText(getString(R.string.cancel))
+            .build()
+
+        // Prompt appears when user clicks "Log in".
+        // Consider integrating with the keystore to unlock cryptographic operations,
+        // if needed by your app.
+        binding.fingerprint.setOnClickListener {
+            biometricPrompt.authenticate(promptInfo)
+        }
 
         authViewModel.salary.observe(this, { salary ->
             this.salary = salary
@@ -108,8 +106,7 @@ class VerifyPasscodeActivity : AppCompatActivity() {
 
             if (code.size == 4) {
                 if (code.joinToString() == savedPasscode) {
-                    val staffPosition = definePosition(salary)
-                    openActivityByPosition(this, staffPosition!!)
+                    definePositionAndOpenActivity()
                 } else {
                     vibrate(this, 500)
                     showBackgroundError()
@@ -117,6 +114,12 @@ class VerifyPasscodeActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun definePositionAndOpenActivity() {
+        val staffPosition = definePosition(salary)
+        openActivityByPosition(this, staffPosition!!)
+    }
+
 
     private fun assignCodeText(num: Int) {
         when (code.size) {

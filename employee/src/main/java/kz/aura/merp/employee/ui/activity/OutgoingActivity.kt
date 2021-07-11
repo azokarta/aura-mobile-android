@@ -24,7 +24,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class OutgoingActivity : AppCompatActivity(), PermissionsListener {
+class OutgoingActivity : BaseActivity(), PermissionsListener {
 
     private lateinit var binding: ActivityOutgoingBinding
 
@@ -52,12 +52,6 @@ class OutgoingActivity : AppCompatActivity(), PermissionsListener {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.add_outgoing_call)
-
-        // Turn off screenshot
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
 
         permissions = Permissions(this, this, this)
         permissions.setListener(this)

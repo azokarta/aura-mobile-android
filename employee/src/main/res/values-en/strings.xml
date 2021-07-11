@@ -165,6 +165,11 @@
     <string name="company">Company</string>
     <string name="department">Department</string>
     <string name="branch">Branch</string>
+    <string name="open_photo">Open the photo</string>
+    <string name="edit_photo">Edit the photo</string>
+    <string name="remove_photo">Remove the photo</string>
+    <string name="wemob_authentication">WeMob authentication</string>
+    <string name="wemob_using_biometric_authentication">WeMob uses Android biometric authentication</string>
 
     <!--  ERRORS  -->
     <string name="empty_field">The field must not be empty</string>

@@ -25,4 +25,9 @@ interface AuthApi {
 
     @GET("/current_user_info/salaries")
     suspend fun getUserInfo(): Response<ResponseHelper<ArrayList<Salary>>>
+
+    @POST("/current_user_info/set_employee_token/{token}")
+    suspend fun saveFcmToken(
+        @Path("token") token: String
+    ): Response<ResponseHelper<Nothing>>
 }

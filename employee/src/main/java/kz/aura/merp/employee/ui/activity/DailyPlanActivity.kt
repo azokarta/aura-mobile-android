@@ -29,7 +29,8 @@ import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 
 @AndroidEntryPoint
-class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedStepListener, OnSelectPhoneNumber, SwipeRefreshLayout.OnRefreshListener, PermissionsListener {
+class DailyPlanActivity : BaseActivity(), StepsAdapter.Companion.CompletedStepListener,
+    OnSelectPhoneNumber, SwipeRefreshLayout.OnRefreshListener, PermissionsListener {
 
     private lateinit var binding: ActivityDailyPlanBinding
 
@@ -57,9 +58,6 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.plan)
-
-        // Turn off screenshot
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
@@ -118,7 +116,8 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
                 is NetworkResult.Success -> {
                     stepsAdapter.setData(res.data!!)
                 }
-                is NetworkResult.Loading -> {}
+                is NetworkResult.Loading -> {
+                }
                 is NetworkResult.Error -> {
                     showException(res.message, this)
                 }
@@ -128,12 +127,12 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
             when (res) {
                 is NetworkResult.Success -> {
                     modifiedResultOrStatus = true
-                    progressDialog.hideLoading()
+                    sharedViewModel.setResponse(res)
                     dailyPlanId?.let { mFinanceViewModel.fetchDailyPlan(it) }
                 }
-                is NetworkResult.Loading -> progressDialog.showLoading()
+                is NetworkResult.Loading -> sharedViewModel.setResponse(res)
                 is NetworkResult.Error -> {
-                    progressDialog.hideLoading()
+                    sharedViewModel.setResponse(res)
                     showException(res.message, this)
                 }
             }
@@ -185,7 +184,6 @@ class DailyPlanActivity : AppCompatActivity(), StepsAdapter.Companion.CompletedS
     private fun updateBusinessProcess(businessProcessStatusId: Long) {
         if (!permissions.isLocationServicesEnabled()) return
 
-        progressDialog.showLoading()
         SmartLocation.with(this).location().oneFix()
             .start {
                 mFinanceViewModel.updateBusinessProcess(

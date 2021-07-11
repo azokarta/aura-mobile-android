@@ -21,7 +21,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListener, PermissionsListener {
+class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, PermissionsListener {
 
     private lateinit var binding: ActivityIncomingBinding
 
@@ -47,12 +47,6 @@ class IncomingActivity : AppCompatActivity(), TimePickerFragment.TimePickerListe
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.add_incoming_call)
-
-        // Turn off screenshot
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
 
         permissions = Permissions(this, this, this)
         permissions.setListener(this)

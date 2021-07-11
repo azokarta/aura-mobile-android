@@ -20,10 +20,10 @@ import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.util.*
 
 @AndroidEntryPoint
-class AuthorizationActivity : AppCompatActivity() {
+class AuthorizationActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAuthorizationBinding
-    private val mAuthViewModel: AuthViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
     private lateinit var permissions: Permissions
     private var countryCallingCode: String = CountryCode.values()[0].phoneCode
@@ -32,17 +32,6 @@ class AuthorizationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAuthorizationBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Turn off screenshot
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
-
-//        permissions = Permissions(this, this)
-//
-//        // Request gps permission
-//        permissions.requestGpsPermission()
 
         // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
@@ -71,17 +60,18 @@ class AuthorizationActivity : AppCompatActivity() {
         // Receive token of FCM
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
-                println("Fetching FCM registration token failed ${task.exception}")
+                showException("Fetching FCM registration token failed ${task.exception}", this)
             }
 
             // Get new FCM registration token
             val token = task.result
+            token?.let { authViewModel.saveFcmToken(it) }
             Log.d("FIREBASE_TOKEN", token.toString())
         }
     }
 
     private fun observeLiveData() {
-        mAuthViewModel.signInResponse.observe(this, { res ->
+        authViewModel.signInResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     // Hide loading
@@ -89,7 +79,7 @@ class AuthorizationActivity : AppCompatActivity() {
                     // Save token
                     saveToken(this, res.data!!.accessToken)
                     // Get info about user
-                    mAuthViewModel.getUserInfo()
+                    authViewModel.getUserInfo()
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
@@ -102,7 +92,7 @@ class AuthorizationActivity : AppCompatActivity() {
                 }
             }
         })
-        mAuthViewModel.userInfoResponse.observe(this, { res ->
+        authViewModel.userInfoResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
@@ -114,14 +104,26 @@ class AuthorizationActivity : AppCompatActivity() {
                         if (position == null || salary == null) {
                             showException(getString(R.string.wrong_position), this)
                         } else {
-                            mAuthViewModel.saveSalary(salary)
+                            authViewModel.saveSalary(salary)
                             getTokenFromFirebase()
-                            val intent = Intent(this, CreatePasscodeActivity::class.java)
-                            startActivity(intent)
                         }
                     } else {
                         showException(getString(R.string.user_does_not_exist), this)
                     }
+                }
+                is NetworkResult.Loading -> progressDialog.showLoading()
+                is NetworkResult.Error -> {
+                    progressDialog.hideLoading()
+                    showException(res.message, this)
+                }
+            }
+        })
+        authViewModel.saveFcmTokenResponse.observe(this, { res ->
+            when (res) {
+                is NetworkResult.Success -> {
+                    progressDialog.hideLoading()
+                    val intent = Intent(this, CreatePasscodeActivity::class.java)
+                    startActivity(intent)
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
@@ -136,29 +138,9 @@ class AuthorizationActivity : AppCompatActivity() {
         hideKeyboard(this)
         val phoneNumber = binding.phoneNumberText.rawText
         val password = binding.passwordText.text.toString()
-        mAuthViewModel.saveCountryCallingCode(countryCallingCode)
-        mAuthViewModel.signIn(countryCallingCode + phoneNumber, password)
+        authViewModel.saveCountryCallingCode(countryCallingCode)
+        authViewModel.signIn(countryCallingCode + phoneNumber, password)
     }
-
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        when (requestCode) {
-//            Permissions.LOCATION_PERMISSION_REQUEST_CODE -> {
-//                if ((grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)) {
-//                    Toast.makeText(
-//                        this,
-//                        getString(R.string.have_not_allowed_access_to_the_location),
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                    this.permissions.requestGpsPermission()
-//                }
-//            }
-//        }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//    }
 
 
 }

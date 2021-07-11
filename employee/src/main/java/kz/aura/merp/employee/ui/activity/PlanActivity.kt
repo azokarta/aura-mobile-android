@@ -17,7 +17,7 @@ import kz.aura.merp.employee.util.PagerAdapter
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 @AndroidEntryPoint
-class PlanActivity : AppCompatActivity() {
+class PlanActivity : BaseActivity() {
 
     private lateinit var binding: ActivityPlanBinding
 
@@ -33,9 +33,6 @@ class PlanActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.plan)
-
-        // Turn off screenshot
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         val fragments = arrayListOf(
             ContractFragment(),

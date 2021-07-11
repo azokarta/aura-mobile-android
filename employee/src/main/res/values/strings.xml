@@ -178,6 +178,8 @@
     <string name="open_photo">Открыть фотографию</string>
     <string name="edit_photo">Изменить фотографию</string>
     <string name="remove_photo">Удалить фотографию</string>
+    <string name="wemob_authentication">Аутентификация WeMob</string>
+    <string name="wemob_using_biometric_authentication">WeMob использует биометрическую аутентификацию Android</string>
 
     <!--  ERRORS  -->
     <string name="empty_field">Поле не должно быть пустым</string>

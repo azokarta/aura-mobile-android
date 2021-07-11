@@ -23,4 +23,9 @@ class AuthRemoteDataSource @Inject constructor(
         interceptor.setHost(Link.MAIN)
         return authApi.getUserInfo()
     }
+
+    suspend fun saveFcmToken(token: String): Response<ResponseHelper<Nothing>> {
+        interceptor.setHost(Link.MAIN)
+        return authApi.saveFcmToken(token)
+    }
 }

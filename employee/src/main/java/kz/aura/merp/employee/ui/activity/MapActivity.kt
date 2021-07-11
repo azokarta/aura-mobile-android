@@ -25,7 +25,7 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.model.Location
 import kz.aura.merp.employee.databinding.ActivityMapBinding
 
-class MapActivity : AppCompatActivity(), OnLocationUpdatedListener, Session.RouteListener, com.yandex.mapkit.search.Session.SearchListener {
+class MapActivity : BaseActivity(), OnLocationUpdatedListener, Session.RouteListener, com.yandex.mapkit.search.Session.SearchListener {
 
     private lateinit var mapView: MapView
     private lateinit var location: Location
@@ -69,9 +69,6 @@ class MapActivity : AppCompatActivity(), OnLocationUpdatedListener, Session.Rout
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.map)
-
-        // Turn off screenshot
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         // Getting a location
         SmartLocation.with(this).location().oneFix().start(this)

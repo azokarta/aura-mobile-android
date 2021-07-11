@@ -94,10 +94,10 @@ dependencies {
     implementation "com.squareup.picasso:picasso:$picasso_version"
 
     // DataStore
-    def data_store_version = "1.0.0-beta01"
+    def data_store_version = "1.0.0-beta02"
     implementation "androidx.datastore:datastore-preferences:$data_store_version"
 
-    //Dagger - Hilt
+    // Dagger - Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
@@ -115,8 +115,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
 
     // Biometric
-    def biometric_version = "1.1.0"
-    implementation "androidx.biometric:biometric:$biometric_version"
+    def biometric_version = "1.2.0-alpha03"
+    implementation "androidx.biometric:biometric-ktx:$biometric_version"
 
     // MaskEditText
     def masked_edit_text_version = "1.0.5"

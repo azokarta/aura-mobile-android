@@ -1,8 +1,6 @@
 package kz.aura.merp.employee.ui.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
@@ -15,7 +13,7 @@ import kz.aura.merp.employee.viewmodel.AuthViewModel
 import kz.aura.merp.employee.viewmodel.PasscodeViewModel
 
 @AndroidEntryPoint
-class CreatePasscodeActivity : AppCompatActivity() {
+class CreatePasscodeActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCreatePasscodeBinding
 
@@ -34,9 +32,6 @@ class CreatePasscodeActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.create_passcode)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        // Turn off screenshot
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         setListenersOfNumbers()
 

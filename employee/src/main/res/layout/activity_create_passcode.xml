@@ -173,44 +173,22 @@
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
         app:backgroundTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/fingerprint"
-        app:layout_constraintEnd_toStartOf="@+id/deleteNumber"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/fingerprint"
-        app:layout_constraintTop_toTopOf="@+id/fingerprint" />
+        app:layout_constraintBottom_toBottomOf="@+id/deleteNumber"
+        app:layout_constraintEnd_toEndOf="@+id/number8"
+        app:layout_constraintStart_toStartOf="@+id/number8"
+        app:layout_constraintTop_toTopOf="@+id/deleteNumber" />
 
     <ImageButton
         android:id="@+id/deleteNumber"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/circle_background"
         android:contentDescription="TODO"
         app:backgroundTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/number0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/number0"
-        app:layout_constraintTop_toTopOf="@+id/number0"
+        app:layout_constraintEnd_toEndOf="@+id/number9"
+        app:layout_constraintTop_toBottomOf="@+id/number9"
         app:srcCompat="@drawable/ic_backspace_black_24dp" />
-
-    <ImageButton
-        android:id="@+id/fingerprint"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:background="@drawable/circle_background"
-        app:backgroundTint="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/number0"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/number7"
-        app:srcCompat="@drawable/ic_sharp_fingerprint_24"
-        tools:ignore="VectorDrawableCompat" />
 
     <LinearLayout
         android:id="@+id/codeContainer1"

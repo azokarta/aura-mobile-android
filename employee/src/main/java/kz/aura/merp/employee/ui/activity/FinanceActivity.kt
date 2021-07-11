@@ -1,12 +1,14 @@
 package kz.aura.merp.employee.ui.activity
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.MenuItemCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -22,15 +24,14 @@ import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 @AndroidEntryPoint
-class FinanceActivity : AppCompatActivity() {
+class FinanceActivity : BaseActivity() {
 
     private lateinit var binding: ActivityFinanceBinding
-    private val mFinanceViewModel: FinanceViewModel by viewModels()
+    private val financeViewModel: FinanceViewModel by viewModels()
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LanguageHelper.updateLanguage(this)
         binding = ActivityFinanceBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -55,24 +56,20 @@ class FinanceActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        // Turn off screenshot
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
-
-        mFinanceViewModel.salary.observe(this, { salary ->
-            (headerView.findViewById<TextView>(R.id.username)).text = salary?.username
-            (headerView.findViewById<TextView>(R.id.phone)).text = salary?.phoneNumber
-        })
-
-        mFinanceViewModel.getSalary()
-
         navView.menu.findItem(R.id.nav_sign_out).setOnMenuItemClickListener {
             drawerLayout.closeDrawer(GravityCompat.START)
             openSignOutDialog()
             false
         }
+
+        financeViewModel.salary.observe(this, { salary ->
+            salary?.let {
+                (headerView.findViewById<TextView>(R.id.username)).text = salary.username
+                (headerView.findViewById<TextView>(R.id.phone)).text = salary.phoneNumber
+            }
+        })
+
+        financeViewModel.getSalary()
 
 //        Intent(this, BackgroundService::class.java).also { intent ->
 //            intent.putExtra("link", Link.FINANCE)

@@ -4,10 +4,12 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -54,8 +56,21 @@ class FinanceViewModel @Inject constructor(
     val planResponse: MutableLiveData<NetworkResult<Plan>> = MutableLiveData()
     val assignScheduledCallResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
     val messagesResponse: MutableLiveData<NetworkResult<List<Message>>> = MutableLiveData()
+    val flow = Pager(
+        // Configure how data is loaded by passing additional properties to
+        // PagingConfig, such as prefetchDistance.
+        PagingConfig(pageSize = 20)
+    ) {
+        PagingSource(::getPlansByPage)
+    }.flow.cachedIn(scope)
     val receiveMessage = { str: Int ->
         getApplication<Application>().getString(str)
+    }
+
+    private suspend fun getPlansByPage(page: Int): List<Plan> {
+        val response = financeRepository.remote.fetchPlans()
+        val chunked = response.body()!!.data.chunked(20)[page]
+        return chunked
     }
 
     fun getCountryCode() = scope.launch {
@@ -543,30 +558,30 @@ class FinanceViewModel @Inject constructor(
     fun fetchMessages(staffId: Long) {
         if (isInternetAvailable(getApplication())) {
             val db = Firebase.firestore
-            db.collection("users").document(staffId.toString())
-                .addSnapshotListener { snapshot, e ->
+            db.collection("users").document(staffId.toString()).collection("messages")
+                .addSnapshotListener { documents, e ->
                     if (e != null) {
                         Log.w("Firestore", "Listen failed.", e)
                         return@addSnapshotListener
                     }
 
-                    if (snapshot != null && snapshot.exists()) {
-                        val gson = Gson()
-
-                        val messagesFromFirestore = snapshot.data?.get("messages")
-                        val json = gson.toJson(messagesFromFirestore)
-
-                        // Deserialization
-                        val type = object : TypeToken<List<Message>>() {}.type
-                        val messages = gson.fromJson<List<Message>>(json, type)
+                    if (documents != null) {
+                        val messages = ArrayList<Message>()
+                        for (doc in documents) {
+                            val message = Message(
+                                doc.getLong("fromId"),
+                                doc.getString("createdAt"),
+                                doc.getString("from"),
+                                doc.getString("message")
+                            )
+                            messages.add(message)
+                        }
 
                         // Sort by date
                         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")
                         val sortedMessages = messages.sortedBy { dtf.parseLocalDate(it.createdAt) }
 
                         messagesResponse.postValue(NetworkResult.Success(sortedMessages))
-                    } else {
-                        messagesResponse.postValue(NetworkResult.Success())
                     }
                 }
         } else {

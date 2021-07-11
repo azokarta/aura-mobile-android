@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
@@ -11,20 +12,31 @@ import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.databinding.PlanRowBinding
 import kz.aura.merp.employee.util.MobDiffUtil
 
-class PlanAdapter(private val onClickListener: OnClickListener? = null) : RecyclerView.Adapter<PlanAdapter.FinanceViewHolder>() {
+class PlansAdapter(private val onClickListener: OnClickListener? = null) : RecyclerView.Adapter<PlansAdapter.PlansViewHolder>()  {
     var dataList = mutableListOf<Plan>()
 
     interface OnClickListener {
         fun sendToDailyPlan(contractId: Long) {}
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinanceViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = PlanRowBinding.inflate(layoutInflater, parent, false)
-        return FinanceViewHolder(binding)
+    object PlansComparator : DiffUtil.ItemCallback<Plan>() {
+        override fun areItemsTheSame(oldItem: Plan, newItem: Plan): Boolean {
+            // Id is unique.
+            return oldItem.contractId == newItem.contractId
+        }
+
+        override fun areContentsTheSame(oldItem: Plan, newItem: Plan): Boolean {
+            return oldItem == newItem
+        }
     }
 
-    override fun onBindViewHolder(holder: FinanceViewHolder, position: Int) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlansViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = PlanRowBinding.inflate(layoutInflater, parent, false)
+        return PlansViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: PlansViewHolder, position: Int) {
         val plan: Plan = dataList[position]
         holder.bind(plan)
     }
@@ -44,8 +56,7 @@ class PlanAdapter(private val onClickListener: OnClickListener? = null) : Recycl
 
     override fun getItemCount(): Int = dataList.size
 
-    inner class FinanceViewHolder(private val binding: PlanRowBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class PlansViewHolder(private val binding: PlanRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(plan: Plan) {
             val textColor: Int = when {
                 plan.paymentOverDueDays!! > 0 -> ContextCompat.getColor(binding.root.context, R.color.red)

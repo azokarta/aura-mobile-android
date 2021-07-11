@@ -45,7 +45,7 @@ class MasterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LanguageHelper.updateLanguage(this)
+//        LanguageHelper.updateLanguage(this)
 
         // Data binding
         binding = ActivityMasterBinding.inflate(layoutInflater)

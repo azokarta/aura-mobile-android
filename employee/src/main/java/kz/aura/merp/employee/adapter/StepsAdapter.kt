@@ -75,7 +75,6 @@ class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerV
                 binding.stepLine.setImageResource(R.drawable.step_line)
             }
             if (position == size - 1) {
-                println("Position: $position, Size: $size")
                 binding.stepLine.visibility = View.GONE
             }
         }

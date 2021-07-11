@@ -3,15 +3,11 @@ package kz.aura.merp.employee.ui.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kz.aura.merp.employee.R
@@ -20,11 +16,9 @@ import kz.aura.merp.employee.viewmodel.SharedViewModel
 import kz.aura.merp.employee.model.Demo
 import kz.aura.merp.employee.viewmodel.DealerViewModel
 import kz.aura.merp.employee.databinding.ActivityDealerBinding
-import kz.aura.merp.employee.util.LanguageHelper
 import com.google.gson.Gson
 import kz.aura.merp.employee.viewmodel.ReferenceViewModel
 import kz.aura.merp.employee.util.verifyAvailableNetwork
-import kz.aura.merp.employee.util.Permissions
 
 class DealerActivity : AppCompatActivity() {
 
@@ -37,7 +31,7 @@ class DealerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LanguageHelper.updateLanguage(this)
+//        LanguageHelper.updateLanguage(this)
 
         // Turn off screenshot
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)

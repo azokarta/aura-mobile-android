@@ -39,7 +39,7 @@ class Interceptor @Inject constructor(
             .url(newUrl)
             .addHeader("Content-Type", "application/x-www-form-urlencoded")
             .addHeader("Cache-Control", "public, max-age=60")
-            .addHeader("Content-Language", LanguageHelper.getLanguage(context))
+            .addHeader("Content-Language", getLanguage(context))
         newRequest = if (link != Link.AUTH) {
             newRequest.addHeader("Authorization", "Bearer ${getToken(context)}")
         } else {
