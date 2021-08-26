@@ -5,10 +5,8 @@ import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.squareup.picasso.Picasso
-import kz.aura.merp.employee.R
-import kz.aura.merp.employee.ui.activity.PlanActivity
-import kz.aura.merp.employee.model.Plan
-import kz.aura.merp.employee.ui.activity.DailyPlanActivity
+import kz.aura.merp.employee.ui.finance.activity.PlanActivity
+import kz.aura.merp.employee.ui.finance.activity.DailyPlanActivity
 
 class FinanceBinding {
     companion object {

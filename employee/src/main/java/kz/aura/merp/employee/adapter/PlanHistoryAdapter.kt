@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.model.PlanHistoryItem
 import kz.aura.merp.employee.databinding.PlanHistoryItemRowBinding
-import kz.aura.merp.employee.util.MobDiffUtil
 
 class PlanHistoryAdapter : RecyclerView.Adapter<PlanHistoryAdapter.PlanHistoryViewHolder>() {
 

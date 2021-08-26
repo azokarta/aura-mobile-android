@@ -3,11 +3,11 @@ package kz.aura.merp.employee.ui.activity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
+import kz.aura.merp.employee.base.BaseActivity
 import kz.aura.merp.employee.databinding.ActivityVerifyPasscodeBinding
 import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.util.openActivityByPosition

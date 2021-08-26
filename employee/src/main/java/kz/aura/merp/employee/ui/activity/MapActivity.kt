@@ -1,9 +1,7 @@
 package kz.aura.merp.employee.ui.activity
 
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
@@ -22,6 +20,7 @@ import com.yandex.mapkit.transport.masstransit.Session
 import io.nlopez.smartlocation.OnLocationUpdatedListener
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
+import kz.aura.merp.employee.base.BaseActivity
 import kz.aura.merp.employee.model.Location
 import kz.aura.merp.employee.databinding.ActivityMapBinding
 

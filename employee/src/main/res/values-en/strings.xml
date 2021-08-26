@@ -72,7 +72,7 @@
     <string name="enter_valid_phone_number">Enter a valid phone number</string>
     <string name="have_not_allowed_access_to_the_camera">You have not allowed access to the camera</string>
     <string name="have_not_allowed_access_to_the_location">You have not allowed access to the location</string>
-    <string name="network_disconnected">Internet connection not connected</string>
+    <string name="internet_is_not_connected">Internet connection not connected</string>
     <string name="note">Note</string>
     <string name="service_process_started">Service process started</string>
     <string name="service_process_finished">Service process finished</string>
@@ -173,6 +173,7 @@
 
     <!--  ERRORS  -->
     <string name="empty_field">The field must not be empty</string>
+    <string name="try_again_later">Please try again later</string>
 
     <!--  WARNINGS  -->
     <string name="really_want_to_sign_out">Really want to sign out ?</string>

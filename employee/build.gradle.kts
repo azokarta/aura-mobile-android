@@ -1,0 +1,155 @@
+plugins {
+    id("com.android.application")
+    id("kotlin-android")
+    id("kotlin-kapt")
+    id("kotlin-parcelize")
+    id("androidx.navigation.safeargs.kotlin")
+    id("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
+}
+
+android {
+    compileSdk = 30
+    buildToolsVersion = "30.0.3"
+
+    defaultConfig {
+        applicationId = "kz.aura.merp.employee"
+        minSdk = 21
+        targetSdk = 30
+        versionCode = 14
+        versionName = "1.0.9"
+        multiDexEnabled = true
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            buildConfigField("String", "BASE_URL_AUTH", "http://werp.kz:30001")
+            buildConfigField("String", "BASE_URL_CORE", "http://werp.kz:30020")
+            buildConfigField("String", "BASE_URL_FINANCE", "http://werp.kz:30021")
+            buildConfigField("String", "BASE_URL_SERVICE", "http://werp.kz:30022")
+            buildConfigField("String", "BASE_URL_CRM", "http://werp.kz:30023")
+        }
+
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
+            isDebuggable = true
+            buildConfigField("String", "BASE_URL_AUTH", "http://werp.kz:32001")
+            buildConfigField("String", "BASE_URL_CORE", "http://werp.kz:32020")
+            buildConfigField("String", "BASE_URL_FINANCE", "http://werp.kz:32021")
+            buildConfigField("String", "BASE_URL_SERVICE", "http://werp.kz:32022")
+            buildConfigField("String", "BASE_URL_CRM", "http://werp.kz:32023")
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    buildFeatures{
+        viewBinding = true
+        dataBinding = true
+    }
+}
+
+dependencies {
+
+    // Android
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
+    implementation("androidx.core:core-ktx:1.6.0")
+    implementation("androidx.appcompat:appcompat:1.3.1")
+
+    // UI
+    implementation("androidx.constraintlayout:constraintlayout:2.1.0")
+    implementation("androidx.preference:preference-ktx:1.1.1")
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("com.google.android.material:material:1.4.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // Test
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+
+    // Lifecycle
+    val lifecycleVersion = "2.3.1"
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
+
+    // Navigation Component
+    val navigationComponentVersion = "2.3.5"
+    implementation("androidx.navigation:navigation-fragment-ktx:$navigationComponentVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$navigationComponentVersion")
+
+    // Retrofit
+    val retrofitVersion = "2.9.0"
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+
+    // Dagger - Hilt
+    val daggerVersion = "2.36"
+    implementation("com.google.dagger:hilt-android:$daggerVersion")
+    kapt("com.google.dagger:hilt-compiler:$daggerVersion")
+
+    // Coroutines
+    val coroutinesVersion = "1.5.0-native-mt"
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+
+    // Mapkit
+    val mapkitVersion = "4.0.0-full"
+    implementation("com.yandex.android:maps.mobile:$mapkitVersion")
+
+    // Multidex
+    val multidexVersion = "1.0.3"
+    implementation("com.android.support:multidex:$multidexVersion")
+
+    // Phone number formatter
+    val ccpVersion = "2.5.1"
+    implementation("com.hbb20:ccp:$ccpVersion")
+
+    // SmartLocation
+    val smartLocationVersion = "3.3.3"
+    implementation("io.nlopez.smartlocation:library:$smartLocationVersion")
+
+    // Firebase
+    val firebaseVersion = "28.0.1"
+    implementation(platform("com.google.firebase:firebase-bom:$firebaseVersion"))
+    implementation ("com.google.firebase:firebase-messaging-ktx")
+    implementation ("com.google.firebase:firebase-firestore-ktx")
+
+    // Biometric
+    val biometricVersion = "1.2.0-alpha03"
+    implementation("androidx.biometric:biometric-ktx:$biometricVersion")
+
+    // MaskEditText
+    val maskedEditTextVersion = "1.0.5"
+    implementation("ru.egslava:MaskedEditText:$maskedEditTextVersion")
+
+    // JodaTime
+    val jodaVersion = "2.10.9.1"
+    implementation("net.danlew:android.joda:$jodaVersion")
+
+    // Glide
+    val glideVersion = "4.12.0"
+    implementation("com.github.bumptech.glide:glide:$glideVersion")
+    kapt("com.github.bumptech.glide:compiler:$glideVersion")
+
+    // Timber
+    val timberVersion = "4.7.1"
+    implementation("com.jakewharton.timber:timber:$timberVersion")
+
+    // App Startup
+    val startupVersion = "1.0.0"
+    implementation("androidx.startup:startup-runtime:$startupVersion")
+
+    // Crypto
+    val cryptoVersion = "1.0.0"
+    implementation("androidx.security:security-crypto:$cryptoVersion")
+
+}

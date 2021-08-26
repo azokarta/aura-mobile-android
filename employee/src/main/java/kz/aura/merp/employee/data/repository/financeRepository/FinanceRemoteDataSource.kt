@@ -1,22 +1,13 @@
 package kz.aura.merp.employee.data.repository.financeRepository
 
-import kz.aura.merp.employee.data.network.FinanceApi
+import kz.aura.merp.employee.data.network.FinanceService
 import kz.aura.merp.employee.model.*
-import kz.aura.merp.employee.util.Interceptor
-import kz.aura.merp.employee.util.Link
 import retrofit2.Response
 import javax.inject.Inject
 
 class FinanceRemoteDataSource @Inject constructor(
-    private val financeApi: FinanceApi,
-    interceptor: Interceptor
+    private val financeApi: FinanceService
 ) {
-
-    init {
-        interceptor.setHost(Link.FINANCE)
-    }
-
-
 
     // Month plan
     suspend fun fetchPlans(): Response<ResponseHelper<List<Plan>>> {

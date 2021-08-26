@@ -1,31 +1,29 @@
 package kz.aura.merp.employee.ui.activity
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
+import kz.aura.merp.employee.base.BaseActivity
 import kz.aura.merp.employee.viewmodel.AuthViewModel
 import kz.aura.merp.employee.databinding.ActivityAuthorizationBinding
 import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.util.*
+import timber.log.Timber
 
 @AndroidEntryPoint
 class AuthorizationActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAuthorizationBinding
+
     private val authViewModel: AuthViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
-    private lateinit var permissions: Permissions
     private var countryCallingCode: String = CountryCode.values()[0].phoneCode
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +64,8 @@ class AuthorizationActivity : BaseActivity() {
             // Get new FCM registration token
             val token = task.result
             token?.let { authViewModel.saveFcmToken(it) }
-            Log.d("FIREBASE_TOKEN", token.toString())
+            Timber.tag("FIREBASE_TOKEN")
+            Timber.d(token.toString())
         }
     }
 
@@ -74,11 +73,9 @@ class AuthorizationActivity : BaseActivity() {
         authViewModel.signInResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    // Hide loading
+                    val token = res.data?.accessToken
                     progressDialog.hideLoading()
-                    // Save token
-                    saveToken(this, res.data!!.accessToken)
-                    // Get info about user
+                    authViewModel.preferences.token = token
                     authViewModel.getUserInfo()
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
@@ -96,15 +93,16 @@ class AuthorizationActivity : BaseActivity() {
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
+                    val salaries = res.data?.data
 
-                    if (!res.data?.data.isNullOrEmpty()) {
-                        val salary: Salary? = defineCorrectSalary(res.data?.data)
+                    if (!salaries.isNullOrEmpty()) {
+                        val salary: Salary? = defineCorrectSalary(salaries)
                         val position: StaffPosition? = definePosition(salary)
 
                         if (position == null || salary == null) {
                             showException(getString(R.string.wrong_position), this)
                         } else {
-                            authViewModel.saveSalary(salary)
+                            authViewModel.preferences.salary = salary
                             getTokenFromFirebase()
                         }
                     } else {
@@ -138,7 +136,7 @@ class AuthorizationActivity : BaseActivity() {
         hideKeyboard(this)
         val phoneNumber = binding.phoneNumberText.rawText
         val password = binding.passwordText.text.toString()
-        authViewModel.saveCountryCallingCode(countryCallingCode)
+        authViewModel.preferences.countryCallingCode = countryCallingCode
         authViewModel.signIn(countryCallingCode + phoneNumber, password)
     }
 

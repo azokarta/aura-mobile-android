@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.model.ServiceApplication
 import kz.aura.merp.employee.databinding.ServiceApplicationCardBinding
-import kz.aura.merp.employee.util.MobDiffUtil
 
 class ServiceApplicationAdapter : RecyclerView.Adapter<ServiceApplicationAdapter.MasterViewHolder>() {
 

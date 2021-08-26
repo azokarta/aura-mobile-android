@@ -1,3 +1,0 @@
-include ':customer'
-include ':employee'
-rootProject.name = "aura-mobile-android"

@@ -4,17 +4,11 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.data.DataStoreRepository
 import kz.aura.merp.employee.data.repository.financeRepository.FinanceRepository
 import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.util.*
@@ -25,8 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FinanceViewModel @Inject constructor(
-    private val financeRepository: FinanceRepository,
-    private val dataStoreRepository: DataStoreRepository,
+    private val financeRepository: FinanceRepository
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -56,16 +49,6 @@ class FinanceViewModel @Inject constructor(
     val planResponse: MutableLiveData<NetworkResult<Plan>> = MutableLiveData()
     val assignScheduledCallResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
     val messagesResponse: MutableLiveData<NetworkResult<List<Message>>> = MutableLiveData()
-    val flow = Pager(
-        // Configure how data is loaded by passing additional properties to
-        // PagingConfig, such as prefetchDistance.
-        PagingConfig(pageSize = 20)
-    ) {
-        PagingSource(::getPlansByPage)
-    }.flow.cachedIn(scope)
-    val receiveMessage = { str: Int ->
-        getApplication<Application>().getString(str)
-    }
 
     private suspend fun getPlansByPage(page: Int): List<Plan> {
         val response = financeRepository.remote.fetchPlans()

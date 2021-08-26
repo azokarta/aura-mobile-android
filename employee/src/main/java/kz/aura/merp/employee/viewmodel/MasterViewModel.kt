@@ -7,13 +7,9 @@ import androidx.lifecycle.viewModelScope
 import kz.aura.merp.employee.model.ServiceApplication
 import kz.aura.merp.employee.model.TrackEmpProcess
 import kz.aura.merp.employee.model.TrackEmpProcessServiceApplication
-import kz.aura.merp.employee.data.network.ServiceApi
 import kotlinx.coroutines.launch
 import kz.aura.merp.employee.model.Filters
-import kz.aura.merp.employee.util.Link
 import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.util.receiveErrorMessage
-import kz.aura.merp.employee.util.saveData
 import java.lang.Exception
 
 class MasterViewModel(application: Application) : AndroidViewModel(application) {

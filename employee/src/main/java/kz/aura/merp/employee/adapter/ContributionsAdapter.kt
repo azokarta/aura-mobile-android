@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ContributionCardBinding
 import kz.aura.merp.employee.model.Contribution
-import kz.aura.merp.employee.util.MobDiffUtil
 
 class ContributionsAdapter : RecyclerView.Adapter<ContributionsAdapter.ContributionsViewHolder>() {
 

@@ -5,10 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kz.aura.merp.employee.model.*
-import kz.aura.merp.employee.data.network.ReferenceApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kz.aura.merp.employee.util.Link
 import java.lang.Exception
 
 class ReferenceViewModel(application: Application) : AndroidViewModel(application) {

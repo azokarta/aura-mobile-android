@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.databinding.ScheduledCallCardBinding
 import kz.aura.merp.employee.model.ScheduledCall
-import kz.aura.merp.employee.util.MobDiffUtil
 
 class ScheduledCallsAdapter : RecyclerView.Adapter<ScheduledCallsAdapter.ScheduledCallsViewHolder>() {
 

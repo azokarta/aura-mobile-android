@@ -72,7 +72,7 @@
     <string name="enter_valid_phone_number">Введите действующий номер телефона</string>
     <string name="have_not_allowed_access_to_the_camera">Вы не разрешили доступ к камеру</string>
     <string name="have_not_allowed_access_to_the_location">Вы не разрешили доступ к местоположению</string>
-    <string name="network_disconnected">Интернет-соединение не подключен</string>
+    <string name="internet_is_not_connected">Интернет-соединение не подключен</string>
     <string name="note">Примечание</string>
     <string name="service_process_started">Сервис процесс начался</string>
     <string name="service_process_finished">Сервис процесс закончился</string>
@@ -173,6 +173,7 @@
 
     <!--  ERRORS  -->
     <string name="empty_field">Поле не должно быть пустым</string>
+    <string name="try_again_later">Повторите попытку позже</string>
 
     <!--  WARNINGS  -->
     <string name="really_want_to_sign_out">Точно хотите выйти ?</string>

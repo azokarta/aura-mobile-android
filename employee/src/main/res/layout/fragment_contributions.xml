@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:loadingType="@{sharedViewModel.loadingType}"
         android:response="@{sharedViewModel.response}"
-        tools:context=".ui.fragment.finance.ContributionsFragment">
+        tools:context=".ui.finance.fragment.ContributionsFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

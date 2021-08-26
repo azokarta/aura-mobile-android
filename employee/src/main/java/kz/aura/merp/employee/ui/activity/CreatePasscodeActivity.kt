@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
+import kz.aura.merp.employee.base.BaseActivity
 import kz.aura.merp.employee.databinding.ActivityCreatePasscodeBinding
 import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.util.*
@@ -65,7 +66,6 @@ class CreatePasscodeActivity : BaseActivity() {
 
     override fun onDestroy() {
         if (savedPasscode.isNullOrBlank()) {
-            removeToken(this)
             authViewModel.clearSettings()
         }
         super.onDestroy()

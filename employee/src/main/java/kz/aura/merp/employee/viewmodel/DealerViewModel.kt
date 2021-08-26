@@ -6,10 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kz.aura.merp.employee.model.Demo
 import kz.aura.merp.employee.model.TrackEmpProcess
-import kz.aura.merp.employee.data.network.CrmApi
-import kz.aura.merp.employee.util.saveData
 import kotlinx.coroutines.launch
-import kz.aura.merp.employee.util.Link
 import java.lang.Exception
 
 class DealerViewModel(application: Application): AndroidViewModel(application) {

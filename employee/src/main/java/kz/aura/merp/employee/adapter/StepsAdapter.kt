@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.model.BusinessProcessStatus
 import kz.aura.merp.employee.databinding.StepViewRowBinding
-import kz.aura.merp.employee.util.MobDiffUtil
 
 class StepsAdapter(val completedStepListener: CompletedStepListener) : RecyclerView.Adapter<StepsAdapter.StepsViewHolder>() {
     private var dataList = mutableListOf<BusinessProcessStatus>()

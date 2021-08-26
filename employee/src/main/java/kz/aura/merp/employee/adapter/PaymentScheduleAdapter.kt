@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.model.PaymentSchedule
 import kz.aura.merp.employee.databinding.PaymentScheduleRowBinding
-import kz.aura.merp.employee.util.MobDiffUtil
 
 class PaymentScheduleAdapter : RecyclerView.Adapter<PaymentScheduleAdapter.PaymentScheduleViewHolder>() {
 

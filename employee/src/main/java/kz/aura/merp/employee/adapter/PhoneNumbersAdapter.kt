@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.databinding.PhoneNumberRowBinding
-import kz.aura.merp.employee.util.MobDiffUtil
 import kz.aura.merp.employee.view.OnSelectPhoneNumber
 
 class PhoneNumbersAdapter(private val iOnSelectPhoneNumber: OnSelectPhoneNumber? = null) : RecyclerView.Adapter<PhoneNumbersAdapter.PhoneNumbersViewHolder>() {

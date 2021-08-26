@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.databinding.CallCardBinding
 import kz.aura.merp.employee.model.Call
-import kz.aura.merp.employee.util.MobDiffUtil
-import kz.aura.merp.employee.view.OnSelectPhoneNumber
 
 class CallsAdapter : RecyclerView.Adapter<CallsAdapter.CallsViewHolder>() {
 

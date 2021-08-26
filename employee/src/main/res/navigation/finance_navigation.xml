@@ -5,35 +5,35 @@
     app:startDestination="@id/nav_monthly_plan">
     <fragment
         android:id="@+id/nav_monthly_plan"
-        android:name="kz.aura.merp.employee.ui.fragment.finance.MonthlyPlanFragment"
+        android:name="kz.aura.merp.employee.ui.finance.fragment.MonthlyPlanFragment"
         android:label="@string/monthly_plan" />
     <fragment
         android:id="@+id/nav_daily_plan"
-        android:name="kz.aura.merp.employee.ui.fragment.finance.DailyPlansFragment"
+        android:name="kz.aura.merp.employee.ui.finance.fragment.DailyPlansFragment"
         android:label="@string/daily_plan" />
     <fragment
         android:id="@+id/nav_contributions"
-        android:name="kz.aura.merp.employee.ui.fragment.finance.ContributionsFragment"
+        android:name="kz.aura.merp.employee.ui.finance.fragment.ContributionsFragment"
         android:label="@string/contributions" />
     <fragment
         android:id="@+id/nav_calls"
-        android:name="kz.aura.merp.employee.ui.fragment.finance.CallsFragment"
+        android:name="kz.aura.merp.employee.ui.finance.fragment.CallsFragment"
         android:label="@string/calls" />
     <fragment
         android:id="@+id/nav_scheduled_calls"
-        android:name="kz.aura.merp.employee.ui.fragment.finance.ScheduledCallsFragment"
+        android:name="kz.aura.merp.employee.ui.finance.fragment.ScheduledCallsFragment"
         android:label="@string/scheduled_calls" />
     <fragment
         android:id="@+id/nav_profile"
-        android:name="kz.aura.merp.employee.ui.fragment.ProfileFragment"
+        android:name="kz.aura.merp.employee.ui.ProfileFragment"
         android:label="@string/profile" />
     <fragment
         android:id="@+id/nav_messages"
-        android:name="kz.aura.merp.employee.ui.fragment.MessagesFragment"
+        android:name="kz.aura.merp.employee.ui.MessagesFragment"
         android:label="@string/message" />
     <fragment
         android:id="@+id/nav_settings"
-        android:name="kz.aura.merp.employee.ui.fragment.SettingsFragment"
+        android:name="kz.aura.merp.employee.ui.SettingsFragment"
         android:label="@string/settings" />
 
 </navigation>

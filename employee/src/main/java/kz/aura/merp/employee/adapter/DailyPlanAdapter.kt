@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.DailyPlanRowBinding
 import kz.aura.merp.employee.model.DailyPlan
-import kz.aura.merp.employee.model.Plan
-import kz.aura.merp.employee.util.MobDiffUtil
 
 class DailyPlanAdapter(private val dailyPlanListener: DailyPlanListener) : RecyclerView.Adapter<DailyPlanAdapter.DailyPlanViewHolder>() {
 

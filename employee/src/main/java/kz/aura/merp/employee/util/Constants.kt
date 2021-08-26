@@ -23,16 +23,8 @@ object Constants {
 
 
     const val OCR_URL = "https://aurakz.idkit.co"
-    val SELECTED_SERVER = Server.DEV
 
     val crmPositions = arrayListOf(4L, 3L, 10L, 105L)
     val financePositions = arrayListOf(9L)
     val servicePositions = arrayListOf(16L, 17L)
-
-
-    // ROOM Database
-    const val DATABASE_NAME = "wemob_database"
-    const val PLANS_TABLE = "plans_table"
-    const val CONTRIBUTIONS_TABLE = "contributions_table"
-    const val CALLS_TABLE = "calls_table"
 }

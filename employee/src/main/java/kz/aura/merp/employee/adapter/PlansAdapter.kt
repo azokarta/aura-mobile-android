@@ -4,13 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.databinding.PlanRowBinding
-import kz.aura.merp.employee.util.MobDiffUtil
 
 class PlansAdapter(private val onClickListener: OnClickListener? = null) : RecyclerView.Adapter<PlansAdapter.PlansViewHolder>()  {
     var dataList = mutableListOf<Plan>()
