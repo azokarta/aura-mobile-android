@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.adapter.CallsAdapter
 import kz.aura.merp.employee.databinding.FragmentPlanCallsBinding
-import kz.aura.merp.employee.util.NetworkResult
+import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 

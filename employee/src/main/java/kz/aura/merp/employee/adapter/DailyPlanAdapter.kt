@@ -5,14 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.DailyPlanRowBinding
 import kz.aura.merp.employee.model.DailyPlan
 
-class DailyPlanAdapter(private val dailyPlanListener: DailyPlanListener) : RecyclerView.Adapter<DailyPlanAdapter.DailyPlanViewHolder>() {
-
-    var dataList = mutableListOf<DailyPlan>()
+class DailyPlanAdapter(private val dailyPlanListener: DailyPlanListener) : ListAdapter<DailyPlan, DailyPlanAdapter.DailyPlanViewHolder>(DailyPlanDiffUtil()) {
 
     interface DailyPlanListener {
         fun selectDailyPlan(id: Long)
@@ -25,24 +24,8 @@ class DailyPlanAdapter(private val dailyPlanListener: DailyPlanListener) : Recyc
     }
 
     override fun onBindViewHolder(holder: DailyPlanViewHolder, position: Int) {
-        val plan: DailyPlan = dataList[position]
-        holder.bind(plan)
+        holder.bind(getItem(position))
     }
-
-    fun setData(plans: List<DailyPlan>) {
-        val clientDiffUtil = MobDiffUtil(dataList, plans)
-        val clientDiffResult = DiffUtil.calculateDiff(clientDiffUtil)
-        this.dataList.clear()
-        this.dataList.addAll(plans)
-        clientDiffResult.dispatchUpdatesTo(this)
-    }
-
-    fun clear() {
-        dataList.clear()
-        notifyDataSetChanged()
-    }
-
-    override fun getItemCount(): Int = dataList.size
 
     inner class DailyPlanViewHolder(private val binding: DailyPlanRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -90,6 +73,12 @@ class DailyPlanAdapter(private val dailyPlanListener: DailyPlanListener) : Recyc
             }
 
         }
+    }
+
+    private class DailyPlanDiffUtil : DiffUtil.ItemCallback<DailyPlan>() {
+        override fun areItemsTheSame(oldItem: DailyPlan, newItem: DailyPlan): Boolean = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: DailyPlan, newItem: DailyPlan): Boolean = oldItem.dailyPlanId == newItem.dailyPlanId
     }
 
 }

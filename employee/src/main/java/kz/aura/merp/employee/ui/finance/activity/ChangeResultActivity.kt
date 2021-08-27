@@ -7,21 +7,22 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.base.BaseActivity
+import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.databinding.ActivityChangeResultBinding
 import kz.aura.merp.employee.model.AssignCollectMoneyCommand
 import kz.aura.merp.employee.model.AssignScheduledCallCommand
 import kz.aura.merp.employee.model.ChangePlanResult
-import kz.aura.merp.employee.ui.dialog.DatePickerFragment
-import kz.aura.merp.employee.ui.dialog.TimePickerFragment
+import kz.aura.merp.employee.ui.common.DatePickerFragment
+import kz.aura.merp.employee.ui.common.TimePickerFragment
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.PermissionsListener
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
-
 
 @AndroidEntryPoint
 class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListener, DatePickerFragment.DatePickerListener, PermissionsListener {

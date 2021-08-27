@@ -3,68 +3,63 @@ package kz.aura.merp.employee.ui.finance.fragment
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.viewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.ContributionsAdapter
 import kz.aura.merp.employee.databinding.FragmentContributionsBinding
 import kz.aura.merp.employee.util.LoadingType
-import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.viewmodel.SharedViewModel
+import kz.aura.merp.employee.viewmodel.finance.ContributionsViewModel
 
 @AndroidEntryPoint
-class ContributionsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class ContributionsFragment : Fragment(R.layout.fragment_contributions), SwipeRefreshLayout.OnRefreshListener {
 
     private var _binding: FragmentContributionsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var sharedViewModel: SharedViewModel
-    private lateinit var financeViewModel: FinanceViewModel
+    private val sharedViewModel: SharedViewModel by viewModels()
+    private val contributionsViewModel: ContributionsViewModel by viewModels()
     private val contributionsAdapter: ContributionsAdapter by lazy { ContributionsAdapter() }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentContributionsBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
-        binding.sharedViewModel = sharedViewModel
-        val root: View = binding.root
+        _binding = FragmentContributionsBinding.bind(view)
 
-        binding.swipeRefresh.setOnRefreshListener(this)
+        with (binding) {
+            lifecycleOwner = this@ContributionsFragment
+            sharedViewModel = this@ContributionsFragment.sharedViewModel
+            swipeRefresh.setOnRefreshListener(this@ContributionsFragment)
+            error.restart.setOnClickListener { callRequests() }
+        }
 
         setupRecyclerView()
 
         setupObservers()
 
         callRequests()
-
-        return root
     }
 
     private fun callRequests() {
-        financeViewModel.fetchContributions()
+        contributionsViewModel.fetchContributions()
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = contributionsAdapter
     }
 
     private fun setupObservers() {
-        financeViewModel.contributionsResponse.observe(viewLifecycleOwner, { res ->
+        contributionsViewModel.contributionsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
-                    contributionsAdapter.setData(res.data!!)
+
+                    val contributions = res.data?.data
+
+                    contributionsAdapter.submitList(contributions)
                 }
                 is NetworkResult.Loading -> sharedViewModel.setResponse(res)
                 is NetworkResult.Error -> sharedViewModel.setResponse(res)

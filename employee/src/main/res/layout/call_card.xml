@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -39,6 +40,7 @@
                 android:id="@+id/imageView15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                tools:src="@drawable/ic_baseline_phone_forwarded_24"
                 android:src="@{call.callDirectionId == 1 ? @drawable/ic_baseline_phone_forwarded_24 : @drawable/ic_baseline_phone_callback_24}"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"

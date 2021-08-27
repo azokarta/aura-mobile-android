@@ -14,40 +14,18 @@ import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.Gson
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ErrorDialogBinding
-import kz.aura.merp.employee.model.Error
 import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.ui.finance.activity.FinanceActivity
-import kz.aura.merp.employee.util.Constants.SELECTED_SERVER
-import kz.aura.merp.employee.util.Constants.WE_MOB_DEV_AUTH
-import kz.aura.merp.employee.util.Constants.WE_MOB_DEV_CRM
-import kz.aura.merp.employee.util.Constants.WE_MOB_DEV_FINANCE
-import kz.aura.merp.employee.util.Constants.WE_MOB_DEV_MAIN
-import kz.aura.merp.employee.util.Constants.WE_MOB_DEV_SERVICE
-import kz.aura.merp.employee.util.Constants.WE_MOB_PROD_AUTH
-import kz.aura.merp.employee.util.Constants.WE_MOB_PROD_CRM
-import kz.aura.merp.employee.util.Constants.WE_MOB_PROD_FINANCE
-import kz.aura.merp.employee.util.Constants.WE_MOB_PROD_MAIN
-import kz.aura.merp.employee.util.Constants.WE_MOB_PROD_SERVICE
-import kz.aura.merp.employee.util.Constants.WE_MOB_TEST_AUTH
-import kz.aura.merp.employee.util.Constants.WE_MOB_TEST_CRM
-import kz.aura.merp.employee.util.Constants.WE_MOB_TEST_FINANCE
-import kz.aura.merp.employee.util.Constants.WE_MOB_TEST_MAIN
-import kz.aura.merp.employee.util.Constants.WE_MOB_TEST_SERVICE
 import kz.aura.merp.employee.util.Constants.crmPositions
 import kz.aura.merp.employee.util.Constants.financePositions
 import kz.aura.merp.employee.util.Constants.servicePositions
-import okhttp3.ResponseBody
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 fun updateLocale(c: Context, language: String): ContextWrapper {
     var context = c
@@ -123,7 +101,7 @@ fun hideKeyboardFrom(context: Context, view: View) {
     imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun defineCorrectSalary(salaries: ArrayList<Salary>?): Salary? {
+fun defineCorrectSalary(salaries: List<Salary>?): Salary? {
     if (salaries.isNullOrEmpty()) {
         return null
     }
@@ -165,34 +143,21 @@ fun definePosition(salary: Salary?): StaffPosition? {
 
 fun openActivityByPosition(context: Context, position: StaffPosition) {
     when (position) {
-        StaffPosition.DEALER -> clearPreviousAndOpenActivity(context, DealerActivity())
-        StaffPosition.MASTER -> clearPreviousAndOpenActivity(context, MasterActivity())
-        StaffPosition.FIN_AGENT -> clearPreviousAndOpenActivity(context, FinanceActivity())
+        StaffPosition.FIN_AGENT -> newTask(context, FinanceActivity::class.java)
     }
 }
 
-fun clearPreviousAndOpenActivity(context: Context, activity: Activity) {
+fun newTask(context: Context, activity: Class<*>) {
     // Clear previous activities and open new activity
-    val intent = Intent(context, activity::class.java)
+    val intent = Intent(context, activity)
     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
     context.startActivity(intent)
-}
-
-fun verifyAvailableNetwork(context: Context): Boolean {
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val networkInfo = connectivityManager.activeNetworkInfo
-    return networkInfo != null && networkInfo.isConnected
 }
 
 fun isInternetAvailable(context: Context): Boolean {
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val networkInfo = connectivityManager.activeNetworkInfo
     return networkInfo != null && networkInfo.isConnected
-}
-
-fun receiveErrorMessage(errorBody: ResponseBody): String? {
-    val res = Gson().fromJson(errorBody.charStream(), Error::class.java)
-    return res.message
 }
 
 fun showException(message: String? = null, context: Context, title: String? = null) {

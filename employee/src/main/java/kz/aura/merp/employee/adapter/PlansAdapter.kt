@@ -5,56 +5,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.databinding.PlanRowBinding
 
-class PlansAdapter(private val onClickListener: OnClickListener? = null) : RecyclerView.Adapter<PlansAdapter.PlansViewHolder>()  {
-    var dataList = mutableListOf<Plan>()
+class PlansAdapter(private val onClickListener: OnClickListener? = null) : ListAdapter<Plan, PlansAdapter.PlansViewHolder>(PlansDiffUtil())  {
 
     interface OnClickListener {
         fun sendToDailyPlan(contractId: Long) {}
     }
 
-    object PlansComparator : DiffUtil.ItemCallback<Plan>() {
-        override fun areItemsTheSame(oldItem: Plan, newItem: Plan): Boolean {
-            // Id is unique.
-            return oldItem.contractId == newItem.contractId
-        }
-
-        override fun areContentsTheSame(oldItem: Plan, newItem: Plan): Boolean {
-            return oldItem == newItem
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlansViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = PlanRowBinding.inflate(layoutInflater, parent, false)
-        return PlansViewHolder(binding)
+        return PlansViewHolder.from(parent, onClickListener)
     }
 
     override fun onBindViewHolder(holder: PlansViewHolder, position: Int) {
-        val plan: Plan = dataList[position]
-        holder.bind(plan)
+        holder.bind(getItem(position))
     }
 
-    fun setData(plans: List<Plan>) {
-        val clientDiffUtil = MobDiffUtil(dataList, plans)
-        val clientDiffResult = DiffUtil.calculateDiff(clientDiffUtil)
-        this.dataList.clear()
-        this.dataList.addAll(plans)
-        clientDiffResult.dispatchUpdatesTo(this)
-    }
-
-    fun clear() {
-        dataList.clear()
-        notifyDataSetChanged()
-    }
-
-    override fun getItemCount(): Int = dataList.size
-
-    inner class PlansViewHolder(private val binding: PlanRowBinding) : RecyclerView.ViewHolder(binding.root) {
+    class PlansViewHolder(private val binding: PlanRowBinding, private val onClickListener: OnClickListener? = null) : RecyclerView.ViewHolder(binding.root) {
         fun bind(plan: Plan) {
             val textColor: Int = when {
                 plan.paymentOverDueDays!! > 0 -> ContextCompat.getColor(binding.root.context, R.color.red)
@@ -128,6 +99,20 @@ class PlansAdapter(private val onClickListener: OnClickListener? = null) : Recyc
             }
 
         }
+
+        companion object {
+            fun from(parent: ViewGroup, onClickListener: OnClickListener?): PlansViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = PlanRowBinding.inflate(layoutInflater, parent, false)
+                return PlansViewHolder(binding, onClickListener)
+            }
+        }
+    }
+
+    private class PlansDiffUtil : DiffUtil.ItemCallback<Plan>() {
+        override fun areItemsTheSame(oldItem: Plan, newItem: Plan): Boolean = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: Plan, newItem: Plan): Boolean = oldItem.contractId == newItem.contractId
     }
 
 }

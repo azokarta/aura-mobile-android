@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activity.MapActivity">
+        tools:context=".ui.common.MapActivity">
 
         <include
             android:id="@+id/toolbar"

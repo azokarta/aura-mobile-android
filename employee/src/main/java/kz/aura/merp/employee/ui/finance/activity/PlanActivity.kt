@@ -11,7 +11,6 @@ import kz.aura.merp.employee.ui.finance.fragment.ContractFragment
 import kz.aura.merp.employee.ui.finance.fragment.PlanCallsFragment
 import kz.aura.merp.employee.ui.finance.fragment.PlanContributionsFragment
 import kz.aura.merp.employee.ui.finance.fragment.PlanPaymentScheduleFragment
-import kz.aura.merp.employee.ui.fragment.finance.*
 import kz.aura.merp.employee.util.PagerAdapter
 
 @AndroidEntryPoint

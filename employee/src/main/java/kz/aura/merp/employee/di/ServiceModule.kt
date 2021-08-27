@@ -5,6 +5,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kz.aura.merp.employee.data.network.*
+import kz.aura.merp.employee.data.auth.AuthService
+import kz.aura.merp.employee.data.core.CoreService
 import retrofit2.Retrofit
 
 @Module

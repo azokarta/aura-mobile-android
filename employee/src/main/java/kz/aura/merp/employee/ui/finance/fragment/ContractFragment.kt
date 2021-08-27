@@ -4,11 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
@@ -17,25 +14,21 @@ import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.databinding.FragmentContractBinding
 import kz.aura.merp.employee.ui.finance.activity.IncomingActivity
 import kz.aura.merp.employee.ui.finance.activity.OutgoingActivity
-import kz.aura.merp.employee.util.NetworkResult
+import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.util.ProgressDialog
 import kz.aura.merp.employee.view.OnSelectPhoneNumber
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
+import kz.aura.merp.employee.viewmodel.finance.ContractViewModel
 
 @AndroidEntryPoint
-class ContractFragment : Fragment(), OnSelectPhoneNumber {
+class ContractFragment : Fragment(R.layout.fragment_contract), OnSelectPhoneNumber {
 
     private var _binding: FragmentContractBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var sharedViewModel: SharedViewModel
-    private lateinit var financeViewModel: FinanceViewModel
+    private val sharedViewModel: SharedViewModel by viewModels()
+    private val contractViewModel: ContractViewModel by viewModels()
     private var contractId: Long? = null
-    private var plan: Plan? = null
     private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
     private lateinit var progressDialog: ProgressDialog
 
@@ -46,65 +39,50 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber {
         }
     }
 
-    override fun onCreateView (
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentContractBinding.bind(view)
 
-        _binding = FragmentContractBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
-        binding.sharedViewModel = sharedViewModel
-        val root: View = binding.root
+        with (binding) {
+            lifecycleOwner = this@ContractFragment
+            sharedViewModel = this@ContractFragment.sharedViewModel
+            error.restart.setOnClickListener { callRequests() }
+        }
 
-        // Initialize Loading Dialog
         progressDialog = ProgressDialog(requireContext())
 
         initPhoneNumbers()
 
-        // Observe MutableLiveData
         setObservers()
 
-        callRequest()
-
-        return root
+        callRequests()
     }
 
     private fun initPhoneNumbers() {
-        binding.phoneNumbers.layoutManager = LinearLayoutManager(requireContext())
         binding.phoneNumbers.adapter = phoneNumbersAdapter
         binding.phoneNumbers.isNestedScrollingEnabled = false
     }
 
-    private fun callRequest() {
-        financeViewModel.fetchPlan(contractId!!)
-        financeViewModel.fetchBusinessProcessStatuses()
+    private fun callRequests() {
+        contractViewModel.fetchPlan(contractId!!)
+        contractViewModel.fetchBusinessProcessStatuses()
     }
 
     private fun setObservers() {
-        financeViewModel.planResponse.observe(viewLifecycleOwner, { res ->
+        contractViewModel.planResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
-                    this.plan = res.data
+                    val plan = res.data?.data
                     binding.plan = plan
 
                     // Set phone numbers
-                    phoneNumbersAdapter.setData(plan!!.customerPhoneNumbers)
+                    phoneNumbersAdapter.submitList(plan?.customerPhoneNumbers)
                 }
-                is NetworkResult.Loading -> {
-                    sharedViewModel.setResponse(res)
-                }
-                is NetworkResult.Error -> {
-                    sharedViewModel.setResponse(res)
-                }
+                is NetworkResult.Loading -> sharedViewModel.setResponse(res)
+                is NetworkResult.Error -> sharedViewModel.setResponse(res)
             }
         })
-    }
-
-    companion object {
-        private const val callRequestCode = 1000
     }
 
     override fun onDestroyView() {
@@ -141,5 +119,9 @@ class ContractFragment : Fragment(), OnSelectPhoneNumber {
         intent.putExtra("phoneNumber", phoneNumber)
         intent.putExtra("contractId", contractId)
         startActivityForResult(intent, callRequestCode);
+    }
+
+    companion object {
+        private const val callRequestCode = 1000
     }
 }

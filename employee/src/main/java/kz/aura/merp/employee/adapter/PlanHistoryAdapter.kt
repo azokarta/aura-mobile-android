@@ -4,37 +4,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.model.PlanHistoryItem
 import kz.aura.merp.employee.databinding.PlanHistoryItemRowBinding
 
-class PlanHistoryAdapter : RecyclerView.Adapter<PlanHistoryAdapter.PlanHistoryViewHolder>() {
-
-    var dataList = mutableListOf<PlanHistoryItem>()
+class PlanHistoryAdapter : ListAdapter<PlanHistoryItem, PlanHistoryAdapter.PlanHistoryViewHolder>(PlanHistoryDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanHistoryViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = PlanHistoryItemRowBinding.inflate(layoutInflater, parent, false)
-        return PlanHistoryViewHolder(binding)
+        return PlanHistoryViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: PlanHistoryViewHolder, position: Int) {
-        holder.bind(dataList[position])
+        holder.bind(getItem(position))
     }
 
-    fun setData(history: List<PlanHistoryItem>) {
-        val historyDiffUtil = MobDiffUtil(dataList, history)
-        val historyDiffResult = DiffUtil.calculateDiff(historyDiffUtil)
-        this.dataList.clear()
-        this.dataList.addAll(history)
-        historyDiffResult.dispatchUpdatesTo(this)
-    }
-
-    override fun getItemCount(): Int = dataList.size
-
-    class PlanHistoryViewHolder(private val binding: PlanHistoryItemRowBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class PlanHistoryViewHolder(private val binding: PlanHistoryItemRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(historyItem: PlanHistoryItem) {
             binding.historyItem = historyItem
             binding.executePendingBindings()
@@ -91,6 +77,23 @@ class PlanHistoryAdapter : RecyclerView.Adapter<PlanHistoryAdapter.PlanHistoryVi
             }
 
         }
+
+        companion object {
+            fun from(parent: ViewGroup): PlanHistoryViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = PlanHistoryItemRowBinding.inflate(layoutInflater, parent, false)
+                return PlanHistoryViewHolder(binding)
+            }
+        }
+    }
+
+    private class PlanHistoryDiffUtil : DiffUtil.ItemCallback<PlanHistoryItem>() {
+        override fun areItemsTheSame(oldItem: PlanHistoryItem, newItem: PlanHistoryItem): Boolean = oldItem == newItem
+
+        override fun areContentsTheSame(
+            oldItem: PlanHistoryItem,
+            newItem: PlanHistoryItem
+        ): Boolean = oldItem.id == newItem.id
     }
 
 }

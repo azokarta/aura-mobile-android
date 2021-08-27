@@ -4,36 +4,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ContributionCardBinding
 import kz.aura.merp.employee.model.Contribution
 
-class ContributionsAdapter : RecyclerView.Adapter<ContributionsAdapter.ContributionsViewHolder>() {
-
-    private var dataList = mutableListOf<Contribution>()
+class ContributionsAdapter : ListAdapter<Contribution, ContributionsAdapter.ContributionsViewHolder>(ContributionsDiffUtil()) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): ContributionsViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ContributionCardBinding.inflate(layoutInflater, parent, false)
-        return ContributionsViewHolder(binding)
+        return ContributionsViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: ContributionsViewHolder, position: Int) {
-        holder.bind(dataList[position])
-    }
-
-    override fun getItemCount(): Int = dataList.size
-
-    fun setData(contributions: List<Contribution>) {
-        val contributionsDiffUtil = MobDiffUtil(dataList, contributions)
-        val contributionsDiffResult = DiffUtil.calculateDiff(contributionsDiffUtil)
-        this.dataList.clear()
-        this.dataList.addAll(contributions)
-        contributionsDiffResult.dispatchUpdatesTo(this)
+        holder.bind(getItem(position))
     }
 
     class ContributionsViewHolder(val binding: ContributionCardBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -72,5 +59,19 @@ class ContributionsAdapter : RecyclerView.Adapter<ContributionsAdapter.Contribut
                 }
             }
         }
+
+        companion object {
+            fun from(parent: ViewGroup): ContributionsViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ContributionCardBinding.inflate(layoutInflater, parent, false)
+                return ContributionsViewHolder(binding)
+            }
+        }
+    }
+
+    private class ContributionsDiffUtil : DiffUtil.ItemCallback<Contribution>() {
+        override fun areItemsTheSame(oldItem: Contribution, newItem: Contribution): Boolean = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: Contribution, newItem: Contribution): Boolean = oldItem.id == newItem.id
     }
 }

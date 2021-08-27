@@ -12,11 +12,12 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PlansAdapter
+import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.databinding.FragmentMonthlyPlanBinding
 import kz.aura.merp.employee.model.Plan
 import kz.aura.merp.employee.model.PlanFilter
-import kz.aura.merp.employee.ui.dialog.MonthlyPlanFilterDialogFragment
-import kz.aura.merp.employee.ui.dialog.TimePickerFragment
+import kz.aura.merp.employee.ui.finance.dialog.MonthlyPlanFilterDialogFragment
+import kz.aura.merp.employee.ui.common.TimePickerFragment
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.PlanFilterViewModel

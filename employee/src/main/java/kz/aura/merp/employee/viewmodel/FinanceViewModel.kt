@@ -9,7 +9,8 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.data.repository.financeRepository.FinanceRepository
+import kz.aura.merp.employee.base.NetworkResult
+import kz.aura.merp.employee.data.finance.FinanceRepository
 import kz.aura.merp.employee.model.*
 import kz.aura.merp.employee.util.*
 import org.joda.time.format.DateTimeFormat
@@ -33,7 +34,8 @@ class FinanceViewModel @Inject constructor(
     val banksResponse: MutableLiveData<NetworkResult<List<Bank>>> = MutableLiveData()
     val paymentMethodsResponse: MutableLiveData<NetworkResult<List<PaymentMethod>>> = MutableLiveData()
     val contributionsResponse: MutableLiveData<NetworkResult<List<Contribution>>> = MutableLiveData()
-    val callsHistoryResponse: MutableLiveData<NetworkResult<List<Call>>> = MutableLiveData()
+
+
     val changeResultResponse: MutableLiveData<NetworkResult<Nothing>> = MutableLiveData()
     val callDirectionsResponse: MutableLiveData<NetworkResult<List<CallDirection>>> = MutableLiveData()
     val callStatusesResponse: MutableLiveData<NetworkResult<List<CallStatus>>> = MutableLiveData()
@@ -62,24 +64,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun fetchPlan(contractId: Long) = scope.launch {
-        planResponse.postValue(NetworkResult.Loading())
-        if (isInternetAvailable(getApplication())) {
-            try {
-                val response = financeRepository.remote.fetchPlan(contractId)
 
-                if (response.isSuccessful) {
-                    planResponse.postValue(NetworkResult.Success(response.body()!!.data))
-                } else {
-                    planResponse.postValue(handleError(response))
-                }
-            } catch (e: Exception) {
-                planResponse.postValue(NetworkResult.Error(e.message))
-            }
-        } else {
-            planResponse.postValue(internetIsNotConnected())
-        }
-    }
 
     fun fetchPlans() = scope.launch {
         plansResponse.postValue(NetworkResult.Loading())
@@ -140,25 +125,6 @@ class FinanceViewModel @Inject constructor(
             }
         }
 
-    fun fetchBusinessProcessStatuses() = scope.launch {
-        businessProcessStatusesResponse.postValue(NetworkResult.Loading())
-        if (isInternetAvailable(getApplication())) {
-            try {
-                val response = financeRepository.remote.fetchBusinessProcessStatuses()
-
-                if (response.isSuccessful) {
-                    businessProcessStatusesResponse.postValue(NetworkResult.Success(response.body()!!.data))
-                } else {
-                    businessProcessStatusesResponse.postValue(handleError(response))
-                }
-            } catch (e: Exception) {
-                businessProcessStatusesResponse.postValue(NetworkResult.Error(e.message))
-            }
-        } else {
-            businessProcessStatusesResponse.postValue(internetIsNotConnected())
-        }
-    }
-
     fun fetchDailyPlans() = scope.launch {
         dailyPlansResponse.postValue(NetworkResult.Loading())
         if (isInternetAvailable(getApplication())) {
@@ -216,86 +182,6 @@ class FinanceViewModel @Inject constructor(
 
         } else {
             paymentScheduleResponse.postValue(internetIsNotConnected())
-        }
-    }
-
-    fun fetchContributions() = scope.launch {
-        contributionsResponse.postValue(NetworkResult.Loading())
-        if (isInternetAvailable(getApplication())) {
-            try {
-                val response = financeRepository.remote.fetchContributions()
-
-                if (response.isSuccessful) {
-                    contributionsResponse.postValue(NetworkResult.Success(response.body()!!.data))
-                } else {
-                    contributionsResponse.postValue(handleError(response))
-                }
-            } catch (e: Exception) {
-                contributionsResponse.postValue(NetworkResult.Error(e.message))
-            }
-
-        } else {
-            contributionsResponse.postValue(internetIsNotConnected())
-        }
-    }
-
-    fun fetchLastMonthCalls() = scope.launch {
-        callsResponse.postValue(NetworkResult.Loading())
-        if (isInternetAvailable(getApplication())) {
-            try {
-                val response = financeRepository.remote.fetchLastMonthCalls()
-
-                if (response.isSuccessful) {
-                    callsResponse.postValue(NetworkResult.Success(response.body()!!.data))
-                } else {
-                    callsResponse.postValue(handleError(response))
-                }
-            } catch (e: Exception) {
-                callsResponse.postValue(NetworkResult.Error(e.message))
-            }
-
-        } else {
-            callsResponse.postValue(internetIsNotConnected())
-        }
-    }
-
-    fun fetchCallHistory(contractId: Long) = scope.launch {
-        callsHistoryResponse.postValue(NetworkResult.Loading())
-        if (isInternetAvailable(getApplication())) {
-            try {
-                val response = financeRepository.remote.fetchCallHistory(contractId)
-
-                if (response.isSuccessful) {
-                    callsHistoryResponse.postValue(NetworkResult.Success(response.body()!!.data))
-                } else {
-                    callsHistoryResponse.postValue(handleError(response))
-                }
-            } catch (e: Exception) {
-                callsHistoryResponse.postValue(NetworkResult.Error(e.message))
-            }
-
-        } else {
-            callsHistoryResponse.postValue(internetIsNotConnected())
-        }
-    }
-
-    fun fetchLastMonthCallsByContractId(contractId: Long) = scope.launch {
-        callsResponse.postValue(NetworkResult.Loading())
-        if (isInternetAvailable(getApplication())) {
-            try {
-                val response = financeRepository.remote.fetchLastMonthCallsByContractId(contractId)
-
-                if (response.isSuccessful) {
-                    callsResponse.postValue(NetworkResult.Success(response.body()!!.data))
-                } else {
-                    callsResponse.postValue(handleError(response))
-                }
-            } catch (e: Exception) {
-                callsResponse.postValue(NetworkResult.Error(e.message))
-            }
-
-        } else {
-            callsResponse.postValue(internetIsNotConnected())
         }
     }
 
@@ -439,44 +325,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun assignIncomingCall(assignCall: AssignCall, contractId: Long) = scope.launch {
-        assignCallResponse.postValue(NetworkResult.Loading())
-        if (isInternetAvailable(getApplication())) {
-            try {
-                val response = financeRepository.remote.assignIncomingCall(contractId, assignCall)
 
-                if (response.isSuccessful) {
-                    assignCallResponse.postValue(NetworkResult.Success())
-                } else {
-                    assignCallResponse.postValue(handleError(response))
-                }
-            } catch (e: Exception) {
-                assignCallResponse.postValue(NetworkResult.Error(e.message))
-            }
-        } else {
-            assignCallResponse.postValue(internetIsNotConnected())
-        }
-    }
-
-    fun assignOutgoingCall(assignCall: AssignCall, contractId: Long) = scope.launch {
-        assignCallResponse.postValue(NetworkResult.Loading())
-        if (isInternetAvailable(getApplication())) {
-            try {
-                val response = financeRepository.remote.assignOutgoingCall(contractId, assignCall)
-
-                if (response.isSuccessful) {
-                    assignCallResponse.postValue(NetworkResult.Success())
-                } else {
-                    assignCallResponse.postValue(handleError(response))
-                }
-            } catch (e: Exception) {
-                assignCallResponse.postValue(NetworkResult.Error(e.message))
-            }
-
-        } else {
-            assignCallResponse.postValue(internetIsNotConnected())
-        }
-    }
 
     fun fetchLastMonthScheduledCalls() = scope.launch {
         scheduledCallsResponse.postValue(NetworkResult.Loading())

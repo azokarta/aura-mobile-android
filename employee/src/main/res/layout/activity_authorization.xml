@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:fillViewport="true"
-    tools:context=".ui.activity.AuthorizationActivity"
+    tools:context=".ui.common.AuthorizationActivity"
     xmlns:mask="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout

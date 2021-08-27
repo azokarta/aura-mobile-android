@@ -63,15 +63,15 @@
 
 
 
-        <activity android:name=".ui.activity.CreatePasscodeActivity"
-            android:parentActivityName=".ui.activity.AuthorizationActivity" />
-        <activity android:name=".ui.activity.MapActivity" />
+        <activity android:name=".ui.common.CreatePasscodeActivity"
+            android:parentActivityName=".ui.common.AuthorizationActivity" />
+        <activity android:name=".ui.common.MapActivity" />
         <activity
-            android:name=".ui.activity.AuthorizationActivity"
+            android:name=".ui.common.AuthorizationActivity"
             android:windowSoftInputMode="adjustResize|stateVisible" />
-        <activity android:name=".ui.activity.VerifyPasscodeActivity" />
+        <activity android:name=".ui.common.VerifyPasscodeActivity" />
         <activity
-            android:name=".ui.activity.SplashActivity">
+            android:name=".ui.common.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

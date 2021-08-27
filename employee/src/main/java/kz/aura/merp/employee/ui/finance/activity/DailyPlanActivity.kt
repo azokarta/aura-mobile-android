@@ -16,6 +16,7 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.PhoneNumbersAdapter
 import kz.aura.merp.employee.adapter.StepsAdapter
 import kz.aura.merp.employee.base.BaseActivity
+import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.databinding.ActivityDailyPlanBinding
 import kz.aura.merp.employee.model.BusinessProcessStatus
 import kz.aura.merp.employee.model.ChangeBusinessProcess

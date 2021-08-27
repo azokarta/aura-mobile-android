@@ -8,9 +8,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.nlopez.smartlocation.SmartLocation
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.base.BaseActivity
+import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.databinding.ActivityIncomingBinding
 import kz.aura.merp.employee.model.AssignCall
-import kz.aura.merp.employee.ui.dialog.TimePickerFragment
+import kz.aura.merp.employee.ui.common.TimePickerFragment
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.PermissionsListener
 import kz.aura.merp.employee.viewmodel.FinanceViewModel

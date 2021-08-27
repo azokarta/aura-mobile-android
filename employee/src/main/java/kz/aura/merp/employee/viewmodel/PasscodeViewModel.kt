@@ -7,24 +7,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kz.aura.merp.employee.base.AppPreferences
 import javax.inject.Inject
 
 @HiltViewModel
 class PasscodeViewModel @Inject constructor(
-    private val dataStoreRepository: DataStoreRepository,
+    val preferences: AppPreferences,
     application: Application
-): AndroidViewModel(application) {
-
-    val passcode: MutableLiveData<String> = MutableLiveData()
-
-    fun getPasscode() = viewModelScope.launch(Dispatchers.IO) {
-        dataStoreRepository.passCodeFlow.collect { value ->
-            passcode.postValue(value)
-        }
-    }
-
-    fun savePasscode(passcode: String) = viewModelScope.launch(Dispatchers.IO) {
-        dataStoreRepository.savePassCode(passcode)
-    }
-
-}
+): AndroidViewModel(application) {}

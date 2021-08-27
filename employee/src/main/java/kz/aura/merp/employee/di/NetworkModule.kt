@@ -11,12 +11,14 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     @Provides
+    @Singleton
     fun provideHttpClient(
         preferences: AppPreferences
     ) : OkHttpClient {
@@ -42,11 +44,13 @@ object NetworkModule {
     }
 
     @Provides
+    @Singleton
     fun provideConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
 
     @Provides
+    @Singleton
     @FinanceServiceQualifier
     fun provideFinanceRetrofitInstance(
         okHttpClient: OkHttpClient,
@@ -60,6 +64,7 @@ object NetworkModule {
     }
 
     @Provides
+    @Singleton
     @AuthServiceQualifier
     fun provideAuthRetrofitInstance(
         okHttpClient: OkHttpClient,
@@ -73,6 +78,7 @@ object NetworkModule {
     }
 
     @Provides
+    @Singleton
     @CoreServiceQualifier
     fun provideCoreRetrofitInstance(
         okHttpClient: OkHttpClient,
@@ -86,6 +92,7 @@ object NetworkModule {
     }
 
     @Provides
+    @Singleton
     @ServiceQualifier
     fun provideServiceRetrofitInstance(
         okHttpClient: OkHttpClient,
@@ -99,6 +106,7 @@ object NetworkModule {
     }
 
     @Provides
+    @Singleton
     @CrmServiceQualifier
     fun provideCrmRetrofitInstance(
         okHttpClient: OkHttpClient,

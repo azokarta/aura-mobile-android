@@ -25,15 +25,15 @@
         android:label="@string/scheduled_calls" />
     <fragment
         android:id="@+id/nav_profile"
-        android:name="kz.aura.merp.employee.ui.ProfileFragment"
+        android:name="kz.aura.merp.employee.ui.finance.fragment.ProfileFragment"
         android:label="@string/profile" />
     <fragment
         android:id="@+id/nav_messages"
-        android:name="kz.aura.merp.employee.ui.MessagesFragment"
+        android:name="kz.aura.merp.employee.ui.finance.fragment.MessagesFragment"
         android:label="@string/message" />
     <fragment
         android:id="@+id/nav_settings"
-        android:name="kz.aura.merp.employee.ui.SettingsFragment"
+        android:name="kz.aura.merp.employee.ui.common.SettingsFragment"
         android:label="@string/settings" />
 
 </navigation>

@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Call(
+    val id: Long,
     val phoneNumber: String,
     val callStatusId: Long,
     val callStatusName: String,

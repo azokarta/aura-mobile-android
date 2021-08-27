@@ -3,68 +3,61 @@ package kz.aura.merp.employee.ui.finance.fragment
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.viewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.CallsAdapter
 import kz.aura.merp.employee.databinding.FragmentCallsBinding
 import kz.aura.merp.employee.util.LoadingType
-import kz.aura.merp.employee.util.NetworkResult
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.viewmodel.SharedViewModel
+import kz.aura.merp.employee.viewmodel.finance.CallsViewModel
 
 @AndroidEntryPoint
-class CallsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class CallsFragment : Fragment(R.layout.fragment_calls), SwipeRefreshLayout.OnRefreshListener {
 
     private var _binding: FragmentCallsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var sharedViewModel: SharedViewModel
-    private lateinit var financeViewModel: FinanceViewModel
+    private val sharedViewModel: SharedViewModel by viewModels()
+    private val callsViewModel: CallsViewModel by viewModels()
     private val callsAdapter: CallsAdapter by lazy { CallsAdapter() }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentCallsBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
-        binding.sharedViewModel = sharedViewModel
-        val root: View = binding.root
+        _binding = FragmentCallsBinding.bind(view)
 
-        binding.swipeRefresh.setOnRefreshListener(this)
+        with(binding) {
+            lifecycleOwner = this@CallsFragment
+            sharedViewModel = this@CallsFragment.sharedViewModel
+            swipeRefresh.setOnRefreshListener(this@CallsFragment)
+            error.restart.setOnClickListener { callRequests() }
+        }
 
         setupRecyclerView()
 
         setupObservers()
 
         callRequests()
-
-        return root
     }
 
     private fun callRequests() {
-        financeViewModel.fetchLastMonthCalls()
+        callsViewModel.fetchLastMonthCalls()
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = callsAdapter
     }
 
     private fun setupObservers() {
-        financeViewModel.callsResponse.observe(viewLifecycleOwner, { res ->
+        callsViewModel.lastMonthCallsResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
-                    callsAdapter.setData(res.data!!)
+                    val calls = res.data?.data
+                    callsAdapter.submitList(calls)
                 }
                 is NetworkResult.Loading -> sharedViewModel.setResponse(res)
                 is NetworkResult.Error -> sharedViewModel.setResponse(res)

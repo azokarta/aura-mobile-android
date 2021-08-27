@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.base.BaseActivity
 import kz.aura.merp.employee.databinding.ActivityFinanceBinding
-import kz.aura.merp.employee.ui.dialog.SignOutDialogFragment
+import kz.aura.merp.employee.ui.common.SignOutDialogFragment
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 
 @AndroidEntryPoint

@@ -18,9 +18,9 @@ import kz.aura.merp.employee.databinding.FragmentDailyPlansBinding
 import kz.aura.merp.employee.model.DailyPlan
 import kz.aura.merp.employee.model.PlanFilter
 import kz.aura.merp.employee.ui.finance.activity.DailyPlanActivity
-import kz.aura.merp.employee.ui.dialog.DailyPlanFilterDialogFragment
+import kz.aura.merp.employee.ui.finance.dialog.DailyPlanFilterDialogFragment
 import kz.aura.merp.employee.util.LoadingType
-import kz.aura.merp.employee.util.NetworkResult
+import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
