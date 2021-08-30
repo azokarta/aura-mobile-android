@@ -17,13 +17,13 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.base.BaseActivity
 import kz.aura.merp.employee.databinding.ActivityFinanceBinding
 import kz.aura.merp.employee.ui.common.SignOutDialogFragment
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.AuthViewModel
 
 @AndroidEntryPoint
 class FinanceActivity : BaseActivity() {
 
     private lateinit var binding: ActivityFinanceBinding
-    private val financeViewModel: FinanceViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,14 +58,11 @@ class FinanceActivity : BaseActivity() {
             false
         }
 
-        financeViewModel.salary.observe(this, { salary ->
-            salary?.let {
-                (headerView.findViewById<TextView>(R.id.username)).text = salary.username
-                (headerView.findViewById<TextView>(R.id.phone)).text = salary.phoneNumber
-            }
-        })
-
-        financeViewModel.getSalary()
+        val salary = authViewModel.preferences.salary
+        salary?.let {
+            (headerView.findViewById<TextView>(R.id.username)).text = it.username
+            (headerView.findViewById<TextView>(R.id.phone)).text = it.phoneNumber
+        }
 
 //        Intent(this, BackgroundService::class.java).also { intent ->
 //            intent.putExtra("link", Link.FINANCE)

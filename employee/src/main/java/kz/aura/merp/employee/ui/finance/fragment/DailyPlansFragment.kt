@@ -6,9 +6,10 @@ import android.os.Bundle
 import android.text.Html
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,54 +22,48 @@ import kz.aura.merp.employee.ui.finance.activity.DailyPlanActivity
 import kz.aura.merp.employee.ui.finance.dialog.DailyPlanFilterDialogFragment
 import kz.aura.merp.employee.util.LoadingType
 import kz.aura.merp.employee.base.NetworkResult
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
+import kz.aura.merp.employee.viewmodel.finance.DailyPlansViewModel
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, DailyPlanAdapter.DailyPlanListener {
+class DailyPlansFragment : Fragment(R.layout.fragment_daily_plans), SwipeRefreshLayout.OnRefreshListener, DailyPlanAdapter.DailyPlanListener {
 
     private var _binding: FragmentDailyPlansBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var financeViewModel: FinanceViewModel
-    private lateinit var filterViewModel: PlanFilterViewModel
-    private lateinit var sharedViewModel: SharedViewModel
+    private val dailyPlansViewModel: DailyPlansViewModel by viewModels()
+    private val filterViewModel: PlanFilterViewModel by activityViewModels()
+    private val sharedViewModel: SharedViewModel by viewModels()
     private val plansAdapter: DailyPlanAdapter by lazy { DailyPlanAdapter(this) }
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            financeViewModel.fetchDailyPlans()
+            dailyPlansViewModel.fetchDailyPlans()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        filterViewModel = ViewModelProvider(requireActivity()).get(PlanFilterViewModel::class.java)
-        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentDailyPlansBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
-        binding.sharedViewModel = sharedViewModel
-        val root: View = binding.root
+        _binding = FragmentDailyPlansBinding.bind(view)
 
-        binding.swipeRefresh.setOnRefreshListener(this)
-        binding.explanationAboutColors.setOnClickListener(::explainAboutColors)
-        binding.clearFilter.setOnClickListener {
-            filterViewModel.clearFilter()
-        }
-        binding.filterList.setOnClickListener {
-            val dialog = DailyPlanFilterDialogFragment()
-            dialog.show(childFragmentManager, "PlanFilterBottomSheetDialog")
+        with (binding) {
+            lifecycleOwner = this@DailyPlansFragment
+            sharedViewModel = this@DailyPlansFragment.sharedViewModel
+
+            swipeRefresh.setOnRefreshListener(this@DailyPlansFragment)
+            explanationAboutColors.setOnClickListener(::explainAboutColors)
+            clearFilter.setOnClickListener {
+                filterViewModel.clearFilter()
+            }
+            filterList.setOnClickListener {
+                val dialog = DailyPlanFilterDialogFragment()
+                dialog.show(childFragmentManager, "PlanFilterBottomSheetDialog")
+            }
         }
 
         setupRecyclerView()
@@ -76,8 +71,6 @@ class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Dai
         setupObservers()
 
         callRequests()
-
-        return root
     }
 
     override fun selectDailyPlan(id: Long) {
@@ -87,12 +80,12 @@ class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Dai
     }
 
     private fun callRequests() {
-        financeViewModel.fetchDailyPlans()
-        financeViewModel.fetchBusinessProcessStatuses()
+        dailyPlansViewModel.fetchDailyPlans()
+        dailyPlansViewModel.fetchBusinessProcessStatuses()
     }
 
     private fun setupObservers() {
-        financeViewModel.dailyPlansResponse.observe(viewLifecycleOwner, { res ->
+        dailyPlansViewModel.dailyPlansResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
@@ -103,7 +96,7 @@ class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Dai
             }
         })
         filterViewModel.filterParams.observe(viewLifecycleOwner, { params ->
-            val plans = financeViewModel.dailyPlansResponse.value?.data
+            val plans = dailyPlansViewModel.dailyPlansResponse.value?.data?.data
             if (!plans.isNullOrEmpty()) {
                 filterPlans(params)
             } else {
@@ -116,7 +109,7 @@ class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Dai
         filterParams: PlanFilter = filterViewModel.getDefault()
     ) {
         changeTextsFilter(filterParams)
-        var filteredPlans = mutableListOf<DailyPlan>().apply { addAll(financeViewModel.dailyPlansResponse.value!!.data!!) }
+        var filteredPlans = mutableListOf<DailyPlan>().apply { addAll(dailyPlansViewModel.dailyPlansResponse.value!!.data!!.data) }
 
         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
 
@@ -158,7 +151,7 @@ class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Dai
         filteredPlans = filteredPlans.filter { it.problem == filterParams.problematic }.toMutableList()
 
         // Change recyclerView
-        plansAdapter.setData(filteredPlans)
+        plansAdapter.submitList(filteredPlans)
 
         val allOverdueDays =
             "(<font color=#DF1010>${filteredPlans.count { it.paymentOverDueDays!! > 0 }}</font>, " +
@@ -180,7 +173,7 @@ class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Dai
         binding.status = if (selectedStatusFilter == 0L) {
             getString(R.string.all)
         } else {
-            financeViewModel.businessProcessStatusesResponse.value?.data?.find { it.id == selectedStatusFilter }?.name
+            dailyPlansViewModel.businessProcessStatusesResponse.value?.data?.data?.find { it.id == selectedStatusFilter }?.name
         }
         binding.searchBySn = when (filterParams.selectedSearchBy) {
             0 -> if (filterParams.query.isNotBlank()) "${getString(R.string.cn)} = ${filterParams.query}" else ""
@@ -198,7 +191,6 @@ class DailyPlansFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Dai
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = plansAdapter
         binding.recyclerView.isNestedScrollingEnabled = false
     }

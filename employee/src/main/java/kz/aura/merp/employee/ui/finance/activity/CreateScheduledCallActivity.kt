@@ -15,7 +15,7 @@ import kz.aura.merp.employee.ui.common.DatePickerFragment
 import kz.aura.merp.employee.ui.common.TimePickerFragment
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.PermissionsListener
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.finance.CreateScheduledCallViewModel
 
 @AndroidEntryPoint
 class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePickerListener, DatePickerFragment.DatePickerListener, PermissionsListener {
@@ -23,7 +23,7 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
     private lateinit var binding: ActivityCreateScheduledCallBinding
 
     private lateinit var progressDialog: ProgressDialog
-    private val financeViewModel: FinanceViewModel by viewModels()
+    private val createScheduledCallViewModel: CreateScheduledCallViewModel by viewModels()
     private var countryCode: CountryCode = CountryCode.KZ
     private var selectedHour: Int? = null
     private var selectedMinute: Int? = null
@@ -35,8 +35,6 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
         super.onCreate(savedInstanceState)
         binding = ActivityCreateScheduledCallBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -47,7 +45,6 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
         permissions = Permissions(this, this, this)
         permissions.setListener(this)
 
-        // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
         setupObservers()
@@ -57,6 +54,8 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
             scheduleTimeText.setOnClickListener { showTimePicker() }
             save.setOnClickListener { save() }
         }
+
+//        binding.phoneNumberText.mask = createScheduledCallViewModel.getCountryCode()
     }
 
     private fun showTimePicker() {
@@ -82,7 +81,7 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
     }
 
     private fun setupObservers() {
-        financeViewModel.assignScheduledCallResponse.observe(this, { res ->
+        createScheduledCallViewModel.assignScheduledCallResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
@@ -97,10 +96,6 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
                 }
             }
         })
-        financeViewModel.countryCode.observe(this, { countryCode ->
-            this.countryCode = countryCode
-            binding.phoneNumberText.mask = countryCode.format
-        })
     }
 
     private fun save() {
@@ -114,7 +109,7 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
             progressDialog.showLoading()
             SmartLocation.with(this).location().oneFix()
                 .start {
-                    financeViewModel.assignScheduledCall(
+                    createScheduledCallViewModel.assignScheduledCall(
                         contractId!!,
                         AssignScheduledCallCommand(
                             phoneNumber,

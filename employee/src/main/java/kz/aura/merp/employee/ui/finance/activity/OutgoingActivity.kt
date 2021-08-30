@@ -16,7 +16,7 @@ import kz.aura.merp.employee.databinding.ActivityOutgoingBinding
 import kz.aura.merp.employee.model.AssignCall
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.PermissionsListener
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.finance.OutgoingViewModel
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
@@ -28,7 +28,7 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
     private lateinit var binding: ActivityOutgoingBinding
 
     private lateinit var progressDialog: ProgressDialog
-    private val financeViewModel: FinanceViewModel by viewModels()
+    private val outgoingViewModel: OutgoingViewModel by viewModels()
     private lateinit var phoneNumber: String
     private var contractId: Long = 0L
     private var callStatusId: Long = 0L
@@ -42,48 +42,49 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
         super.onCreate(savedInstanceState)
         binding = ActivityOutgoingBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        contractId = intent.getLongExtra("contractId", 0L)
-        phoneNumber = intent.getStringExtra("phoneNumber")!!
-
-        // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.add_outgoing_call)
 
+        contractId = intent.getLongExtra("contractId", 0L)
+        phoneNumber = intent.getStringExtra("phoneNumber")!!
+
         permissions = Permissions(this, this, this)
         permissions.setListener(this)
 
-        // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
         binding.save.setOnClickListener { save() }
 
         binding.callStatusText.setOnItemClickListener { _, _, i, _ ->
-            callStatusId = financeViewModel.callStatusesResponse.value!!.data!![i].id
+            callStatusId = outgoingViewModel.callStatusesResponse.value!!.data!!.data[i].id
         }
 
         setupObservers()
 
-        financeViewModel.fetchCallStatuses()
-        financeViewModel.getCountryCode()
+        outgoingViewModel.fetchCallStatuses()
 
+        countryCode = outgoingViewModel.preferences.getCountryCode()
+//        binding.phoneNumberText.mask = countryCode.format
+        val phoneWithoutCountryCode = removeCountryCodeFromPhone(phoneNumber)
+        binding.phoneNumberText.setText(phoneWithoutCountryCode)
 
         startedTime = DateTime.now()
         dialPhoneNumber(phoneNumber)
     }
 
     private fun setupObservers() {
-        financeViewModel.callStatusesResponse.observe(this, { res ->
+        outgoingViewModel.callStatusesResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    if (!res.data.isNullOrEmpty()) {
+                    val callStatuses = res.data?.data
+                    if (!callStatuses.isNullOrEmpty()) {
                         val adapter = ArrayAdapter(
                             this,
                             R.layout.list_item,
-                            res.data.map { it.name })
+                            callStatuses.map { it.name })
                         (binding.callStatusField.editText as? AutoCompleteTextView)?.setAdapter(
                             adapter
                         )
@@ -98,7 +99,7 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
                 }
             }
         })
-        financeViewModel.assignCallResponse.observe(this, { res ->
+        outgoingViewModel.assignOutgoingCallResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
@@ -112,13 +113,6 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
                     showException(res.message, this)
                 }
             }
-        })
-
-        financeViewModel.countryCode.observe(this, { countryCode ->
-            this.countryCode = countryCode
-            binding.phoneNumberText.mask = countryCode.format
-            val phoneWithoutCountryCode = removeCountryCodeFromPhone(phoneNumber)
-            binding.phoneNumberText.setText(phoneWithoutCountryCode)
         })
     }
 
@@ -164,7 +158,7 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
                         longitude = it.longitude,
                         latitude = it.latitude
                     )
-                    financeViewModel.assignOutgoingCall(assign, contractId)
+                    outgoingViewModel.assignOutgoingCall(assign, contractId)
                 }
         }
     }

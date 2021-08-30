@@ -1,6 +1,5 @@
 package kz.aura.merp.employee.ui.common
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -11,15 +10,15 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.base.BaseActivity
 import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.viewmodel.AuthViewModel
-import kz.aura.merp.employee.databinding.ActivityAuthorizationBinding
+import kz.aura.merp.employee.databinding.ActivityAuthBinding
 import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.util.*
 import timber.log.Timber
 
 @AndroidEntryPoint
-class AuthorizationActivity : BaseActivity() {
+class AuthActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityAuthorizationBinding
+    private lateinit var binding: ActivityAuthBinding
 
     private val authViewModel: AuthViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
@@ -27,14 +26,24 @@ class AuthorizationActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAuthorizationBinding.inflate(layoutInflater)
+        binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
         observeLiveData()
 
+        setupCountryCallingCodeDropdown()
+
+        with (binding) {
+            countryCallingCodeText.setOnItemClickListener { _, _, i, _ ->
+                countryCallingCode = CountryCode.values()[i].phoneCode
+            }
+            signInBtn.setOnClickListener { signIn() }
+        }
+    }
+
+    private fun setupCountryCallingCodeDropdown() {
         val countryCodes = CountryCode.values().map { "${it.name} (${it.phoneCode})" }
         val adapter = ArrayAdapter(
             this,
@@ -44,13 +53,6 @@ class AuthorizationActivity : BaseActivity() {
         (binding.countryCallingCodeField.editText as? AutoCompleteTextView)?.setAdapter(
             adapter
         )
-
-        binding.countryCallingCodeText.setOnItemClickListener { _, _, i, _ ->
-            countryCallingCode = CountryCode.values()[i].phoneCode
-            binding.phoneNumberText.mask = CountryCode.values()[i].format
-        }
-
-        binding.signInBtn.setOnClickListener { signIn() }
     }
 
     private fun getTokenFromFirebase() {
@@ -63,8 +65,8 @@ class AuthorizationActivity : BaseActivity() {
             // Get new FCM registration token
             val token = task.result
             token?.let { authViewModel.saveFcmToken(it) }
-            Timber.tag("FIREBASE_TOKEN")
-            Timber.d(token.toString())
+
+            Timber.tag("FIREBASE").d("Token: ${token.toString()}")
         }
     }
 
@@ -72,9 +74,14 @@ class AuthorizationActivity : BaseActivity() {
         authViewModel.signInResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    val token = res.data?.accessToken
                     progressDialog.hideLoading()
+
+                    val token = res.data?.accessToken
+
+                    // Saving the token to get a info about user
                     authViewModel.preferences.token = token
+
+                    // Calling getUserInfo to get a info about user
                     authViewModel.getUserInfo()
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
@@ -92,6 +99,7 @@ class AuthorizationActivity : BaseActivity() {
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
+
                     val salaries = res.data?.data
 
                     if (!salaries.isNullOrEmpty()) {
@@ -101,12 +109,15 @@ class AuthorizationActivity : BaseActivity() {
                         if (position == null || salary == null) {
                             showException(getString(R.string.wrong_position), this)
                         } else {
+                            authViewModel.preferences.countryCallingCode = countryCallingCode
                             authViewModel.preferences.salary = salary
+
                             getTokenFromFirebase()
                         }
                     } else {
                         showException(getString(R.string.user_does_not_exist), this)
                     }
+
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
@@ -119,8 +130,7 @@ class AuthorizationActivity : BaseActivity() {
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    val intent = Intent(this, CreatePasscodeActivity::class.java)
-                    startActivity(intent)
+                    navigateToActivity(CreatePasscodeActivity::class)
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
                 is NetworkResult.Error -> {
@@ -133,10 +143,9 @@ class AuthorizationActivity : BaseActivity() {
 
     private fun signIn() {
         hideKeyboard(this)
-        val phoneNumber = binding.phoneNumberText.rawText
+        val phoneNumber = countryCallingCode + binding.phoneNumberText.text.toString()
         val password = binding.passwordText.text.toString()
-        authViewModel.preferences.countryCallingCode = countryCallingCode
-        authViewModel.signIn(countryCallingCode + phoneNumber, password)
+        authViewModel.signIn(phoneNumber, password)
     }
 
 

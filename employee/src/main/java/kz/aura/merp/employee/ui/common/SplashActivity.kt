@@ -25,10 +25,10 @@ class SplashActivity : BaseActivity() {
 
         binding.logo.alpha = 0f
         binding.logo.animate().setDuration(1500).alpha(1f).withEndAction {
-            if (token.isNullOrBlank() && salary != null) {
-                newTask(this, VerifyPasscodeActivity::class.java)
+            if (!token.isNullOrBlank() && salary != null) {
+                navigateToActivity(VerifyPasscodeActivity::class, true)
             } else {
-                newTask(this, AuthorizationActivity::class.java)
+                navigateToActivity(AuthActivity::class, true)
             }
         }
     }

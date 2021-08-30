@@ -14,65 +14,24 @@
         android:layout_height="match_parent"
         tools:context=".ui.finance.fragment.MessagesFragment">
 
+        <include
+            android:id="@+id/error"
+            layout="@layout/error"
+            app:sharedViewModel="@{sharedViewModel}" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messagesRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:response="@{sharedViewModel.response}"
-            android:loadingType="@{sharedViewModel.loadingType}" />
-
-        <ImageView
-            android:id="@+id/imageView17"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:showError="@{sharedViewModel.response}"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            tools:listitem="@layout/message_card"
+            app:response="@{sharedViewModel.response}"
+            app:loadingType="@{sharedViewModel.loadingType}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.39"
-            app:srcCompat="@drawable/warning" />
-
-        <TextView
-            android:id="@+id/textView55"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:showError="@{sharedViewModel.response}"
-            android:text="@{sharedViewModel.response.message}"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/imageView17"
-            app:layout_constraintStart_toStartOf="@+id/imageView17"
-            app:layout_constraintTop_toBottomOf="@+id/imageView17" />
-
-        <ImageView
-            android:id="@+id/imageView18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:noData="@{sharedViewModel.response}"
-            android:src="@drawable/ic_no_data"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.41000003" />
-
-        <TextView
-            android:id="@+id/textView56"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:noData="@{sharedViewModel.response}"
-            android:text="@string/no_data"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="@+id/imageView18"
-            app:layout_constraintStart_toStartOf="@+id/imageView18"
-            app:layout_constraintTop_toBottomOf="@+id/imageView18" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

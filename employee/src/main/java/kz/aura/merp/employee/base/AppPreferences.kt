@@ -3,6 +3,7 @@ package kz.aura.merp.employee.base
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import kz.aura.merp.employee.model.Salary
+import kz.aura.merp.employee.util.CountryCode
 import kz.aura.merp.employee.util.Language
 
 class AppPreferences(private val preferences: SharedPreferences) {
@@ -40,4 +41,6 @@ class AppPreferences(private val preferences: SharedPreferences) {
     fun clear() = preferences.edit().clear().apply()
 
     fun remove(key: String) = preferences.edit().remove(key).apply()
+
+    fun getCountryCode() = CountryCode.values().find { it.phoneCode == countryCallingCode } ?: CountryCode.KZ
 }

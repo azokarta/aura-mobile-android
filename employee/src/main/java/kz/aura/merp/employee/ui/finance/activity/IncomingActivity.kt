@@ -14,7 +14,7 @@ import kz.aura.merp.employee.model.AssignCall
 import kz.aura.merp.employee.ui.common.TimePickerFragment
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.PermissionsListener
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.finance.IncomingViewModel
 
 @AndroidEntryPoint
 class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, PermissionsListener {
@@ -22,7 +22,7 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
     private lateinit var binding: ActivityIncomingBinding
 
     private lateinit var progressDialog: ProgressDialog
-    private val mFinanceViewModel: FinanceViewModel by viewModels()
+    private val incomingViewModel: IncomingViewModel by viewModels()
     private lateinit var phoneNumber: String
     private var contractId: Long = 0L
     private var selectedHour: Int? = null
@@ -34,31 +34,32 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
         super.onCreate(savedInstanceState)
         binding = ActivityIncomingBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        contractId = intent.getLongExtra("contractId", 0L)
-        phoneNumber = intent.getStringExtra("phoneNumber")!!
-
-        // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.add_incoming_call)
 
+        contractId = intent.getLongExtra("contractId", 0L)
+        phoneNumber = intent.getStringExtra("phoneNumber")!!
+
         permissions = Permissions(this, this, this)
         permissions.setListener(this)
 
-        // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
         setupObservers()
-
-        mFinanceViewModel.getCountryCode()
 
         binding.save.setOnClickListener { save() }
 
         binding.scheduleTimeText.setOnClickListener {
             showTimePicker()
         }
+
+
+        countryCode = incomingViewModel.preferences.getCountryCode()
+//        binding.phoneNumberText.mask = countryCode.format
+        val phoneWithoutCountryCode = removeCountryCodeFromPhone(phoneNumber)
+        binding.phoneNumberText.setText(phoneWithoutCountryCode)
     }
 
     private fun save() {
@@ -80,7 +81,7 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
                         longitude = it.longitude,
                         latitude = it.latitude
                     )
-                    mFinanceViewModel.assignIncomingCall(assign, contractId)
+                    incomingViewModel.assignIncomingCall(assign, contractId)
                 }
         }
     }
@@ -128,7 +129,7 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
     }
 
     private fun setupObservers() {
-        mFinanceViewModel.assignCallResponse.observe(this, { res ->
+        incomingViewModel.assignIncomingCallResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
@@ -142,12 +143,6 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
                     showException(res.message, this)
                 }
             }
-        })
-        mFinanceViewModel.countryCode.observe(this, { countryCode ->
-            this.countryCode = countryCode
-            binding.phoneNumberText.mask = countryCode.format
-            val phoneWithoutCountryCode = removeCountryCodeFromPhone(phoneNumber)
-            binding.phoneNumberText.setText(phoneWithoutCountryCode)
         })
     }
 

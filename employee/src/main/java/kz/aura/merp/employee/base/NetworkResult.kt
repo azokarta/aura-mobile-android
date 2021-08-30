@@ -1,6 +1,5 @@
 package kz.aura.merp.employee.base
 
-import kz.aura.merp.employee.model.ResponseHelper
 import kz.aura.merp.employee.util.ErrorStatus
 import retrofit2.Response
 

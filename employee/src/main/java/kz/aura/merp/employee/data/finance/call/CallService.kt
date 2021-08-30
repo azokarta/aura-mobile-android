@@ -15,7 +15,7 @@ interface CallService {
     suspend fun fetchLastMonthCalls(): Response<ResponseHelper<List<Call>>>
 
     @GET("/calls/{contractId}/history")
-    suspend fun fetchCallsHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<List<Call>>>
+    suspend fun fetchCallHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<List<Call>>>
 
     @GET("/calls/{contractId}")
     suspend fun fetchLastMonthCallsByContractId(@Path("contractId") contractId: Long): Response<ResponseHelper<List<Call>>>

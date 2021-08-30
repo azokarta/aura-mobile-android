@@ -8,15 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import kz.aura.merp.employee.databinding.ScheduledCallCardBinding
 import kz.aura.merp.employee.model.ScheduledCall
 
-class ScheduledCallsAdapter : ListAdapter<ScheduledCall, ScheduledCallsAdapter.ScheduledCallsViewHolder>() {
+class ScheduledCallsAdapter : ListAdapter<ScheduledCall, ScheduledCallsAdapter.ScheduledCallsViewHolder>(ScheduledCallsDiffUtil()) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): ScheduledCallsViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ScheduledCallCardBinding.inflate(layoutInflater, parent, false)
-        return ScheduledCallsViewHolder(binding)
+        return ScheduledCallsViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: ScheduledCallsViewHolder, position: Int) {
@@ -28,5 +26,19 @@ class ScheduledCallsAdapter : ListAdapter<ScheduledCall, ScheduledCallsAdapter.S
             binding.scheduledCall = call
             binding.executePendingBindings()
         }
+
+        companion object {
+            fun from(parent: ViewGroup): ScheduledCallsViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ScheduledCallCardBinding.inflate(layoutInflater, parent, false)
+                return ScheduledCallsViewHolder(binding)
+            }
+        }
+    }
+
+    private class ScheduledCallsDiffUtil : DiffUtil.ItemCallback<ScheduledCall>() {
+        override fun areItemsTheSame(oldItem: ScheduledCall, newItem: ScheduledCall): Boolean = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: ScheduledCall, newItem: ScheduledCall): Boolean = oldItem.id == newItem.id
     }
 }

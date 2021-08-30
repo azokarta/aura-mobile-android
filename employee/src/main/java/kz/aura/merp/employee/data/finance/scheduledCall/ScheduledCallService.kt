@@ -15,7 +15,7 @@ interface ScheduledCallService {
     suspend fun fetchLastMonthScheduledCalls(): Response<ResponseHelper<List<ScheduledCall>>>
 
     @GET("/scheduled_calls/{contractId}/history")
-    suspend fun fetchScheduledCallsHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<List<ScheduledCall>>>
+    suspend fun fetchScheduledCallHistory(@Path("contractId") contractId: Long): Response<ResponseHelper<List<ScheduledCall>>>
 
     @POST("/scheduled_calls/{contractId}/assign_scheduled_call")
     suspend fun assignScheduledCall(

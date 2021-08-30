@@ -22,14 +22,14 @@ import kz.aura.merp.employee.ui.common.DatePickerFragment
 import kz.aura.merp.employee.ui.common.TimePickerFragment
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.PermissionsListener
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.finance.ChangeResultViewModel
 
 @AndroidEntryPoint
 class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListener, DatePickerFragment.DatePickerListener, PermissionsListener {
 
     private lateinit var binding: ActivityChangeResultBinding
 
-    private val mFinanceViewModel: FinanceViewModel by viewModels()
+    private val changeResultViewModel: ChangeResultViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
     private lateinit var clientPhoneNumbers: Array<String>
 
@@ -40,7 +40,6 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
     private var businessProcessId: Long? = null
     private var selectedHour: Int? = null
     private var selectedMinute: Int? = null
-    private var countryCode: CountryCode = CountryCode.KZ
     private var scheduledDate: String? = null
     private lateinit var permissions: Permissions
 
@@ -48,8 +47,6 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
         super.onCreate(savedInstanceState)
         binding = ActivityChangeResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -62,18 +59,17 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
         clientPhoneNumbers = intent.getStringArrayExtra("clientPhoneNumbers")!!
         businessProcessId = intent.getLongExtra("businessProcessId", 0L)
 
-        // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
         setObservers()
 
-        mFinanceViewModel.fetchPlanResults()
-        mFinanceViewModel.getCountryCode()
+        changeResultViewModel.fetchPlanResults()
 
         setupAutocompleteText(clientPhoneNumbers.toList(), binding.phoneNumberField)
 
         binding.resultText.setOnItemClickListener { _, _, i, _ ->
-            resultId = mFinanceViewModel.planResultsResponse.value!!.data!![i].id
+            val results = changeResultViewModel.planResultsResponse.value?.data?.data
+            resultId = results?.get(i)?.id
             clearChilds(Field.RESULT)
             when (resultId) {
                 1L, 4L -> visibleField(Field.REASON_DESCRIPTION)
@@ -86,7 +82,8 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
         }
 
         binding.paymentMethodText.setOnItemClickListener { _, _, i, _ ->
-            paymentMethodId = mFinanceViewModel.paymentMethodsResponse.value!!.data!![i].id
+            val paymentMethods = changeResultViewModel.paymentMethodsResponse.value?.data?.data
+            paymentMethodId = paymentMethods?.get(i)?.id
             clearChilds(Field.PAYMENT)
             when (paymentMethodId) {
                 3L, 2L  -> {
@@ -100,7 +97,8 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
         }
 
         binding.bankText.setOnItemClickListener { _, _, i, _ ->
-            bankId = mFinanceViewModel.banksResponse.value!!.data!![i].id
+            val banks = changeResultViewModel.banksResponse.value?.data?.data
+            bankId = banks?.get(i)?.id
             visibleField(Field.AMOUNT)
             clearChilds(Field.BANK)
         }
@@ -130,13 +128,15 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
             val phoneNumber: String = binding.phoneNumberText.text.toString()
             val amount: Int? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString().toInt()
             val scheduledDateTime = "$scheduledDate $selectedHour:$selectedMinute"
+            val countryCallingCode = changeResultViewModel.preferences.countryCallingCode
+            val countryCode = CountryCode.values().find { it.phoneCode == countryCallingCode } ?: CountryCode.KZ
 
             progressDialog.showLoading()
             SmartLocation.with(this).location().oneFix()
                 .start {
                     when (resultId) {
                         3L -> {
-                            mFinanceViewModel.changeResult(
+                            changeResultViewModel.changeResult(
                                 contractId,
                                 ChangePlanResult(
                                     resultId,
@@ -156,7 +156,7 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
                             )
                         }
                         2L -> {
-                            mFinanceViewModel.changeResult(
+                            changeResultViewModel.changeResult(
                                 contractId,
                                 ChangePlanResult(
                                     resultId,
@@ -176,7 +176,7 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
                             )
                         }
                         else -> {
-                            mFinanceViewModel.changeResult(
+                            changeResultViewModel.changeResult(
                                 contractId,
                                 ChangePlanResult(
                                     resultId,
@@ -290,23 +290,24 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
     }
 
     private fun fetchPaymentMethods() {
-        if (mFinanceViewModel.paymentMethodsResponse.value?.data.isNullOrEmpty()) {
-            mFinanceViewModel.fetchPaymentMethods()
+        if (changeResultViewModel.paymentMethodsResponse.value == null) {
+            changeResultViewModel.fetchPaymentMethods()
         }
     }
 
     private fun fetchBanks() {
-        if (mFinanceViewModel.banksResponse.value?.data.isNullOrEmpty()) {
-            mFinanceViewModel.fetchBanks()
+        if (changeResultViewModel.banksResponse.value == null) {
+            changeResultViewModel.fetchBanks()
         }
     }
 
     private fun setObservers() {
-        mFinanceViewModel.planResultsResponse.observe(this, { res ->
+        changeResultViewModel.planResultsResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    setupAutocompleteText(res.data?.map { it.name }, binding.resultField)
+                    val planResults = res.data?.data
+                    setupAutocompleteText(planResults?.map { it.name }, binding.resultField)
                 }
                 is NetworkResult.Loading -> {
                     progressDialog.showLoading()
@@ -317,11 +318,12 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
                 }
             }
         })
-        mFinanceViewModel.paymentMethodsResponse.observe(this, { res ->
+        changeResultViewModel.paymentMethodsResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    setupAutocompleteText(res.data?.map { it.name }, binding.paymentMethodField)
+                    val paymentMethods = res.data?.data
+                    setupAutocompleteText(paymentMethods?.map { it.name }, binding.paymentMethodField)
                 }
                 is NetworkResult.Loading -> {
                     progressDialog.showLoading()
@@ -332,11 +334,12 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
                 }
             }
         })
-        mFinanceViewModel.banksResponse.observe(this, { res ->
+        changeResultViewModel.banksResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
-                    setupAutocompleteText(res.data?.map { it.name }, binding.bankField)
+                    val banks = res.data?.data
+                    setupAutocompleteText(banks?.map { it.name }, binding.bankField)
                 }
                 is NetworkResult.Loading -> {
                     progressDialog.showLoading()
@@ -347,7 +350,7 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
                 }
             }
         })
-        mFinanceViewModel.changeResultResponse.observe(this, { res ->
+        changeResultViewModel.changeResultResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     progressDialog.hideLoading()
@@ -362,9 +365,6 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
                     showException(res.message, this)
                 }
             }
-        })
-        mFinanceViewModel.countryCode.observe(this, { countryCode ->
-            this.countryCode = countryCode
         })
     }
 

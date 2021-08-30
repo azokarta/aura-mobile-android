@@ -29,16 +29,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <br.com.sapereaude.maskedEditText.MaskedEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/phoneNumberText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="phone"
-            android:typeface="monospace"
-            app:keep_hint="true"
-            app:layout_constraintTop_toBottomOf="@+id/descriptionField"
-            mask:allowed_chars="1234567890"
-            mask:mask="+7(###)###-##-##" />
+            android:inputType="phone" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

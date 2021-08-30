@@ -19,9 +19,9 @@ class CallRepository @Inject constructor(
         }
     }
 
-    suspend fun fetchCallsHistory(contractId: Long): NetworkResult<ResponseHelper<List<Call>>> {
+    suspend fun fetchCallHistory(contractId: Long): NetworkResult<ResponseHelper<List<Call>>> {
         return executeWithResponse {
-            callService.fetchCallsHistory(contractId)
+            callService.fetchCallHistory(contractId)
         }
     }
 

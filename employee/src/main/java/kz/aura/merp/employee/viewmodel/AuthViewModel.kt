@@ -32,16 +32,19 @@ class AuthViewModel @Inject constructor(
     val saveFcmTokenResponse = MutableLiveData<NetworkResult<ResponseHelper<Nothing>>>()
 
     fun signIn(phoneNumber: String, password: String) = scope.launch {
+        signInResponse.postValue(NetworkResult.Loading())
         val response = authRepository.signin(phoneNumber, password)
         signInResponse.postValue(response)
     }
 
     fun getUserInfo() = scope.launch {
+        userInfoResponse.postValue(NetworkResult.Loading())
         val response = coreRepository.getUserInfo()
         userInfoResponse.postValue(response)
     }
 
     fun saveFcmToken(token: String) = scope.launch {
+        saveFcmTokenResponse.postValue(NetworkResult.Loading())
         val response = coreRepository.saveFcmToken(token)
         saveFcmTokenResponse.postValue(response)
     }

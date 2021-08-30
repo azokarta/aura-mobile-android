@@ -14,17 +14,17 @@ import kz.aura.merp.employee.model.ResponseHelper
 import javax.inject.Inject
 
 @HiltViewModel
-class ContributionsViewModel @Inject constructor(
+class PlanContributionsViewModel @Inject constructor(
     private val contributionRepository: ContributionRepository
 ) : ViewModel() {
 
     private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.IO)
 
-    val contributionsResponse = MutableLiveData<NetworkResult<ResponseHelper<List<Contribution>>>>()
+    val contributionsByContractIdResponse = MutableLiveData<NetworkResult<ResponseHelper<List<Contribution>>>>()
 
-    fun fetchContributions() = scope.launch {
-        contributionsResponse.postValue(NetworkResult.Loading())
-        val response = contributionRepository.fetchContributions()
-        contributionsResponse.postValue(response)
+    fun fetchContributionsByContractId(contractId: Long) = scope.launch {
+        contributionsByContractIdResponse.postValue(NetworkResult.Loading())
+        val response = contributionRepository.fetchContributionsByContractId(contractId)
+        contributionsByContractIdResponse.postValue(response)
     }
 }

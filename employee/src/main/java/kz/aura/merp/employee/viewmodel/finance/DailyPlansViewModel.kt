@@ -8,28 +8,28 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kz.aura.merp.employee.base.NetworkResult
-import kz.aura.merp.employee.data.finance.monthPlan.MonthPlanRepository
+import kz.aura.merp.employee.data.finance.dailyPlan.DailyPlanRepository
 import kz.aura.merp.employee.data.finance.reference.ReferenceRepository
 import kz.aura.merp.employee.model.BusinessProcessStatus
-import kz.aura.merp.employee.model.Plan
+import kz.aura.merp.employee.model.DailyPlan
 import kz.aura.merp.employee.model.ResponseHelper
 import javax.inject.Inject
 
 @HiltViewModel
-class ContractViewModel @Inject constructor(
-    private val monthPlanRepository: MonthPlanRepository,
+class DailyPlansViewModel @Inject constructor(
+    private val dailyPlanRepository: DailyPlanRepository,
     private val referenceRepository: ReferenceRepository
 ) : ViewModel() {
 
     private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.IO)
 
-    val planResponse = MutableLiveData<NetworkResult<ResponseHelper<Plan>>>()
+    val dailyPlansResponse = MutableLiveData<NetworkResult<ResponseHelper<List<DailyPlan>>>>()
     val businessProcessStatusesResponse = MutableLiveData<NetworkResult<ResponseHelper<List<BusinessProcessStatus>>>>()
 
-    fun fetchPlan(contractId: Long) = scope.launch {
-        planResponse.postValue(NetworkResult.Loading())
-        val response = monthPlanRepository.fetchPlan(contractId)
-        planResponse.postValue(response)
+    fun fetchDailyPlans() = scope.launch {
+        dailyPlansResponse.postValue(NetworkResult.Loading())
+        val response = dailyPlanRepository.fetchDailyPlans()
+        dailyPlansResponse.postValue(response)
     }
 
     fun fetchBusinessProcessStatuses() = scope.launch {

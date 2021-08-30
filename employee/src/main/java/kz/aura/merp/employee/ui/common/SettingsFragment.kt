@@ -39,7 +39,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private fun setLanguages() {
         val items = listOf(getString(R.string.en), getString(R.string.ru))
         val salary = authViewModel.preferences.salary
-        val saveLanguage = { lan: String -> authViewModel.preferences.language = lan }
+        val saveLanguage = { language: String -> authViewModel.preferences.language = language }
 
         val savedLanguage = when (authViewModel.preferences.language) {
             Language.EN.value -> items[0]
@@ -56,7 +56,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 1 -> saveLanguage(Language.RU.value)
             }
             val staffPosition = definePosition(salary)
-            openActivityByPosition(requireContext(), staffPosition!!)
+            openActivityByPosition(staffPosition)
         }
     }
 

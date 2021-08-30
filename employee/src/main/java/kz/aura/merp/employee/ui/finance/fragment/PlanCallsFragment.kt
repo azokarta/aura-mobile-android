@@ -2,29 +2,24 @@ package kz.aura.merp.employee.ui.finance.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.adapter.CallsAdapter
 import kz.aura.merp.employee.databinding.FragmentPlanCallsBinding
 import kz.aura.merp.employee.base.NetworkResult
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
+import kz.aura.merp.employee.viewmodel.finance.PlanCallsViewModel
 
 @AndroidEntryPoint
-class PlanCallsFragment : Fragment() {
+class PlanCallsFragment : Fragment(R.layout.fragment_plan_calls) {
 
     private var _binding: FragmentPlanCallsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var sharedViewModel: SharedViewModel
-    private lateinit var financeViewModel: FinanceViewModel
+    private val sharedViewModel: SharedViewModel by viewModels()
+    private val planCallsViewModel: PlanCallsViewModel by viewModels()
     private val callsAdapter: CallsAdapter by lazy { CallsAdapter() }
     private var contractId: Long? = null
     private var checkedButtonId: Int? = null
@@ -36,17 +31,37 @@ class PlanCallsFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentPlanCallsBinding.bind(view)
 
-        _binding = FragmentPlanCallsBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
-        binding.sharedViewModel = sharedViewModel
-        val root: View = binding.root
+        with (binding) {
+            lifecycleOwner = this@PlanCallsFragment
+            sharedViewModel = this@PlanCallsFragment.sharedViewModel
+
+            toggleButton.addOnButtonCheckedListener { _, checkedId, isChecked ->
+                val callHistoryRes = planCallsViewModel.callHistoryResponse.value
+                val lastMonthCallsRes = planCallsViewModel.lastMonthCallsByContractIdResponse.value
+
+                checkedButtonId = checkedId
+                if (isChecked) {
+                    when (checkedId) {
+                        binding.callsForMonthBtn.id -> {
+                            if (lastMonthCallsRes is NetworkResult.Success) {
+                                callsAdapter.submitList(lastMonthCallsRes.data?.data)
+                            }
+                        }
+                        binding.callsHistoryBtn.id -> {
+                            if (callHistoryRes is NetworkResult.Success) {
+                                callsAdapter.submitList(callHistoryRes.data?.data)
+                            } else {
+                                planCallsViewModel.fetchCallHistory(contractId!!)
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         checkedButtonId = binding.toggleButton.checkedButtonId
 
@@ -55,57 +70,34 @@ class PlanCallsFragment : Fragment() {
         setupObservers()
 
         callRequests()
-
-        binding.toggleButton.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            val callsHistory = financeViewModel.callsHistoryResponse.value
-            val calls = financeViewModel.callsResponse.value
-            checkedButtonId = checkedId
-            if (isChecked) {
-                when (checkedId) {
-                    binding.callsForMonthBtn.id -> {
-                        if (calls is NetworkResult.Success) {
-                            callsAdapter.setData(financeViewModel.callsResponse.value!!.data!!)
-                        }
-                    }
-                    binding.callsHistoryBtn.id -> {
-                        if (callsHistory is NetworkResult.Success) {
-                            callsAdapter.setData(financeViewModel.callsHistoryResponse.value!!.data!!)
-                        } else {
-                            financeViewModel.fetchCallHistory(contractId!!)
-                        }
-                    }
-                }
-            }
-        }
-
-        return root
     }
 
     private fun callRequests() {
-        financeViewModel.fetchCallHistory(contractId!!)
+        planCallsViewModel.fetchLastMonthCallsByContractId(contractId!!)
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = callsAdapter
     }
 
     private fun setupObservers() {
-        financeViewModel.callsResponse.observe(viewLifecycleOwner, { res ->
+        planCallsViewModel.lastMonthCallsByContractIdResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
-                    callsAdapter.setData(res.data!!)
+                    val lastMonthCalls = res.data?.data
+                    callsAdapter.submitList(lastMonthCalls)
                 }
                 is NetworkResult.Loading -> sharedViewModel.setResponse(res)
                 is NetworkResult.Error -> sharedViewModel.setResponse(res)
             }
         })
-        financeViewModel.callsHistoryResponse.observe(viewLifecycleOwner, { res ->
+        planCallsViewModel.callHistoryResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
-                    callsAdapter.setData(res.data!!)
+                    val callHistory = res.data?.data
+                    callsAdapter.submitList(callHistory)
                 }
                 is NetworkResult.Loading -> sharedViewModel.setResponse(res)
                 is NetworkResult.Error -> sharedViewModel.setResponse(res)

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
@@ -16,18 +17,18 @@ import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.DailyPlanFilterBottomSheetBinding
 import kz.aura.merp.employee.model.BusinessProcessStatus
 import kz.aura.merp.employee.base.NetworkResult
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
+import kz.aura.merp.employee.viewmodel.finance.DailyPlanViewModel
 
 @AndroidEntryPoint
 class DailyPlanFilterDialogFragment : BottomSheetDialogFragment() {
 
     private var _binding: DailyPlanFilterBottomSheetBinding? = null
     private val binding get() = _binding!!
-    private lateinit var financeViewModel: FinanceViewModel
+    private val dailyPlanViewModel: DailyPlanViewModel by viewModels()
     private val filterViewModel: PlanFilterViewModel by activityViewModels()
-    private lateinit var sharedViewModel: SharedViewModel
+    private val sharedViewModel: SharedViewModel by viewModels()
     private lateinit var filterSortParams: ArrayList<String>
     private lateinit var searchParams: List<String>
     private var selectedSearchBy: Int = 0
@@ -42,9 +43,6 @@ class DailyPlanFilterDialogFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
-        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-
         _binding = DailyPlanFilterBottomSheetBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.sharedViewModel = sharedViewModel
@@ -115,7 +113,7 @@ class DailyPlanFilterDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun callRequests() {
-        financeViewModel.fetchBusinessProcessStatuses()
+        dailyPlanViewModel.fetchBusinessProcessStatuses()
     }
 
     private fun setupFilterParams() {
@@ -137,11 +135,14 @@ class DailyPlanFilterDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupObservers() {
-        financeViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
+        dailyPlanViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
-                    businessProcessStatuses.addAll(res.data!!)
+                    val businessProcesses = res.data?.data
+                    if (businessProcesses != null) {
+                        businessProcessStatuses.addAll(businessProcesses)
+                    }
                     for (process in businessProcessStatuses) {
                         binding.statusesChipGroup.addView(
                             createChip(

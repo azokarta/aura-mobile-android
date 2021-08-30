@@ -17,18 +17,15 @@ class CreatePasscodeActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCreatePasscodeBinding
 
-    private val authViewModel: AuthViewModel by viewModels()
     private val passcodeViewModel: PasscodeViewModel by viewModels()
     private val code = arrayListOf<Int>()
     private val newCode = arrayListOf<Int>()
-    private var savedPasscode: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreatePasscodeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar.root)
         supportActionBar?.title = getString(R.string.create_passcode)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -36,24 +33,27 @@ class CreatePasscodeActivity : BaseActivity() {
     }
 
     private fun setListenersOfNumbers() {
-        binding.number1.setOnClickListener { addNumber(1) }
-        binding.number2.setOnClickListener { addNumber(2) }
-        binding.number3.setOnClickListener { addNumber(3) }
-        binding.number4.setOnClickListener { addNumber(4) }
-        binding.number5.setOnClickListener { addNumber(5) }
-        binding.number6.setOnClickListener { addNumber(6) }
-        binding.number7.setOnClickListener { addNumber(7) }
-        binding.number8.setOnClickListener { addNumber(8) }
-        binding.number9.setOnClickListener { addNumber(9) }
-        binding.number0.setOnClickListener { addNumber(0) }
-        binding.deleteNumber.setOnClickListener {
-            removeLastNumber()
+        with (binding) {
+            number1.setOnClickListener { addNumber(1) }
+            number2.setOnClickListener { addNumber(2) }
+            number3.setOnClickListener { addNumber(3) }
+            number4.setOnClickListener { addNumber(4) }
+            number5.setOnClickListener { addNumber(5) }
+            number6.setOnClickListener { addNumber(6) }
+            number7.setOnClickListener { addNumber(7) }
+            number8.setOnClickListener { addNumber(8) }
+            number9.setOnClickListener { addNumber(9) }
+            number0.setOnClickListener { addNumber(0) }
+            deleteNumber.setOnClickListener {
+                removeLastNumber()
+            }
         }
     }
 
     override fun onDestroy() {
+        val savedPasscode = passcodeViewModel.preferences.passcode
         if (savedPasscode.isNullOrBlank()) {
-            authViewModel.clearPreferences()
+            passcodeViewModel.clearPreferences()
         }
         super.onDestroy()
     }
@@ -72,9 +72,8 @@ class CreatePasscodeActivity : BaseActivity() {
                     if (newCode == code) {
                         val passcode = newCode.joinToString()
                         passcodeViewModel.preferences.passcode = passcode
-                        savedPasscode = passcode
-                        val staffPosition = definePosition(authViewModel.preferences.salary)
-                        openActivityByPosition(this, staffPosition!!)
+                        val staffPosition = definePosition(passcodeViewModel.preferences.salary)
+                        openActivityByPosition(staffPosition)
                     } else {
                         vibrate(this, 500)
                         showBackgroundError()
@@ -94,10 +93,12 @@ class CreatePasscodeActivity : BaseActivity() {
     }
 
     private fun showBackgroundError() {
-        binding.codeContainer1.setBackgroundResource(R.drawable.passcode_error_background)
-        binding.codeContainer2.setBackgroundResource(R.drawable.passcode_error_background)
-        binding.codeContainer3.setBackgroundResource(R.drawable.passcode_error_background)
-        binding.codeContainer4.setBackgroundResource(R.drawable.passcode_error_background)
+        with (binding) {
+            codeContainer1.setBackgroundResource(R.drawable.passcode_error_background)
+            codeContainer2.setBackgroundResource(R.drawable.passcode_error_background)
+            codeContainer3.setBackgroundResource(R.drawable.passcode_error_background)
+            codeContainer4.setBackgroundResource(R.drawable.passcode_error_background)
+        }
     }
 
     private fun clearCode() {

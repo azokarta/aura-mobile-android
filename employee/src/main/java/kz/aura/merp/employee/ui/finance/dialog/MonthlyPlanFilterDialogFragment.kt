@@ -8,24 +8,25 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.MonthlyPlanFilterBottomSheetBinding
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
+import kz.aura.merp.employee.viewmodel.finance.MonthlyPlanViewModel
 
 @AndroidEntryPoint
 class MonthlyPlanFilterDialogFragment : BottomSheetDialogFragment() {
 
     private var _binding: MonthlyPlanFilterBottomSheetBinding? = null
     private val binding get() = _binding!!
-    private lateinit var financeViewModel: FinanceViewModel
+    private val monthlyPlanViewModel: MonthlyPlanViewModel by viewModels()
     private val filterViewModel: PlanFilterViewModel by activityViewModels()
-    private lateinit var sharedViewModel: SharedViewModel
+    private val sharedViewModel: SharedViewModel by viewModels()
     private lateinit var filterSortParams: ArrayList<String>
     private lateinit var searchParams: List<String>
     private var selectedSearchBy: Int = 0
@@ -38,9 +39,6 @@ class MonthlyPlanFilterDialogFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
-        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-
         _binding = MonthlyPlanFilterBottomSheetBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         val root: View = binding.root

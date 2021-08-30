@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:fillViewport="true"
-    tools:context=".ui.common.AuthorizationActivity"
+    tools:context=".ui.common.AuthActivity"
     xmlns:mask="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,18 +63,12 @@
                     app:layout_constraintEnd_toEndOf="@+id/countryCallingCodeField"
                     app:layout_constraintStart_toStartOf="@+id/countryCallingCodeField"
                     app:layout_constraintTop_toBottomOf="@+id/countryCallingCodeField">
-
-                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/phoneNumberText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="phone"
-                        android:typeface="monospace"
-                        app:keep_hint="true"
-                        app:layout_constraintTop_toBottomOf="@+id/descriptionField"
-                        mask:allowed_chars="1234567890"
-                        mask:mask="+7(###)###-##-##" />
-
+                        android:inputType="number"
+                        />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout

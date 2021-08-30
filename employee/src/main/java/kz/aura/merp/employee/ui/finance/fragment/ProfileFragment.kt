@@ -1,52 +1,39 @@
 package kz.aura.merp.employee.ui.finance.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.FragmentProfileBinding
 import kz.aura.merp.employee.ui.common.UserAvatarActionsDialogFragment
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
+import kz.aura.merp.employee.viewmodel.finance.ProfileViewModel
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment(), UserAvatarActionsDialogFragment.UserAvatarActionsDialogListener {
+class ProfileFragment : Fragment(R.layout.fragment_profile), UserAvatarActionsDialogFragment.UserAvatarActionsDialogListener {
 
     private var _binding: FragmentProfileBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var financeViewModel: FinanceViewModel
+    private val profileViewModel: ProfileViewModel by viewModels()
     val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
         binding.avatar.setImageURI(result)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        financeViewModel = ViewModelProvider(this).get(FinanceViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentProfileBinding.bind(view)
 
-        _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
-        val root: View = binding.root
+        with (binding) {
+            salary = profileViewModel.preferences.salary
+//            executePendingBindings()
 
-        financeViewModel.salary.observe(viewLifecycleOwner, { salary ->
-            binding.salary = salary
-        })
-
-        financeViewModel.getSalary()
-
-        binding.avatar.setOnClickListener {
-            openAvatarActions()
+            avatar.setOnClickListener {
+                openAvatarActions()
+            }
         }
-
-        return root
     }
 
     private fun openAvatarActions() {
@@ -70,9 +57,5 @@ class ProfileFragment : Fragment(), UserAvatarActionsDialogFragment.UserAvatarAc
 
     override fun selectEditPhoto() {
         getContent.launch("image/*")
-    }
-
-    private fun lgl(){
-
     }
 }

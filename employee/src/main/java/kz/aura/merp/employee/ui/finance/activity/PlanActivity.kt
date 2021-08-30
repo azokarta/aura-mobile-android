@@ -41,7 +41,6 @@ class PlanActivity : BaseActivity() {
         val bundle = Bundle()
         bundle.putLong("contractId", receivedContractId)
 
-
         binding.viewPager.adapter = PagerAdapter(bundle, this, fragments)
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {

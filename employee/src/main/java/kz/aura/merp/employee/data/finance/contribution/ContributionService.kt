@@ -1,4 +1,4 @@
-package kz.aura.merp.employee.data.finance.contributions
+package kz.aura.merp.employee.data.finance.contribution
 
 import kz.aura.merp.employee.model.Contribution
 import kz.aura.merp.employee.model.ResponseHelper

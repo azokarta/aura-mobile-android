@@ -14,4 +14,6 @@ import javax.inject.Inject
 class PasscodeViewModel @Inject constructor(
     val preferences: AppPreferences,
     application: Application
-): AndroidViewModel(application) {}
+): AndroidViewModel(application) {
+    fun clearPreferences() = preferences.clear()
+}

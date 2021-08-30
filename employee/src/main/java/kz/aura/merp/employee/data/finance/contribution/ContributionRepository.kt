@@ -1,4 +1,4 @@
-package kz.aura.merp.employee.data.finance.contributions
+package kz.aura.merp.employee.data.finance.contribution
 
 import dagger.hilt.android.scopes.ViewModelScoped
 import kz.aura.merp.employee.base.NetworkResult

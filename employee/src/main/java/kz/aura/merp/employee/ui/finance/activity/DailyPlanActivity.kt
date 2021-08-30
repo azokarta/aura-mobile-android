@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,8 +23,8 @@ import kz.aura.merp.employee.model.DailyPlan
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.OnSelectPhoneNumber
 import kz.aura.merp.employee.view.PermissionsListener
-import kz.aura.merp.employee.viewmodel.FinanceViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
+import kz.aura.merp.employee.viewmodel.finance.DailyPlanViewModel
 
 @AndroidEntryPoint
 class DailyPlanActivity : BaseActivity(), StepsAdapter.Companion.CompletedStepListener,
@@ -35,7 +34,7 @@ class DailyPlanActivity : BaseActivity(), StepsAdapter.Companion.CompletedStepLi
 
     private var dailyPlanId: Long? = null
     private val stepsAdapter: StepsAdapter by lazy { StepsAdapter(this) }
-    private val mFinanceViewModel: FinanceViewModel by viewModels()
+    private val dailyPlanViewModel: DailyPlanViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
     private val phoneNumbersAdapter: PhoneNumbersAdapter by lazy { PhoneNumbersAdapter(this) }
@@ -51,26 +50,24 @@ class DailyPlanActivity : BaseActivity(), StepsAdapter.Companion.CompletedStepLi
         binding.lifecycleOwner = this
         binding.sharedViewModel = sharedViewModel
         setContentView(binding.root)
-
-        // Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.plan)
 
-        // Initialize Loading Dialog
         progressDialog = ProgressDialog(this)
 
         permissions = Permissions(this, this, this)
         permissions.setListener(this)
 
-        binding.swipeRefresh.setOnRefreshListener(this)
-        binding.createScheduleCall.setOnClickListener(::openCreateScheduledCallScreen)
+        with (binding) {
+            swipeRefresh.setOnRefreshListener(this@DailyPlanActivity)
+            createScheduleCall.setOnClickListener(::openCreateScheduledCallScreen)
+        }
 
         initPhoneNumbers()
         initStepView()
 
-        // Observe MutableLiveData
         setupObservers()
 
         binding.changeResult.setOnClickListener {
@@ -99,21 +96,21 @@ class DailyPlanActivity : BaseActivity(), StepsAdapter.Companion.CompletedStepLi
     }
 
     private fun initPhoneNumbers() {
-        binding.phoneNumbers.layoutManager = LinearLayoutManager(this)
         binding.phoneNumbers.adapter = phoneNumbersAdapter
         binding.phoneNumbers.isNestedScrollingEnabled = false
     }
 
     private fun callRequests() {
-        dailyPlanId?.let { mFinanceViewModel.fetchDailyPlan(it) }
-        mFinanceViewModel.fetchBusinessProcessStatuses()
+        dailyPlanId?.let { dailyPlanViewModel.fetchDailyPlan(it) }
+        dailyPlanViewModel.fetchBusinessProcessStatuses()
     }
 
     private fun setupObservers() {
-        mFinanceViewModel.businessProcessStatusesResponse.observe(this, { res ->
+        dailyPlanViewModel.businessProcessStatusesResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
-                    stepsAdapter.setData(res.data!!)
+                    val businessProcessStatuses = res.data?.data
+                    businessProcessStatuses?.let { stepsAdapter.setData(it) }
                 }
                 is NetworkResult.Loading -> {
                 }
@@ -122,12 +119,12 @@ class DailyPlanActivity : BaseActivity(), StepsAdapter.Companion.CompletedStepLi
                 }
             }
         })
-        mFinanceViewModel.changeBusinessProcessStatusResponse.observe(this, { res ->
+        dailyPlanViewModel.updateBusinessProcessResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     modifiedResultOrStatus = true
                     sharedViewModel.setResponse(res)
-                    dailyPlanId?.let { mFinanceViewModel.fetchDailyPlan(it) }
+                    dailyPlanId?.let { dailyPlanViewModel.fetchDailyPlan(it) }
                 }
                 is NetworkResult.Loading -> sharedViewModel.setResponse(res)
                 is NetworkResult.Error -> {
@@ -136,14 +133,15 @@ class DailyPlanActivity : BaseActivity(), StepsAdapter.Companion.CompletedStepLi
                 }
             }
         })
-        mFinanceViewModel.dailyPlanResponse.observe(this, { res ->
+        dailyPlanViewModel.dailyPlanResponse.observe(this, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
-                    plan = res.data
-                    binding.plan = res.data
+                    val dailyPlan = res.data?.data
+                    plan = dailyPlan
+                    binding.plan = dailyPlan
                     plan?.planBusinessProcessId?.let { stepsAdapter.setStep(it) }
-                    phoneNumbersAdapter.setData(plan?.customerPhoneNumbers)
+                    phoneNumbersAdapter.submitList(dailyPlan?.customerPhoneNumbers)
                 }
                 is NetworkResult.Loading -> sharedViewModel.setResponse(res)
                 is NetworkResult.Error -> {
@@ -155,7 +153,6 @@ class DailyPlanActivity : BaseActivity(), StepsAdapter.Companion.CompletedStepLi
     }
 
     private fun initStepView() {
-        binding.stepsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.stepsRecyclerView.adapter = stepsAdapter
         binding.stepsRecyclerView.isNestedScrollingEnabled = false
     }
@@ -185,7 +182,7 @@ class DailyPlanActivity : BaseActivity(), StepsAdapter.Companion.CompletedStepLi
 
         SmartLocation.with(this).location().oneFix()
             .start {
-                mFinanceViewModel.updateBusinessProcess(
+                dailyPlanViewModel.updateBusinessProcess(
                     plan!!.contractId,
                     ChangeBusinessProcess(businessProcessStatusId, it.latitude, it.longitude)
                 )
@@ -226,7 +223,7 @@ class DailyPlanActivity : BaseActivity(), StepsAdapter.Companion.CompletedStepLi
                 changeResultRequestCode -> {
                     modifiedResultOrStatus = true
                     showSnackbar(binding.changeResult)
-                    dailyPlanId?.let { mFinanceViewModel.fetchDailyPlan(it) }
+                    dailyPlanId?.let { dailyPlanViewModel.fetchDailyPlan(it) }
                 }
                 createScheduledCallRequestCode -> {
                     showSnackbar(binding.createScheduleCall)

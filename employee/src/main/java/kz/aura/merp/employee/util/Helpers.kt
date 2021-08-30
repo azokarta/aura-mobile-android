@@ -14,6 +14,8 @@ import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ErrorDialogBinding
@@ -26,6 +28,25 @@ import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import java.util.*
+import kotlin.reflect.KClass
+
+fun AppCompatActivity.navigateToActivity(activity: KClass<*>, newTask: Boolean = false) {
+    val intent = Intent(this, activity.java).apply {
+        if (newTask) {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+    }
+    startActivity(intent)
+}
+
+fun Fragment.navigateToActivity(activity: KClass<*>, newTask: Boolean = false) {
+    val intent = Intent(requireContext(), activity.java).apply {
+        if (newTask) {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+    }
+    startActivity(intent)
+}
 
 fun updateLocale(c: Context, language: String): ContextWrapper {
     var context = c
@@ -87,9 +108,9 @@ fun convertStrToDateMillis(date: String?): Long? {
 
 fun hideKeyboard(activity: Activity) {
     val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-    //Find the currently focused view, so we can grab the correct window token from it.
+    // Find the currently focused view, so we can grab the correct window token from it.
     var view: View? = activity.currentFocus
-    //If no view currently has focus, create a new one, just so we can grab a window token from it
+    // If no view currently has focus, create a new one, just so we can grab a window token from it
     if (view == null) {
         view = View(activity)
     }
@@ -132,7 +153,8 @@ fun definePosition(salary: Salary?): StaffPosition? {
     if (salary == null) {
         return null
     }
-    // Define position of employee and return constant
+
+    // Define the position of the employee and return constant
     return when (salary.positionId) {
         in crmPositions -> StaffPosition.DEALER
         in financePositions -> StaffPosition.FIN_AGENT
@@ -141,23 +163,16 @@ fun definePosition(salary: Salary?): StaffPosition? {
     }
 }
 
-fun openActivityByPosition(context: Context, position: StaffPosition) {
+fun AppCompatActivity.openActivityByPosition(position: StaffPosition?) {
     when (position) {
-        StaffPosition.FIN_AGENT -> newTask(context, FinanceActivity::class.java)
+        StaffPosition.FIN_AGENT -> navigateToActivity(FinanceActivity::class, true)
     }
 }
 
-fun newTask(context: Context, activity: Class<*>) {
-    // Clear previous activities and open new activity
-    val intent = Intent(context, activity)
-    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-    context.startActivity(intent)
-}
-
-fun isInternetAvailable(context: Context): Boolean {
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val networkInfo = connectivityManager.activeNetworkInfo
-    return networkInfo != null && networkInfo.isConnected
+fun Fragment.openActivityByPosition(position: StaffPosition?) {
+    when (position) {
+        StaffPosition.FIN_AGENT -> navigateToActivity(FinanceActivity::class, true)
+    }
 }
 
 fun showException(message: String? = null, context: Context, title: String? = null) {
@@ -170,7 +185,6 @@ fun showException(message: String? = null, context: Context, title: String? = nu
     binding.errorTitle.text = title
     binding.subError.text = message
 
-    // Hide alert dialog
     binding.errorClose.setOnClickListener {
         builder.dismiss()
     }

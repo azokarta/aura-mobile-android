@@ -4,7 +4,6 @@ import android.content.Intent
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.squareup.picasso.Picasso
 import kz.aura.merp.employee.ui.finance.activity.PlanActivity
 import kz.aura.merp.employee.ui.finance.activity.DailyPlanActivity
 
@@ -36,9 +35,9 @@ class FinanceBinding {
         fun initProfileAvatar(imageView: ImageView, url: String) {
             val default = "https://cityhope.cc/wp-content/uploads/2020/01/default-avatar.png"
             if (url.isBlank()) {
-                Picasso.get()
-                    .load(default)
-                    .into(imageView)
+//                Picasso.get()
+//                    .load(default)
+//                    .into(imageView)
             } else {
 
             }

@@ -9,48 +9,61 @@ plugins {
 }
 
 android {
-    compileSdk = 30
-    buildToolsVersion = "30.0.3"
+    compileSdk = rootProject.extra["compileSdkVersion"] as Int
+    buildToolsVersion = rootProject.extra["buildToolsVersion"] as String
 
     defaultConfig {
         applicationId = "kz.aura.merp.employee"
-        minSdk = 21
-        targetSdk = 30
-        versionCode = 14
-        versionName = "1.0.9"
+        minSdk = rootProject.extra["minSdkVersion"] as Int
+        targetSdk = rootProject.extra["targetSdkVersion"] as Int
         multiDexEnabled = true
 
+        versionCode = 14
+        versionName = "1.0.9"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("keystore.jks")
+            storePassword = "auraemployee"
+            keyPassword = "auraemployee"
+            keyAlias = "key_aura_employee"
+        }
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            buildConfigField("String", "BASE_URL_AUTH", "http://werp.kz:30001")
-            buildConfigField("String", "BASE_URL_CORE", "http://werp.kz:30020")
-            buildConfigField("String", "BASE_URL_FINANCE", "http://werp.kz:30021")
-            buildConfigField("String", "BASE_URL_SERVICE", "http://werp.kz:30022")
-            buildConfigField("String", "BASE_URL_CRM", "http://werp.kz:30023")
+            buildConfigField("String", "BASE_URL_AUTH", "\"http://werp.kz:30001\"")
+            buildConfigField("String", "BASE_URL_CORE", "\"http://werp.kz:30020\"")
+            buildConfigField("String", "BASE_URL_FINANCE", "\"http://werp.kz:30021\"")
+            buildConfigField("String", "BASE_URL_SERVICE", "\"http://werp.kz:30022\"")
+            buildConfigField("String", "BASE_URL_CRM", "\"http://werp.kz:30023\"")
+            signingConfig = signingConfigs.getByName("release")
         }
 
         getByName("debug") {
-            applicationIdSuffix = ".debug"
             isDebuggable = true
-            buildConfigField("String", "BASE_URL_AUTH", "http://werp.kz:32001")
-            buildConfigField("String", "BASE_URL_CORE", "http://werp.kz:32020")
-            buildConfigField("String", "BASE_URL_FINANCE", "http://werp.kz:32021")
-            buildConfigField("String", "BASE_URL_SERVICE", "http://werp.kz:32022")
-            buildConfigField("String", "BASE_URL_CRM", "http://werp.kz:32023")
+            buildConfigField("String", "BASE_URL_AUTH", "\"http://werp.kz:32001\"")
+            buildConfigField("String", "BASE_URL_CORE", "\"http://werp.kz:32020\"")
+            buildConfigField("String", "BASE_URL_FINANCE", "\"http://werp.kz:32021\"")
+            buildConfigField("String", "BASE_URL_SERVICE", "\"http://werp.kz:32022\"")
+            buildConfigField("String", "BASE_URL_CRM", "\"http://werp.kz:32023\"")
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility(JavaVersion.VERSION_11)
+        targetCompatibility(JavaVersion.VERSION_11)
     }
+
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
+
     buildFeatures{
         viewBinding = true
         dataBinding = true
@@ -60,7 +73,8 @@ android {
 dependencies {
 
     // Android
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
+    val kotlinVersion = rootProject.extra["kotlinVersion"]
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.3.1")
 
@@ -93,9 +107,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
 
     // Dagger - Hilt
-    val daggerVersion = "2.36"
-    implementation("com.google.dagger:hilt-android:$daggerVersion")
-    kapt("com.google.dagger:hilt-compiler:$daggerVersion")
+    val hiltVersion = rootProject.extra["hiltVersion"]
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    kapt("com.google.dagger:hilt-compiler:$hiltVersion")
 
     // Coroutines
     val coroutinesVersion = "1.5.0-native-mt"
@@ -126,10 +140,6 @@ dependencies {
     // Biometric
     val biometricVersion = "1.2.0-alpha03"
     implementation("androidx.biometric:biometric-ktx:$biometricVersion")
-
-    // MaskEditText
-    val maskedEditTextVersion = "1.0.5"
-    implementation("ru.egslava:MaskedEditText:$maskedEditTextVersion")
 
     // JodaTime
     val jodaVersion = "2.10.9.1"

@@ -4,21 +4,17 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
-import kz.aura.merp.employee.util.newTask
+import kz.aura.merp.employee.util.navigateToActivity
 import kz.aura.merp.employee.viewmodel.AuthViewModel
 
 @AndroidEntryPoint
 class SignOutDialogFragment : DialogFragment() {
 
-    private lateinit var authViewModel: AuthViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
-    }
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -28,7 +24,7 @@ class SignOutDialogFragment : DialogFragment() {
             builder.setTitle(getString(R.string.really_want_to_sign_out))
                 .setPositiveButton(R.string.yes) { dialog, _ ->
                     authViewModel.clearPreferences()
-                    newTask(requireContext(), AuthorizationActivity::class.java)
+                    navigateToActivity(AuthActivity::class, true)
                     dialog.dismiss()
                 }
                 .setNegativeButton(R.string.no) { dialog, _ ->

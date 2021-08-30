@@ -74,18 +74,20 @@ class VerifyPasscodeActivity : BaseActivity() {
     }
 
     private fun setListenersOfNumbers() {
-        binding.number1.setOnClickListener { addNumber(1) }
-        binding.number2.setOnClickListener { addNumber(2) }
-        binding.number3.setOnClickListener { addNumber(3) }
-        binding.number4.setOnClickListener { addNumber(4) }
-        binding.number5.setOnClickListener { addNumber(5) }
-        binding.number6.setOnClickListener { addNumber(6) }
-        binding.number7.setOnClickListener { addNumber(7) }
-        binding.number8.setOnClickListener { addNumber(8) }
-        binding.number9.setOnClickListener { addNumber(9) }
-        binding.number0.setOnClickListener { addNumber(0) }
-        binding.deleteNumber.setOnClickListener {
-            removeLastNumber()
+        with (binding) {
+            number1.setOnClickListener { addNumber(1) }
+            number2.setOnClickListener { addNumber(2) }
+            number3.setOnClickListener { addNumber(3) }
+            number4.setOnClickListener { addNumber(4) }
+            number5.setOnClickListener { addNumber(5) }
+            number6.setOnClickListener { addNumber(6) }
+            number7.setOnClickListener { addNumber(7) }
+            number8.setOnClickListener { addNumber(8) }
+            number9.setOnClickListener { addNumber(9) }
+            number0.setOnClickListener { addNumber(0) }
+            deleteNumber.setOnClickListener {
+                removeLastNumber()
+            }
         }
     }
 
@@ -108,9 +110,8 @@ class VerifyPasscodeActivity : BaseActivity() {
     private fun definePositionAndOpenActivity() {
         val salary = authViewModel.preferences.salary
         val staffPosition = definePosition(salary)
-        openActivityByPosition(this, staffPosition!!)
+        openActivityByPosition(staffPosition)
     }
-
 
     private fun assignCodeText(num: Int) {
         when (code.size) {
@@ -122,10 +123,12 @@ class VerifyPasscodeActivity : BaseActivity() {
     }
 
     private fun showBackgroundError() {
-        binding.codeContainer1.setBackgroundResource(R.drawable.passcode_error_background)
-        binding.codeContainer2.setBackgroundResource(R.drawable.passcode_error_background)
-        binding.codeContainer3.setBackgroundResource(R.drawable.passcode_error_background)
-        binding.codeContainer4.setBackgroundResource(R.drawable.passcode_error_background)
+        with (binding) {
+            codeContainer1.setBackgroundResource(R.drawable.passcode_error_background)
+            codeContainer2.setBackgroundResource(R.drawable.passcode_error_background)
+            codeContainer3.setBackgroundResource(R.drawable.passcode_error_background)
+            codeContainer4.setBackgroundResource(R.drawable.passcode_error_background)
+        }
     }
 
     private fun removeLastNumber() {

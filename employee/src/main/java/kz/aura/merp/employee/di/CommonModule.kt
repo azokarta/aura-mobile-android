@@ -5,15 +5,18 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
 import kz.aura.merp.employee.base.AppPreferences
 
 @Module
+@InstallIn(SingletonComponent::class)
 object CommonModule {
 
     @Provides
-    @ViewModelScoped
     fun provideSharedPreferences(@ApplicationContext context: Context): AppPreferences {
         val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
         val mainKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
