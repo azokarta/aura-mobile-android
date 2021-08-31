@@ -2,14 +2,12 @@ package kz.aura.merp.employee.ui.common
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.base.BaseActivity
 import kz.aura.merp.employee.databinding.ActivityCreatePasscodeBinding
 import kz.aura.merp.employee.util.*
-import kz.aura.merp.employee.viewmodel.AuthViewModel
 import kz.aura.merp.employee.viewmodel.PasscodeViewModel
 
 @AndroidEntryPoint

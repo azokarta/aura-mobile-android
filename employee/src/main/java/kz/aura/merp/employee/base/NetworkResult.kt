@@ -18,14 +18,18 @@ sealed class NetworkResult<T>(
 inline fun <T> executeWithResponse(body: () -> Response<T>): NetworkResult<T> {
     val response = body.invoke()
     return try {
-        NetworkResult.Success(response.body())
-    } catch (e: Exception) {
-        when (response.code()) {
-            ErrorStatus.BAD_REQUEST.status -> NetworkResult.Error(e.message, ErrorStatus.BAD_REQUEST)
-            ErrorStatus.INTERNAL_SERVER_ERROR.status -> NetworkResult.Error(e.message, ErrorStatus.INTERNAL_SERVER_ERROR)
-            ErrorStatus.NOT_FOUND.status -> NetworkResult.Error(e.message, ErrorStatus.NOT_FOUND)
-            ErrorStatus.UNAUTHORIZED.status -> NetworkResult.Error(e.message, ErrorStatus.UNAUTHORIZED)
-            else -> NetworkResult.Error(e.message)
+        if (response.isSuccessful) {
+            NetworkResult.Success(response.body())
+        } else {
+            when (response.code()) {
+                ErrorStatus.BAD_REQUEST.status -> NetworkResult.Error(e.message, ErrorStatus.BAD_REQUEST)
+                ErrorStatus.INTERNAL_SERVER_ERROR.status -> NetworkResult.Error(e.message, ErrorStatus.INTERNAL_SERVER_ERROR)
+                ErrorStatus.NOT_FOUND.status -> NetworkResult.Error(e.message, ErrorStatus.NOT_FOUND)
+                ErrorStatus.UNAUTHORIZED.status -> NetworkResult.Error(e.message, ErrorStatus.UNAUTHORIZED)
+                else -> NetworkResult.Error(e.message)
+            }
         }
+    } catch (e: Exception) {
+        NetworkResult.Error(e.localizedMessage)
     }
 }
