@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="scheduledCall"
             type="kz.aura.merp.employee.model.ScheduledCall" />
@@ -28,9 +27,7 @@
                 android:layout_alignBottom="@+id/imageView15"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="2dp"
-                android:layout_marginLeft="12dp"
                 android:layout_toEndOf="@+id/imageView15"
-                android:layout_toRightOf="@+id/imageView15"
                 android:text="@{scheduledCall.phoneNumber, default=`+7 (707) 555-01-51`}"
                 android:textColor="@color/black"
                 android:layout_marginStart="12dp" />
@@ -41,9 +38,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_baseline_call_24"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp" />
 
@@ -53,7 +48,6 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_baseline_date_range_24"
                 android:layout_below="@+id/imageView15"
-                android:layout_alignLeft="@+id/imageView15"
                 android:layout_alignStart="@+id/imageView15"
                 android:layout_marginTop="16dp"/>
 
@@ -61,12 +55,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{scheduledCall.scheduledDateTime, default=`20.11.2021`}"
-                android:layout_toRightOf="@+id/imageView16"
                 android:layout_toEndOf="@+id/imageView16"
                 android:layout_alignTop="@+id/imageView16"
                 android:layout_alignBottom="@+id/imageView16"
                 android:layout_marginTop="3dp"
-                android:layout_marginLeft="12dp"
                 android:layout_marginStart="12dp"
                 android:textColor="@color/black"/>
 
@@ -80,7 +72,6 @@
                 android:textStyle="bold"
                 android:layout_below="@+id/imageView16"
                 android:layout_alignStart="@+id/imageView16"
-                android:layout_alignLeft="@+id/imageView16"
                 android:layout_marginTop="16dp"/>
 
             <TextView
@@ -88,12 +79,10 @@
                 android:layout_height="wrap_content"
                 android:text="@{Long.toString(scheduledCall.contractNumber), default=`484654`}"
                 android:textColor="@color/black"
-                android:layout_toRightOf="@+id/contractNumber"
                 android:layout_toEndOf="@+id/contractNumber"
                 android:layout_alignTop="@+id/contractNumber"
                 android:layout_alignBottom="@+id/contractNumber"
                 android:layout_marginTop="3dp"
-                android:layout_marginLeft="12dp"
                 android:layout_marginStart="12dp" />
 
             <TextView
@@ -103,7 +92,6 @@
                 android:textColor="@color/black"
                 android:layout_below="@id/contractNumber"
                 android:layout_alignStart="@+id/contractNumber"
-                android:layout_alignLeft="@+id/contractNumber"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"/>
 

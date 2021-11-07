@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.LocaleList
 import android.os.VibrationEffect
@@ -14,19 +15,23 @@ import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.annotation.IntRange
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.ErrorDialogBinding
 import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.ui.finance.activity.FinanceActivity
-import kz.aura.merp.employee.util.Constants.crmPositions
 import kz.aura.merp.employee.util.Constants.financePositions
-import kz.aura.merp.employee.util.Constants.servicePositions
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
+import ru.tinkoff.decoro.MaskImpl
+import ru.tinkoff.decoro.parser.PhoneNumberUnderscoreSlotsParser
+import ru.tinkoff.decoro.watchers.MaskFormatWatcher
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -46,6 +51,14 @@ fun Fragment.navigateToActivity(activity: KClass<*>, newTask: Boolean = false) {
         }
     }
     startActivity(intent)
+}
+
+fun AppCompatActivity.displayToast(text: String, duration: Int) {
+    Toast.makeText(this, text, duration).show()
+}
+
+fun Fragment.displayToast(text: String, duration: Int) {
+    Toast.makeText(requireContext(), text, duration).show()
 }
 
 fun updateLocale(c: Context, language: String): ContextWrapper {
@@ -117,6 +130,20 @@ fun hideKeyboard(activity: Activity) {
     imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
+fun createCustomPhoneMask(mask: String): MaskImpl {
+    val slots = PhoneNumberUnderscoreSlotsParser().parseSlots(mask)
+    return MaskImpl.createTerminated(slots)
+}
+
+fun phoneMaskFormatWatcher(mask: String): MaskFormatWatcher {
+    val slots = PhoneNumberUnderscoreSlotsParser().parseSlots(mask)
+    val inputMask = MaskImpl.createTerminated(slots)
+    inputMask.isForbidInputWhenFilled = true
+    return MaskFormatWatcher(
+        inputMask
+    )
+}
+
 fun hideKeyboardFrom(context: Context, view: View) {
     val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(view.windowToken, 0)
@@ -130,13 +157,28 @@ fun defineCorrectSalary(salaries: List<Salary>?): Salary? {
     return salaries.find {
         when (it.positionId) {
             in financePositions -> true
-            in servicePositions -> true
-            in crmPositions -> true
             else -> {
                 false
             }
         }
     }
+}
+
+fun isNetworkConnected(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    var isConnected = false
+
+    connectivityManager.allNetworks.forEach { network ->
+        val networkCapability = connectivityManager.getNetworkCapabilities(network)
+        networkCapability?.let {
+            if(it.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+                isConnected = true
+                return@forEach
+            }
+        }
+    }
+
+    return isConnected
 }
 
 fun vibrate(context: Context, millis: Long) {
@@ -154,11 +196,9 @@ fun definePosition(salary: Salary?): StaffPosition? {
         return null
     }
 
-    // Define the position of the employee and return constant
+    // Define a position of the employee and return constant
     return when (salary.positionId) {
-        in crmPositions -> StaffPosition.DEALER
         in financePositions -> StaffPosition.FIN_AGENT
-        in servicePositions -> StaffPosition.MASTER
         else -> null
     }
 }

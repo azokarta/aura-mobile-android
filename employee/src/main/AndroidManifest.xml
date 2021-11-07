@@ -66,7 +66,6 @@
 
         <activity android:name=".ui.common.CreatePasscodeActivity"
             android:parentActivityName=".ui.common.AuthActivity" />
-        <activity android:name=".ui.common.MapActivity" />
         <activity
             android:name=".ui.common.AuthActivity"
             android:windowSoftInputMode="adjustResize|stateVisible" />

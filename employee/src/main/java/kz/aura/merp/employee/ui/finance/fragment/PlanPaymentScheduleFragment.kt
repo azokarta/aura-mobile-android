@@ -22,7 +22,6 @@ class PlanPaymentScheduleFragment : Fragment(R.layout.fragment_plan_payment_sche
     private val planPaymentScheduleViewModel: PlanPaymentScheduleViewModel by viewModels()
     private val paymentScheduleAdapter: PaymentScheduleAdapter by lazy { PaymentScheduleAdapter() }
     private var contractId: Long = 0
-    private var currency: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +37,7 @@ class PlanPaymentScheduleFragment : Fragment(R.layout.fragment_plan_payment_sche
         with (binding) {
             lifecycleOwner = this@PlanPaymentScheduleFragment
             sharedViewModel = this@PlanPaymentScheduleFragment.sharedViewModel
+            error.restart.setOnClickListener { callRequests() }
         }
 
         setupRecyclerView()

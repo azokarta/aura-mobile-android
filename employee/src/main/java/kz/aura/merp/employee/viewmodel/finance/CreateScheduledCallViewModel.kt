@@ -12,7 +12,7 @@ import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.data.finance.scheduledCall.ScheduledCallRepository
 import kz.aura.merp.employee.model.AssignScheduledCallCommand
 import kz.aura.merp.employee.model.ResponseHelper
-import kz.aura.merp.employee.util.CountryCode
+import kz.aura.merp.employee.util.Country
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,9 +30,9 @@ class CreateScheduledCallViewModel @Inject constructor(
         assignScheduledCallResponse.postValue(response)
     }
 
-    fun getCountryCode(): CountryCode {
+    fun getCountryCode(): Country {
         val countryCallingCode = preferences.countryCallingCode
-        return CountryCode.values().find { it.phoneCode == countryCallingCode } ?: CountryCode.KZ
+        return Country.values().find { it.phoneCode == countryCallingCode } ?: Country.KZ
     }
 
 }

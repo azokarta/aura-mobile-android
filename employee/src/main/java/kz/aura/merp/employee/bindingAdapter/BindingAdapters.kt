@@ -7,19 +7,20 @@ import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kz.aura.merp.employee.util.LoadingType
 import kz.aura.merp.employee.base.NetworkResult
+import kz.aura.merp.employee.model.ResponseHelper
 
 class BindingAdapters {
 
     companion object {
 
         @JvmStatic
-        @BindingAdapter("app:response", "app:loadingType", requireAll = true)
+        @BindingAdapter("android:response", "android:loadingType", requireAll = true)
         fun showLoading(view: ProgressBar, res: NetworkResult<*>?, loadingType: LoadingType) {
             view.isVisible = res is NetworkResult.Loading<*> && loadingType == LoadingType.PROGRESS_BAR
         }
 
         @JvmStatic
-        @BindingAdapter("app:response", "app:loadingType", requireAll = true)
+        @BindingAdapter("android:response", "android:loadingType", requireAll = true)
         fun showDataByResponse(view: View, res: NetworkResult<*>?, loadingType: LoadingType) {
             view.isVisible = when (res) {
                 is NetworkResult.Success -> true
@@ -29,24 +30,31 @@ class BindingAdapters {
         }
 
         @JvmStatic
-        @BindingAdapter("app:showError")
+        @BindingAdapter("android:showError")
         fun showError(view: View, res: NetworkResult<*>?) {
             view.isVisible = res is NetworkResult.Error
         }
 
         @JvmStatic
-        @BindingAdapter("app:noData")
+        @BindingAdapter("android:noData")
         fun noData(view: View, res: NetworkResult<*>?) {
             if (res is NetworkResult.Success) {
-                view.isVisible = when (res.data) {
-                    is List<*> -> res.data.isNullOrEmpty()
-                    else -> res.data == null
+                if (res.data is ResponseHelper<*>) {
+                    view.isVisible = when (res.data.data) {
+                        is List<*> -> res.data.data.isNullOrEmpty()
+                        else -> res.data.data == null
+                    }
+                } else {
+                    view.isVisible = when (res.data) {
+                        is List<*> -> res.data.isNullOrEmpty()
+                        else -> res.data == null
+                    }
                 }
             }
         }
 
         @JvmStatic
-        @BindingAdapter("app:response", "app:loadingType")
+        @BindingAdapter("android:response", "android:loadingType")
         fun refreshIndicator(
             view: SwipeRefreshLayout,
             res: NetworkResult<*>?,
@@ -56,13 +64,13 @@ class BindingAdapters {
         }
 
         @JvmStatic
-        @BindingAdapter("app:enableByResponse")
+        @BindingAdapter("android:enableByResponse")
         fun enableByResponse(view: View, res: NetworkResult<*>?) {
             view.isEnabled = res is NetworkResult.Success
         }
 
         @JvmStatic
-        @BindingAdapter("app:isVisible")
+        @BindingAdapter("android:isVisible")
         fun isVisible(view: View, visible: Boolean) {
             view.isVisible = visible
         }

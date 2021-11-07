@@ -17,7 +17,7 @@
             android:layout_height="200dp"
             android:contentDescription="@string/error"
             android:visibility="gone"
-            app:showError="@{sharedViewModel.response}"
+            android:showError="@{sharedViewModel.response}"
             android:src="@drawable/warning"
             app:layout_constraintBottom_toTopOf="@+id/errorTitle"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +35,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:text="@{sharedViewModel.response.message}"
-            app:showError="@{sharedViewModel.response}"
+            android:showError="@{sharedViewModel.response}"
             app:layout_constraintBottom_toTopOf="@+id/restart"
             app:layout_constraintEnd_toEndOf="@+id/errorImg"
             app:layout_constraintStart_toStartOf="@+id/errorImg"
@@ -49,11 +49,37 @@
             android:layout_marginTop="16dp"
             android:text="@string/restart"
             android:visibility="gone"
-            app:showError="@{sharedViewModel.response}"
+            android:showError="@{sharedViewModel.response}"
             app:icon="@drawable/ic_baseline_refresh_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/errorTitle"
             app:layout_constraintStart_toStartOf="@+id/errorTitle"
             app:layout_constraintTop_toBottomOf="@+id/errorTitle" />
+
+        <ImageView
+            android:id="@+id/imageView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:noData="@{sharedViewModel.response}"
+            android:src="@drawable/ic_no_data"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView56"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:noData="@{sharedViewModel.response}"
+            android:text="@string/no_data"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/imageView18"
+            app:layout_constraintStart_toStartOf="@+id/imageView18"
+            app:layout_constraintTop_toBottomOf="@+id/imageView18" />
     </merge>
 </layout>

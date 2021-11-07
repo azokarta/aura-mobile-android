@@ -21,8 +21,7 @@
             android:layout_alignParentTop="true"
             android:text="@{phone, default=`+7707356944`}"
             android:textColor="@color/black"
-            android:layout_marginTop="10dp"
-            android:layout_alignParentLeft="true" />
+            android:layout_marginTop="10dp" />
 
         <View
             android:id="@+id/view2"
@@ -38,7 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:src="@drawable/ic_baseline_phone_callback_24"
             app:tint="@color/colorPrimary" />
 
@@ -49,9 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="6dp"
-            android:layout_marginRight="8dp"
             android:layout_toStartOf="@+id/incomingBtn"
-            android:layout_toLeftOf="@+id/incomingBtn"
             android:src="@drawable/ic_baseline_phone_forwarded_24"
             app:tint="@color/colorPrimary" />
     </RelativeLayout>

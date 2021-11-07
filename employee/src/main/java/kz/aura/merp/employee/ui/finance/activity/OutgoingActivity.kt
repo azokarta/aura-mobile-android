@@ -21,6 +21,7 @@ import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import ru.tinkoff.decoro.watchers.MaskFormatWatcher
 
 @AndroidEntryPoint
 class OutgoingActivity : BaseActivity(), PermissionsListener {
@@ -35,8 +36,9 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
     private var duration: Duration? = null
     private var startedTime: DateTime? = null
     private val requestCode = 1000
-    private var countryCode: CountryCode = CountryCode.KZ
+    private var country: Country = Country.KZ
     private lateinit var permissions: Permissions
+    private var formatWatcher: MaskFormatWatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,13 +67,25 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
 
         outgoingViewModel.fetchCallStatuses()
 
-        countryCode = outgoingViewModel.preferences.getCountryCode()
-//        binding.phoneNumberText.mask = countryCode.format
-        val phoneWithoutCountryCode = removeCountryCodeFromPhone(phoneNumber)
-        binding.phoneNumberText.setText(phoneWithoutCountryCode)
+        setPhoneNumberFormatter(phoneNumber)
 
         startedTime = DateTime.now()
         dialPhoneNumber(phoneNumber)
+    }
+
+    private fun setPhoneNumberFormatter(phoneNumber: String) {
+        val country = outgoingViewModel.preferences.getCountryCode()
+        formatWatcher = phoneMaskFormatWatcher(country.format)
+        formatWatcher?.installOn(binding.phoneNumberText)
+
+        when (country) {
+            Country.KZ -> {
+                if (phoneNumber.first() == '8') {
+                    binding.phoneNumberText.setText(phoneNumber.replace("8", country.phoneCode))
+                } else binding.phoneNumberText.setText(phoneNumber)
+            }
+            else -> binding.phoneNumberText.setText(phoneNumber)
+        }
     }
 
     private fun setupObservers() {
@@ -120,7 +134,7 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
         var success = true
 
-        if (phoneNumber.isBlank() || typedPhoneNumber.length != countryCode.format.length) {
+        if (phoneNumber.isBlank() || typedPhoneNumber.length != country.format.length) {
             success = false
             binding.phoneNumberField.isErrorEnabled = true
             binding.phoneNumberField.error = getString(R.string.enter_valid_phone_number)
@@ -137,7 +151,7 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
 
     private fun save() {
         hideKeyboard(this)
-        val typedPhoneNumber = binding.phoneNumberText.text.toString()
+        val typedPhoneNumber = formatWatcher?.mask?.toUnformattedString()
         val description = binding.descriptionText.text.toString()
         val dtf: DateTimeFormatter = DateTimeFormat.forPattern("HH:mm")
         val currentDate: String = dtf.print(DateTime.now())
@@ -149,7 +163,7 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
             SmartLocation.with(this).location().oneFix()
                 .start {
                     val assign = AssignCall(
-                        countryCode = countryCode.name,
+                        countryCode = country.name,
                         phoneNumber = typedPhoneNumber,
                         callStatusId = callStatusId,
                         callTime = currentDate,
@@ -161,17 +175,6 @@ class OutgoingActivity : BaseActivity(), PermissionsListener {
                     outgoingViewModel.assignOutgoingCall(assign, contractId)
                 }
         }
-    }
-
-    private fun removeCountryCodeFromPhone(phone: String): String {
-        if (countryCode == CountryCode.KZ) {
-            return when (phone.first()) {
-                '8' -> phone.removePrefix("8")
-                '+' -> phone.removePrefix("+7")
-                else -> phone
-            }
-        }
-        return phone
     }
 
     override fun onSupportNavigateUp(): Boolean {

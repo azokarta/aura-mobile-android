@@ -4,41 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="sharedViewModel"
             type="kz.aura.merp.employee.viewmodel.SharedViewModel" />
     </data>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.finance.fragment.PlanPaymentScheduleFragment">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.finance.fragment.PlanPaymentScheduleFragment">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:response="@{sharedViewModel.response}"
-                app:loadingType="@{sharedViewModel.loadingType}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:orientation="vertical"
-                tools:listitem="@layout/payment_schedule_row"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <include
+            android:id="@+id/error"
+            layout="@layout/error"
+            app:sharedViewModel="@{sharedViewModel}" />
 
-            <ProgressBar
-                android:id="@+id/progressBar2"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:loadingType="@{sharedViewModel.loadingType}"
-                app:response="@{sharedViewModel.response}"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:loadingType="@{sharedViewModel.loadingType}"
+            android:orientation="vertical"
+            android:response="@{sharedViewModel.response}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/payment_schedule_row" />
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:loadingType="@{sharedViewModel.loadingType}"
+            android:response="@{sharedViewModel.response}"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -27,14 +27,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/imageView15"
                 android:layout_alignBottom="@+id/imageView15"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="2dp"
-                android:layout_marginLeft="12dp"
                 android:layout_toEndOf="@+id/imageView15"
-                android:layout_toRightOf="@+id/imageView15"
                 android:text="@{call.phoneNumber, default=`+7 (707) 555-01-51`}"
-                android:textColor="@color/black"
-                android:layout_marginStart="12dp" />
+                android:textColor="@color/black" />
 
             <ImageView
                 android:id="@+id/imageView15"
@@ -43,7 +41,6 @@
                 tools:src="@drawable/ic_baseline_phone_forwarded_24"
                 android:src="@{call.callDirectionId == 1 ? @drawable/ic_baseline_phone_forwarded_24 : @drawable/ic_baseline_phone_callback_24}"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
 
             <ImageView
@@ -52,7 +49,6 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_baseline_date_range_24"
                 android:layout_below="@+id/imageView15"
-                android:layout_alignLeft="@+id/imageView15"
                 android:layout_alignStart="@+id/imageView15"
                 android:layout_marginTop="16dp"/>
 
@@ -60,12 +56,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{call.callDateTime, default=`20.11.2021`}"
-                android:layout_toRightOf="@+id/imageView16"
                 android:layout_toEndOf="@+id/imageView16"
                 android:layout_alignTop="@+id/imageView16"
                 android:layout_alignBottom="@+id/imageView16"
                 android:layout_marginTop="3dp"
-                android:layout_marginLeft="12dp"
                 android:layout_marginStart="12dp"
                 android:textColor="@color/black"/>
 
@@ -79,7 +73,6 @@
                 android:textStyle="bold"
                 android:layout_below="@+id/imageView16"
                 android:layout_alignStart="@+id/imageView16"
-                android:layout_alignLeft="@+id/imageView16"
                 android:layout_marginTop="16dp"/>
 
             <TextView
@@ -87,12 +80,10 @@
                 android:layout_height="wrap_content"
                 android:text="@{Long.toString(call.contractNumber), default=`484654`}"
                 android:textColor="@color/black"
-                android:layout_toRightOf="@+id/contractNumber"
                 android:layout_toEndOf="@+id/contractNumber"
                 android:layout_alignTop="@+id/contractNumber"
                 android:layout_alignBottom="@+id/contractNumber"
                 android:layout_marginTop="3dp"
-                android:layout_marginLeft="12dp"
                 android:layout_marginStart="12dp" />
 
             <TextView
@@ -103,19 +94,27 @@
                 android:textColor="@color/black"
                 android:layout_below="@id/contractNumber"
                 android:layout_alignStart="@+id/contractNumber"
-                android:layout_alignLeft="@+id/contractNumber"
                 android:layout_marginTop="16dp"/>
 
 
             <TextView
+                android:id="@+id/callStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{call.callStatusName, default=`Call status`}"
-                android:textColor="@color/black"
                 android:layout_below="@id/callDirection"
                 android:layout_alignStart="@+id/callDirection"
-                android:layout_alignLeft="@+id/callDirection"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="16dp"
+                android:text="@{call.callStatusName, default=`Call status`}"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/callStatus"
+                android:layout_alignStart="@+id/callStatus"
+                android:layout_marginTop="16dp"
+                android:text="@{call.description, default=`Call description`}"
+                android:textColor="@color/black" />
 
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>

@@ -1,11 +1,9 @@
 package kz.aura.merp.employee.ui.finance.fragment
 
 import android.os.Bundle
-import android.text.Html
 import android.view.*
-import androidx.core.view.isVisible
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -16,49 +14,42 @@ import kz.aura.merp.employee.adapter.PlansAdapter
 import kz.aura.merp.employee.base.NetworkResult
 import kz.aura.merp.employee.databinding.FragmentMonthlyPlanBinding
 import kz.aura.merp.employee.model.Plan
-import kz.aura.merp.employee.model.PlanFilter
+import kz.aura.merp.employee.model.MonthlyPlanFilter
 import kz.aura.merp.employee.ui.finance.dialog.MonthlyPlanFilterDialogFragment
 import kz.aura.merp.employee.ui.common.TimePickerFragment
 import kz.aura.merp.employee.util.*
-import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
 import kz.aura.merp.employee.viewmodel.SharedViewModel
 import kz.aura.merp.employee.viewmodel.finance.MonthlyPlanViewModel
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class MonthlyPlanFragment : Fragment(R.layout.fragment_monthly_plan), PlansAdapter.OnClickListener,
-    TimePickerFragment.TimePickerListener, SwipeRefreshLayout.OnRefreshListener {
+class MonthlyPlanFragment : Fragment(R.layout.fragment_monthly_plan), PlansAdapter.OnClickListener,SwipeRefreshLayout.OnRefreshListener, MonthlyPlanFilterDialogFragment.Listener {
 
-    private val monthlyPlanViewModel: MonthlyPlanViewModel by viewModels()
-    private val filterViewModel: PlanFilterViewModel by activityViewModels()
-    private val sharedViewModel: SharedViewModel by viewModels()
-    private val plansAdapter: PlansAdapter by lazy { PlansAdapter(this) }
     private var _binding: FragmentMonthlyPlanBinding? = null
     private val binding get() = _binding!!
+
+    private val monthlyPlanViewModel: MonthlyPlanViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by viewModels()
+    private val plansAdapter: PlansAdapter by lazy { PlansAdapter(this) }
     private lateinit var progressDialog: ProgressDialog
-    private var clickedContractId: Long? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMonthlyPlanBinding.bind(view)
 
+        // Set Menu
+        setHasOptionsMenu(true)
+
         with (binding) {
             lifecycleOwner = this@MonthlyPlanFragment
             sharedViewModel = this@MonthlyPlanFragment.sharedViewModel
+            planFilter = MonthlyPlanFilter()
 
             swipeRefresh.setOnRefreshListener(this@MonthlyPlanFragment)
 
-            filterList.setOnClickListener {
-                val dialog = MonthlyPlanFilterDialogFragment()
-                dialog.show(childFragmentManager, "PlanFilterBottomSheetDialog")
-            }
-            clearFilter.setOnClickListener {
-                filterViewModel.clearFilter()
-            }
             explanationAboutColors.setOnClickListener(::explainAboutColors)
+
+            error.restart.setOnClickListener { callRequests() }
         }
 
         progressDialog = ProgressDialog(requireContext())
@@ -74,9 +65,25 @@ class MonthlyPlanFragment : Fragment(R.layout.fragment_monthly_plan), PlansAdapt
         monthlyPlanViewModel.fetchPlans()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.filter_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.filter -> {
+                val dialog = MonthlyPlanFilterDialogFragment(this, binding.planFilter ?: MonthlyPlanFilter())
+                dialog.show(childFragmentManager, tag)
+            }
+            R.id.clearFilter -> filterPlans()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun sendToDailyPlan(contractId: Long) {
-        clickedContractId = contractId
-        val timePicker = TimePickerFragment(this)
+        val timePicker = TimePickerFragment() { hour, minute ->
+            monthlyPlanViewModel.createDailyPlan(contractId, "$hour:$minute")
+        }
         timePicker.show(childFragmentManager)
     }
 
@@ -87,29 +94,16 @@ class MonthlyPlanFragment : Fragment(R.layout.fragment_monthly_plan), PlansAdapt
         }
     }
 
-    override fun selectedTime(hour: Int, minute: Int) {
-        clickedContractId?.let {
-            monthlyPlanViewModel.createDailyPlan(it, "$hour:$minute")
-        }
-    }
-
     private fun observeLiveData() {
         monthlyPlanViewModel.plansResponse.observe(viewLifecycleOwner, { res ->
             when (res) {
                 is NetworkResult.Success -> {
                     sharedViewModel.setResponse(res)
-                    filterPlans()
+
+                    filterPlans(binding.planFilter ?: MonthlyPlanFilter())
                 }
                 is NetworkResult.Loading -> sharedViewModel.setResponse(res)
                 is NetworkResult.Error -> sharedViewModel.setResponse(res)
-            }
-        })
-        filterViewModel.filterParams.observe(viewLifecycleOwner, { params ->
-            val plans = monthlyPlanViewModel.plansResponse.value?.data?.data
-            if (!plans.isNullOrEmpty()) {
-                filterPlans(params)
-            } else {
-                filterViewModel.clearFilter()
             }
         })
         monthlyPlanViewModel.createDailyPlanResponse.observe(viewLifecycleOwner, { res ->
@@ -126,77 +120,6 @@ class MonthlyPlanFragment : Fragment(R.layout.fragment_monthly_plan), PlansAdapt
                 }
             }
         })
-    }
-
-    private fun changeTextsFilter(filterParams: PlanFilter) {
-        val filterSortParams = arrayListOf(
-            getString(R.string.payment_date),
-            getString(R.string.contract_date),
-            getString(R.string.fullname)
-        )
-        binding.sort = filterSortParams[filterParams.selectedSortFilter]
-        binding.searchBySn = when (filterParams.selectedSearchBy) {
-            0 -> if (filterParams.query.isNotBlank()) "${getString(R.string.cn)} = ${filterParams.query}" else ""
-            1 -> if (filterParams.query.isNotBlank()) "${getString(R.string.fullname)} = ${filterParams.query}" else ""
-            else -> ""
-        }
-        binding.problematic.isVisible = filterParams.problematic
-    }
-
-    private fun filterPlans(
-        filterParams: PlanFilter = filterViewModel.getDefault()
-    ) {
-        changeTextsFilter(filterParams)
-        var filteredPlans =
-            mutableListOf<Plan>().apply { addAll(monthlyPlanViewModel.plansResponse.value!!.data!!.data) }
-
-        val dtf: DateTimeFormatter = DateTimeFormat.forPattern("dd.MM.yyyy")
-
-        // Filter by search
-        when (filterParams.selectedSearchBy) {
-            0 -> {
-                filteredPlans = filteredPlans.filter {
-                    it.contractNumber.toString().indexOf(filterParams.query) >= 0
-                }.toMutableList()
-            }
-            1 -> {
-                val conditions = ArrayList<(Plan) -> Boolean>()
-                filterParams.query.lowercase(Locale.ROOT).split(" ").map {
-                    conditions.add { plan ->
-                        (plan.customerLastname + " " + plan.customerFirstname + " " + plan.customerMiddlename).toLowerCase(
-                            Locale.ROOT
-                        ).indexOf(
-                            it
-                        ) >= 0
-                    }
-                }
-                filteredPlans =
-                    filteredPlans.filter { candidate -> conditions.all { it(candidate) } }
-                        .toMutableList()
-            }
-        }
-
-        // Sort by selected parameter
-        when (filterParams.selectedSortFilter) {
-            0 -> filteredPlans.sortBy { dtf.parseLocalDate(it.nextPaymentDate) }
-            1 -> filteredPlans.sortBy { dtf.parseLocalDate(it.contractDate) }
-            2 -> filteredPlans.sortBy { it.customerLastname + " " + it.customerFirstname + " " + it.customerMiddlename }
-        }
-
-        // Filter problematic plans
-        filteredPlans =
-            filteredPlans.filter { it.problem == filterParams.problematic }.toMutableList()
-
-        // Change recyclerView
-        plansAdapter.submitList(filteredPlans)
-
-        val allOverdueDays =
-            "(<font color=#DF1010>${filteredPlans.count { it.paymentOverDueDays!! > 0 }}</font>, " +
-                    "<font color=#FFC107>${filteredPlans.count { it.paymentOverDueDays!! == 0 }}</font>, " +
-                    "<font color=#4CAF50>${filteredPlans.count { it.paymentOverDueDays!! < 0 }}</font>)"
-
-        binding.allOverdueDays.text = Html.fromHtml(allOverdueDays)
-        binding.quantityOfList = filteredPlans.size
     }
 
     private fun explainAboutColors(view: View) {
@@ -221,4 +144,28 @@ class MonthlyPlanFragment : Fragment(R.layout.fragment_monthly_plan), PlansAdapt
         sharedViewModel.setLoadingType(LoadingType.SWIPE_REFRESH)
         callRequests()
     }
+
+    override fun apply(monthlyPlanFilter: MonthlyPlanFilter) {
+        filterPlans(monthlyPlanFilter)
+    }
+
+    private fun filterPlans(monthlyPlanFilter: MonthlyPlanFilter = MonthlyPlanFilter()) {
+        binding.planFilter = monthlyPlanFilter
+        monthlyPlanViewModel.filter(monthlyPlanFilter).observe(viewLifecycleOwner, { result ->
+            plansAdapter.submitList(result)
+            result?.let { binding.sizeOfList = it.size }
+            setTypesOfQuantities(result)
+        })
+    }
+
+    private fun setTypesOfQuantities(plans: List<Plan>?) {
+        if (plans != null) {
+            val overdue = plans.count { it.paymentOverDueDays!! > 0 }
+            val current = plans.count { it.paymentOverDueDays!! == 0 }
+            val upcoming = plans.count { it.paymentOverDueDays!! < 0 }
+            val text = getString(R.string.types_of_quantities, overdue, current, upcoming)
+            binding.typesOfQuantities.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT)
+        }
+    }
+
 }

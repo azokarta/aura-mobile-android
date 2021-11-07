@@ -39,6 +39,7 @@ class PlanContributionsFragment : Fragment(R.layout.fragment_plan_contributions)
         with (binding) {
             lifecycleOwner = this@PlanContributionsFragment
             sharedViewModel = this@PlanContributionsFragment.sharedViewModel
+            error.restart.setOnClickListener { callRequests() }
         }
 
         progressDialog = ProgressDialog(requireContext())

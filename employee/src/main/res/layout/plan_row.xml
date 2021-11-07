@@ -2,7 +2,7 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data android:layout_width="wrap_content">
+    <data>
 
         <variable
             name="plan"
@@ -18,10 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:text="@{@string/fullname+`:`, default=`ФИО:`}"
             android:textColor="@color/black"
@@ -35,11 +33,9 @@
             android:layout_alignTop="@+id/fullName"
             android:layout_alignBottom="@+id/fullName"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="2dp"
             android:layout_toEndOf="@+id/fullName"
-            android:layout_toRightOf="@+id/fullName"
             android:text="@{plan.fullName, default=`Stephen Grider`}"
             android:textColor="@color/black" />
 
@@ -49,7 +45,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/fullName"
             android:layout_alignStart="@+id/fullName"
-            android:layout_alignLeft="@+id/fullName"
             android:layout_marginTop="5dp"
             android:text="@{@string/cn+`:`, default=`CN:`}"
             android:textColor="@color/black"
@@ -63,11 +58,9 @@
             android:layout_alignTop="@+id/contractNumber"
             android:layout_alignBottom="@+id/contractNumber"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="2dp"
             android:layout_toEndOf="@+id/contractNumber"
-            android:layout_toRightOf="@+id/contractNumber"
             android:text="@{Long.toString(plan.contractNumber), default=0}"
             android:textColor="@color/black" />
 
@@ -77,9 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/contractNumberValue"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_toEndOf="@+id/contractNumberValue"
-            android:layout_toRightOf="@+id/contractNumberValue" />
+            android:layout_toEndOf="@+id/contractNumberValue" />
 
         <ImageView
             android:id="@+id/paymentMethodImg"
@@ -88,8 +79,7 @@
             android:src="@drawable/ic_baseline_account_balance_24"
             android:layout_alignTop="@+id/paymentOverdueDays"
             android:layout_alignBottom="@+id/paymentOverdueDays"
-            android:layout_toEndOf="@+id/paymentOverdueDays"
-            android:layout_toRightOf="@+id/paymentOverdueDays" />
+            android:layout_toEndOf="@+id/paymentOverdueDays" />
 
         <ImageView
             android:id="@+id/bankImg"
@@ -98,10 +88,8 @@
             android:layout_alignTop="@+id/paymentMethodImg"
             android:layout_alignBottom="@+id/paymentMethodImg"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:src="@drawable/ic_kaspi_bank"
-            android:layout_toEndOf="@+id/paymentMethodImg"
-            android:layout_toRightOf="@+id/paymentMethodImg" />
+            android:layout_toEndOf="@+id/paymentMethodImg" />
 
         <View
             android:id="@+id/divider2"
@@ -109,9 +97,7 @@
             android:layout_height="1dp"
             android:layout_below="@+id/contractNumber"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_marginTop="5dp"
             android:background="?android:attr/listDivider" />
 
@@ -120,10 +106,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_today_24"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignTop="@+id/fullName"
-            android:layout_marginRight="8dp"
             android:layout_marginEnd="8dp" />
 
     </RelativeLayout>

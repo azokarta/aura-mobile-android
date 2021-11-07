@@ -7,28 +7,20 @@
         <variable
             name="sharedViewModel"
             type="kz.aura.merp.employee.viewmodel.SharedViewModel" />
-
         <variable
-            name="quantityOfList"
+            name="planFilter"
+            type="kz.aura.merp.employee.model.MonthlyPlanFilter" />
+        <variable
+            name="sizeOfList"
             type="int" />
-
-        <variable
-            name="sort"
-            type="String" />
-
-        <variable
-            name="searchBySn"
-            type="String" />
-
-        <variable
-            name="allOverdueDays"
-            type="String" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:loadingType="@{sharedViewModel.loadingType}"
+        android:response="@{sharedViewModel.response}"
         tools:context=".ui.finance.fragment.MonthlyPlanFragment">
 
         <androidx.core.widget.NestedScrollView
@@ -50,8 +42,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    app:response="@{sharedViewModel.response}"
-                    app:loadingType="@{sharedViewModel.loadingType}"
+                    android:response="@{sharedViewModel.response}"
+                    android:loadingType="@{sharedViewModel.loadingType}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:orientation="vertical"
                     tools:listitem="@layout/plan_row"
@@ -65,8 +57,8 @@
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:loadingType="@{sharedViewModel.loadingType}"
-                    app:response="@{sharedViewModel.response}"
+                    android:loadingType="@{sharedViewModel.loadingType}"
+                    android:response="@{sharedViewModel.response}"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -77,8 +69,8 @@
                     android:id="@+id/filterLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:response="@{sharedViewModel.response}"
-                    app:loadingType="@{sharedViewModel.loadingType}"
+                    android:response="@{sharedViewModel.response}"
+                    android:loadingType="@{sharedViewModel.loadingType}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -88,25 +80,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
                         android:text="@{@string/quantity + `: `, default=`Количество:`}"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Button
-                        android:id="@+id/filterList"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:text="@string/filters"
-                        app:icon="@drawable/ic_baseline_filter_list_24"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -136,8 +114,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:text="@{Integer.toString(quantityOfList), default=`241`}"
+                        android:text="@{Integer.toString(sizeOfList), default=`241`}"
                         android:textColor="@color/black"
                         android:textStyle="italic"
                         app:layout_constraintBottom_toBottomOf="@+id/textView22"
@@ -149,8 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:text="@{sort}"
+                        android:text="@{planFilter.sortType.value}"
                         android:textColor="@color/black"
                         android:textStyle="italic"
                         app:layout_constraintBottom_toBottomOf="@+id/textView29"
@@ -162,8 +138,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:text="@{searchBySn}"
+                        android:text="@{planFilter.query}"
                         android:textColor="@color/black"
                         android:textStyle="italic"
                         app:layout_constraintBottom_toBottomOf="@+id/textView30"
@@ -175,45 +150,34 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/problematic"
                         android:textColor="@color/red"
                         android:textSize="18sp"
-                        android:visibility="invisible"
-                        app:layout_constraintStart_toStartOf="@+id/filterList"
-                        app:layout_constraintTop_toBottomOf="@+id/filterList" />
+                        android:isVisible="@{planFilter.problematic}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/textView30"
+                        app:layout_constraintTop_toBottomOf="@+id/textView30" />
 
                     <TextView
-                        android:id="@+id/allOverdueDays"
+                        android:id="@+id/typesOfQuantities"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
-                        android:layout_marginLeft="2dp"
-                        android:text="@{allOverdueDays}"
-                        android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="@+id/textView32"
                         app:layout_constraintStart_toEndOf="@+id/textView32"
                         app:layout_constraintTop_toTopOf="@+id/textView32" />
-
-                    <Button
-                        android:id="@+id/clearFilter"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/clear_filter"
-                        app:layout_constraintEnd_toEndOf="@+id/filterList"
-                        app:layout_constraintTop_toBottomOf="@+id/problematic" />
 
                     <ImageView
                         android:id="@+id/explanationAboutColors"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
+                        android:contentDescription="@string/explanation_about_colors"
                         android:src="@drawable/ic_baseline_help_outline_24"
-                        app:layout_constraintBottom_toBottomOf="@+id/allOverdueDays"
-                        app:layout_constraintStart_toEndOf="@+id/allOverdueDays"
-                        app:layout_constraintTop_toTopOf="@+id/allOverdueDays" />
+                        app:layout_constraintBottom_toBottomOf="@+id/typesOfQuantities"
+                        app:layout_constraintStart_toEndOf="@+id/typesOfQuantities"
+                        app:layout_constraintTop_toTopOf="@+id/typesOfQuantities" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

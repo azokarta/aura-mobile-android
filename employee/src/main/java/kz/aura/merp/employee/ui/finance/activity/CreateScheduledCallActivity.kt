@@ -24,7 +24,6 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
 
     private lateinit var progressDialog: ProgressDialog
     private val createScheduledCallViewModel: CreateScheduledCallViewModel by viewModels()
-    private var countryCode: CountryCode = CountryCode.KZ
     private var selectedHour: Int? = null
     private var selectedMinute: Int? = null
     private var scheduledDate: String? = null
@@ -55,7 +54,8 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
             save.setOnClickListener { save() }
         }
 
-//        binding.phoneNumberText.mask = createScheduledCallViewModel.getCountryCode()
+        val country = createScheduledCallViewModel.preferences.getCountryCode()
+        phoneMaskFormatWatcher(country.format).installOn(binding.phoneNumberText)
     }
 
     private fun showTimePicker() {
@@ -70,7 +70,7 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
 
     override fun selectedDate(date: Long, header: String) {
         scheduledDate = convertDateMillisToStr(date)
-        binding.scheduleDateText.setText(header)
+        binding.scheduleDateText.setText(convertDateMillisToStr(date))
     }
 
     override fun selectedTime(hour: Int, minute: Int) {
@@ -105,6 +105,7 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
             val description = binding.descriptionText.text.toString()
             val phoneNumber = binding.phoneNumberText.text.toString()
             val scheduledDateTime = collectDateTimeInsideStr(scheduledDate!!, selectedHour!!, selectedMinute!!)
+            val country = createScheduledCallViewModel.preferences.getCountryCode()
 
             progressDialog.showLoading()
             SmartLocation.with(this).location().oneFix()
@@ -113,7 +114,7 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
                         contractId!!,
                         AssignScheduledCallCommand(
                             phoneNumber,
-                            countryCode.name,
+                            country.name,
                             it.longitude,
                             it.latitude,
                             scheduledDateTime,
@@ -124,14 +125,12 @@ class CreateScheduledCallActivity : BaseActivity(), TimePickerFragment.TimePicke
         }
     }
 
-    private fun isLocationServiceEnabled(): Boolean =
-        SmartLocation.with(this).location().state().locationServicesEnabled()
-
     private fun validation(): Boolean {
         val phoneNumber = binding.phoneNumberText.text.toString()
+        val country = createScheduledCallViewModel.preferences.getCountryCode()
         var success = true
 
-        if (phoneNumber.length != countryCode.format.length) {
+        if (phoneNumber.length != country.format.length) {
             binding.phoneNumberField.isErrorEnabled = true
             binding.phoneNumberField.error = getString(R.string.enter_valid_phone_number)
             success = false

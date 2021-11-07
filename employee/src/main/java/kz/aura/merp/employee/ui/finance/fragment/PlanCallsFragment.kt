@@ -38,6 +38,7 @@ class PlanCallsFragment : Fragment(R.layout.fragment_plan_calls) {
         with (binding) {
             lifecycleOwner = this@PlanCallsFragment
             sharedViewModel = this@PlanCallsFragment.sharedViewModel
+            error.restart.setOnClickListener { callRequests() }
 
             toggleButton.addOnButtonCheckedListener { _, checkedId, isChecked ->
                 val callHistoryRes = planCallsViewModel.callHistoryResponse.value

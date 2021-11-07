@@ -8,35 +8,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.databinding.DailyPlanFilterBottomSheetBinding
 import kz.aura.merp.employee.model.BusinessProcessStatus
-import kz.aura.merp.employee.base.NetworkResult
-import kz.aura.merp.employee.viewmodel.PlanFilterViewModel
-import kz.aura.merp.employee.viewmodel.SharedViewModel
-import kz.aura.merp.employee.viewmodel.finance.DailyPlanViewModel
+import kz.aura.merp.employee.model.DailyPlanFilter
+import kz.aura.merp.employee.model.MonthlyPlanFilter
+import kz.aura.merp.employee.util.SearchType
+import kz.aura.merp.employee.util.SortType
+import kz.aura.merp.employee.util.hideKeyboardFrom
 
 @AndroidEntryPoint
-class DailyPlanFilterDialogFragment : BottomSheetDialogFragment() {
+class DailyPlanFilterDialogFragment(
+    private val listener: Listener? = null,
+    private val dailyPlanFilter: DailyPlanFilter,
+    private val statuses: List<BusinessProcessStatus>
+) : BottomSheetDialogFragment() {
 
     private var _binding: DailyPlanFilterBottomSheetBinding? = null
     private val binding get() = _binding!!
-    private val dailyPlanViewModel: DailyPlanViewModel by viewModels()
-    private val filterViewModel: PlanFilterViewModel by activityViewModels()
-    private val sharedViewModel: SharedViewModel by viewModels()
-    private lateinit var filterSortParams: ArrayList<String>
-    private lateinit var searchParams: List<String>
-    private var selectedSearchBy: Int = 0
-    private var selectedSortFilter: Int = 0
-    private var selectedStatusFilter: Int = 0
-    private var query: String = ""
-    private var problematic: Boolean = false
-    private var businessProcessStatuses: ArrayList<BusinessProcessStatus> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,120 +35,105 @@ class DailyPlanFilterDialogFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = DailyPlanFilterBottomSheetBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
-        binding.sharedViewModel = sharedViewModel
         val root: View = binding.root
 
-        selectedSearchBy = filterViewModel.filterParams.value?.selectedSearchBy ?: 0
-        selectedSortFilter = filterViewModel.filterParams.value?.selectedSortFilter ?: 0
-        selectedStatusFilter = filterViewModel.filterParams.value?.selectedStatusFilter ?: 0
-        query = filterViewModel.filterParams.value?.query ?: ""
-        problematic = filterViewModel.filterParams.value?.problematic ?: false
+        setupSearchBy()
 
-        filterSortParams = arrayListOf(
-            getString(R.string.payment_date),
-            getString(R.string.contract_date),
-            getString(R.string.fullname)
-        )
-        businessProcessStatuses.add(
-            BusinessProcessStatus(
-                0,
-                getString(R.string.all),
-                "",
-                "",
-                "",
-                ""
-            )
-        )
+        setStatuses()
 
-        // Initialize search params
-        searchParams = listOf(getString(R.string.cn), getString(R.string.fullname))
-        val adapter = ArrayAdapter(requireContext(), R.layout.list_item, searchParams)
-        binding.searchByEditText.setText(searchParams[selectedSearchBy])
-        binding.searchByEditText.setAdapter(adapter)
+        setAppliedFilter()
 
-        for ((idx, value) in filterSortParams.withIndex()) {
-            binding.sortChipGroup.addView(createChip(value, idx))
-        }
-
-        // Init listeners
         binding.apply.setOnClickListener {
             val query = binding.search.editText?.text.toString()
-            val selectedSortFilter = binding.sortChipGroup.checkedChipId
-            val selectedStatusFilter = binding.statusesChipGroup.checkedChipId
-            filterViewModel.apply(
-                query,
-                selectedSortFilter,
-                selectedStatusFilter,
-                selectedSearchBy,
-                binding.problematic.isChecked
-            )
+            val sortType = getSortType()
+            val problematic = binding.problematic.isChecked
+            val searchType = getSearchType()
+            val status = binding.statusesChipGroup.checkedChipId.toLong()
+            listener?.apply(DailyPlanFilter(query, sortType, problematic, searchType, status))
             this.dismiss()
         }
-        binding.search.setEndIconOnClickListener {
+        binding.searchByEditText.setOnItemClickListener { _, view, position, _ ->
+            setInputTypeOfSearch(SearchType.values()[position])
             binding.search.editText?.setText("")
+            hideKeyboardFrom(requireContext(), view)
         }
-        binding.searchByEditText.setOnItemClickListener { _, _, i, _ ->
-            selectedSearchBy = i
-            when (i) {
-                0 -> binding.search.editText?.inputType = InputType.TYPE_CLASS_NUMBER
-                1 -> binding.search.editText?.inputType = InputType.TYPE_CLASS_TEXT
-            }
-        }
-
-        setupObservers()
-
-        callRequests()
 
         return root
     }
 
-    private fun callRequests() {
-        dailyPlanViewModel.fetchBusinessProcessStatuses()
+    private fun setStatuses() {
+        binding.statusesChipGroup.addView(createChip(getString(R.string.all), 4040))
+        for (status in statuses) {
+            binding.statusesChipGroup.addView(createChip(status.name, status.id))
+        }
     }
 
-    private fun setupFilterParams() {
-        binding.search.editText?.setText(query)
-        binding.problematic.isChecked = problematic
-        binding.statusesChipGroup.check(selectedStatusFilter)
-        binding.sortChipGroup.check(selectedSortFilter)
-    }
-
-    private fun createChip(title: String, id: Int): Chip {
-        val chip = Chip(requireContext())
-        chip.text = title
-        chip.id = id
-        chip.setChipBackgroundColorResource(R.color.gray)
-        chip.checkedIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_check_24)
-        chip.isCheckable = true
-        chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+    private fun createChip(title: String, id: Long): Chip {
+        val chip = Chip(requireContext(), null, R.style.Widget_MaterialComponents_Chip_Choice).apply {
+            text = title
+            this.id = id.toInt()
+            isCheckable = true
+            isClickable = true
+        }
         return chip
     }
 
-    private fun setupObservers() {
-        dailyPlanViewModel.businessProcessStatusesResponse.observe(viewLifecycleOwner, { res ->
-            when (res) {
-                is NetworkResult.Success -> {
-                    sharedViewModel.setResponse(res)
-                    val businessProcesses = res.data?.data
-                    if (businessProcesses != null) {
-                        businessProcessStatuses.addAll(businessProcesses)
-                    }
-                    for (process in businessProcessStatuses) {
-                        binding.statusesChipGroup.addView(
-                            createChip(
-                                process.name,
-                                process.id.toInt()
-                            )
-                        )
-                    }
+    private fun getSearchType(): SearchType? {
+        return when (binding.searchByEditText.text.toString()) {
+            getString(SearchType.CN.value) -> SearchType.CN
+            getString(SearchType.FULL_NAME.value) -> SearchType.FULL_NAME
+            getString(SearchType.PHONE_NUMBER.value) -> SearchType.PHONE_NUMBER
+            getString(SearchType.ADDRESS.value) -> SearchType.ADDRESS
+            else -> null
+        }
+    }
 
-                    setupFilterParams()
-                }
-                is NetworkResult.Loading -> sharedViewModel.setResponse(res)
-                is NetworkResult.Error -> sharedViewModel.setResponse(res)
-            }
-        })
+    private fun getSortType(): SortType {
+        return when (binding.sortChipGroup.checkedChipId) {
+            binding.chipPaymentDate.id -> SortType.PAYMENT_DATE
+            binding.chipContractDate.id -> SortType.CONTRACT_DATE
+            binding.chipFullname.id -> SortType.FULL_NAME
+            else -> SortType.PAYMENT_DATE
+        }
+    }
+
+    private fun setupSearchBy() {
+        val items = SearchType.values().map { getString(it.value) }
+        val adapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
+        binding.searchByEditText.setAdapter(adapter)
+    }
+
+    private fun setAppliedFilter() {
+        val (query, sortType, problematic, searchType, statusId) = dailyPlanFilter
+        binding.search.editText?.setText(query)
+        binding.sortChipGroup.check(getChipIdOfSortType(sortType))
+        binding.statusesChipGroup.check(statusId.toInt())
+        binding.problematic.isChecked = problematic
+        searchType?.let {
+            binding.searchByEditText.setText(getString(it.value), false)
+            setInputTypeOfSearch(it)
+        }
+    }
+
+    private fun getChipIdOfSortType(sortType: SortType): Int {
+        return when (sortType) {
+            SortType.FULL_NAME -> binding.chipFullname.id
+            SortType.PAYMENT_DATE -> binding.chipPaymentDate.id
+            SortType.CONTRACT_DATE -> binding.chipContractDate.id
+        }
+    }
+
+    private fun setInputTypeOfSearch(searchType: SearchType) {
+        when (searchType) {
+            SearchType.CN -> binding.search.editText?.inputType = InputType.TYPE_CLASS_NUMBER
+            else -> binding.search.editText?.inputType = InputType.TYPE_CLASS_TEXT
+        }
+    }
+
+    interface Listener {
+        fun apply(
+            dailyPlanFilter: DailyPlanFilter
+        )
     }
 
     override fun onDestroyView() {

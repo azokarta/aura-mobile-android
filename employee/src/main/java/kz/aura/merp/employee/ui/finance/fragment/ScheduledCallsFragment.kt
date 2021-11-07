@@ -35,6 +35,7 @@ class ScheduledCallsFragment : Fragment(R.layout.fragment_scheduled_calls), Swip
             sharedViewModel = this@ScheduledCallsFragment.sharedViewModel
 
             swipeRefresh.setOnRefreshListener(this@ScheduledCallsFragment)
+            error.restart.setOnClickListener { callRequests() }
         }
 
         setupRecyclerView()

@@ -129,7 +129,7 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
             val amount: Int? = if (binding.amountText.text.toString().isBlank()) null else binding.amountText.text.toString().toInt()
             val scheduledDateTime = "$scheduledDate $selectedHour:$selectedMinute"
             val countryCallingCode = changeResultViewModel.preferences.countryCallingCode
-            val countryCode = CountryCode.values().find { it.phoneCode == countryCallingCode } ?: CountryCode.KZ
+            val countryCode = Country.values().find { it.phoneCode == countryCallingCode } ?: Country.KZ
 
             progressDialog.showLoading()
             SmartLocation.with(this).location().oneFix()
@@ -205,7 +205,7 @@ class ChangeResultActivity : BaseActivity(), TimePickerFragment.TimePickerListen
 
     override fun selectedDate(date: Long, header: String) {
         scheduledDate = convertDateMillisToStr(date)
-        binding.scheduleDateText.setText(header)
+        binding.scheduleDateText.setText(convertDateMillisToStr(date))
     }
 
     private fun validation(): Boolean {

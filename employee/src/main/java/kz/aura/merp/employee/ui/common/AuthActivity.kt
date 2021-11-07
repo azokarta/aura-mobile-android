@@ -3,9 +3,11 @@ package kz.aura.merp.employee.ui.common
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import kz.aura.merp.employee.BuildConfig
 import kz.aura.merp.employee.R
 import kz.aura.merp.employee.base.BaseActivity
 import kz.aura.merp.employee.base.NetworkResult
@@ -14,6 +16,7 @@ import kz.aura.merp.employee.databinding.ActivityAuthBinding
 import kz.aura.merp.employee.model.Salary
 import kz.aura.merp.employee.util.*
 import timber.log.Timber
+import ru.tinkoff.decoro.watchers.MaskFormatWatcher
 
 @AndroidEntryPoint
 class AuthActivity : BaseActivity() {
@@ -22,7 +25,9 @@ class AuthActivity : BaseActivity() {
 
     private val authViewModel: AuthViewModel by viewModels()
     private lateinit var progressDialog: ProgressDialog
-    private var countryCallingCode: String = CountryCode.values()[0].phoneCode
+    private var formatWatcher: MaskFormatWatcher? = null
+    private val defaultCountry: Country = Country.KZ
+    private var selectedCountryCallingCode: String = defaultCountry.phoneCode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,24 +40,26 @@ class AuthActivity : BaseActivity() {
 
         setupCountryCallingCodeDropdown()
 
+        formatWatcher = phoneMaskFormatWatcher(defaultCountry.format)
+
         with (binding) {
             countryCallingCodeText.setOnItemClickListener { _, _, i, _ ->
-                countryCallingCode = CountryCode.values()[i].phoneCode
+                val selectedCountry = Country.values()[i]
+                selectedCountryCallingCode = selectedCountry.phoneCode
+                formatWatcher?.swapMask(createCustomPhoneMask(selectedCountry.format))
             }
             signInBtn.setOnClickListener { signIn() }
+
+            formatWatcher?.installOn(binding.phoneNumberText)
         }
     }
 
     private fun setupCountryCallingCodeDropdown() {
-        val countryCodes = CountryCode.values().map { "${it.name} (${it.phoneCode})" }
-        val adapter = ArrayAdapter(
-            this,
-            R.layout.list_item,
-            countryCodes)
-        binding.countryCallingCodeText.setText(countryCodes[0])
-        (binding.countryCallingCodeField.editText as? AutoCompleteTextView)?.setAdapter(
-            adapter
-        )
+        val template = { country: Country -> "${country.name} (${country.phoneCode})" }
+        val countryCodes = Country.values().map(template)
+        val adapter = ArrayAdapter(this, R.layout.list_item, countryCodes)
+        binding.countryCallingCodeText.setText(template(defaultCountry))
+        (binding.countryCallingCodeField.editText as? AutoCompleteTextView)?.setAdapter(adapter)
     }
 
     private fun getTokenFromFirebase() {
@@ -78,10 +85,10 @@ class AuthActivity : BaseActivity() {
 
                     val token = res.data?.accessToken
 
-                    // Saving the token to get a info about user
+                    // Saving the token to get an info about user
                     authViewModel.preferences.token = token
 
-                    // Calling getUserInfo to get a info about user
+                    // Calling getUserInfo to get an info about user
                     authViewModel.getUserInfo()
                 }
                 is NetworkResult.Loading -> progressDialog.showLoading()
@@ -109,7 +116,7 @@ class AuthActivity : BaseActivity() {
                         if (position == null || salary == null) {
                             showException(getString(R.string.wrong_position), this)
                         } else {
-                            authViewModel.preferences.countryCallingCode = countryCallingCode
+                            authViewModel.preferences.countryCallingCode = selectedCountryCallingCode
                             authViewModel.preferences.salary = salary
 
                             getTokenFromFirebase()
@@ -143,9 +150,14 @@ class AuthActivity : BaseActivity() {
 
     private fun signIn() {
         hideKeyboard(this)
-        val phoneNumber = countryCallingCode + binding.phoneNumberText.text.toString()
+        val phoneNumber = formatWatcher?.mask?.toUnformattedString()
         val password = binding.passwordText.text.toString()
-        authViewModel.signIn(phoneNumber, password)
+
+        if (!phoneNumber.isNullOrBlank() && password.isNotBlank()) {
+            authViewModel.signIn(phoneNumber, password)
+        } else {
+            displayToast(getString(R.string.fill_out_all_fields), Toast.LENGTH_LONG)
+        }
     }
 
 

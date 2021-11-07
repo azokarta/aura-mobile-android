@@ -170,7 +170,7 @@
     <string name="remove_photo">Remove the photo</string>
     <string name="wemob_authentication">WeMob authentication</string>
     <string name="wemob_using_biometric_authentication">WeMob uses Android biometric authentication</string>
-
+    <string name="filter">Filter</string>
     <!--  ERRORS  -->
     <string name="empty_field">The field must not be empty</string>
     <string name="try_again_later">Please try again later</string>

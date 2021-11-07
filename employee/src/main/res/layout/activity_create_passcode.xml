@@ -181,7 +181,7 @@
         app:backgroundTint="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/number9"
         app:layout_constraintTop_toBottomOf="@+id/number9"
-        app:srcCompat="@drawable/ic_backspace_black_24dp" />
+        app:srcCompat="@drawable/ic_outline_backspace_24" />
 
     <LinearLayout
         android:id="@+id/codeContainer1"

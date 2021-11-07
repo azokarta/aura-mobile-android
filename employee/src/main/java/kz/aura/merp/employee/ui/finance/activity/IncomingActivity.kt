@@ -15,6 +15,7 @@ import kz.aura.merp.employee.ui.common.TimePickerFragment
 import kz.aura.merp.employee.util.*
 import kz.aura.merp.employee.view.PermissionsListener
 import kz.aura.merp.employee.viewmodel.finance.IncomingViewModel
+import ru.tinkoff.decoro.watchers.MaskFormatWatcher
 
 @AndroidEntryPoint
 class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, PermissionsListener {
@@ -23,12 +24,11 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
 
     private lateinit var progressDialog: ProgressDialog
     private val incomingViewModel: IncomingViewModel by viewModels()
-    private lateinit var phoneNumber: String
     private var contractId: Long = 0L
     private var selectedHour: Int? = null
     private var selectedMinute: Int? = null
-    private var countryCode: CountryCode = CountryCode.KZ
     private lateinit var permissions: Permissions
+    private var formatWatcher: MaskFormatWatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +40,7 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
         supportActionBar?.title = getString(R.string.add_incoming_call)
 
         contractId = intent.getLongExtra("contractId", 0L)
-        phoneNumber = intent.getStringExtra("phoneNumber")!!
+        val phoneNumber = intent.getStringExtra("phoneNumber")!!
 
         permissions = Permissions(this, this, this)
         permissions.setListener(this)
@@ -55,17 +55,14 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
             showTimePicker()
         }
 
-
-        countryCode = incomingViewModel.preferences.getCountryCode()
-//        binding.phoneNumberText.mask = countryCode.format
-        val phoneWithoutCountryCode = removeCountryCodeFromPhone(phoneNumber)
-        binding.phoneNumberText.setText(phoneWithoutCountryCode)
+        setPhoneNumberFormatter(phoneNumber)
     }
 
     private fun save() {
         hideKeyboard(this)
+        val country = incomingViewModel.preferences.getCountryCode()
         val description = binding.descriptionText.text.toString()
-        val typedPhoneNumber = binding.phoneNumberText.text.toString()
+        val typedPhoneNumber = formatWatcher?.mask?.toUnformattedString()
 
         if (validation()) {
             if (!permissions.isLocationServicesEnabled()) return
@@ -74,7 +71,7 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
             SmartLocation.with(this).location().oneFix()
                 .start {
                     val assign = AssignCall(
-                        countryCode = countryCode.name,
+                        countryCode = country.name,
                         phoneNumber = typedPhoneNumber,
                         callTime = "$selectedHour:$selectedMinute",
                         description = description,
@@ -88,9 +85,10 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
 
     private fun validation(): Boolean {
         val typedPhoneNumber = binding.phoneNumberText.text.toString()
+        val country = incomingViewModel.preferences.getCountryCode()
         var success = true
 
-        if (typedPhoneNumber.isBlank() || typedPhoneNumber.length != countryCode.format.length) {
+        if (typedPhoneNumber.isBlank() || typedPhoneNumber.length != country.format.length) {
             success = false
             binding.phoneNumberField.isErrorEnabled = true
             binding.phoneNumberField.error = getString(R.string.enter_valid_phone_number)
@@ -105,15 +103,19 @@ class IncomingActivity : BaseActivity(), TimePickerFragment.TimePickerListener, 
         return success
     }
 
-    private fun removeCountryCodeFromPhone(phone: String): String {
-        if (countryCode == CountryCode.KZ) {
-            return when (phone.first()) {
-                '8' -> phone.removePrefix("8")
-                '+' -> phone.removePrefix("+7")
-                else -> phone
+    private fun setPhoneNumberFormatter(phoneNumber: String) {
+        val country = incomingViewModel.preferences.getCountryCode()
+        formatWatcher = phoneMaskFormatWatcher(country.format)
+        formatWatcher?.installOn(binding.phoneNumberText)
+
+        when (country) {
+            Country.KZ -> {
+                if (phoneNumber.first() == '8') {
+                    binding.phoneNumberText.setText(phoneNumber.replace("8", country.phoneCode))
+                } else binding.phoneNumberText.setText(phoneNumber)
             }
+            else -> binding.phoneNumberText.setText(phoneNumber)
         }
-        return phone
     }
 
     private fun showTimePicker() {

@@ -28,7 +28,7 @@ data class DailyPlan(
     val customerLastname: String?,
     val customerAddressId: Long?,
     val customerAddress: String?,
-    val customerPhoneNumbers: List<String?>?,
+    val customerPhoneNumbers: List<String>?,
     val planBusinessProcessId: Long?,
     val planBusinessProcessName: String?,
     var planResultId: Long?,

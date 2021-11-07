@@ -147,7 +147,6 @@
     <string name="add_incoming_call">Добавить входящий звонок</string>
     <string name="add_outgoing_call">Добавить исходящий звонок</string>
     <string name="have_not_marked_the_status">Вы не отметили статус: Выезжаю и Доехал до адреса</string>
-    <string name="fill_out_all_fields">Пожалуйста, заполните все поля</string>
     <string name="country_calling_code">Телефонный код страны</string>
     <string name="overdue_days">Просроченные дни</string>
     <string name="deadline_did_not_come">Срок не пришел</string>
@@ -156,12 +155,10 @@
     <string name="daily_plan">Ежедневный план</string>
     <string name="add_to_daily_plan">Добавить в ежедневный план</string>
     <string name="bad_request">Плохой запрос</string>
-    <string name="internal_server_error">Внутренняя ошибка сервера</string>
     <string name="not_found">Не найдено</string>
     <string name="select_date">Выберите дату</string>
     <string name="upcoming">Предстоящие</string>
     <string name="current">Текущие</string>
-    <string name="enable_location">Пожалуйста, включите на устройстве геолокацию</string>
     <string name="contributions">Взносы</string>
     <string name="schedule_date">Назначить дату</string>
     <string name="schedule_time">Назначить время</string>
@@ -180,10 +177,14 @@
     <string name="remove_photo">Удалить фотографию</string>
     <string name="wemob_authentication">Аутентификация WeMob</string>
     <string name="wemob_using_biometric_authentication">WeMob использует биометрическую аутентификацию Android</string>
+    <string name="filter">Фильтр</string>
 
     <!--  ERRORS  -->
     <string name="empty_field">Поле не должно быть пустым</string>
     <string name="try_again_later">Повторите попытку позже</string>
+    <string name="fill_out_all_fields">Пожалуйста, заполните все поля</string>
+    <string name="enable_location">Пожалуйста, включите на устройстве геолокацию</string>
+    <string name="internal_server_error">Внутренняя ошибка сервера</string>
 
     <!--  WARNINGS  -->
     <string name="really_want_to_sign_out">Точно хотите выйти ?</string>
@@ -202,4 +203,12 @@
         <item>@string/edit_photo</item>
         <item>@string/remove_photo</item>
     </string-array>
+
+    <string name="types_of_quantities" translatable="false">
+        <![CDATA[
+        (<font color="red">%1$d</font>,
+        <font color="#FFC107">%2$d</font>,
+        <font color="#4CAF50">%3$d</font>)
+        ]]>
+    </string>
 </resources>

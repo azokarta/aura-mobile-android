@@ -18,12 +18,13 @@ android {
         targetSdk = rootProject.extra["targetSdkVersion"] as Int
         multiDexEnabled = true
 
-        versionCode = 14
-        versionName = "1.0.9"
+        versionCode = 19
+        versionName = "1.0.14"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // It's not recommended
     signingConfigs {
         create("release") {
             storeFile = file("keystore.jks")
@@ -123,10 +124,6 @@ dependencies {
     val multidexVersion = "1.0.3"
     implementation("com.android.support:multidex:$multidexVersion")
 
-    // Phone number formatter
-    val ccpVersion = "2.5.1"
-    implementation("com.hbb20:ccp:$ccpVersion")
-
     // SmartLocation
     val smartLocationVersion = "3.3.3"
     implementation("io.nlopez.smartlocation:library:$smartLocationVersion")
@@ -161,5 +158,9 @@ dependencies {
     // Crypto
     val cryptoVersion = "1.0.0"
     implementation("androidx.security:security-crypto:$cryptoVersion")
+
+    // Decoro
+    val decoroVersion = "1.5.0"
+    implementation("ru.tinkoff.decoro:decoro:$decoroVersion")
 
 }

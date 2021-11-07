@@ -29,7 +29,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:text="@{@string/cn + `:`, default=`CN:`}"
                 android:textColor="@color/black"
@@ -43,9 +42,7 @@
                 android:layout_alignBottom="@+id/cn"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="2dp"
-                android:layout_marginLeft="8dp"
                 android:layout_toEndOf="@+id/cn"
-                android:layout_toRightOf="@+id/cn"
                 android:text="@{Long.toString(contribution.contractNumber), default=`456486961`}"
                 android:layout_marginStart="8dp"
                 android:textColor="@color/black"/>
@@ -60,7 +57,6 @@
                 android:textSize="18sp"
                 android:layout_below="@+id/cn"
                 android:layout_alignStart="@+id/cn"
-                android:layout_alignLeft="@+id/cn"
                 android:layout_marginTop="12dp"/>
 
             <TextView
@@ -70,9 +66,7 @@
                 android:layout_alignBottom="@+id/amount_of_contribution"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="2dp"
-                android:layout_marginLeft="8dp"
                 android:layout_toEndOf="@+id/amount_of_contribution"
-                android:layout_toRightOf="@+id/amount_of_contribution"
                 android:text="@{contribution.collectMoneyAmount + ` ` + contribution.collectMoneyCurrency, default=`80 000 KZT`}"
                 android:visibility="@{contribution.collectMoneyAmount != null ? View.VISIBLE : View.GONE}"
                 android:textColor="@color/black"
@@ -85,7 +79,6 @@
                 android:src="@drawable/ic_baseline_account_balance_24"
                 android:layout_below="@+id/amount_of_contribution"
                 android:layout_alignStart="@+id/amount_of_contribution"
-                android:layout_alignLeft="@+id/amount_of_contribution"
                 android:layout_marginTop="12dp"
                 />
 
@@ -97,9 +90,7 @@
                 android:layout_alignBottom="@+id/paymentMethodImg"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="0dp"
-                android:layout_marginLeft="16dp"
                 android:layout_toEndOf="@+id/paymentMethodImg"
-                android:layout_toRightOf="@+id/paymentMethodImg"
                 android:src="@drawable/ic_kaspi_bank"
                 android:layout_marginStart="16dp" />
 

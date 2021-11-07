@@ -170,7 +170,7 @@
     <string name="remove_photo">Удалить фотографию</string>
     <string name="wemob_authentication">Аутентификация WeMob</string>
     <string name="wemob_using_biometric_authentication">WeMob использует биометрическую аутентификацию Android</string>
-
+    <string name="filter">Фильтр</string>
     <!--  ERRORS  -->
     <string name="empty_field">Поле не должно быть пустым</string>
     <string name="try_again_later">Повторите попытку позже</string>

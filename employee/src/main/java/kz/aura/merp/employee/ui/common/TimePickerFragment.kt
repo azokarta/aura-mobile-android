@@ -6,11 +6,12 @@ import com.google.android.material.timepicker.TimeFormat
 import java.util.*
 
 class TimePickerFragment(
-    private val timePickerListener: TimePickerListener,
+    private val timePickerListener: TimePickerListener? = null,
     private val hour: Int? = null,
     private val minute: Int? = null,
-    private val title: String? = null
-    ) {
+    title: String? = null,
+    private val selectedTime: ((Int, Int) -> Unit)? = null
+) {
 
     private var _picker: MaterialTimePicker? = null
     private val picker get() = _picker!!
@@ -33,11 +34,12 @@ class TimePickerFragment(
             .build()
 
         picker.addOnCancelListener {
-            timePickerListener.onCancelTime()
+            timePickerListener?.onCancelTime()
         }
 
         picker.addOnPositiveButtonClickListener {
-            timePickerListener.selectedTime(picker.hour, picker.minute)
+            timePickerListener?.selectedTime(picker.hour, picker.minute)
+            selectedTime?.let { it(picker.hour, picker.minute) }
         }
     }
 
